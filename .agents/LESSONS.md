@@ -138,4 +138,18 @@
   - **Chuẩn Hierarchy Mission & Action Cards**: Bắt buộc tuân theo: `WHAT -> WHERE -> WHEN -> WHY IT MATTERS -> PARTICIPANTS -> ACTION`.
   - **Tách biệt Đo Lường Tác Động & Tín Chỉ Hỗ Trợ**: Đo lường tác động thực tế (Hoạt động, Bằng chứng SHA-256, Điểm nóng dẹp sạch) là Core Layer; Điểm rèn luyện / Tín chỉ Thanh niên (20h = 4.0 tín chỉ, chứng nhận A4) là Supporting Layer.
 
+## 15. Information Architecture & 5-Persona Route Normalization SSOT
+- **Problem**: Các đường dẫn bị phân mảnh hoặc chồng lấn khái niệm (`/reports` vs `/report` vs `/complaints`, `/actions` vs `/missions`, `/discover` vs `/groups`, `/field` vs `/inspections`, `/evidence` vs `/cases`), gây dead screens khi người dùng gõ URL trực tiếp hoặc chuyển đổi giữa các vai trò (Citizen, Community, Staff, Executive, Admin, Contractor).
+- **Root Cause**: Thiếu lớp Alias Routing chuẩn hóa theo Mental Model của từng vai trò người dùng trong `App.jsx` và thiếu sự đồng bộ với `mode-switch-model.js` và `rbac-rules.js`.
+- **Fix & Prevention**:
+  - **Chuẩn hóa 5 Mental Models + Contractor Workspace**:
+    1. *Citizen*: `/citizen`, `/citizen/report/new`, `/citizen/reports`, `/citizen/reports/:id`, `/citizen/map`, `/citizen/nearby`, `/citizen/profile`.
+    2. *Community*: `/community`, `/community/missions`, `/community/missions/:id`, `/community/my-activities`, `/community/impact`, `/community/groups`, `/community/observe`, `/community/cases`, `/community/cases/:caseId`.
+    3. *Staff*: `/staff`, `/staff/dashboard`, `/staff/reports`, `/staff/reports/:id`, `/staff/field`, `/staff/monitoring`, `/staff/evidence`, `/staff/operations`, `/staff/cases`, `/staff/sites`, `/staff/documents`, `/staff/settings`.
+    4. *Executive*: `/executive`, `/executive/dashboard`, `/executive/overview`, `/executive/areas`, `/executive/heatmap`, `/executive/risks`, `/executive/sla`, `/executive/reports`.
+    5. *Admin*: `/admin`, `/admin/users`, `/admin/sites`, `/admin/system`, `/admin/data-management`.
+    6. *Contractor*: `/contractor`, `/contractor/actions`, `/contractor/actions/:actionId`, `/contractor/projects`, `/contractor/evidence`, `/contractor/notifications`, `/contractor/access/:token`.
+  - **Zero-Dead-Route & Semantic Aliasing**: Tất cả các đường dẫn tương đương được alias sạch sẽ qua React Router, triệt tiêu 100% dead screens mà vẫn duy trì tính tương thích ngược với toàn bộ 523+ tests và các bookmark cũ.
+  - **Tương phản cao Civic Tech**: Điều hướng sidebar, bottom navigation và topbar tuân thủ triệt để không glassmorphism, tương phản cao trên nền `#FDFBF7` và `#FFFFFF`, touch target >= 44px trên mobile.
+
 
