@@ -11,6 +11,7 @@
     "verify": "npm --prefix app run verify",
     "verify:quick": "npm --prefix app run verify:quick",
     "verify:dustguard": "npm --prefix app run verify:dustguard",
+    "verify:runtime": "npm --prefix app run verify:runtime",
     "sensor:simulate": "npm --prefix app run sensor:simulate",
     "simulate:sensor": "npm --prefix app run simulate:sensor",
     "demo:reset": "npm --prefix app run demo:reset"
