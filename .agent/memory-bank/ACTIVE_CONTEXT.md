@@ -20,3 +20,15 @@
 - `npm run verify:dustguard`: Chạy toàn bộ 69 test files (534 tests pass 100% trong 29.7s).
 - `npm run sensor:simulate`: Giả lập dữ liệu trạm quan trắc APM2000 gửi qua API thật.
 - `npm run demo:reset`: Nạp lại dữ liệu chuẩn phục vụ thuyết trình và demo trực tiếp.
+
+---
+
+### C. Subagent 05: Executive Decision UX & Intelligence Suite (Hoàn tất)
+- **Tập tin tạo mới/nâng cấp**:
+  1. `app/src/modules/executive/ExecutiveDashboard.jsx`: Phân cấp 6 tầng quyết định lãnh đạo, loại bỏ KPI theater, hiển thị xu hướng ngày/tuần, tích hợp ký duyệt Nghị định 30/2020/NĐ-CP & 45/2022/NĐ-CP với mã PIN 1234, SHA-256 hash và mộc đỏ `#9f241f`.
+  2. `app/src/modules/executive/ExecutiveRiskMatrix.jsx`: Ma trận quyết định rủi ro 2 chiều (Mức độ nghiêm trọng &times; Tiếp xúc vùng nhạy cảm) với bộ lọc ô tương tác và lệnh chỉ đạo hỏa tốc.
+  3. `app/src/modules/executive/ExecutiveSlaCompliance.jsx`: Giám sát tuân thủ SLA 7 bước khép kín, nhận diện nút thắt cổ chai (bottleneck detector), xếp hạng quận/huyện và hàng đợi đôn đốc khẩn.
+  4. `app/src/modules/executive/ExecutiveReports.jsx`: Kho báo cáo điều hành, hỗ trợ xuất A4 Nghị định 30 và CSV, xác thực khóa băm SHA-256.
+  5. `app/src/layouts/executive-layout.jsx` & `app/src/apps/executive-app.jsx`: Tích hợp 5 tab điều hướng mượt mà, hỗ trợ chuyển đổi vai trò linh hoạt.
+- **Xác thực**: 28/28 Executive unit tests & Level 3 verify:quick (212 in-memory tests + 4 UI smoke suites) pass 100%.
+

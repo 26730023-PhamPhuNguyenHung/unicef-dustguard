@@ -125,3 +125,17 @@
   - **Chuẩn Hóa Bộ 4 Component Thanh Niên**: `CommunityHome.jsx`, `CommunityActions.jsx`, `CommunityImpact.jsx`, `CommunityNavigation.jsx` tuân thủ nghiêm ngặt chuẩn Civic Tech, không glassmorphism, tương phản cao, touch target >= 44px, chống tràn viền trên mobile.
   - **Tài Liệu Kiểm Toán SSOT & Verification Gates**: Tạo `docs/AUDIT_CUSTOMER_JOURNEY_YOUTH_FIRST.md`, bảo đảm 100% pass trên 67 test files và 523+ tests.
 
+## 14. Community Experience & 5-Second Actionable Hierarchy (Core Civic Loop)
+- **Problem**: Người dùng truy cập Community Hub bị choáng ngợp bởi thông tin chung chung, không trả lời nhanh được việc cụ thể có thể làm quanh mình, thiếu phân cấp thông tin rõ ràng cho nhiệm vụ thực địa và nhầm lẫn giữa điểm rèn luyện với tác động môi trường thực tế.
+- **Root Cause**: Giao diện thiếu cấu trúc định hướng hành động (Action-Oriented Hierarchy) và thiếu sự liên kết xuyên suốt trong luồng Civic Loop.
+- **Fix & Prevention**:
+  - **Chu trình Civic Loop 5 Bước**: `VẤN ĐỀ THẬT -> VIỆC CÓ THỂ LÀM -> NGƯỜI THAM GIA -> BẰNG CHỨNG SỐ -> TÁC ĐỘNG ĐO ĐƯỢC` được hiển thị trực quan xuyên suốt.
+  - **Quy tắc 5 Giây trên Community Home (`/community`)**: Trong 5 giây trả lời trọn vẹn 4 câu hỏi:
+    1. *Có vấn đề gì gần tôi?* (Điểm nóng lân cận kèm khoảng cách GPS, mức độ khẩn cấp, số phản ánh mở).
+    2. *Tôi có thể giúp việc gì?* (Nhiệm vụ thực địa có thể nhận ngay kèm điểm rèn luyện).
+    3. *Hoạt động nào sắp diễn ra?* (Chiến dịch học đường & tuần tra 300m quanh trường học).
+    4. *Việc tôi làm đã tạo tác động gì?* (Bảng tác động thực tế: Số hoạt động, Bằng chứng xác minh, Điểm nóng dẹp bỏ, Giờ thực địa).
+  - **Chuẩn Hierarchy Mission & Action Cards**: Bắt buộc tuân theo: `WHAT -> WHERE -> WHEN -> WHY IT MATTERS -> PARTICIPANTS -> ACTION`.
+  - **Tách biệt Đo Lường Tác Động & Tín Chỉ Hỗ Trợ**: Đo lường tác động thực tế (Hoạt động, Bằng chứng SHA-256, Điểm nóng dẹp sạch) là Core Layer; Điểm rèn luyện / Tín chỉ Thanh niên (20h = 4.0 tín chỉ, chứng nhận A4) là Supporting Layer.
+
+

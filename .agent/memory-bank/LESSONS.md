@@ -18,3 +18,18 @@
 - **Lưu ý phần cứng ESP32**:
   - Tuyệt đối không cắm đường phát TX vào các chân `GPIO 34, 35, 36, 39` vì là chân Input-Only.
   - Sử dụng `HardwareSerial(2)` trên `GPIO 16` (RX) và `GPIO 17` (TX) để tránh xung đột với cổng nạp code USB-UART CH340 (`GPIO 1 / 3`).
+
+## 2. Executive Decision UX & Anti-KPI Theater Patterns
+- **Executive Không Phải Staff Dashboard Phóng To**: Giao diện Lãnh đạo phải trả lời được ngay 5 câu hỏi quyết định:
+  1. "Ở đâu đang xấu đi?"
+  2. "Vấn đề nào đáng lo nhất?"
+  3. "Nơi nào vi phạm SLA?"
+  4. "Nguồn lực bị nghẽn ở đâu?"
+  5. "Tình hình hôm nay tốt lên hay xấu đi so với 7 ngày / 4 tuần?"
+- **Loại bỏ KPI Theater**: Mọi chỉ số trên Executive Dashboard phải gắn liền với Action trực tiếp:
+  - Chỉ số rủi ro tích hợp -> Phân cấp P1 (Đình chỉ / Thanh tra khẩn trong 4h).
+  - SLA Quá hạn -> Nút "Đôn đốc hỏa tốc" gửi thông điệp và lưu vết audit trail.
+  - Nút thắt cổ chai 7 bước -> Nhận diện khâu ứ đọng nhiều hồ sơ nhất (Bottleneck Detector).
+  - Ma trận rủi ro 2 chiều (`ExecutiveRiskMatrix`) -> Mức độ Nghiêm trọng &times; Tiếp xúc Nhạy cảm (Trường học, Bệnh viện).
+  - Trình ký số 1-click (`Decree 30/2020/NĐ-CP`) -> Ký điện tử với mã băm SHA-256, mộc đỏ `#9f241f`, và xuất văn bản A4 tức thì.
+
