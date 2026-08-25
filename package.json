@@ -1,4 +1,20 @@
 {
+  "name": "unicef-dustguard-root",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix app run dev",
+    "dev:web": "npm --prefix app run dev:web",
+    "dev:worker": "npm --prefix app run dev:worker",
+    "build": "npm --prefix app run build",
+    "test": "npm --prefix app test",
+    "verify": "npm --prefix app run verify",
+    "verify:quick": "npm --prefix app run verify:quick",
+    "verify:dustguard": "npm --prefix app run verify:dustguard",
+    "sensor:simulate": "npm --prefix app run sensor:simulate",
+    "simulate:sensor": "npm --prefix app run simulate:sensor",
+    "demo:reset": "npm --prefix app run demo:reset"
+  },
   "devDependencies": {
     "wrangler": "^4.125.0"
   },
