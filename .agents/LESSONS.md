@@ -133,3 +133,24 @@
      - Tự động map `/staff` với `/staff/dashboard` và `/executive` với `/executive/dashboard`.
   4. **RBAC & Mode Switch Synchronization (`rbac-rules.js`, `mode-switch-model.js`)**:
      - Đồng bộ các route `/documents`, `/templates`, `/youth`, `/map`, `/executive-app`, `/admin-app` vào ma trận phân quyền và mô hình nhận diện active mode.
+
+## 9. LegalTech Rules-as-Code & Google-Docs-like Editor Invariants
+- **Bối cảnh & Vấn đề**:
+  - Khi soạn thảo văn bản hành chính (Biên bản kiểm tra, Biên bản VPHC, Quyết định xử phạt, Báo cáo khắc phục), việc trích dẫn quy phạm pháp luật không được để LLM hallucinate hoặc hardcode rời rạc; phải dựa 100% vào Legal SSOT (`legalRulesSSOT.js` & `legalRuleEngine.js`).
+  - Các biến nội suy trong mẫu văn bản (`{{site.name}}`, `{{violation.pm25}}`, `{{inspection.date}}`, `{{contractor.name}}`) nếu thiếu fallback có nguy cơ sinh ra chuỗi `"undefined"` hoặc làm vỡ cấu trúc JSON AST.
+  - Văn bản hành chính nhà nước phải tuân thủ nghiêm ngặt thể thức Nghị định 30/2020/NĐ-CP (khổ A4 210x297mm, căn lề 30/15/20/20mm, font Times New Roman 13-14pt, layout 2 cột quốc hiệu/tiêu ngữ và nơi nhận/chữ ký) cả trên trình duyệt, khi in ấn (Print CSS) và khi xuất file DOCX nhị phân.
+- **Quy Tắc Chuẩn Hóa & Giải Pháp**:
+  1. **Legal Citation Grounding (6 Văn Bản Quy Phạm Pháp Luật)**:
+     - Nghị định 45/2022/NĐ-CP (Điều 15, Điều 20, Điều 43).
+     - QCVN 18:2021/BXD (Mục 2.1, Mục 5.2, Mục 8.2).
+     - QCVN 05:2023/BTNMT (Chất lượng không khí xung quanh, PM2.5, PM10).
+     - Quyết định 48/2024/QĐ-UBND Hà Nội (Điều 4, Điều 5).
+     - Nghị định 30/2020/NĐ-CP (Thể thức văn bản hành chính).
+     - Nghị định 118/2021/NĐ-CP (Mẫu MBBR01, MQĐ02 xử phạt VPHC).
+  2. **Zero Undefined Interpolation Guarantee**:
+     - `interpolateAst` & `interpolateText` duyệt qua cả `bindings` thực tế, aliases (`violation.pm25` <-> `telemetry.pm25`, `contractor.name` <-> `site.contractor`) và `TEMPLATE_VARIABLES` mẫu, lọc bỏ hoàn toàn các giá trị `undefined`, `null`, `NaN` hoặc `[object Object]`.
+  3. **A4 & DOCX Export Conformance**:
+     - Căn lề chuẩn: Trái 30mm (1,701 DXA), Phải 15mm (850 DXA), Trên 20mm (1,134 DXA), Dưới 20mm (1,134 DXA).
+     - Chiều rộng vùng in khả dụng: 9,355 DXA; bảng tính độ rộng cột chính xác không thất thoát twips.
+  4. **Verification**:
+     - 100% passing test suites: `legal-ssot-mapping.test.js` (6/6), `legal-rule-engine-crud.test.js` (5/5), `document-engine-google-docs.test.js` (5/5), `docx-legal-exporter.test.js` (3/3), `official-document.test.js` (5/5).

@@ -8,6 +8,13 @@
   * `wrangler.jsonc` `vars.ENABLE_AUTOMATION = "false"`
   * Scheduled Worker trả về `SKIPPED` ngay lập tức trong < 0.1ms với 0 CPU và 0 truy vấn D1.
   * API endpoints `GET /api/automation/status` và `POST /api/automation/toggle` sẵn sàng để bật lại bất cứ lúc nào khi cần.
+- **Audit & Chuẩn Hóa Hệ Thống Định Tuyến (Routing Table & Information Architecture SSOT)**:
+  * Đã rà soát và kiểm chứng 100% các Persona routes (Public, Citizen, Community, Staff, Executive, Contractor, Admin).
+  * Khắc phục lỗi tương đối trong `src/shared/components/ui/` (`Button`, `Card`, `FormField`, `Input`, `Select`, `StatusBadge`), loại bỏ nguy cơ circular self-import trong Vite production build.
+  * Mở rộng `routeNameMap` và bộ sinh Breadcrumb động trong `AppHeader.tsx` cho tất cả các chuyên trang nghiệp vụ (`/staff/cases`, `/staff/documents`, `/contractor/actions`, `/contractor/projects`).
+  * Nâng cấp bộ nhận diện `isActive` trong `AppSidebar.tsx` hỗ trợ cả URL Path và URL Query Params (`view=monitoring`, `view=alerts`, `view=sla`) và các route điều hướng mặc định (`/executive/dashboard`, `/staff/dashboard`).
+  * Đồng bộ hóa ma trận phân quyền `rbac-rules.js` và chuyển đổi vai trò `mode-switch-model.js` với đầy đủ các tuyến route mới (`/documents`, `/templates`, `/youth`, `/map`, `/executive-app`, `/admin-app`).
+  * Xác thực thành công 100% `node --test app/tests/route-inventory-matrix.test.js`, `npm run verify:quick` (212 in-memory + 42 UI smoke tests) và `npm run build` (0 errors).
 - **Chuẩn Hóa Đơn Vị Hành Chính Phường / Xã (Ward SSOT Standardization)**:
   * Loại bỏ 100% các từ khóa cũ "Quận/Huyện" trên toàn bộ giao diện, dropdowns, bảng xếp hạng và mẫu văn bản.
   * Toàn bộ CSDL D1, API, State và Filters trong `StaffCases`, `StaffInspections`, `StaffMonitoring` thống nhất dùng `Phường / Xã` (`HANOI_WARDS`).
