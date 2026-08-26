@@ -46,6 +46,10 @@
 - **Nguyên nhân**: Vô tình sử dụng `backdrop-blur-md` hoặc `bg-white/40` khiến chữ mờ nhạt trên nền bản đồ hoặc ảnh hiện trường.
 - **Giải pháp**: Dùng màu đặc `#FFFFFF` hoặc `#FDFBF7`, viền `#E7DFD3`, chữ `#231B14`. Đảm bảo touch target tối thiểu `min-h-[44px]`.
 
+### 🚨 Trap 2.4: Lỗi TDZ Re-export `ReferenceError: Cannot access 'X' before initialization`
+- **Nguyên nhân**: Trong module export shared UI (`app/src/components/shared/index.jsx`), dòng gán alias `export const PriorityBadge = RiskBadge;` được đặt ở đầu file TRƯỚC dòng định nghĩa `export const RiskBadge = React.memo(...)`. Do `const` không được hoisting như `function` mà rơi vào Temporal Dead Zone (TDZ), khiến toàn bộ bundle crash ngay khi load.
+- **Giải pháp**: Luôn đặt các dòng gán alias hoặc re-export phụ thuộc **NẰM SAU** định nghĩa của component gốc `RiskBadge`.
+
 ---
 
 ## 🌐 3. Cloudflare Worker Edge & API Traps
