@@ -152,4 +152,21 @@
   - **Zero-Dead-Route & Semantic Aliasing**: Tất cả các đường dẫn tương đương được alias sạch sẽ qua React Router, triệt tiêu 100% dead screens mà vẫn duy trì tính tương thích ngược với toàn bộ 523+ tests và các bookmark cũ.
   - **Tương phản cao Civic Tech**: Điều hướng sidebar, bottom navigation và topbar tuân thủ triệt để không glassmorphism, tương phản cao trên nền `#FDFBF7` và `#FFFFFF`, touch target >= 44px trên mobile.
 
+## 16. UI/UX Rebuild & Emotional Civic Tech Visual Invariants
+- **Tách biệt Ngôn ngữ Code và Ngôn ngữ Giao diện**: Tuyệt đối không để thuật ngữ kỹ thuật, tên cơ sở dữ liệu (`D1`, `R2`), thuật toán (`HMAC`, `SHA-256`, `telemetry`, `risk engine`, `UNVERIFIED_SIGNAL`) hiển thị thô ráp trước mắt người dân và cán bộ nhà nước. Giao diện phải dùng ngôn ngữ hành chính, dân sinh gần gũi, dễ hiểu (`Dữ liệu đo đạc thực địa`, `Mã niêm phong số`, `Minh chứng hiện trường`, `Mức độ ưu tiên`).
+- **Button Copy Hướng Hành Động (Action-Oriented Verbs)**: Không dùng các nhãn nút vô thưởng vô phạt như "Submit", "Action", "Proceed", "OK". Nút bấm phải mô tả chính xác hành vi sắp diễn ra: *"Gửi phản ánh ngay"*, *"Bổ sung ảnh hiện trường"*, *"Xem chi tiết tiến độ"*, *"Xác nhận nộp minh chứng"*, *"Phê duyệt & Đóng vụ việc"*.
+- **Empty State & Error Message Định Hướng Hành Động**: Không để trạng thái rỗng "No data" hay thông báo lỗi "Something went wrong". Bắt buộc phải có: (1) Nguyên nhân dễ hiểu + (2) Hành động tiếp theo cụ thể.
+- **Dual-View Table Pattern (Desktop Table & Mobile Cards)**: Trên các bảng dữ liệu quản trị, không cố gắng nhồi nhét bảng nhiều cột trên màn hình hẹp (< 768px). Triển khai kiến trúc 2 tầng: Desktop Table (`hidden md:block`) & Mobile Cards (`md:hidden flex flex-col gap-3`).
+- **Safe Area Inset Padding**: Cố định Bottom Navigation cho Citizen & Community luôn tích hợp `pb-[max(0.5rem,env(safe-area-inset-bottom))]` hoặc `@utility pb-safe` để tránh bị che bởi thanh điều hướng cử chỉ trên iOS/Android.
+
+## 17. Chuẩn Hóa Đơn Vị Hành Chính Cấp Cơ Sở (Ward / Phường-Xã SSOT)
+- **Bối cảnh & Vấn đề**:
+  - Khi phân cấp quản lý môi trường đô thị (theo Quyết định 48/2024/QĐ-UBND Hà Nội và tinh gọn mô hình chính quyền đô thị), đơn vị chịu trách nhiệm kiểm tra thực địa, phản ánh dân sinh và tiếp nhận bàn giao là **Cấp Phường / Xã** (Ward) trực thuộc Tỉnh/Thành phố.
+  - Việc để sót các khái niệm trung gian "Quận/Huyện" (District) rải rác trên dropdown bộ lọc, bảng xếp hạng điều hành lãnh đạo hoặc nơi nhận văn bản gây phân mảnh dữ liệu và nhầm lẫn trách nhiệm giải trình.
+- **Giải pháp Kiến trúc & Quy tắc Chuẩn hóa**:
+  1. **Schema & API**: Bảng `sites`, `complaints`, `observations`, `campaigns` đều lưu trực tiếp `ward` và `province`. Không tạo cột `district` dư thừa.
+  2. **Bộ Lọc Đa Tầng (Filter Triage)**: Luôn trích xuất danh sách duy nhất các Phường (`distinctWards`) từ CSDL để người dùng lọc chính xác theo địa bàn (`Phường Mai Dịch`, `Phường Mễ Trì`, `Phường Quan Hoa`, `Phường Dịch Vọng Hậu`...).
+  3. **Văn Bản Hành Chính**: Nơi nhận chuẩn hóa là `- UBND Phường/Xã;`, cơ quan phối hợp là *Tổ Giám sát & Thanh tra Môi trường Phường*.
+  4. **Executive SLA Ranking**: Bảng xếp hạng năng lực giải quyết khiếu nại và cam kết 48h SLA phải nhóm và hiển thị theo Phường/Xã để đánh giá đúng trách nhiệm người đứng đầu cơ sở.
+
 
