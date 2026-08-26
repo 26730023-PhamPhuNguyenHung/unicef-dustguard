@@ -1,40 +1,45 @@
 # PRODUCT SSOT — DUSTGUARD VN
 
 ## 1. Canonical Product Statement
-> DustGuard VN là công cụ CivicTech thực tế giúp Thanh niên (CLB trường học, sinh viên, tình nguyện viên) và Người dân ghi nhận tình trạng ô nhiễm bụi quanh trường học và khu dân cư, thiết lập nhật ký theo dõi đối chứng Trước - Sau (Before/After) và tạo biên bản chứng cứ minh bạch để thúc đẩy các bên liên quan (nhà thầu, ban quản lý, chính quyền cơ sở) khắc phục.
+> **DustGuard là nền tảng CivicTech giúp cộng đồng ghi nhận, đối chứng và theo dõi các vấn đề môi trường bằng dữ liệu có cấu trúc, đồng thời hỗ trợ chuyển những trường hợp phù hợp tới các kênh xử lý hiện hữu.**  
+> *(Bụi công trình và chất lượng không khí là use case đầu tiên để kiểm chứng mô hình).*
 
 ---
 
-## 2. Product Identity Boundaries (Ranh Giới Định Vị)
-- **KHÔNG PHẢI**: Cổng tố cáo hành chính quan liêu hay phần mềm điều hành nội bộ của Sở TN&MT.
-- **KHÔNG PHẢI**: Công cụ tự động ra phán quyết hay ký quyết định xử phạt vi phạm hành chính.
-- **KHÔNG PHẢI**: Hệ thống chỉ chạy được khi có cảm biến IoT đắt tiền (vận hành 100% bằng quan sát thực địa cộng đồng).
-- **LÕI SẢN PHẨM (3-Step Core Loop)**:
-  ```text
-  1. GHI NHẬN HIỆN TRƯỜNG (30s)
-         ↓
-  2. THEO DÕI ĐỐI CHỨNG (Before / After 24-48h)
-         ↓
-  3. BIÊN BẢN CHỨNG CỨ MINH BẠCH (Dossier A4 / Link QR)
-         ↓
-  4. CHUYỂN GIAO & PHỐI HỢP KHẮC PHỤC (Civic Handoff)
-         ↓
-  5. GHI NHẬN TÁC ĐỘNG THỰC TẾ (Impact & Hours)
-  ```
+## 2. Bản Chất Sản Phẩm: Trưởng Thành, Không Pivot (Maturity, Not Pivot)
+- **Ngay từ đầu**: DustGuard là một thử nghiệm CivicTech về bụi công trình, sử dụng cộng đồng + dữ liệu + công nghệ để biến quan sát ngoài hiện trường thành bằng chứng có cấu trúc và hành động có thể theo dõi.
+- **Quá trình hoàn thiện**: Nhóm không thay đổi mục tiêu đó; nhóm chỉ làm rõ hơn ranh giới: DustGuard hỗ trợ cộng đồng ghi nhận, đối chứng, hiểu vấn đề và kết nối với các kênh xử lý hiện hữu, chứ không đóng vai cơ quan nhà nước hay ban hành quyết định xử phạt.
+- **Thesis nền tảng**: Dữ liệu môi trường hiện trường đang phân tán và cần được chuyển thành thông tin có cấu trúc để hỗ trợ hành động thực chất.
 
 ---
 
-## 3. Nhóm Người Dùng & Nhu Cầu Thực Tế
-1. **Thanh niên & CLB Môi trường (Primary)**: Có công cụ hành động thực tế, tổ chức chiến dịch khảo sát bụi quanh trường học, tích lũy giờ tình nguyện và điểm rèn luyện minh bạch.
-2. **Người dân địa phương (Secondary)**: Phản ánh nhanh trong 30 giây khi thấy công trình gây bụi, không cần đăng nhập phức tạp, có mã tra cứu tiến độ rõ ràng.
-3. **Đơn vị thi công / Ban quản lý (Collaborator)**: Có kênh tiếp nhận thông tin phản ánh cụ thể để kịp thời tưới nước dập bụi, che bạt và nộp ảnh khắc phục đối chứng.
-4. **Đơn vị tiếp nhận / Phường / Nhà trường (Receiving Partner)**: Nhận hồ sơ chứng cứ có hình ảnh, thời gian, tọa độ rõ ràng thay vì các phản ánh chung chung không có cơ sở.
+## 3. Bộ 7 Năng Lực Nền Tảng (Core Capability Stack)
+```text
+COMMUNITY ACTION + SPATIAL DATA + EVIDENCE + ENVIRONMENTAL KNOWLEDGE + CASE TRACKING + GREEN CREDITS + INTEGRATION
+```
+1. **Community Action**: Ghi nhận nhanh trong 30s (Zero-Login), khởi tạo chiến dịch khảo sát, phân công hành động cộng đồng.
+2. **Spatial Data**: Tọa độ WGS84 chuẩn, phân vùng Phường/Xã/Quận, Heatmap điểm nóng, Geofencing 50m quanh trường học.
+3. **Evidence Management**: Chuỗi ảnh đối chứng Trước/Sau (Before/After), mã băm SHA-256 hỗ trợ phát hiện tệp bị thay đổi (Tamper-evident), Hồ sơ số Dossier A4 kèm QR code tra cứu.
+4. **Environmental Knowledge**: Cẩm nang nhận diện và giảm thiểu ô nhiễm, quy chuẩn kỹ thuật QCVN, AI trợ lý hỗ trợ phân loại sơ bộ và kiểm tra tính toàn vẹn (AI as Assistant).
+5. **Case Tracking**: Ranh giới `Observation` != `Case`, chu trình Follow-up 24h-48h (`BETTER` / `UNCHANGED` / `WORSE`), theo dõi kết quả thực chất.
+6. **Green Credits**: Giờ tình nguyện thực tế, xác thực lịch sử tham gia bằng QR và dữ liệu truy vết (việc quy đổi sang điểm rèn luyện hoặc tín chỉ do từng đơn vị giáo dục quyết định).
+7. **Integration (Civic Handoff)**: Kết nối hồ sơ có cấu trúc sang các kênh xử lý hiện hữu (1022, iHanoi, Ban Quản lý Dự án, UBND Phường/Xã).
 
 ---
 
-## 4. Nguyên Tắc Nghiệp Vụ Cốt Lõi (Invariants)
-1. **Observation != Case**: Ghi nhận quan trắc hiện trường (Observation) là tín hiệu cộng đồng độc lập; chỉ khi cần phối hợp theo dõi dài hạn hoặc nhiều mốc kiểm tra mới nhóm thành vụ việc theo dõi (Case).
-2. **Bằng chứng Đối chứng (Before/After)**: Giá trị của dữ liệu nằm ở chuỗi kiểm tra lại xem hiện trường đã cải thiện hay chưa (Better / Unchanged / Worse).
-3. **Minh bạch & Đơn giản**: Mọi dữ liệu xuất ra đều ở dạng biên bản tóm tắt trực quan, dễ hiểu, mã băm SHA-256 chống sửa đổi, không lạm dụng thuật ngữ đao to búa lớn.
-4. **Zero-IoT Resilience**: 0 cảm biến hệ thống vẫn hoạt động 100%. Cảm biến IoT là module mở rộng giá rẻ (< $25) phục vụ CLB STEM học đường.
-5. **AI là Trợ lý, Không phải Thẩm phán**: AI hỗ trợ kiểm tra chất lượng ảnh, tóm tắt nội dung và phân loại sơ bộ; mọi quyết định và hành động khắc phục đều do con người thực hiện.
+## 4. Ranh Giới Định Vị & Các Lớp Thành Phần (Boundaries & Building Blocks)
+- **1022 / iHanoi**: Là **điểm tích hợp**, không phải định vị mới.
+- **IoT / Cảm biến**: Là **nguồn dữ liệu bổ trợ** (Supplementary Data Source), không phải định vị. Hệ thống hoạt động 100% khi có 0 cảm biến (Zero-IoT Resilience).
+- **AI**: Là **công cụ trợ lý hỗ trợ** (Assistant), không phải thẩm phán hay bộ máy xử phạt.
+- **Staff Dashboard**: Là **workspace điều phối**, không phải định vị.
+- **Green Credits**: Là **cơ chế khuyến khích**, không phải định vị.
+- **Legal / Environmental Knowledge**: Là **lớp giúp người dùng hiểu và hành động đúng**, không phải định vị.
+
+---
+
+## 5. Bản Elevator Pitch 30 Giây (Locked SSOT)
+> *"Khi một bạn trẻ nhìn thấy bụi từ một công trình gần trường học, vấn đề không chỉ là làm sao gửi một phản ánh. Điều khó hơn là ghi nhận đủ bằng chứng, theo dõi xem tình trạng có thay đổi và biết bước tiếp theo nên làm gì.*
+> 
+> *DustGuard là nền tảng CivicTech giúp cộng đồng ghi nhận vấn đề môi trường bằng ảnh, vị trí và dữ liệu đối chứng trước–sau; hỗ trợ hiểu vấn đề, duy trì lịch sử theo dõi và tạo một hồ sơ có cấu trúc.*
+> 
+> *Khi cần sự can thiệp chính thức, DustGuard không thay thế các hệ thống hiện hữu mà hỗ trợ kết nối case tới những kênh như 1022, iHanoi hoặc đơn vị phù hợp. Bụi công trình là bài toán đầu tiên để chúng em kiểm chứng mô hình, trước khi mở rộng thành một nền tảng hành động xanh cho thanh thiếu niên và cộng đồng."*

@@ -33,6 +33,7 @@
 - **Domain & State Machines**: [`.agents/ssot/DOMAIN.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/DOMAIN.md) | [`.agents/ssot/PRODUCT.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/PRODUCT.md)
 - **Auth & RBAC**: [`.agents/ssot/AUTH.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/AUTH.md)
 - **Executive & Signing**: [`.agents/ssot/EXECUTIVE_OPS_SSOT.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/EXECUTIVE_OPS_SSOT.md)
+- **Pitch & Brand Strategy**: [`.agents/ssot/PITCH_AND_BRAND_SSOT.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/PITCH_AND_BRAND_SSOT.md)
 - **SSOT Timeline & Commits**: [`.agents/ssot/TIMELINE.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/TIMELINE.md)
 - **Bug Memory & Traps**: [`.agents/BUG_MEMORY.md`](file:///d:/07-Agents/unicef-dustguard/.agents/BUG_MEMORY.md)
 - **Architecture Lessons**: [`.agents/LESSONS.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/LESSONS.md)

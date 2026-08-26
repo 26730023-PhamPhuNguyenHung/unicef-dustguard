@@ -19,3 +19,22 @@
 - **Context**: Người dân thường chỉ báo cáo 1 lần rồi bỏ quên; thanh niên & CLB môi trường có động lực hành động và theo dõi lâu dài.
 - **Decision**: Đặt Youth Community vào vị trí Primary Actor, hỗ trợ phân công nhiệm vụ (Actions), kiểm tra lại (Follow-ups) và tích lũy tín chỉ tình nguyện.
 - **Consequences**: Tạo ra chu kỳ giải quyết vấn đề khép kín có sự tham gia của xã hội.
+
+## ADR-005: Civic Decision Tree & Verification Closed-Loop
+- **Context**: Cần luồng dữ liệu chuẩn hóa từ lúc tiếp nhận tín hiệu (Signal) tới khi xử lý dứt điểm, phân định ranh giới giữa tự xử lý cộng đồng và chuyển cơ quan chức năng.
+- **Decision**: Áp dụng cây quyết định 4 pha:
+  `Signal -> Record (Understand / Follow-up / Green Action) -> Cần can thiệp chính thức?`
+  - **NO**: Tiếp tục Community follow-up nội bộ và hoàn tất bằng Green Actions.
+  - **YES**: Tạo Structured Case (Dossier A4 + SHA-256) -> Chuyển 1022 / iHanoi / Kênh chính thức -> Theo dõi kết quả công khai -> Community follow-up đối chứng Before/After độc lập trước khi đóng.
+- **Consequences**: Tránh gửi rác/phản ánh không căn cứ lên chính quyền; mọi hồ sơ bàn giao đều có đối chứng và bằng chứng vững chắc.
+
+## ADR-006: 5-Stage Handoff Maturity Roadmap
+- **Context**: Hệ thống chính quyền và các kênh phản ánh (1022, iHanoi) có mức độ sẵn sàng API khác nhau.
+- **Decision**: Thiết kế lộ trình Handoff 5 cấp: `Manual -> Assisted -> Integration Gateway -> Official API -> Two-way Status Sync`.
+- **Consequences**: Hệ thống chạy được ngay 100% từ ngày đầu tiên bằng Manual/Assisted, sẵn sàng tích hợp sâu khi chính quyền mở API kết nối.
+
+## ADR-007: Staff Dashboard as Coordination Workspace (Not Location Tracker)
+- **Context**: Staff dashboard không phải là bản đồ định vị giám sát nhân sự/người dùng theo thời gian thực (xâm phạm riêng tư, vô nghĩa).
+- **Decision**: Staff Dashboard là **Workspace điều phối hành động thực chất**: Hàng đợi phân loại (Triage Queue), Điều phối nhiệm vụ (Action Dispatcher), Quản lý bàn giao (Handoff Pipeline Hub), và Nghiệm thu đối chứng (Verification & Impact Closing).
+- **Consequences**: Tăng năng suất điều phối, tập trung vào giải quyết vấn đề ô nhiễm thay vì theo dõi nhân sự.
+

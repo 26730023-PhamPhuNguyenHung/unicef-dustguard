@@ -8,7 +8,8 @@
 
 | Mốc Thời Gian | Commit Hash | Phạm Vi / Scope | Mô Tả Thay Đổi & Giá Trị Nghiệp Vụ | Trạng Thái Kiểm Thử |
 |---|---|---|---|---|
-| **2026-08-26** | `f0b0ec0` | `refactor(civic-spirit)` | Huy động 10 phòng ban sub-agents tái định vị tinh thần CivicTech thực tế, loại bỏ ảo tưởng quyền lực, tinh gọn core loop 3 bước | 25/25 Pass (212 unit + 42 UI) |
+| **2026-08-26** | `pending` | `feat(product-ssot)` | Khóa SSOT định vị sản phẩm CivicTech, 7 bộ năng lực nền tảng và lộ trình trưởng thành sản phẩm | 25/25 Pass (212 unit + 42 UI) |
+| **2026-08-26** | `9713ba1` | `docs(ssot)` | Khóa cứng định vị CivicTech chuẩn mực, bộ 7 năng lực, cây quyết định kiến trúc và bản pitch 30s UNICEF | 25/25 Pass (212 unit + 42 UI) |
 | **2026-08-26** | `16b23ae` | `chore(submodule)` | Đồng bộ con trỏ `app` với `dev.db` và schema mới nhất | 25/25 Pass |
 | **2026-08-26** | `ffdf46d` | `feat(executive-map-ssot)` | Tái cấu trúc Executive Command Center & Spatial Map SSoT toàn diện trên tất cả các portals | 43/43 Pass |
 | **2026-08-26** | `335949d` | `feat(staff)` | Di chuyển Staff portal sang SpatialMap SSOT chung và hợp nhất Priority Queue | 43/43 Pass |
