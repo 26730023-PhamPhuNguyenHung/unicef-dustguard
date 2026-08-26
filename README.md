@@ -1,7 +1,7 @@
-# DustGuard VN — Nền Tảng CivicTech Giám Sát & Đối Chứng Môi Trường Cộng Đồng
+# DustGuard VN — Nền Tảng Environmental Intelligence & Decision Support Vì Hành Động Cộng Đồng
 
-> **DustGuard là nền tảng CivicTech giúp cộng đồng ghi nhận, đối chứng và theo dõi các vấn đề môi trường bằng dữ liệu có cấu trúc, đồng thời hỗ trợ chuyển những trường hợp phù hợp tới các kênh xử lý hiện hữu.**  
-> *(Bụi công trình và chất lượng không khí quanh trường học/khu dân cư là bài toán đầu tiên để kiểm chứng mô hình, trước khi mở rộng thành nền tảng hành động xanh cho thanh thiếu niên).*
+> **DustGuard VN là nền tảng Environmental Intelligence & Decision Support phục vụ Civic Action — Giúp cộng đồng ghi nhận, đối chứng và theo dõi các vấn đề môi trường bằng dữ liệu có cấu trúc, đồng thời hỗ trợ chuyển những trường hợp phù hợp tới các kênh xử lý hiện hữu.**  
+> *(Bụi công trình và chất lượng không khí quanh trường học/khu dân cư là bài toán đầu tiên để kiểm chứng mô hình, trước khi mở rộng thành nền tảng trí tuệ môi trường và hành động xanh cho thanh thiếu niên và cộng đồng).*
 >
 > **Kiến trúc**: 100% Cloudflare Native Serverless Monolith (Hono + Cloudflare Worker + Cloudflare D1 SQLite + Cloudflare R2 Storage + React 19).
 
@@ -21,7 +21,7 @@
 
 ```text
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                                   DUSTGUARD VN PLATFORM                                │
+│               DUSTGUARD VN: ENVIRONMENTAL INTELLIGENCE & DECISION SUPPORT              │
 ├──────────────────────────┬───────────────────────────┬─────────────────────────────────┤
 │ 1. Community Action      │ 2. Spatial Data           │ 3. Evidence Management          │
 │    • Zero-Login 30s      │    • Tọa độ WGS84 chuẩn   │    • Ảnh đối chứng Before/After │
@@ -29,9 +29,9 @@
 │    • Phân công nhiệm vụ  │    • Heatmap & Geofence   │    • Dossier A4 & QR tra cứu    │
 ├──────────────────────────┼───────────────────────────┼─────────────────────────────────┤
 │ 4. Environmental Knowledge│ 5. Case Tracking          │ 6. Green Credits                │
-│    • Cẩm nang giảm ô nhiễm│    • Tách Observation!=Case│   • Giờ tình nguyện thực tế     │
-│    • Quy chuẩn kỹ thuật  │    • Follow-up 24h - 48h  │    • Chứng nhận có QR truy vết  │
-│    • AI trợ lý tóm tắt   │    • Giám sát tiến độ     │    • Quy đổi theo trường quyết định│
+│    • Cẩm nang & QCVN 05  │    • Tách Observation!=Case│   • Giờ tình nguyện thực tế     │
+│    • Decision Support AI │    • Follow-up 24h - 48h  │    • Chứng nhận có QR truy vết  │
+│    • Phân loại sơ bộ     │    • Giám sát tiến độ     │    • Đơn vị GD xét duyệt quy chế│
 ├──────────────────────────┴───────────────────────────┴─────────────────────────────────┤
 │ 7. Integration & Civic Handoff: Kết nối hồ sơ có cấu trúc sang 1022 / iHanoi / BQLDA   │
 └────────────────────────────────────────────────────────────────────────────────────────┘
@@ -39,39 +39,39 @@
 
 ---
 
-## 3. LUỒNG DỮ LIỆU & QUYẾT ĐỊNH XỬ LÝ (ARCHITECTURE DECISION TREE)
+## 3. LUỒNG DỮ LIỆU & CÂY QUYẾT ĐỊNH XỬ LÝ (ARCHITECTURE DECISION TREE)
 
 ```text
-                   DUSTGUARD CIVIC TECH PLATFORM
-                                 │
-                   COMMUNITY & YOUTH PARTICIPATION
-                    Observe / Act / Follow-up
-                                 │
-                        ENVIRONMENTAL SIGNAL
-                     Evidence + Location + Time
-                                 │
-                        DUSTGUARD RECORD
-         ┌───────────────────────┼───────────────────────┐
-    [Understand]           [Follow-up]             [Green Action]
-  Legal / Edu info        Before / After         Verified Hours
-  Map & Context          Timeline (24-48h)       Certificates (QR)
-                                 │
-                   IS EXTERNAL ACTION REQUIRED?
-                                 │
-               ┌─────────────────┴─────────────────┐
-              NO                                  YES
-               │                                   │
-      [Community Follow-up]               [Prepare Structured Case]
-   (CLB tự xử lý / dọn dẹp)               (Gom bằng chứng + Dossier A4)
-               │                                   │
-      [Mark Resolved & Impact]            [Handoff to 1022 / iHanoi]
-                                          (Kênh chính thức tiếp nhận)
-                                                   │
-                                          [Track Public Outcome]
-                                          (Theo dõi kết quả công khai)
-                                                   │
-                                          [Community Follow-up]
-                                          (Thanh niên kiểm tra lại)
+               DUSTGUARD ENVIRONMENTAL INTELLIGENCE & DECISION SUPPORT
+                                         │
+                           COMMUNITY & YOUTH PARTICIPATION
+                            Observe / Act / Follow-up
+                                         │
+                                ENVIRONMENTAL SIGNAL
+                             Evidence + Location + Time
+                                         │
+                                DUSTGUARD RECORD
+                 ┌───────────────────────┼───────────────────────┐
+            [Understand]           [Follow-up]             [Green Action]
+          Legal / Edu info        Before / After         Verified Hours
+          Map & Context          Timeline (24-48h)       Certificates (QR)
+                                         │
+                           IS EXTERNAL ACTION REQUIRED?
+                                         │
+                       ┌─────────────────┴─────────────────┐
+                      NO                                  YES
+                       │                                   │
+              [Community Follow-up]               [Prepare Structured Case]
+           (CLB tự xử lý / dọn dẹp)               (Gom bằng chứng + Dossier A4)
+                       │                                   │
+              [Mark Resolved & Impact]            [Handoff to 1022 / iHanoi]
+                                                  (Kênh chính thức tiếp nhận)
+                                                           │
+                                                  [Track Public Outcome]
+                                                  (Theo dõi kết quả công khai)
+                                                           │
+                                                  [Community Follow-up]
+                                                  (Thanh niên kiểm tra lại)
 ```
 
 ---
@@ -90,11 +90,11 @@
 
 ## 5. NGUYÊN TẮC CỐT LÕI (CORE INVARIANTS)
 
-1. **Ranh Giới Rõ Ràng (Clear Boundaries)**:
+1. **Ranh Giới Rõ Ràng & Định Vị Hỗ Trợ Ra Quyết Định (Decision Support, Not Judge)**:
    - DustGuard hỗ trợ cộng đồng ghi nhận, đối chứng, hiểu vấn đề và kết nối với các kênh xử lý hiện hữu, **không đóng vai cơ quan nhà nước hay ra quyết định xử phạt**.
    - 1022 / iHanoi là **điểm tích hợp**, không phải định vị mới.
-   - Staff Dashboard là **workspace điều phối**, không phải định vị.
-2. **Theo Dõi Tiến Trình (Outcome Tracking - Before/After)**:
+   - AI là **trợ lý hỗ trợ phân loại và tóm tắt ngữ cảnh (Assistant)**, con người là chủ thể ra quyết định hành động.
+2. **Theo Dõi Tiến Trình Thực Chất (Outcome Tracking - Before/After)**:
    - Giá trị cốt lõi nằm ở chuỗi kiểm tra lại xem hiện trạng đã cải thiện hay chưa (Better / Unchanged / Worse).
    - Mục tiêu 24h - 48h là **Community Follow-up Target** (tỷ lệ điểm được cộng đồng quay lại đối chứng), thời gian xử lý của cơ quan phụ thuộc quy trình chính thức.
 3. **Zero-IoT Resilience (IoT là nguồn dữ liệu bổ sung)**:
@@ -134,3 +134,15 @@ npm run sensor:simulate
 # 6. Khôi phục lại dữ liệu Demo chuẩn
 npm run demo:reset
 ```
+
+---
+
+## 7. TÀI LIỆU THAM CHIẾU SSOT (SINGLE SOURCE OF TRUTH)
+
+- 📜 **Từ điển Thuật ngữ Khoa học & Ngôn ngữ Học**: [`.agents/ssot/TERMINOLOGY.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/TERMINOLOGY.md)
+- 🎯 **Định vị & Năng lực Sản phẩm**: [`.agents/ssot/PRODUCT.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/PRODUCT.md)
+- 🤝 **Quy trình Chuyển giao & Tích hợp 1022/iHanoi**: [`.agents/ssot/CIVIC_HANDOFF_SSOT.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/CIVIC_HANDOFF_SSOT.md)
+- 🗄️ **Cơ sở Dữ liệu & Schema D1 SQLite**: [`.agents/ssot/DATABASE.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/DATABASE.md)
+- 🎨 **Hệ Thống Thiết Kế & Design Tokens**: [`.agents/ssot/UI.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/UI.md)
+- 🛡️ **Bẫy Lỗi & Kinh Nghiệm Khắc Phục**: [`.agents/BUG_MEMORY.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/BUG_MEMORY.md)
+

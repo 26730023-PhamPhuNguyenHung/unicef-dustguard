@@ -28,6 +28,7 @@
 
 ## 📂 3. SSOT On-Demand Navigation (Tra cứu đúng việc)
 - **Database & D1 Schema**: [`.agents/ssot/DATABASE.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/DATABASE.md) | [`.agents/ssot/DATA_MODEL.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/DATA_MODEL.md)
+- **Spatial Intelligence Map & Geofence**: [`.agents/ssot/MAP.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/MAP.md)
 - **UI Components & Tokens**: [`.agents/ssot/UI.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/UI.md)
 - **API & Endpoints**: [`.agents/ssot/API.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/API.md) | [`.agents/ssot/ROUTES.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/ROUTES.md)
 - **Domain & State Machines**: [`.agents/ssot/DOMAIN.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/DOMAIN.md) | [`.agents/ssot/PRODUCT.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/PRODUCT.md) | [`.agents/ssot/TERMINOLOGY.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/TERMINOLOGY.md)

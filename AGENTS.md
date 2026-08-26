@@ -28,6 +28,7 @@ You are maintaining **DustGuard VN** — A CivicTech platform empowering Youth C
 
 ### Bước 2: On-Demand Tra Cứu (Chỉ đọc file liên quan trực tiếp đến task)
 - Khi sửa **Database / Schema / D1**: Tra cứu [`DATABASE.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/DATABASE.md)
+- Khi làm **Bản đồ / Không gian / Geofence**: Tra cứu [`MAP.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/MAP.md)
 - Khi làm **Giao diện / Component / Token**: Tra cứu [`UI.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/UI.md)
 - Khi viết **API / Route / Hono Edge**: Tra cứu [`API.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/API.md) hoặc [`ROUTES.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/ROUTES.md)
 - Khi xử lý **Nghiệp vụ / Domain Logic**: Tra cứu [`DOMAIN.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/DOMAIN.md) hoặc [`PRODUCT.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/PRODUCT.md)

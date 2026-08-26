@@ -27,6 +27,11 @@
 ---
 
 ## 🛠️ KIỂM TRA HỆ THỐNG & NHIỆM VỤ ĐÃ HOÀN TẤT
+- [x] **Subagent 5: Spatial Intelligence Map Architect**:
+  1. Hợp nhất toàn bộ logic bản đồ thành **1 Map SSOT duy nhất**: **'DustGuard Spatial Intelligence Map'** (loại bỏ phân mảnh, liên kết `SpatialMap`, `SpatialMapWorkspace`, `SpatialMapCanvas`).
+  2. Chuẩn hóa **Mô hình Dữ liệu Không gian Hợp nhất (6 lớp không gian)**: Tọa độ chuẩn WGS84 (`EPSG:4326`), Quy tắc Zero Fake Coordinates, Sensor Layer, Sites & Emission Layer, Citizen Observation Layer (ảnh SHA-256, fuzzed ~100m bảo vệ quyền riêng tư), Event & Hotspot Layer (Dynamic Buffer 400-500m), Sensitive Geofence Trường học & Cơ sở Y tế (300m Buffer), Administrative Boundaries Layer (GeoJSON Polygons).
+  3. Phân tầng hiển thị dựa trên **Ma trận Phân quyền Không gian (Spatial RBAC Matrix 6 vai trò)**: Public Guest & Citizen xem dữ liệu tổng hợp (ẩn 100% PII, làm mờ tọa độ ~100m, ẩn ghi chú nội bộ); Staff / Inspector / Operator xem toàn diện Full Telemetry & Audit, giải mã PII để thẩm tra thực địa; Executive xem bản đồ chỉ đạo rủi ro toàn quận/thành phố và ma trận SLA; Admin quản trị cảm biến và ranh giới.
+  4. Biên soạn ban hành tài liệu SSOT [MAP.md](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/MAP.md), cập nhật [INDEX.md](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/INDEX.md), [AGENTS.md](file:///d:/07-Competitions-Hackathons/unicef-dustguard/AGENTS.md), [TIMELINE.md](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/TIMELINE.md), bảo đảm 100% test pass.
 - [x] **Subagent 2: Domain Model & Data Schema Architect**:
   1. Tái cấu trúc Domain Model lấy **'Environmental Event'** làm trung tâm (loại bỏ hoàn toàn tư duy 'vi phạm/violation' và ảo tưởng quyền lực chế tài).
   2. Phân định rõ ràng 3 tầng kiến trúc dữ liệu: **Measurement** (bản ghi đo đạc thô, time-series trung tính) ≠ **Signal** (dấu hiệu bất thường phát hiện từ đo đạc/quan sát) ≠ **Event** (sự kiện môi trường tập hợp signals cần theo dõi & hành động).

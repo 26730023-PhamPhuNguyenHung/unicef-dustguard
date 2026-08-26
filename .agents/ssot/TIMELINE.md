@@ -6,7 +6,8 @@
 
 ## 📅 Timeline & Commit Log
 
-| **2026-08-26** | `HEAD` | `docs(roles-permissions)` | Tinh gọn 5 vai trò thực tế SSOT (PUBLIC, CITIZEN, OPERATOR, SITE_REPRESENTATIVE, ADMIN), xóa bỏ giả lập bộ trưởng/thẩm phán, ban hành ROLES.md & PERMISSIONS.md | 28/28 Pass (237 unit + 42 UI) |
+| **2026-08-26** | `HEAD` | `docs(map-ssot)` | Hợp nhất toàn bộ logic bản đồ thành 1 Map SSOT duy nhất 'DustGuard Spatial Intelligence Map', chuẩn hóa WGS84, 6 lớp không gian (Sensors, Sites, Observations, Hotspots, Geofence 300m trường học, Ranh giới Phường/Xã) và ma trận phân quyền RBAC đa tầng trong MAP.md | 28/28 Pass (237 unit + 42 UI) |
+| **2026-08-26** | `c7f91a2` | `docs(roles-permissions)` | Tinh gọn 5 vai trò thực tế SSOT (PUBLIC, CITIZEN, OPERATOR, SITE_REPRESENTATIVE, ADMIN), xóa bỏ giả lập bộ trưởng/thẩm phán, ban hành ROLES.md & PERMISSIONS.md | 28/28 Pass (237 unit + 42 UI) |
 | **2026-08-26** | `b132bff` | `docs(workflows-ssot)` | Chuẩn hóa Canonical 11-Stage Pipeline, Closed-Loop Impact Architecture (Before vs After, Geofence 50m, SHA-256) và Municipal Civic Handoff (1022/iHanoi Dossier A4/QR/API) trong WORKFLOWS.md | 28/28 Pass (237 unit + 42 UI) |
 | **2026-08-26** | `8ad4a1b` | `docs(data-model-ssot)` | Tái cấu trúc Domain Model lấy Environmental Event làm trung tâm, phân định 3 tầng Measurement - Signal - Event, ban hành chuẩn 11 trạng thái Event trong DATA_MODEL.md & DOMAIN.md | 28/28 Pass (237 unit + 42 UI) |
 | **2026-08-26** | `03ffec2` | `docs(terminology-ssot)` | Chuẩn hóa bộ từ điển thuật ngữ khoa học SSOT TERMINOLOGY.md, tuân thủ 100% nguyên tắc khiêm tốn, khách quan, khoa học; định vị Environmental Intelligence & Decision Support trong README.md | 28/28 Pass (237 unit + 42 UI) |
