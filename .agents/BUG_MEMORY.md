@@ -150,4 +150,24 @@
      `"Mang tính hỗ trợ tra cứu, không thay thế kết luận thẩm quyền"` (kết quả so sánh nồng độ QCVN 05 hay an toàn thi công QCVN 18 là công cụ hỗ trợ ra quyết định, không thay thế kết luận giám định chính thức).
   3. **Zero-IoT Resilient Queue**: Hàng đợi tác nghiệp hiển thị minh bạch 4 khối (Signal, Telemetry, Citizen Evidence, SLA) và tự động chuẩn hóa hoạt động ngay cả khi không có cảm biến vật lý.
 
+---
+
+## 📡 6. Sensor, Telemetry & Data Quality Integrity Traps
+
+### 🚨 Trap 6.1: Bẫy Giả Lập Số Đo Cho Kênh Phần Cứng Không Hỗ Trợ (Zero-Fake Violation)
+- **Nguyên nhân**: Thiết bị thực tế chỉ có đầu đọc quang học đo PM2.5/PM10 (`BASIC_OPTICAL_PM`), nhưng code backend lại tự ý gán giá trị giả lập ngẫu nhiên cho PM1.0, Nhiệt độ hoặc Độ ẩm.
+- **Giải pháp**: Khóa cứng SSOT `HARDWARE_PROFILES` trong `sensor.rules.js`. Kênh phần cứng nào không hỗ trợ bắt buộc giữ nguyên `null`. Tuyệt đối không mock/tổng hợp số liệu giả tạo cảm giác đầy đủ.
+
+### 🚨 Trap 6.2: Bẫy Tấn Công Phát Lại (Replay Attack) & Sai Lệch Đồng Hồ Thiết Bị IoT
+- **Nguyên nhân**: Kẻ xấu bắt gói tin viễn trắc hợp lệ và phát lại liên tục để thao túng điểm rủi ro hoặc làm tê liệt hàng đợi cảnh báo, hoặc thiết bị trôi đồng hồ RTC.
+- **Giải pháp**: 
+  1. Yêu cầu HMAC-SHA256 kèm `nonce` và số thứ tự tăng dần `seq` (`ReplayProtector.validateAndRecord`).
+  2. Bắt buộc kiểm tra độ trôi thời gian: Gói tin có `timestamp` lệch quá $\pm 5$ phút so với giờ máy chủ bị từ chối với mã HTTP `400 Bad Request`.
+  3. Chặn sequence rollback và ghi nhận packet loss ($seq_{curr} - seq_{prev} - 1$).
+
+### 🚨 Trap 6.3: Bẫy Đóng Băng Tín Hiệu / Treo Cảm Biến (ADC Freeze & Flatline Trap)
+- **Nguyên nhân**: Cảm biến bị treo phần cứng (ADC freeze) hoặc mạch vi điều khiển phát lại giá trị tĩnh cũ qua mạng, khiến hệ thống tưởng nồng độ bụi ổn định bình thường.
+- **Giải pháp**: Tích hợp thuật toán phát hiện Flatline trong `DataQualityEngine.detectFlatline`: Nếu nhận $\ge 5$ mẫu đo liên tiếp có giá trị PM10 & PM2.5 giống hệt nhau trải dài $\ge 10$ phút, lập tức đánh dấu cảm biến `FAULTY`, hạ điểm chất lượng dữ liệu và kích hoạt cảnh báo kiểm tra bảo dưỡng phần cứng.
+
+
 
