@@ -1,13 +1,25 @@
 # ACTIVE CONTEXT — DUSTGUARD VN
 
-## 📌 POST-REFACTOR RUNTIME RECOVERY & REGRESSION FIX PROTOCOL (COMPLETED)
-- **Root Cause & Fix Summary**:
-  1. **TDZ Re-export Hazard**: Sửa lỗi Temporal Dead Zone trong `src/components/shared/index.jsx` (`export const PriorityBadge = RiskBadge;` khai báo trước `const RiskBadge`).
-  2. **Granular Failure Isolation (`SectionErrorBoundary`)**: Thêm `SectionErrorBoundary` bao bọc 6 sections độc lập trên `ExecutiveDashboard.jsx` (Situation Now, Requires Decision, Priority Map, SLA Matrix, Impact, Decisions), ngăn chặn 1 widget lỗi làm sập toàn bộ dashboard. Phân tách rõ ràng giữa DEV (technical details) và PROD (civic copy).
-  3. **Undefined Variable in JSX Template**: Sửa lỗi tham chiếu `openCases` chưa khai báo trong `ExecutiveDashboard.jsx` (dòng 251).
-  4. **TypeScript Import Extension Cleanup**: Loại bỏ phần mở rộng `.jsx` cứng trong import `PageBreadCrumb` (`StaffCases.jsx`, `StaffCaseDetail.jsx`) trỏ đúng vào `PageBreadCrumb.tsx`.
-  5. **Map Marker Semantics Export**: Bổ sung export hàm `createPickerMarker` trong `MapMarkerSemantics.js`.
-  6. **Live Runtime Verification**: Toàn bộ các route `/`, `/executive`, `/citizen`, `/staff`, `/admin`, `/contractor`, `/community` trả về HTTP 200. Quick test gate đạt **28/28 test files PASS 100% (237 unit + 42 UI smoke tests)**, Vite build thành công sạch sẽ (3.0s, 0 errors).
+## 🗺️ REBUILD DUSTGUARD SPATIAL MAP THÀNH HỆ THỐNG BẢN ĐỒ TỌA ĐỘ THẬT SSOT (COMPLETED & VERIFIED)
+- **Tóm tắt Công việc & Kết Quả Đạt Được**:
+  1. **Audit & Xóa Sạch 100% Mock/Fake Coordinates**:
+     - Loại bỏ toàn bộ công thức tạo lưới giả `(21.0285 + ((idx % 5) - 2) * 0.015)` trong `ExecutiveRiskMap.jsx`. Đếm và cảnh báo chính xác `missingLocationSpots` khi thực thể thiếu tọa độ.
+     - Loại bỏ khoảng cách giả `0.4 + idx * 0.4` trong `CitizenNearby.jsx`.
+     - Loại bỏ fallback gán tọa độ trung tâm Hà Nội `21.033333, 105.800000` khi deny GPS trong `CreateObservation.jsx`, `CitizenReport.jsx`, `SpatialMap.jsx`, `StaffComplaints.jsx`.
+     - Thay thế hoàn toàn component `MapView` legacy trong `StaffMonitoring.jsx` bằng `SpatialMap` SSOT.
+  2. **Xây Dựng Core Spatial SSOT Modules**:
+     - `src/lib/spatial/spatial.types.js`: `isValidWGS84`, `classifyGpsAccuracy` ($\le 20\text{m}$, $20-100\text{m}$, $> 100\text{m}$), `calculateHaversineDistanceMeters`, `createLocationSSOT`.
+     - `src/lib/spatial/geocoding.service.js`: OpenStreetMap Nominatim Geocoder & Reverse Geocoder với bộ nhớ đệm LRU cache và tốc độ an toàn $\ge 1000\text{ms}$, danh mục địa danh Hà Nội `LOCAL_LANDMARKS`.
+     - `src/components/map/GeoLocationPicker.jsx`: Bộ chọn tọa độ đa năng 3 phương thức (Gõ địa chỉ / Autocomplete, Ghim & Kéo marker, GPS thiết bị có hướng dẫn cấp quyền rõ ràng).
+  3. **Nâng Cấp Backend Spatial API (Server & Cloudflare Edge Worker)**:
+     - `GET /api/map`, `GET /api/spatial/features`, `GET /api/spatial/entities`, `GET /api/v1/spatial/entities`: Trả về `summary.total`, `summary.mapped`, `summary.missingLocation`, `summary.safeCount`.
+     - Hỗ trợ tham số lọc `bbox` (minLng,minLat,maxLng,maxLat) và các lớp dữ liệu.
+     - Thêm endpoints `GET /api/spatial/geocode`, `GET /api/spatial/reverse-geocode`, và `PATCH /api/spatial/entities/:type/:id/location` cập nhật tọa độ kèm audit log.
+  4. **Kiểm Thử & Verification Pipeline**:
+     - Tạo mới `app/tests/spatial-location-ssot.test.js`: PASS 10/10.
+     - `app/tests/worker-spatial-rbac-sanitizer.test.js`: PASS 20/20.
+     - `npm run verify:quick`: PASS 100% (237 unit + 42 UI smoke tests).
+     - `npm run verify`: PASS 100% (74/74 test files, 575 in-memory + 11 database integration tests).
 
 ---
 

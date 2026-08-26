@@ -24,6 +24,10 @@
   };
   ```
 
+### 🚨 Trap 1.4: Gán tọa độ trung tâm giả khi người dùng từ chối cấp quyền GPS
+- **Nguyên nhân**: Khi `navigator.geolocation` trả về lỗi (User denied geolocation), code fallback tự ý gán tọa độ trung tâm `21.033333, 105.800000` hoặc `DEFAULT_CENTER`. Điều này làm sai lệch toàn bộ bản đồ, tập trung mọi phản ánh ở khắp nơi vào một điểm duy nhất, tạo điểm nóng giả lập và làm hỏng tính toàn vẹn của bằng chứng số.
+- **Giải pháp**: Nếu không lấy được GPS, luôn gán `lat: null, lng: null` và cung cấp component `GeoLocationPicker` cho phép người dùng tự tra cứu địa chỉ bằng OpenStreetMap hoặc tự ghim vị trí. Tuyệt đối không bao giờ tự động gán tọa độ giả.
+
 ---
 
 ## ⚛️ 2. React Hooks & UI Architecture Traps

@@ -271,10 +271,32 @@ CREATE INDEX IF NOT EXISTS "idx_follow_ups_spatial" ON "follow_ups"("observation
 
 Trước khi nghiệm thu bất kỳ tính năng bản đồ nào, hệ thống phải thỏa mãn 100% các tiêu chí sau:
 
-- [ ] **One Map SSOT**: Mọi module (`CitizenMap`, `StaffMap`, `ExecutiveRiskMap`) đều sử dụng `SpatialMap` / `SpatialMapWorkspace` / `SpatialMapCanvas`.
-- [ ] **WGS84 Coordinates**: Tọa độ chuẩn `[lat, lng]` hợp lệ, không sinh tọa độ giả khi thiếu dữ liệu thực tế.
-- [ ] **6 Lớp Không Gian**: Hiển thị chính xác Sensors, Sites, Observations, Hotspots, Geofence trường học 300m và Ranh giới Phường/Xã.
-- [ ] **Spatial RBAC**: Khách và Công dân được ẩn PII và làm mờ tọa độ ~100m; Cán bộ Thanh tra và Lãnh đạo xem toàn diện Full Telemetry & Audit.
-- [ ] **Zero-Mock Verification**: Dữ liệu lấy từ API Cloudflare D1 thật; hiển thị `MapLoadingState`, `MapEmptyState`, `MapErrorState` đúng ngữ cảnh.
-- [ ] **High-Contrast UI**: Đạt chuẩn tương phản Civic Tech, không glassmorphism, touch target ≥ 44px, hiển thị hoàn hảo từ 360px đến màn hình máy tính.
-- [ ] **Automated Test Gate**: Chạy pass 100% test suite `app/tests/spatial-intelligence-map.test.js` và `app/tests/worker-spatial-rbac-sanitizer.test.js`.
+- [x] **One Map SSOT**: Mọi module (`CitizenMap`, `StaffMap`, `ExecutiveRiskMap`) đều sử dụng `SpatialMap` / `SpatialMapWorkspace` / `SpatialMapCanvas`.
+- [x] **WGS84 Coordinates**: Tọa độ chuẩn `[lat, lng]` hợp lệ, không sinh tọa độ giả khi thiếu dữ liệu thực tế.
+- [x] **6 Lớp Không Gian**: Hiển thị chính xác Sensors, Sites, Observations, Hotspots, Geofence trường học 300m và Ranh giới Phường/Xã.
+- [x] **Spatial RBAC**: Khách và Công dân được ẩn PII và làm mờ tọa độ ~100m; Cán bộ Thanh tra và Lãnh đạo xem toàn diện Full Telemetry & Audit.
+- [x] **Zero-Mock Verification**: Dữ liệu lấy từ API Cloudflare D1 thật; hiển thị `MapLoadingState`, `MapEmptyState`, `MapErrorState` đúng ngữ cảnh.
+- [x] **High-Contrast UI**: Đạt chuẩn tương phản Civic Tech, không glassmorphism, touch target ≥ 44px, hiển thị hoàn hảo từ 360px đến màn hình máy tính.
+- [x] **Automated Test Gate**: Chạy pass 100% test suite `app/tests/spatial-intelligence-map.test.js`, `app/tests/worker-spatial-rbac-sanitizer.test.js`, và `app/tests/spatial-location-ssot.test.js`.
+
+---
+
+## 📍 9. Location SSOT, Geocoding & GeoLocationPicker
+
+1. **Location SSOT Model (`src/lib/spatial/spatial.types.js`)**:
+   - `isValidWGS84(lat, lng)`: Xác thực nghiêm ngặt tọa độ WGS84, loại bỏ điểm Null Island `(0, 0)`.
+   - `classifyGpsAccuracy(accuracyMeters)`: Phân loại độ chính xác GPS thiết bị theo 4 cấp (`GOOD` $\le 20\text{m}$, `MODERATE` $20-100\text{m}$, `LOW` $> 100\text{m}$, `UNKNOWN`).
+   - `calculateHaversineDistanceMeters(lat1, lng1, lat2, lng2)`: Tính khoảng cách cung tròn chính xác theo công thức Haversine.
+   - `createLocationSSOT(...)`: Chuẩn hóa thực thể vị trí với nguồn gốc (`DEVICE_GPS`, `MAP_PIN`, `ADDRESS_GEOCODE`, `ADMIN_CORRECTION`), mức độ xác thực và thời gian cập nhật.
+
+2. **Geocoding & Reverse Geocoding Service (`src/lib/spatial/geocoding.service.js`)**:
+   - Tích hợp OpenStreetMap Nominatim API với tốc độ giới hạn an toàn ($\ge 1000\text{ms}$ interval) tuân thủ OSM Usage Policy.
+   - Bộ nhớ đệm LRU Cache trong bộ nhớ (100 mục gần nhất) cho cả tra cứu thuận và nghịch.
+   - Danh mục địa danh danh thắng & phường xã Hà Nội (`LOCAL_LANDMARKS`) hỗ trợ gợi ý tức thì và hoạt động dự phòng khi mạng ngoại tuyến.
+
+3. **Bộ Chọn Vị Trí Đa Năng (`src/components/map/GeoLocationPicker.jsx`)**:
+   - Hỗ trợ 3 phương thức xác định vị trí:
+     - **(A) Gõ địa chỉ / Autocomplete**: Tìm kiếm tức thì từ danh mục địa danh hoặc OSM.
+     - **(B) Ghim & Kéo marker trên bản đồ**: Kéo thả marker trên nền bản đồ trực quan, tự động kích hoạt reverse geocoding.
+     - **(C) Lấy vị trí GPS thiết bị**: Trực tiếp từ `navigator.geolocation` với cảnh báo chi tiết, thân thiện khi bị từ chối cấp quyền.
+   - Cảnh báo rõ ràng khi địa điểm chưa có tọa độ, không tự ý gán vị trí giả lập.
