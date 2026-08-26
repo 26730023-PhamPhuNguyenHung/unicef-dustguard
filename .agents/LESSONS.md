@@ -117,3 +117,19 @@
      - Tuyệt đối không dùng `backdrop-blur-*`.
      - Nền sáng chữ đậm (`#FDFBF7` cream, `#231b14` ink, `#0d6f64` teal, `#B51F24` seal red).
      - Responsive tối ưu cho mobile viewports (360px - 430px) và desktop.
+
+## 8. Routing Table & Information Architecture SSOT Integrity
+- **Bối cảnh & Vấn đề**:
+  - Khi codebase có cấu trúc thư mục lồng nhiều tầng (ví dụ `app/src/shared/components/ui/` vs `app/src/components/ui/`), việc viết relative imports như `../../components/ui/Button.jsx` từ `src/shared/components/ui/` sẽ vô tình trỏ đến chính nó (circular self-import), dẫn đến lỗi `[MISSING_EXPORT]` khi Vite/rolldown build production mà test unit có thể bỏ sót.
+  - Khi bổ sung các route mới (`/staff/operations`, `/staff/cases`, `/staff/documents`, `/contractor/actions`, `/contractor/projects`), nếu `AppHeader` chỉ map cứng một số ít URL sẽ làm breadcrumbs bị fallback về generic "Bàn làm việc", giảm tính định hướng không gian của người dùng.
+  - Trong `AppSidebar`, khi route cha redirect sang route con (ví dụ `/executive` -> `/executive/dashboard` hay `/staff/monitoring` -> `/staff/operations?view=monitoring`), hàm `isActive` nếu chỉ kiểm tra `pathname === path` đơn thuần sẽ khiến menu cha bị mất active highlight.
+- **Giải pháp Kiến trúc & Quy tắc Chuẩn hóa**:
+  1. **Canonical Relative Imports**: Luôn đếm chính xác số cấp thư mục (`../../../components/ui/...`) hoặc sử dụng path alias `@/` khi re-export giữa các lớp thư viện.
+  2. **Smart Dynamic Breadcrumbs SSOT (`AppHeader.tsx`)**:
+     - Khai báo đầy đủ `routeNameMap` cho tất cả canonical endpoints của 5 Personas.
+     - Triển khai bộ phân giải tiền tố động (`path.startsWith('/staff/cases/')`, `/staff/documents/`, `/contractor/actions/`, `/contractor/projects/`) để luôn hiển thị đúng phân cấp: `Vận hành/Xử lý/Tuân thủ/Nhà thầu > Thực thể > Chi tiết`.
+  3. **Query Param & Redirect Aware Sidebar (`AppSidebar.tsx`)**:
+     - `isActive` nhận diện thông minh cả URL Path và URL Query params (`location.search.includes('view=monitoring')`, `view=alerts`, `view=sla`).
+     - Tự động map `/staff` với `/staff/dashboard` và `/executive` với `/executive/dashboard`.
+  4. **RBAC & Mode Switch Synchronization (`rbac-rules.js`, `mode-switch-model.js`)**:
+     - Đồng bộ các route `/documents`, `/templates`, `/youth`, `/map`, `/executive-app`, `/admin-app` vào ma trận phân quyền và mô hình nhận diện active mode.
