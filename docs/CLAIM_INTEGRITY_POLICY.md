@@ -106,10 +106,26 @@ Tài liệu này xác lập các ranh giới bất biến (Invariants) về phá
 
 ---
 
-### 3.6. Mức độ Sẵn sàng Vận hành (Operational Readiness Terminology)
-- Khi chạy trên môi trường giả lập (Local SQLite, D1 local, Simulator, Seed dataset):
-  - Sử dụng: `Prototype operational readiness`, `Software operational readiness`, `Field-test ready`.
-  - Không sử dụng: `Production validated` cho đến khi triển khai thực tế trên mạng lưới thiết bị và hạ tầng Cloudflare thực.
+### 3.7. Ranh giới Chi phí Hạ tầng & Vận hành Pilot (Infrastructure Cost & Scaling Boundary)
+- **Tuyên ngôn chuẩn hóa (SSOT Claim):**
+  > *"Chi phí hạ tầng pilot có thể gần bằng 0 trong hạn mức miễn phí hiện tại của Cloudflare (ghi nhận khả năng phát sinh tên miền, email, dung lượng mở rộng khi scale)."*
+- **Quy tắc phát ngôn:**
+  - Không tuyên bố tuyệt đối "Hệ thống miễn phí 100% vĩnh viễn" hay "Hoàn toàn $0 không tốn một đồng nào".
+  - Luôn ghi nhận minh bạch 3 hạng mục phát sinh tài chính thực tế:
+    1. **Tên miền tùy chỉnh (Custom Domain):** Phí duy trì tên miền `.vn`, `.org`, hoặc `.com` (~10–25 USD/năm).
+    2. **Dịch vụ Email giao dịch (Transactional Email):** Chi phí gửi OTP/thông báo khi vượt hạn mức email miễn phí.
+    3. **Dung lượng mở rộng khi scale:** Khi mở rộng toàn diện vượt quá Cloudflare Free Tier (R2 Storage > 10GB tính $0.015/GB/tháng, Workers Paid $5/tháng khi vượt 100k requests/ngày, D1 read/write overages).
+
+---
+
+### 3.8. Ranh giới Quyền riêng tư & Tối ưu Ảnh Hiện trường (Photo Privacy & Mobile Network Boundary)
+- **Bảo vệ quyền riêng tư người chụp (EXIF Sanitization):**
+  - Trước khi ảnh được gửi lên máy chủ hoặc lưu trữ R2, toàn bộ siêu dữ liệu nhạy cảm (EXIF APP1: tọa độ GPS cá nhân, số serial máy ảnh, hãng/model thiết bị) đều được tự động loại bỏ trên thiết bị người dùng.
+  - Tọa độ GPS phục vụ phản ánh được người dùng chủ động cho phép lấy qua Web Geolocation hoặc chọn ghim trên bản đồ, không phụ thuộc vào siêu dữ liệu ẩn trong file ảnh.
+- **Nén ảnh tối ưu mạng di động (< 300KB):**
+  - Mọi ảnh chụp độ phân giải cao (12MP–48MP dung lượng 5MB–15MB) đều được nén thích ứng xuống **dưới 300KB** để đảm bảo thao tác gửi phản ánh mượt mà ngay cả khi kết nối mạng 3G/4G yếu ngoài thực địa.
+- **Mã băm toàn vẹn (Tamper-Evident SHA-256):**
+  - Tạo mã băm SHA-256 từ tệp ảnh đã làm sạch và nén để đối chứng chống chỉnh sửa nội dung mà không cần giữ lại thông tin đời tư của người chụp.
 
 ---
 

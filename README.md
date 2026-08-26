@@ -100,14 +100,16 @@
 3. **Zero-IoT Resilience (IoT là nguồn dữ liệu bổ sung)**:
    - Hệ thống vận hành 100% bằng quan sát thực địa và ảnh chụp khi có 0 cảm biến.
    - Cảm biến bụi IoT (ESP32 + PMS7003 < $25) là module mở rộng hỗ trợ CLB STEM học đường thu thập tín hiệu vi khí hậu bổ trợ.
-4. **Bảo Toàn Minh Chứng Số & Quyền Riêng Tư**:
-   - Lưu trữ mã hash SHA-256 để hỗ trợ phát hiện việc tệp bị thay đổi sau khi ghi nhận (Tamper-evident).
-   - Tự động xóa dữ liệu nhạy cảm EXIF trên thiết bị người dùng trước khi gửi ảnh, chống spam bằng device hash không thu thập CCCD/SĐT.
+4. **Bảo Toàn Minh Chứng Số & Quyền Riêng Tư Thực Địa**:
+   - Tự động xóa sạch siêu dữ liệu nhạy cảm EXIF (GPS cá nhân, serial thiết bị, model máy) trên trình duyệt trước khi tải lên.
+   - Nén ảnh thích ứng **dưới 300KB** chạy mượt mà ngay cả trên mạng di động 3G/4G yếu ngoài hiện trường.
+   - Bảo toàn minh chứng bằng mã băm **SHA-256** (Tamper-evident) đối chứng chống sửa đổi nội dung.
 5. **Giao Diện Sáng — Độ Tương Phản Cao — Zero Glassmorphism**:
    - Nền kem `#FDFBF7`, chữ mực in `#231B14`, dấu mộc đỏ `#9F241F`, xanh ngọc `#0D6F64`.
    - Nút bấm tối thiểu **44px x 44px**, hiển thị rõ ngoài trời nắng trên màn hình điện thoại 360px - 430px.
-6. **Chi Phí Hạ Tầng Thấp**:
-   - Chi phí hạ tầng pilot có thể gần bằng $0 trong hạn mức miễn phí hiện tại của Cloudflare (Workers + D1 + R2 + Static Assets).
+6. **Chi Phí Hạ Tầng Pilot Vận Hành Gần Bằng 0**:
+   - Chi phí hạ tầng pilot có thể gần bằng 0 trong hạn mức miễn phí hiện tại của Cloudflare (Workers + D1 + R2 + Static Assets).
+   - Ghi nhận minh bạch khả năng phát sinh chi phí thực tế khi mở rộng: tên miền tùy chỉnh (~$10–$25/năm), dịch vụ email giao dịch và dung lượng mở rộng khi scale vượt Free Tier.
 
 ---
 

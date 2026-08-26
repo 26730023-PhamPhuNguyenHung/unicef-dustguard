@@ -11,10 +11,13 @@ description: Xác thực tính toàn vẹn của bằng chứng số, mã băm S
 - Khi làm việc với Cloudflare R2 Bucket (`env.STORAGE` hoặc local upload mock).
 
 ## Quy tắc Tính Toàn Vẹn Minh Chứng
-1. **Web Crypto First**:
+1. **Chuẩn Hóa Mục Đích SHA-256**:
+   - Định nghĩa chuẩn: *"DustGuard lưu hash SHA-256 để hỗ trợ phát hiện việc tệp bị thay đổi sau khi ghi nhận"* (tamper-evident, không nói 'bằng chứng pháp lý niêm phong').
+   - Hashing được tính toán ngay tại client qua Web Crypto API, bảo vệ dữ liệu chống can thiệp ngầm.
+2. **Web Crypto First**:
    - Khi tính hash SHA-256 trên cả Frontend và Backend, ưu tiên sử dụng `globalThis.crypto.subtle.digest('SHA-256', buffer)`.
    - Bọc fallback `node:crypto` trong runtime check để tránh Vite 8 externalization warning khi build browser bundle.
-2. **Metadata Minh Chứng Bắt Buộc**:
+3. **Metadata Minh Chứng Bắt Buộc**:
    - Mỗi file ảnh lưu vào R2 phải kèm metadata:
      * `sha256`: Chuỗi hex 64 ký tự của file gốc.
      * `timestamp`: Thời gian chụp ISO 8601.

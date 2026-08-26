@@ -40,15 +40,31 @@ description: Kiểm tra và bảo đảm tính chính xác của logic nghiệp 
 - Cơ chế chống spam thiết bị: Giới hạn tần suất ghi nhận trên cùng device hash (`verifyAntiSpamLimit`), trần tối đa 35 điểm nếu gửi spam liên tiếp.
 - Giấy chứng nhận số (Digital Certificate): Sinh chứng nhận định dạng PDF/SVG kèm mã QR chuẩn ISO/IEC 18004 xác thực trên Edge.
 
-### 5. Tính Minh Bạch & Chống Giả Lập (Zero Mock)
+### 5. Chuẩn Hóa Mã Băm SHA-256 & Tính Toàn Vẹn (Tamper-Evident)
+- **Định nghĩa SSOT**: *"DustGuard lưu hash SHA-256 để hỗ trợ phát hiện việc tệp bị thay đổi sau khi ghi nhận"* (tamper-evident, không nói 'bằng chứng pháp lý niêm phong').
+- Tránh ảo tưởng sức mạnh: Không tự nhận là cơ quan tư pháp niêm phong tang vật; hash SHA-256 là công cụ số minh bạch giúp cộng đồng và cán bộ đối chiếu xem ảnh gốc có bị chỉnh sửa hay không.
+
+### 6. Ma Trận Quyết Định Tái Kiểm Tra (Follow-up 3 Trạng Thái)
+- **BETTER** (Đã cải thiện / Đã che chắn / Đã dọn dẹp):
+  * Kèm ảnh minh chứng hợp lệ ➔ Chuyển `RESOLVED` (Đóng thành công).
+  * Chưa có ảnh minh chứng ➔ Chuyển `NEEDS_FOLLOWUP` (Lập lịch kiểm tra lại trong 24h).
+- **UNCHANGED** (Không đổi / Tình trạng như cũ):
+  * Lần tái kiểm tra thứ 1 ➔ Chuyển `NEEDS_FOLLOWUP` (Lập lịch kiểm tra lại trong 48h).
+  * Lần tái kiểm tra thứ 2 trở lên ➔ Chuyển `READY_FOR_HANDOFF` (Chuyển tiếp cơ quan chức năng hỗ trợ).
+- **WORSE** (Xấu hơn / Ô nhiễm gia tăng):
+  * Lập tức chuyển `READY_FOR_HANDOFF` để kết xuất Dossier A4 và điều phối xử lý khẩn cấp.
+
+### 7. Tính Minh Bạch & Chống Giả Lập (Zero Mock)
 - "Test pass là chưa xong, phải kiểm tra logic input output có mang lại giá trị thực tế không".
 - Mọi hàm tính điểm ưu tiên (`DustRiskEngine`) bắt buộc trả về `reasons` giải thích lý do cụ thể.
 - Mọi biên bản A4 xuất ra phải có mã băm SHA-256 và thông tin cán bộ ký duyệt thực tế từ CSDL.
 
 ## Lệnh Kiểm Thử Domain
 ```powershell
+node --test app/tests/domain-observation-case-invariants.test.js
+node --test app/tests/legal-shield-image-integrity.test.js
+node --test app/tests/community-action-flow.test.js
+node --test app/tests/backend-hardening-10-domains.test.js
 node --test app/tests/risk-engine*.test.js
 node --test app/tests/youth-credits-p0.test.js
-node --test app/tests/contractor-portal-audit.test.js
-node --test app/tests/executive-operations-api.test.js
 ```

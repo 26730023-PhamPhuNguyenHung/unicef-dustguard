@@ -26,7 +26,11 @@
 
 ---
 
-## 🛠️ KIỂM TRA HỆ THỐNG
-- [x] README.md, PRODUCT.md, DOMAIN.md, INDEX.md, BUG_MEMORY.md đồng bộ 100%.
-- [x] Verification Gate: `npm --prefix app run verify:quick` đạt 25/25 files pass (212 unit + 42 UI smoke tests).
-- [x] Git Commit & SSOT Timeline truy vết đầy đủ.
+## 🛠️ KIỂM TRA HỆ THỐNG & NHIỆM VỤ DEVOPS / FIELD OPS
+- [x] **Chuẩn hóa claim chi phí**: *"Chi phí hạ tầng pilot có thể gần bằng 0 trong hạn mức miễn phí hiện tại của Cloudflare (ghi nhận khả năng phát sinh tên miền, email, dung lượng mở rộng khi scale)."*
+- [x] **Bảo vệ quyền riêng tư người chụp**: Module `image-compressor.js` tự động lọc sạch toàn bộ siêu dữ liệu EXIF APP1 (GPS cá nhân, số serial máy ảnh, hãng thiết bị) trước khi tải lên máy chủ.
+- [x] **Nén ảnh thích ứng < 300KB**: Nén nhanh mượt trên mạng di động 3G/4G yếu ngoài thực địa, sinh mã băm SHA-256 đối chứng tính toàn vẹn (Tamper-evident).
+- [x] **Sửa lỗi xử lý ảnh CreateObservation**: Đồng bộ trực tiếp `compressed.dataUrl` và `compressed.sha256`, loại bỏ FileReader lỗi trên Object.
+- [x] **Bộ Test Suite Mới**: `app/tests/image-compressor-privacy.test.js` đạt 6/6 test pass (< 200ms).
+- [x] **Verification Gate**: `npm --prefix app run verify:quick` đạt 26/26 files pass (225 unit + 42 UI smoke tests).
+- [x] **Tài liệu SSOT**: `README.md`, `CLAIM_INTEGRITY_POLICY.md`, `CLOUDFLARE_VS_LEGACY_COST_ROI_ANALYSIS.md`, `PRODUCT.md`, `BUG_MEMORY.md` đồng bộ 100%.

@@ -43,3 +43,14 @@ COMMUNITY ACTION + SPATIAL DATA + EVIDENCE + ENVIRONMENTAL KNOWLEDGE + CASE TRAC
 > *DustGuard là nền tảng CivicTech giúp cộng đồng ghi nhận vấn đề môi trường bằng ảnh, vị trí và dữ liệu đối chứng trước–sau; hỗ trợ hiểu vấn đề, duy trì lịch sử theo dõi và tạo một hồ sơ có cấu trúc.*
 > 
 > *Khi cần sự can thiệp chính thức, DustGuard không thay thế các hệ thống hiện hữu mà hỗ trợ kết nối case tới những kênh như 1022, iHanoi hoặc đơn vị phù hợp. Bụi công trình là bài toán đầu tiên để chúng em kiểm chứng mô hình, trước khi mở rộng thành một nền tảng hành động xanh cho thanh thiếu niên và cộng đồng."*
+
+---
+
+## 6. Vận Hành Hạ Tầng & Bảo Mật Thực Địa (DevOps & Field Ops Invariants)
+- **Chuẩn Hóa Claim Chi Phí Hạ Tầng**:
+  > *"Chi phí hạ tầng pilot có thể gần bằng 0 trong hạn mức miễn phí hiện tại của Cloudflare (ghi nhận khả năng phát sinh tên miền, email, dung lượng mở rộng khi scale)."*
+  - Hệ thống ghi nhận minh bạch các khoản chi phí phát sinh thực tế: Tên miền tùy chỉnh (~$10–$25/năm), Dịch vụ Email giao dịch, và Chi phí dung lượng mở rộng khi scale vượt Cloudflare Free Tier.
+- **Bảo Vệ Quyền Riêng Tư & Tối Ưu Mạng Di Động**:
+  - **Xóa EXIF Tự Động**: Tự động loại bỏ toàn bộ siêu dữ liệu nhạy cảm (GPS cá nhân, serial máy ảnh, hãng thiết bị) trước khi tải lên.
+  - **Nén Ảnh < 300KB**: Nén thích ứng trên trình duyệt xuống dưới 300KB để hoạt động mượt mà ngoài thực địa trên mạng di động 3G/4G yếu.
+  - **Mã Băm Toàn Vẹn SHA-256**: Xác thực tính bất biến của hình ảnh chứng cứ mà không cần lưu trữ thông tin cá nhân của người chụp.

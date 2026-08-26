@@ -80,3 +80,30 @@
 ### 🚨 Trap 4.3: Bẫy Ảo Tưởng Thẩm Quyền Hành Chính & Mock Token PKI
 - **Nguyên nhân**: Cố gắng giả lập luồng ký số USB Token Ban Cơ Yếu / CA Nhà nước với mã PIN giả (PIN 1234), hoặc tự phong quyền ra quyết định xử phạt vi phạm hành chính thay cơ quan nhà nước.
 - **Giải pháp**: Định vị đúng Civic Tech: Bằng chứng số chống sửa đổi (Tamper-Evident SHA-256 Digest). DustGuard đóng vai trò cuốn nhật ký đối chứng minh bạch (Dossier A4) để cộng đồng và thanh niên đối thoại xây dựng với Ban Quản lý Dự án hoặc gửi UBND Phường hỗ trợ xử lý.
+
+### 🚨 Trap 4.4: Bẫy Tuyên Bố Sai Lệch về Mã Băm SHA-256 ("Bằng chứng pháp lý niêm phong")
+- **Nguyên nhân**: Dùng cụm từ "bằng chứng pháp lý niêm phong" hay tự xưng là chứng thư tư pháp làm sai lệch bản chất giải pháp CivicTech.
+- **Giải pháp**: Chuẩn hóa định nghĩa SSOT: *"DustGuard lưu hash SHA-256 để hỗ trợ phát hiện việc tệp bị thay đổi sau khi ghi nhận"* (tamper-evident, không nói 'bằng chứng pháp lý niêm phong'). Cơ chế băm Web Crypto ngay tại thiết bị giúp bảo vệ tính toàn vẹn và minh bạch của ảnh hiện trường.
+
+### 🚨 Trap 4.5: Bẫy Ngôn Ngữ Cưỡng Chế ("buộc công trình...") & Định Vị Sai Hệ Thống 1022 / iHanoi
+- **Nguyên nhân**: Sử dụng các từ ngữ cưỡng chế hành chính ("buộc công trình phải...", "chế tài...") hoặc ngộ nhận DustGuard thay thế hệ thống tiếp nhận của cơ quan nhà nước.
+- **Giải pháp**:
+  1. Tuyệt đối dùng câu chuẩn hóa: *"giúp cộng đồng tạo chuỗi bằng chứng trước–sau, vị trí và dòng thời gian rõ ràng; từ đó một vấn đề có thể được theo dõi tốt hơn và, khi cần, được chuyển tới đơn vị có trách nhiệm xử lý."*
+  2. Định vị 1022 / iHanoi là **ĐIỂM TÍCH HỢP** kết nối case, không thay thế hệ thống hành chính chính thức.
+  3. Chuẩn hóa **Structured Civic Dossier** 4 khối A4 phục vụ đối thoại xây dựng và phối hợp khắc phục hiện trường.
+
+---
+
+## 📷 5. Image Processing, EXIF Privacy & Cost Claims Traps
+
+### 🚨 Trap 5.1: `FileReader.readAsDataURL` ném TypeError khi nhận Object từ `compressImage`
+- **Nguyên nhân**: Hàm `compressImage` trả về Object `{ dataUrl, sizeKB, compressed, sha256 }`, nhưng caller vô tình gọi `reader.readAsDataURL(compressed)` thay vì dùng trực tiếp `compressed.dataUrl`.
+- **Giải pháp**: Luôn sử dụng trực tiếp `compressed.dataUrl` và `compressed.sha256` được tính toán sẵn từ module nén.
+
+### 🚨 Trap 5.2: Lộ Siêu Dữ Liệu Riêng Tư EXIF Người Chụp
+- **Nguyên nhân**: Tải trực tiếp file ảnh gốc từ điện thoại lên R2/Database, làm lộ tọa độ nhà riêng, số serial thiết bị hoặc camera model của người dân/thanh niên.
+- **Giải pháp**: Tự động lọc sạch toàn bộ segment EXIF APP1 (`0xFFE1`) trên client trước khi gửi lên máy chủ (qua canvas re-encode hoặc `stripExifFromJpegBinary`), đồng thời tính toán mã băm SHA-256 trên ảnh đã lọc sạch để bảo đảm tính toàn vẹn chứng cứ.
+
+### 🚨 Trap 5.3: Bẫy Tuyên Bố Chi Phí $0 Tuyệt Đối (Claim Inaccuracy)
+- **Nguyên nhân**: Tuyên bố "Hệ thống hoàn toàn 0đ vĩnh viễn" mà bỏ qua các chi phí thực tế khi vận hành sản phẩm.
+- **Giải pháp**: Luôn sử dụng câu claim chuẩn hóa: *"Chi phí hạ tầng pilot có thể gần bằng 0 trong hạn mức miễn phí hiện tại của Cloudflare (ghi nhận khả năng phát sinh tên miền, email, dung lượng mở rộng khi scale)."*

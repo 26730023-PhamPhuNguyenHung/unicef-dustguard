@@ -8,7 +8,8 @@
 
 | Mốc Thời Gian | Commit Hash | Phạm Vi / Scope | Mô Tả Thay Đổi & Giá Trị Nghiệp Vụ | Trạng Thái Kiểm Thử |
 |---|---|---|---|---|
-| **2026-08-26** | `pending` | `feat(product-ssot)` | Khóa SSOT định vị sản phẩm CivicTech, 7 bộ năng lực nền tảng và lộ trình trưởng thành sản phẩm | 25/25 Pass (212 unit + 42 UI) |
+| **2026-08-26** | `pending` | `feat(devops-privacy)` | Chuẩn hóa claim chi phí pilot gần bằng 0 Cloudflare, tự động xóa EXIF bảo vệ quyền riêng tư & nén ảnh < 300KB | 26/26 Pass (225 unit + 42 UI) |
+| **2026-08-26** | `d1edb19` | `feat(qa-domain)` | Chuẩn hóa định nghĩa SHA-256 tamper-evident, khóa bất biến Observation != Case và Follow-up 3 trạng thái | 26/26 Pass (225 unit + 42 UI) |
 | **2026-08-26** | `9713ba1` | `docs(ssot)` | Khóa cứng định vị CivicTech chuẩn mực, bộ 7 năng lực, cây quyết định kiến trúc và bản pitch 30s UNICEF | 25/25 Pass (212 unit + 42 UI) |
 | **2026-08-26** | `16b23ae` | `chore(submodule)` | Đồng bộ con trỏ `app` với `dev.db` và schema mới nhất | 25/25 Pass |
 | **2026-08-26** | `ffdf46d` | `feat(executive-map-ssot)` | Tái cấu trúc Executive Command Center & Spatial Map SSoT toàn diện trên tất cả các portals | 43/43 Pass |
