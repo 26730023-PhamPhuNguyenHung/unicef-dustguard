@@ -1,23 +1,25 @@
 # ACTIVE CONTEXT — DUSTGUARD VN
 
-## 🗺️ REBUILD DUSTGUARD SPATIAL MAP THÀNH HỆ THỐNG BẢN ĐỒ TỌA ĐỘ THẬT SSOT (COMPLETED & VERIFIED)
+## 📜 REBUILD DUSTGUARD ADMINISTRATIVE DOCUMENT STUDIO (COMPLETED & VERIFIED)
 - **Tóm tắt Công việc & Kết Quả Đạt Được**:
-  1. **Audit & Xóa Sạch 100% Mock/Fake Coordinates**:
-     - Loại bỏ toàn bộ công thức tạo lưới giả `(21.0285 + ((idx % 5) - 2) * 0.015)` trong `ExecutiveRiskMap.jsx`. Đếm và cảnh báo chính xác `missingLocationSpots` khi thực thể thiếu tọa độ.
-     - Loại bỏ khoảng cách giả `0.4 + idx * 0.4` trong `CitizenNearby.jsx`.
-     - Loại bỏ fallback gán tọa độ trung tâm Hà Nội `21.033333, 105.800000` khi deny GPS trong `CreateObservation.jsx`, `CitizenReport.jsx`, `SpatialMap.jsx`, `StaffComplaints.jsx`.
-     - Thay thế hoàn toàn component `MapView` legacy trong `StaffMonitoring.jsx` bằng `SpatialMap` SSOT.
-  2. **Xây Dựng Core Spatial SSOT Modules**:
-     - `src/lib/spatial/spatial.types.js`: `isValidWGS84`, `classifyGpsAccuracy` ($\le 20\text{m}$, $20-100\text{m}$, $> 100\text{m}$), `calculateHaversineDistanceMeters`, `createLocationSSOT`.
-     - `src/lib/spatial/geocoding.service.js`: OpenStreetMap Nominatim Geocoder & Reverse Geocoder với bộ nhớ đệm LRU cache và tốc độ an toàn $\ge 1000\text{ms}$, danh mục địa danh Hà Nội `LOCAL_LANDMARKS`.
-     - `src/components/map/GeoLocationPicker.jsx`: Bộ chọn tọa độ đa năng 3 phương thức (Gõ địa chỉ / Autocomplete, Ghim & Kéo marker, GPS thiết bị có hướng dẫn cấp quyền rõ ràng).
-  3. **Nâng Cấp Backend Spatial API (Server & Cloudflare Edge Worker)**:
-     - `GET /api/map`, `GET /api/spatial/features`, `GET /api/spatial/entities`, `GET /api/v1/spatial/entities`: Trả về `summary.total`, `summary.mapped`, `summary.missingLocation`, `summary.safeCount`.
-     - Hỗ trợ tham số lọc `bbox` (minLng,minLat,maxLng,maxLat) và các lớp dữ liệu.
-     - Thêm endpoints `GET /api/spatial/geocode`, `GET /api/spatial/reverse-geocode`, và `PATCH /api/spatial/entities/:type/:id/location` cập nhật tọa độ kèm audit log.
-  4. **Kiểm Thử & Verification Pipeline**:
-     - Tạo mới `app/tests/spatial-location-ssot.test.js`: PASS 10/10.
-     - `app/tests/worker-spatial-rbac-sanitizer.test.js`: PASS 20/20.
+  1. **Visual Merge Field Engine**:
+     - Xây dựng Tiptap Extension `MergeFieldNode` loại bỏ 100% việc hiển thị thô `{{variable}}` trong Normal Mode. Thay bằng visual inline merge chip với subtle styling, hover tooltip nguồn dữ liệu SSOT và cảnh báo `[Thiếu: Tên trường]`.
+     - Hỗ trợ chuyển đổi nhanh sang "Chế độ Mẫu (Template Mode)" khi cần xem mã raw.
+  2. **Variable Registry SSOT (`src/lib/documents/variable-registry.js`)**:
+     - Chuẩn hóa danh mục các trường dữ liệu theo 6 nhóm nghiệp vụ: Công trình (`site`), Kiểm tra (`inspection`), Quan trắc (`telemetry`), Vi phạm & Pháp lý (`legal`), Thể thức văn bản (`doc`), Chữ ký & Thẩm quyền (`signer`).
+     - Tích hợp hàm `validateDocumentVariables` thực hiện Pre-flight Check trước khi xuất bản.
+  3. **Multi-Page A4 Canvas & Real Pagination**:
+     - `A4PageContainer.jsx`: Khổ giấy A4 chuẩn $210\text{mm} \times 297\text{mm}$ với lề NĐ 30/2020 (trái 30mm, phải 15mm, trên/dưới 20mm), thước đo lề `PageRuler.jsx`, số trang thật `Trang X / Y`, và semantic `PageBreakNode`.
+     - Bottom Status Bar: Đếm từ thời gian thực, badge trạng thái tài liệu, autosave indicator và thanh trượt điều khiển Zoom (75% - 150%).
+  4. **Document Navigator & Compact Data Panel**:
+     - `DocumentOutline.jsx`: 2 tabs (Cấu trúc Outline tự động trích xuất Headings và Thư viện Mẫu văn bản chuẩn NĐ 30/2020 & 118/2021 có xác nhận an toàn).
+     - `DataBindingsPanel.jsx`: Accordion 6 nhóm, tìm kiếm thông minh, thống kê SSOT và nút `+` chèn nhanh visual node tại con trỏ (caret).
+  5. **Pre-flight Check & Export Parity**:
+     - `PreflightCheckModal.jsx`: Cảnh báo các biến thiếu trước khi xuất PDF / DOCX, hỗ trợ xuất bản nháp hoặc quay lại chỉnh sửa.
+     - `GoogleDocsEditor.jsx` & `DocumentEditorPage.jsx`: Tích hợp toàn diện, hỗ trợ phím tắt `Ctrl+S`, query params hydration (`?template=...`, `?siteId=...`), và D1 API persistence thật.
+  6. **Kiểm Thử Đạt Chuẩn Tuyệt Đối**:
+     - `app/tests/administrative-document-studio.test.js`: PASS 8/8.
+     - `app/tests/official-document.test.js` & `documents-legal-updates.test.js`: PASS 11/11.
      - `npm run verify:quick`: PASS 100% (237 unit + 42 UI smoke tests).
      - `npm run verify`: PASS 100% (74/74 test files, 575 in-memory + 11 database integration tests).
 

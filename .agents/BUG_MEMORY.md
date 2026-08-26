@@ -62,7 +62,11 @@
 - **Nguyên nhân**: Sử dụng biến trong JSX (ví dụ `{openCases}`) khi biến chưa được khai báo ở scope hàm của component, gây `ReferenceError: openCases is not defined`.
 - **Giải pháp**: Luôn kiểm tra khai báo đầy đủ biến hoặc destructure an toàn từ props/state với fallback hợp lý (`const openCases = overviewData?.kpis?.openCases ?? 0;`).
 
-### 🚨 Trap 2.7: Sai đuôi mở rộng khi import (`.jsx` thay vì `.tsx`)
+### 🚨 Trap 2.7: Viết cú pháp JSX trong file extension `.js` khi chạy trên Node.js test runner
+- **Nguyên nhân**: Node.js ESM test runner (`node --test`) chạy trực tiếp trên V8 và không có Babel/JSX transformer. Nếu file `.js` chứa JSX `<Component />`, Node sẽ quăng `SyntaxError: Unexpected token '<'`.
+- **Giải pháp**: Với các Tiptap Extension hay View Renderer được import bởi test runner, luôn sử dụng `React.createElement(Component, props, ...children)` trong file `.js`, hoặc phân tách rõ file `.jsx` cho frontend UI thuần.
+
+### 🚨 Trap 2.8: Sai đuôi mở rộng khi import (`.jsx` thay vì `.tsx`)
 - **Nguyên nhân**: Viết trực tiếp đuôi `.jsx` trong câu lệnh import (ví dụ `import PageBreadcrumb from '../../components/common/PageBreadCrumb.jsx'`) trong khi file thực tế là `.tsx`, khiến bundler/resolver không phân giải được.
 - **Giải pháp**: Luôn import không cần ghi đuôi mở rộng (`import PageBreadcrumb from '../../components/common/PageBreadCrumb'`) hoặc ghi đúng định dạng file.
 
