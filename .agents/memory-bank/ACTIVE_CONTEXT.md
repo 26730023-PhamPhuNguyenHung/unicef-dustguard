@@ -26,11 +26,13 @@
 
 ---
 
-## 🛠️ KIỂM TRA HỆ THỐNG & NHIỆM VỤ DEVOPS / FIELD OPS
-- [x] **Chuẩn hóa claim chi phí**: *"Chi phí hạ tầng pilot có thể gần bằng 0 trong hạn mức miễn phí hiện tại của Cloudflare (ghi nhận khả năng phát sinh tên miền, email, dung lượng mở rộng khi scale)."*
-- [x] **Bảo vệ quyền riêng tư người chụp**: Module `image-compressor.js` tự động lọc sạch toàn bộ siêu dữ liệu EXIF APP1 (GPS cá nhân, số serial máy ảnh, hãng thiết bị) trước khi tải lên máy chủ.
-- [x] **Nén ảnh thích ứng < 300KB**: Nén nhanh mượt trên mạng di động 3G/4G yếu ngoài thực địa, sinh mã băm SHA-256 đối chứng tính toàn vẹn (Tamper-evident).
-- [x] **Sửa lỗi xử lý ảnh CreateObservation**: Đồng bộ trực tiếp `compressed.dataUrl` và `compressed.sha256`, loại bỏ FileReader lỗi trên Object.
-- [x] **Bộ Test Suite Mới**: `app/tests/image-compressor-privacy.test.js` đạt 6/6 test pass (< 200ms).
+## 🛠️ KIỂM TRA HỆ THỐNG & NHIỆM VỤ ĐÃ HOÀN TẤT
+- [x] **Civic Handoff & Tích hợp (Civic Handoff Specialist)**:
+  1. Loại bỏ 100% từ ngữ áp đặt ("buộc công trình phải...") ➔ Thay bằng: *"giúp cộng đồng tạo chuỗi bằng chứng trước–sau, vị trí và dòng thời gian rõ ràng; từ đó một vấn đề có thể được theo dõi tốt hơn và, khi cần, được chuyển tới đơn vị có trách nhiệm xử lý."*
+  2. Định vị rõ ràng **Tổng đài 1022** và **Cổng Công dân số iHanoi** là **ĐIỂM TÍCH HỢP** kết nối case, không thay thế hệ thống chính thức của cơ quan nhà nước.
+  3. Chuẩn hóa hồ sơ **Structured Civic Dossier** 4 khối chuẩn khổ A4 phục vụ đối thoại xây dựng giữa cộng đồng, nhà thầu và cơ quan địa bàn.
+  4. Tạo tài liệu SSOT [CIVIC_HANDOFF_SSOT.md](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/CIVIC_HANDOFF_SSOT.md) và test suite `app/tests/civic-handoff-integration.test.js` đạt 4/4 pass.
+- [x] **DevOps & Field Operations Lead**: Chuẩn hóa claim chi phí pilot gần bằng 0 Cloudflare, tự động xóa EXIF bảo vệ quyền riêng tư & nén ảnh < 300KB, test suite `image-compressor-privacy.test.js` đạt 6/6 pass.
+- [x] **QA & Domain Logic Verifier**: Chuẩn hóa định nghĩa SHA-256 tamper-evident, khóa bất biến Observation != Case và Follow-up 3 trạng thái.
 - [x] **Verification Gate**: `npm --prefix app run verify:quick` đạt 26/26 files pass (225 unit + 42 UI smoke tests).
-- [x] **Tài liệu SSOT**: `README.md`, `CLAIM_INTEGRITY_POLICY.md`, `CLOUDFLARE_VS_LEGACY_COST_ROI_ANALYSIS.md`, `PRODUCT.md`, `BUG_MEMORY.md` đồng bộ 100%.
+- [x] **Tài liệu SSOT**: `README.md`, `PRODUCT.md`, `CIVIC_HANDOFF_SSOT.md`, `BUG_MEMORY.md`, `TIMELINE.md` đồng bộ 100%.
