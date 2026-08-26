@@ -1,0 +1,12 @@
+{
+  "agents": {
+    "overrides": {
+      "browser_agent": {
+        "enabled": true
+      }
+    },
+    "browser": {
+      "sessionMode": "persistent"
+    }
+  }
+}

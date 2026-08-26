@@ -162,15 +162,14 @@
 - **Nguyên nhân**: Tải trực tiếp file ảnh gốc từ điện thoại lên R2/Database, làm lộ tọa độ nhà riêng, số serial thiết bị hoặc camera model của người dân/thanh niên.
 - **Giải pháp**: Tự động lọc sạch toàn bộ segment EXIF APP1 (`0xFFE1`) trên client trước khi gửi lên máy chủ (qua canvas re-encode hoặc `stripExifFromJpegBinary`), đồng thời tính toán mã băm SHA-256 trên ảnh đã lọc sạch để bảo đảm tính toàn vẹn chứng cứ.
 
-### 🚨 Trap 5.3: Bẫy Tuyên Bố Chi Phí $0 Tuyệt Đối (Claim Inaccuracy)
+### 🚨 Trap 5.3: Lỗi UTF-8 BOM trên Windows làm hỏng MCP Config JSON
+- **Nguyên nhân**: Khi ghi file config JSON trên Windows bằng PowerShell (`Out-File` / `Set-Content`), mặc định có thể sinh ra ký tự Byte Order Mark `\uFEFF` ở đầu file. Trình phân tích cú pháp JSON chuẩn của IDE/Node.js không parse được và báo lỗi: `Error: Invalid JSON in MCP config file. Unexpected token '﻿'`.
+- **Giải pháp**: Luôn ghi file JSON bằng Node.js (`fs.writeFileSync(..., 'utf8')`) hoặc UTF-8 No BOM để đảm bảo JSON parse hoàn hảo trên mọi nền tảng.
+
+### 🚨 Trap 5.4: Bẫy Tuyên Bố Chi Phí $0 Tuyệt Đối (Claim Inaccuracy)
 - **Nguyên nhân**: Tuyên bố "Hệ thống hoàn toàn 0đ vĩnh viễn" mà bỏ qua các chi phí thực tế khi vận hành sản phẩm.
 - **Giải pháp**: Luôn sử dụng câu claim chuẩn hóa: *"Chi phí hạ tầng pilot có thể gần bằng 0 trong hạn mức miễn phí hiện tại của Cloudflare (ghi nhận khả năng phát sinh tên miền, email, dung lượng mở rộng khi scale)."*
 
-### 🚨 Trap 4.10: Bẫy Tư Duy "Thanh Tra Trừng Phạt" & Thiếu Disclaimer Quy Chuẩn
-- **Nguyên nhân**: Thiết kế giao diện theo lối mòn cơ quan nhà nước xử phạt vi phạm hành chính, áp đặt kết luận pháp lý mà không có thẩm quyền nhà nước, hoặc trích dẫn quy chuẩn mà thiếu tuyên bố từ chối trách nhiệm (disclaimer) khiến giải pháp CivicTech bị hiểu sai mục đích.
-- **Giải pháp**:
-  1. **Chuyển đổi toàn diện sang Operational Review & Verification**: Operator đóng vai trò Điều phối viên & Thẩm tra viên hỗ trợ xác minh sự kiện theo 4 kết quả chuẩn hóa (`confirmed_signal`, `not_confirmed`, `insufficient_evidence`, `needs_follow_up`).
-  2. **Khóa cứng Disclaimer bắt buộc trên toàn bộ UI Tra cứu Quy chuẩn**:
      `"Mang tính hỗ trợ tra cứu, không thay thế kết luận thẩm quyền"` (kết quả so sánh nồng độ QCVN 05 hay an toàn thi công QCVN 18 là công cụ hỗ trợ ra quyết định, không thay thế kết luận giám định chính thức).
   3. **Zero-IoT Resilient Queue**: Hàng đợi tác nghiệp hiển thị minh bạch 4 khối (Signal, Telemetry, Citizen Evidence, SLA) và tự động chuẩn hóa hoạt động ngay cả khi không có cảm biến vật lý.
 

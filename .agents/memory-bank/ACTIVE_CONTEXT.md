@@ -23,6 +23,26 @@
      - `npm run verify:quick`: PASS 100% (237 unit + 42 UI smoke tests).
      - `npm run verify`: PASS 100% (74/74 test files, 575 in-memory + 11 database integration tests).
 
+## Nhiệm vụ hiện tại
+- **Mục tiêu**: UI/UX Auto-Fixer Agent — Duyệt toàn bộ các route trên hệ thống qua Chrome DevTools MCP, visual audit đa viewport (Desktop 1440x900 & Mobile 390x844), sửa dứt điểm các lỗi rớt chữ, tràn lề, scrollbar thô và nút bấm thiếu đồng bộ.
+- **Trạng thái**: ✅ **HOÀN TẤT TOÀN DIỆN TẤT CẢ CÁC TRANG (PASS 100% VISUAL AUDIT + 100% TESTS)**
+
+## Danh mục trang đã nghiệm thu trực quan và auto-fix:
+1. `/` (`LandingPage.jsx`) — Đạt chuẩn Civic Tech.
+2. `/community` (`CommunityHome.jsx`) — Đạt chuẩn 4 Quick Action cards & Metrics.
+3. `/community/observe` (`CreateObservation.jsx`) — Đã sửa category buttons không bị truncate, fix badge wrap mobile "Bắt buộc".
+4. `/community/discover` (`CommunityDiscover.jsx`) — Đã sửa thanh scrollbar xám xấu xí (`.no-scrollbar`), sửa 4 thẻ thống kê không bị truncate `...`.
+5. `/community/cases` (`CommunityCases.jsx`) — Đã sửa 4 thẻ KPI không bị truncate, sửa dropdowns filter responsive mobile, filter chips cuộn mượt.
+6. `/community/impact` (`CommunityImpact.jsx`) — Đã sửa Card "🪪 Hồ sơ tình nguyện viên" và nút "✏️ Sửa", loại bỏ dấu chấm lẻ loi trong 4 mốc Milestones, xóa bỏ truncate trên 4 card tổng quan.
+7. `/community/actions` (`CommunityActions.jsx`) — Đã đồng bộ cụm nút hành động (📁 Xem hồ sơ, 📷 Ảnh gốc, ⚡ Nhận việc), fix tràn 3 nút filter trên mobile, ẩn scrollbar thô.
+8. `/community/cases/:caseId` (`CommunityCaseWorkspace.jsx`) — Đã sửa container 6 Tabs điều hướng mượt mà, không còn scrollbar xám.
+9. `/community/observations/:id` (`ObservationDetail.jsx`) — Đã sửa fallback data, load ảnh sắc nét kèm mã băm SHA-256 đối chứng, chống crash khi API offline.
+10. `/staff/dashboard` (`StaffDashboard.jsx`) — Đã gỡ `line-clamp-1` trên header subtitle, tối ưu hiển thị 4 thẻ KPI và Queue điều phối.
+11. `/staff/cases` (`StaffCases.jsx`) — Bảng điều khiển bộ lọc 7 bước và empty state đạt chuẩn.
+12. `/staff/sites` (`StaffSites.jsx`) — Danh mục công trình & trạm quan trắc chuẩn Civic Tech.
+13. `/executive` (`ExecutiveDashboard.jsx`) — Bảng chỉ đạo điều hành môi trường tổng thể.
+14. `/contractor` (`ContractorDashboard.jsx`) — Cổng nhà thầu xử lý việc gấp và nộp minh chứng 50m.
+
 ---
 
 - **Bản chất dự án**: Ngay từ đầu DustGuard là một thử nghiệm CivicTech về bụi công trình, sử dụng cộng đồng + dữ liệu + công nghệ để biến quan sát ngoài hiện trường thành bằng chứng có cấu trúc và hành động có thể theo dõi. Sau quá trình làm việc với chuyên gia, nhóm không thay đổi mục tiêu đó; nhóm chỉ làm rõ hơn ranh giới: DustGuard hỗ trợ cộng đồng ghi nhận, đối chứng, hiểu vấn đề và kết nối với các kênh xử lý hiện hữu, chứ không đóng vai cơ quan nhà nước.
