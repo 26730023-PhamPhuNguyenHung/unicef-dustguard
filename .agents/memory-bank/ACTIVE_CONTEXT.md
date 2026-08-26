@@ -1,6 +1,16 @@
 # ACTIVE CONTEXT — DUSTGUARD VN
 
-## 📌 TRẠNG THÁI HIỆN TẠI: KHÓA SSOT ĐỊNH VỊ CIVIC-TECH CHUẨN MỰC (UNICEF HACKATHON)
+## 📌 POST-REFACTOR RUNTIME RECOVERY & REGRESSION FIX PROTOCOL (COMPLETED)
+- **Root Cause & Fix Summary**:
+  1. **TDZ Re-export Hazard**: Sửa lỗi Temporal Dead Zone trong `src/components/shared/index.jsx` (`export const PriorityBadge = RiskBadge;` khai báo trước `const RiskBadge`).
+  2. **Granular Failure Isolation (`SectionErrorBoundary`)**: Thêm `SectionErrorBoundary` bao bọc 6 sections độc lập trên `ExecutiveDashboard.jsx` (Situation Now, Requires Decision, Priority Map, SLA Matrix, Impact, Decisions), ngăn chặn 1 widget lỗi làm sập toàn bộ dashboard. Phân tách rõ ràng giữa DEV (technical details) và PROD (civic copy).
+  3. **Undefined Variable in JSX Template**: Sửa lỗi tham chiếu `openCases` chưa khai báo trong `ExecutiveDashboard.jsx` (dòng 251).
+  4. **TypeScript Import Extension Cleanup**: Loại bỏ phần mở rộng `.jsx` cứng trong import `PageBreadCrumb` (`StaffCases.jsx`, `StaffCaseDetail.jsx`) trỏ đúng vào `PageBreadCrumb.tsx`.
+  5. **Map Marker Semantics Export**: Bổ sung export hàm `createPickerMarker` trong `MapMarkerSemantics.js`.
+  6. **Live Runtime Verification**: Toàn bộ các route `/`, `/executive`, `/citizen`, `/staff`, `/admin`, `/contractor`, `/community` trả về HTTP 200. Quick test gate đạt **28/28 test files PASS 100% (237 unit + 42 UI smoke tests)**, Vite build thành công sạch sẽ (3.0s, 0 errors).
+
+---
+
 - **Bản chất dự án**: Ngay từ đầu DustGuard là một thử nghiệm CivicTech về bụi công trình, sử dụng cộng đồng + dữ liệu + công nghệ để biến quan sát ngoài hiện trường thành bằng chứng có cấu trúc và hành động có thể theo dõi. Sau quá trình làm việc với chuyên gia, nhóm không thay đổi mục tiêu đó; nhóm chỉ làm rõ hơn ranh giới: DustGuard hỗ trợ cộng đồng ghi nhận, đối chứng, hiểu vấn đề và kết nối với các kênh xử lý hiện hữu, chứ không đóng vai cơ quan nhà nước.
 - **Đó là sự trưởng thành sản phẩm (Maturity), không phải pivot.**
 

@@ -6,6 +6,7 @@
 
 ## 📅 Timeline & Commit Log
 
+| **2026-08-26** | `HEAD` | `fix(runtime)` | Khôi phục toàn diện runtime sau refactor: Fix TDZ Re-export `RiskBadge`, bổ sung `SectionErrorBoundary` ngăn ngừa sụp đổ dashboard, sửa lỗi `openCases` undefined, chuẩn hóa imports `PageBreadCrumb` và marker exports `createPickerMarker` | 28/28 Quick Gate (237 unit + 42 UI) Pass 100% |
 | **2026-08-26** | `a18ed99` | `fix(ui)` | Loại bỏ hoàn toàn backdrop-blur-none trong OperatorVerificationModal & RegulationAssistantModal, hoàn thành 100% Zero-Glassmorphism Audit và vượt qua Release Gate (74/74 test files, 628 tests) | 74/74 Pass (575 unit + 11 db + 42 UI) |
 | **2026-08-26** | `HEAD` | `feat(sensor-quality)` | Khóa cứng Sensor Registry (6 loại thiết bị, 4 mức hiệu chuẩn, 4 tiers), Zero-Fake hardware channels, Data Quality Engine (5 tầng: bounds, flatlines, sudden jumps, staleness, packet loss), HMAC-SHA256 & sequence replay protection, sensor adapter đa giao thức | 33/33 Pass (254 unit + 42 UI) |
 | **2026-08-26** | `e0afd08` | `feat(operator-workspace)` | Tái thiết kế Operator Workspace theo chuẩn Operational Review & Verification, 4 kết quả xác minh (confirmed_signal, not_confirmed, insufficient_evidence, needs_follow_up), Review Queue (Signal, Telemetry, Citizen Evidence, SLA), Trợ lý tra cứu quy chuẩn QCVN 05/18 với disclaimer bắt buộc | 30/30 Pass (251 unit + 42 UI) |

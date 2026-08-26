@@ -50,6 +50,18 @@
 - **Nguyên nhân**: Trong module export shared UI (`app/src/components/shared/index.jsx`), dòng gán alias `export const PriorityBadge = RiskBadge;` được đặt ở đầu file TRƯỚC dòng định nghĩa `export const RiskBadge = React.memo(...)`. Do `const` không được hoisting như `function` mà rơi vào Temporal Dead Zone (TDZ), khiến toàn bộ bundle crash ngay khi load.
 - **Giải pháp**: Luôn đặt các dòng gán alias hoặc re-export phụ thuộc **NẰM SAU** định nghĩa của component gốc `RiskBadge`.
 
+### 🚨 Trap 2.5: Thiếu Granular Section Error Boundary làm chết toàn trang
+- **Nguyên nhân**: Toàn bộ dashboard chỉ có duy nhất 1 Page-level ErrorBoundary. Khi 1 widget phụ (như bản đồ hay panel) gặp lỗi runtime, toàn bộ dashboard biến mất và thay bằng thông báo lỗi chung.
+- **Giải pháp**: Sử dụng `SectionErrorBoundary` bao bọc từng widget/section độc lập. Khi một khu vực gặp lỗi, chỉ khu vực đó hiển thị thông báo "Không thể tải nội dung" kèm nút [Thử lại], các khu vực khác vẫn hoạt động bình thường. Phân tách rõ DEV (hiện technical details) và PROD (hiện thông báo hành chính dân sinh, không lộ raw stack).
+
+### 🚨 Trap 2.6: Tham chiếu biến chưa khai báo trong JSX template string
+- **Nguyên nhân**: Sử dụng biến trong JSX (ví dụ `{openCases}`) khi biến chưa được khai báo ở scope hàm của component, gây `ReferenceError: openCases is not defined`.
+- **Giải pháp**: Luôn kiểm tra khai báo đầy đủ biến hoặc destructure an toàn từ props/state với fallback hợp lý (`const openCases = overviewData?.kpis?.openCases ?? 0;`).
+
+### 🚨 Trap 2.7: Sai đuôi mở rộng khi import (`.jsx` thay vì `.tsx`)
+- **Nguyên nhân**: Viết trực tiếp đuôi `.jsx` trong câu lệnh import (ví dụ `import PageBreadcrumb from '../../components/common/PageBreadCrumb.jsx'`) trong khi file thực tế là `.tsx`, khiến bundler/resolver không phân giải được.
+- **Giải pháp**: Luôn import không cần ghi đuôi mở rộng (`import PageBreadcrumb from '../../components/common/PageBreadCrumb'`) hoặc ghi đúng định dạng file.
+
 ---
 
 ## 🌐 3. Cloudflare Worker Edge & API Traps
