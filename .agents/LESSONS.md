@@ -159,23 +159,48 @@
 - **Dual-View Table Pattern (Desktop Table & Mobile Cards)**: Trên các bảng dữ liệu quản trị, không cố gắng nhồi nhét bảng nhiều cột trên màn hình hẹp (< 768px). Triển khai kiến trúc 2 tầng: Desktop Table (`hidden md:block`) & Mobile Cards (`md:hidden flex flex-col gap-3`).
 - **Safe Area Inset Padding**: Cố định Bottom Navigation cho Citizen & Community luôn tích hợp `pb-[max(0.5rem,env(safe-area-inset-bottom))]` hoặc `@utility pb-safe` để tránh bị che bởi thanh điều hướng cử chỉ trên iOS/Android.
 
-## 18. Ngôn Ngữ Thuần Việt Dễ Hiểu & Cấm Thuật Ngữ Kỹ Thuật / Jargon (Plain Civic Language SSOT)
+## 18. Ngôn Ngữ Thuần Việt Dễ Hiểu & Quy Tắc Tối Đa 3 Chữ (Max 3 Words SSOT)
 - **Bối cảnh & Vấn đề**:
-  - Việc đưa các từ ngữ viết tắt tiếng Anh hoặc thuật ngữ kỹ thuật (`SLA`, `telemetry`, `hash`, `D1/R2`, `risk engine`, `triage`, `sync`) lên nút bấm, tiêu đề tab hay menu gây khó hiểu cho người dân, sinh viên tình nguyện và cán bộ điều hành cấp cơ sở.
-  - Ví dụ: Nút bấm mang tên *"Cập nhật SLA"* gây mơ hồ về mặt hành vi so với *"Làm mới dữ liệu"* hoặc *"Cập nhật tiến độ"*.
-- **Quy Tắc Tối Thượng (Invariants)**:
-  1. **Nút Bấm (Buttons)**: Phải dùng động từ thuần Việt, rõ ràng hành vi tiếp theo:
-     - `Cập nhật SLA` ➔ **`Làm mới dữ liệu`** / **`Cập nhật tiến độ`**.
-     - `Trigger scan` ➔ **`Quét cảm biến`**.
-     - `Export Dossier` ➔ **`Xuất hồ sơ A4`** / **`Xuất PDF`**.
-     - `Submit` ➔ **`Gửi phản ánh`** / **`Nộp minh chứng`**.
-  2. **Thanh Menu & Điều Hướng (Navigation & Tabs)**: Dùng từ ngữ nghiệp vụ dân sinh, trực diện:
-     - `Giám sát SLA` ➔ **`Hạn khắc phục`** / **`Thời hạn xử lý`** (24h/48h).
-     - `Kiểm toán thiết bị` ➔ **`Thiết bị`**.
-     - `Phân tích & Điểm nóng` ➔ **`Điểm nóng`**.
-     - `Phân tích văn bản pháp luật` ➔ **`Phân tích văn bản`**.
-  3. **Ngắn Gọn & Chống Rớt Chữ (Compact & Anti-Orphan)**:
-     - Tên nút tối đa 2-3 từ, luôn gắn `whitespace-nowrap shrink-0` và `min-h-[44px]` (hoặc `min-h-[40px]`).
-     - Không dùng từ ngữ đa tầng trừu tượng làm dài dòng giao diện.
+  - Việc đưa các từ ngữ viết tắt tiếng Anh hoặc thuật ngữ kỹ thuật (`SLA`, `telemetry`, `hash`, `D1/R2`, `risk engine`, `triage`, `sync`) hoặc các nhãn quá dài lên nút bấm, tiêu đề tab hay menu gây khó hiểu cho người dân, sinh viên và cán bộ cơ sở, đồng thời dễ làm vỡ layout/rớt chữ trên mobile.
+  - Ví dụ: Nút bấm mang tên *"Cập nhật SLA"* hay *"Làm mới dữ liệu"* dài dòng, khó hiểu hơn *"Làm mới"*.
+- **Quy Tắc Tối Thượng (Invariants — Max 3 Words)**:
+  1. **Nút Bấm (Buttons — Tối đa 2 đến 3 chữ)**:
+     - `Cập nhật SLA` / `Làm mới dữ liệu` ➔ **`Làm mới`** (2 chữ).
+     - `Quét cảm biến thủ công` ➔ **`Quét cảm biến`** (3 chữ).
+     - `Xuất Hồ sơ Trọn gói` ➔ **`Xuất hồ sơ`** / **`Xuất PDF`** (2 chữ).
+     - `Phản ánh ô nhiễm môi trường` ➔ **`Gửi phản ánh`** (3 chữ).
+     - `Bản đồ quanh tôi` ➔ **`Xem bản đồ`** (3 chữ).
+  2. **Thanh Menu & Điều Hướng (Navigation & Tabs — Tối đa 1 đến 3 chữ)**:
+     - `Giám sát SLA` ➔ **`Hạn khắc phục`** (3 chữ).
+     - `Ma trận Rủi ro 2D` ➔ **`Ma trận`** (2 chữ).
+     - `Phân tích văn bản pháp luật` ➔ **`Phân tích luật`** (3 chữ).
+     - `Tra cứu căn cứ pháp lý` ➔ **`Tra cứu luật`** (3 chữ).
+     - `Dựng hồ sơ vi phạm` ➔ **`Lập hồ sơ`** (3 chữ).
+     - `Soạn thảo biên bản` ➔ **`Soạn biên bản`** (3 chữ).
+     - `Kiểm toán thiết bị` ➔ **`Thiết bị`** (2 chữ).
+     - `Phân tích & Điểm nóng` ➔ **`Điểm nóng`** (2 chữ).
+  3. **Kỹ Thuật Phòng Vệ Layout**:
+     - 100% nút bấm, badge, tabs phải có `whitespace-nowrap shrink-0` và `min-h-[44px]` (hoặc `min-h-[40px]`).
 
-
+## 19. Free-First Cron & Soft SLA Automation Engine Architecture SSOT
+- **Bối cảnh & Vấn đề Cốt Lõi**:
+  - Legacy cron chạy đơn luồng cập nhật cứng `alerts.status = 'OVERDUE'`, làm ô nhiễm trạng thái nghiệp vụ (Human Workflow State), không hỗ trợ tạm dừng đồng hồ khi hồ sơ chờ bên ngoài (`WAITING_CONTRACTOR`), không có audit trail và dễ gây đúp side-effect hoặc chạm ngưỡng Cloudflare Free-Tier CPU limit nếu quét toàn bộ bảng.
+- **Quy Tắc Kiến Trúc Tối Thượng (Free-First Invariants)**:
+  1. **100% Free-Tier & Zero External Paid Dependencies**:
+     - Vận hành hoàn toàn trên Cloudflare Scheduled Worker (`scheduled()`) + Cloudflare D1 Native SQL (`getD1OrSqlite`).
+     - Tuyệt đối không dùng Durable Objects, Workflows, Queues, Upstash Redis hay các dịch vụ Cron bên thứ ba có phí.
+  2. **Tách Biệt Trạng Thái Nghiệp Vụ & Mức Độ Cần Chú Ý (Soft SLA Decoupling)**:
+     - `cases.status` là trạng thái xử lý hồ sơ thực tế (`OPEN`, `SCREENING`, `PREPARING`, `ON_SITE`, `APPRAISING`, `COMPLETED`).
+     - `attention_state` là trạng thái động tính toán theo thời gian (`NORMAL`, `DUE_SOON`, `NEEDS_ATTENTION`, `OVERDUE`, `CRITICAL`).
+     - Cron chỉ tạo timeline nhắc nhở mềm (`case_timelines`), tuyệt đối KHÔNG bao giờ ghi đè `cases.status = 'OVERDUE'`.
+  3. **Đồng Hồ Tạm Dừng Khi Chờ Bên Thứ Ba (Paused Clock / Multi-Clock)**:
+     - Khi hồ sơ ở trạng thái `WAITING_CONTRACTOR`, `WAITING_CITIZEN` hoặc `WAITING_EXTERNAL`, `staffClockPaused` được kích hoạt và không tích lũy lỗi quá hạn cho cán bộ nhà nước.
+  4. **Giới Hạn Bounded Batching & Scale-to-Zero Guardrail**:
+     - Mọi câu lệnh quét và xóa dọn dẹp đều dùng `LIMIT 100` và tối đa 3 batches (300 bản ghi/tick), ngắt vòng lặp ngay khi dữ liệu trả về < 100 dòng.
+  5. **Dọn Dẹp Phiên Đăng Nhập An Toàn (Safe Better Auth Pruning)**:
+     - Xóa các phiên hết hạn (`expiresAt < now`), tuyệt đối bảo vệ các phiên hợp lệ (`expiresAt >= now`).
+  6. **Cô Lập Lỗi Sub-tasks (Fault Isolation & Audit Trail)**:
+     - Mỗi tác vụ con (Case Attention, Sensor Health, Follow-up Queue, Maintenance) được bọc trong `try/catch` độc lập. Một tác vụ lỗi không làm sập toàn bộ sweep.
+     - Toàn bộ kết quả quét được ghi vào bảng `automation_runs` (`job_name`, `started_at`, `finished_at`, `status`, `scanned_count`, `changed_count`, `error_count`, `details_json`).
+  7. **Kiểm Thử 12 Kịch Bản Bắt Buộc (Section 21 Parity)**:
+     - Test suite `tests/free-first-cron-automation-engine.test.js` kiểm chứng đầy đủ 12 test cases + API/Worker scheduled invocation với 100% pass rate.
