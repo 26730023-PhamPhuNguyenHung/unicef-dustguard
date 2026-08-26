@@ -1,6 +1,20 @@
 # Active Context: DustGuard VN Live Runtime Audit & Repair Protocol
 
 ## Focus: Live Runtime Verification, Zero Documentation Claims & Real System Execution
+- **Subagent Fix 01 (P0 Completed — D1 SCHEMA & SPATIAL DB INDEXING / BACKFILL ENGINEER)**:
+  * **1. D1 Schema Migration 0007 (`migrations/0007_spatial_and_executive_indexes.sql`)**:
+    - Bổ sung composite indexes trên Cloudflare D1 SQLite (`idx_sites_spatial`, `idx_sensors_spatial`, `idx_complaints_spatial`, `idx_observations_spatial`, `idx_observations_ward_status`, `idx_cases_executive`, `idx_audit_logs_time`, `idx_handoffs_executive`).
+    - Đồng bộ `prisma/d1-schema.sql` và áp dụng trực tiếp vào `prisma/dev.db`.
+  * **2. Canonical WGS84 Spatial Adapter (`server/domain/spatial/spatial-adapter.js`)**:
+    - Xây dựng canonical adapter hỗ trợ `parseCoordinates`, `serializeCoordinates`, `normalizeEntityCoordinates`, `calculateHaversineDistance`, `evaluateGeofenceBuffer`, `isWithinRadius`, `isValidWgs84`, `formatWgs84`.
+    - Hỗ trợ đa dạng input: chuỗi `"21.0285,105.8542"`, object `{ latitude, longitude }` / `{ lat, lng }`, mảng `[lat, lng]`, JSON string và đối tượng entity.
+  * **3. Repository Integration & Normalization**:
+    - Tích hợp chuẩn hóa tọa độ vào `site.repository.js` (`createSite`, `updateSite`, `getSiteById`, `getSites`) và `observation.repository.js` (`createObservation`, `getObservationById`, `getObservations`).
+    - Cập nhật `site.controller.js` và `worker.js` sử dụng spatial adapter thống nhất.
+  * **4. Verification Gate**:
+    - `node --test app/tests/d1-schema.test.js`: **6/6 tests PASS 100%**.
+    - `npm --prefix app run verify:quick`: **25/25 test files PASS 100%** (212 in-memory unit/integration tests + 42 UI smoke tests).
+
 - **Trạng thái**: ✅ `SUBAGENT FIX 10 COMPLETED — COMPREHENSIVE RUNTIME VERIFICATION & RELEASE GATE QA` (Đạt 100% Full Verification: `npm run verify` 71/71 test files, 557+ tests PASS 100%; `npm run verify:runtime` 38/38 checks PASS 100%; `npm run audit:db` 55/55 checks PASS 100%; `npm run audit:claims` 0 overclaims PASS 100%; `npm run build` 0 errors trong 4.92s).
 - **Kết Quả Subagent FIX 10 (QA & Release Gate)**:
   * Anti-Mock Scanner (`node --test tests/runtime-qa-anti-mock-matrix.test.js`): 13/13 tests pass 100%.
