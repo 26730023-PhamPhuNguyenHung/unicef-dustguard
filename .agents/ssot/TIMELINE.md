@@ -7,7 +7,7 @@
 ## 📅 Timeline & Commit Log
 
 | Mốc Thời Gian | Commit Hash | Phạm Vi / Scope | Mô Tả Thay Đổi & Giá Trị Nghiệp Vụ | Trạng Thái Kiểm Thử |
-|---|---|---|---|---|
+| **2026-08-26** | `HEAD` | `feat(civic-integration)` | Tích hợp tính năng Bàn giao 1-Chạm sang Cổng 1022 & iHanoi, Thẻ QR Dossier và Ô nhập mã số tiếp nhận (Mã Ticket / Biên nhận) công khai | 28/28 Pass (237 unit + 42 UI) |
 | **2026-08-26** | `c7da34b` | `feat(devops-privacy)` | Chuẩn hóa claim chi phí pilot gần bằng 0 Cloudflare, tự động xóa EXIF bảo vệ quyền riêng tư & nén ảnh < 300KB | 26/26 Pass (225 unit + 42 UI) |
 | **2026-08-26** | `0c2bb3a` | `feat(civic-handoff)` | Chuẩn hóa Structured Civic Dossier đối thoại xây dựng, định vị 1022/iHanoi là Điểm Tích Hợp và loại bỏ từ ngữ áp đặt | 26/26 Pass (225 unit + 42 UI) |
 | **2026-08-26** | `d1edb19` | `feat(qa-domain)` | Chuẩn hóa định nghĩa SHA-256 tamper-evident, khóa bất biến Observation != Case và Follow-up 3 trạng thái | 26/26 Pass (225 unit + 42 UI) |

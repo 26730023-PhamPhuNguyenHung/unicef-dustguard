@@ -92,6 +92,12 @@
   2. Định vị 1022 / iHanoi là **ĐIỂM TÍCH HỢP** kết nối case, không thay thế hệ thống hành chính chính thức.
   3. Chuẩn hóa **Structured Civic Dossier** 4 khối A4 phục vụ đối thoại xây dựng và phối hợp khắc phục hiện trường.
 
+### 🚨 Trap 4.6: Bẫy Rơi vào Khoảng Trống Thông Tin khi Nộp 1022/iHanoi (Information Void Trap)
+- **Nguyên nhân**: Người dân nộp đơn lên 1022 hoặc ứng dụng iHanoi nhưng không lưu lại mã số biên nhận / Ticket, dẫn đến việc cả cộng đồng và CLB không biết tiến độ xử lý ra sao, vụ việc bị rơi vào "khoảng trống thông tin".
+- **Giải pháp**: 
+  1. Cung cấp nút **"Sao chép nộp 1022 / iHanoi (1-Chạm)"** tự động định dạng văn bản chuẩn (Địa chỉ, Tọa độ GPS, Diễn biến Trước/Sau, Link Dossier A4 và Mã QR).
+  2. Bổ sung ô nhập & quản lý **Mã Ticket / Biên nhận 1022** ngay trong Không gian Vụ việc (`CommunityCaseWorkspace.jsx`), lưu trữ vào D1 SSOT và công khai minh bạch trạng thái (`ĐÃ TIẾP NHẬN` / `ĐANG XỬ LÝ` / `ĐÃ KHẮC PHỤC`) cho toàn bộ cộng đồng cùng giám sát.
+
 ---
 
 ## 📷 5. Image Processing, EXIF Privacy & Cost Claims Traps
