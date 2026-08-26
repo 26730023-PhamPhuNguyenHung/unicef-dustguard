@@ -142,7 +142,12 @@
 - **Nguyên nhân**: Tuyên bố "Hệ thống hoàn toàn 0đ vĩnh viễn" mà bỏ qua các chi phí thực tế khi vận hành sản phẩm.
 - **Giải pháp**: Luôn sử dụng câu claim chuẩn hóa: *"Chi phí hạ tầng pilot có thể gần bằng 0 trong hạn mức miễn phí hiện tại của Cloudflare (ghi nhận khả năng phát sinh tên miền, email, dung lượng mở rộng khi scale)."*
 
-### 🚨 Trap 5.4: Bẫy Đa Tham Số trong Hàm `generateImpactCertificate` khi truyền trực tiếp số giờ
-- **Nguyên nhân**: Khi truyền trực tiếp con số giờ (`20.0`) vào tham số thứ 4 `volunteerLogs` thay vì mảng đối tượng, nếu không phân nhánh sẽ bị `calculateVolunteerHours` hiểu nhầm là số lượt báo cáo (count * 2.5h = 50h).
-- **Giải pháp**: Kiểm tra `typeof volunteerLogs === 'number'` để gán thẳng `vHours = volunteerLogs`, tính toán chính xác 20h = 4.0 tín chỉ và 80 ĐRL.
+### 🚨 Trap 4.10: Bẫy Tư Duy "Thanh Tra Trừng Phạt" & Thiếu Disclaimer Quy Chuẩn
+- **Nguyên nhân**: Thiết kế giao diện theo lối mòn cơ quan nhà nước xử phạt vi phạm hành chính, áp đặt kết luận pháp lý mà không có thẩm quyền nhà nước, hoặc trích dẫn quy chuẩn mà thiếu tuyên bố từ chối trách nhiệm (disclaimer) khiến giải pháp CivicTech bị hiểu sai mục đích.
+- **Giải pháp**:
+  1. **Chuyển đổi toàn diện sang Operational Review & Verification**: Operator đóng vai trò Điều phối viên & Thẩm tra viên hỗ trợ xác minh sự kiện theo 4 kết quả chuẩn hóa (`confirmed_signal`, `not_confirmed`, `insufficient_evidence`, `needs_follow_up`).
+  2. **Khóa cứng Disclaimer bắt buộc trên toàn bộ UI Tra cứu Quy chuẩn**:
+     `"Mang tính hỗ trợ tra cứu, không thay thế kết luận thẩm quyền"` (kết quả so sánh nồng độ QCVN 05 hay an toàn thi công QCVN 18 là công cụ hỗ trợ ra quyết định, không thay thế kết luận giám định chính thức).
+  3. **Zero-IoT Resilient Queue**: Hàng đợi tác nghiệp hiển thị minh bạch 4 khối (Signal, Telemetry, Citizen Evidence, SLA) và tự động chuẩn hóa hoạt động ngay cả khi không có cảm biến vật lý.
+
 

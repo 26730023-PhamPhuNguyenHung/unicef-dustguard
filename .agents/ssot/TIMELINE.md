@@ -6,6 +6,7 @@
 
 ## 📅 Timeline & Commit Log
 
+| **2026-08-26** | `e0afd08` | `feat(operator-workspace)` | Tái thiết kế Operator Workspace theo chuẩn Operational Review & Verification, 4 kết quả xác minh (confirmed_signal, not_confirmed, insufficient_evidence, needs_follow_up), Review Queue (Signal, Telemetry, Citizen Evidence, SLA), Trợ lý tra cứu quy chuẩn QCVN 05/18 với disclaimer bắt buộc | 30/30 Pass (251 unit + 42 UI) |
 | **2026-08-26** | `6b7ef4c` | `feat(scoring)` | Chuẩn hóa Explainable Priority Score 6 yếu tố (Base severity PM, Duration, Sensor confidence, Proximity <300m, Citizen corroboration, Recurrence), giải thích UI 'Tại sao Score = X' (+ High PM10, + 3 citizen reports, + 220m from school), loại bỏ 100% Violation Score | 29/29 Pass (244 unit + 42 UI) |
 | **2026-08-26** | `f8b92c1` | `feat(citizen-youth)` | Tinh gọn trải nghiệm ghi nhận 3-chạm (<30s), nén ảnh client <300KB khử EXIF & SHA-256 tamper-evident, chuẩn hóa vai trò Citizen & Tín chỉ thanh niên (20h = 4.0 tín chỉ) QR ISO/IEC 18004 | 28/28 Pass (237 unit + 42 UI) |
 | **2026-08-26** | `f6a4b1c` | `docs(map-ssot)` | Hợp nhất toàn bộ logic bản đồ thành 1 Map SSOT duy nhất 'DustGuard Spatial Intelligence Map', chuẩn hóa WGS84, 6 lớp không gian (Sensors, Sites, Observations, Hotspots, Geofence 300m trường học, Ranh giới Phường/Xã) và ma trận phân quyền RBAC đa tầng trong MAP.md | 28/28 Pass (237 unit + 42 UI) |

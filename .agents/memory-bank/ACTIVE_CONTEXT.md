@@ -80,7 +80,34 @@
   3. Đảm bảo UI luôn giải thích minh bạch **'Tại sao Score = X'** với các thẻ giải thích trực quan (`+ High PM10`, `+ 3 citizen reports`, `+ 220m from school`, `+ 2 past warnings`) và chuỗi `whyScoreX`.
   4. Cập nhật module scoring canonical trong codebase (`dust-risk-engine.js`, `riskEngine.js`, `PriorityScoreCard.jsx`, `RiskBreakdownModal.jsx`, `SiteOverviewTab.jsx`).
   5. Thiết lập test suite toàn diện `explainable-priority-score.test.js` (7/7 tests pass) và kiểm thử boundary, mathematical invariants đạt 100%.
-- [x] **Verification Gate**: `npm --prefix app run verify:quick` đạt 28/28 files pass (237 unit + 42 UI smoke tests).
-- [x] **Tài liệu SSOT**: `README.md`, `PRODUCT.md`, `TERMINOLOGY.md`, `ROLES.md`, `PERMISSIONS.md`, `AUTH.md`, `SCIENTIFIC_RESEARCH_SPEC.md`, `CIVIC_HANDOFF_SSOT.md`, `BUG_MEMORY.md`, `TIMELINE.md` đồng bộ 100%.
-
-
+- [x] **Subagent 9: Operator & Decision Support Workspace Specialist**:
+  1. Đổi mới hoàn toàn tư duy thiết kế: Chuyển từ *"Thanh tra xử lý vi phạm"* sang **"Operational Review & Verification"** (Điều phối vận hành môi trường CivicTech, thẩm tra tín hiệu, đối chứng minh chứng thực địa và hỗ trợ chuẩn hóa hồ sơ).
+  2. **Review Queue minh bạch**: Sắp xếp danh sách sự kiện/tín hiệu theo **Priority Score** (P1 Khẩn / P2 Ưu tiên / P3 Theo dõi), phân tách 4 khối rõ ràng: *Signal* (loại tín hiệu, mức độ khẩn), *Sensor Telemetry* (PM10, PM2.5, chuẩn QCVN 05, hỗ trợ chế độ Zero-IoT không cảm biến), *Citizen Evidence* (ảnh hiện trường GPS, hash SHA-256 tamper-evident), và *SLA Countdown*.
+  3. **Verification Workflow 4 kết quả xác minh chuẩn hóa**:
+     - `confirmed_signal`: Tín hiệu xác thực (Đúng thực tế) ➔ Chuyển sang tạo Case hoặc gửi Handoff 1022/iHanoi.
+     - `not_confirmed`: Không xác nhận (Không có cơ sở / Sai lệch) ➔ Đóng cảnh báo & lưu vết giải trình.
+     - `insufficient_evidence`: Chưa đủ bằng chứng (Cần bổ sung) ➔ Yêu cầu gửi thêm ảnh đối chứng định vị.
+     - `needs_follow_up`: Cần theo dõi thêm (Chờ đối chứng) ➔ Kích hoạt mục tiêu đối chứng cộng đồng 24h - 48h (Community Follow-up Target).
+  4. **Regulation Reference Assistant & Disclaimer bắt buộc**:
+     - Tích hợp tra cứu nhanh chuẩn mực: **QCVN 05:2023/BTNMT** (Chất lượng không khí), **QCVN 18:2021/BXD** (An toàn thi công & dập bụi), **QĐ 48/2024/QĐ-UBND Hà Nội** (Tưới ẩm giảm bụi 3 lần/ngày).
+     - Live Evaluator so sánh trực quan nồng độ đo kiểm thực tế với ngưỡng QCVN 05.
+     - Khóa cứng Disclaimer bắt buộc trên toàn bộ UI và kết quả tra cứu: *"Mang tính hỗ trợ tra cứu, không thay thế kết luận thẩm quyền"*.
+  5. Rà soát & nâng cấp toàn diện các module Operator / Staff UI: `StaffDashboard.jsx`, `UnifiedOperationsCenter.jsx`, `StaffCaseDetail.jsx`, `StaffAlerts.jsx`, `StaffAI.jsx`, `LegalSearch.jsx`, `AppSidebar.tsx`, `AppHeader.tsx`.
+- [x] **Subagent 6: Sensor & Data Quality Integrity Specialist**:
+  1. **Sensor Registry SSOT (`sensor.rules.js`)**: Chuẩn hóa `SENSOR_DEVICE_TYPES` (6 loại: `SOLAR_POLE`, `MAST_STATION`, `HANDHELD`, `SUSPENDED_POD`, `KIOSK_SOLO`, `MOBILE_NODE`), `SENSOR_CALIBRATION_STATUS` (`CALIBRATED`, `PENDING_CALIBRATION`, `EXPIRED`, `UNCALIBRATED`), `SENSOR_HEALTH_STATUS` (5 trạng thái), `SENSOR_TIERS` (`PRODUCTION`, `FIELD_TRIAL`, `EXPERIMENTAL`, `BENCHMARK`).
+  2. **Environmental Measurements & Zero-Fake Hardware Fields**: Thiết lập danh mục `HARDWARE_PROFILES` với kênh đo phần cứng chuẩn xác. Khóa cứng nguyên tắc không tổng hợp số liệu giả cho phần cứng không hỗ trợ (ví dụ `BASIC_OPTICAL_PM` chỉ đo PM2.5 & PM10, các trường `pm1`, `temp`, `humidity` giữ nguyên `null`).
+  3. **Data Quality Engine 5 tầng kiểm toán (`data-quality.engine.js`)**:
+     - *Physical Bounds*: Phát hiện số đo bất khả thi vật lý (PM1 > 1000, PM2.5/PM10 > 2500, Temp ngoài -20-70°C, Độ ẩm ngoài 0-100%).
+     - *Flatline Detection*: Phát hiện hiện tượng treo cảm biến / ADC freeze ($\ge 5$ mẫu đo liên tiếp không đổi trải dài $\ge 10$ phút).
+     - *Sudden Jumps*: Phát hiện nhảy vọt phi thực tế ($\Delta \text{PM2.5} > 250\ \mu g/m^3$ trong $\le 15$s hoặc tốc độ $> 25\ \mu g/m^3/s$).
+     - *Stale Data / Liveness*: Cảnh báo dữ liệu trễ quá 15 phút hoặc lệch đồng hồ thiết bị.
+     - *Data Gaps & Sequence Anomaly*: Phát hiện mất gói tin ($seq_{curr} - seq_{prev} - 1$) và chặn sequence rollback.
+     - Tính toán điểm chất lượng dữ liệu tổng hợp (Data Quality Score 0-100) và xếp hạng (EXCELLENT, GOOD, FAIR, POOR, CORRUPTED).
+  4. **Device Cryptographic Integrity & Replay Protection (`hmac.js`, `replay-protection.js`, `device-auth.js`)**:
+     - Hỗ trợ HMAC-SHA256 chuẩn hóa cho nhiều định dạng firmware, theo dõi sequence đơn điệu ngăn chặn tấn công phát lại (Replay Attack).
+     - Tách biệt thiết bị thử nghiệm (`isExperimental: true`, tag `EXPERIMENTAL`): Cho phép ghi nhận telemetry và tạo log cảnh báo nhưng cách ly, không tự động sinh án phạt/case pháp lý.
+  5. **Sensor Hardware Adapter (`sensor.adapter.js`)**: Chuẩn hóa giải mã dữ liệu IoT đa giao thức (ESP32 HTTP JSON, Pipe-delimited serial, LoRaWAN binary payload).
+  6. **API Endpoints & Integration**: Nâng cấp `GET /api/sensors/audit/integrity`, bổ sung `GET /api/sensors/:id/quality` và tích hợp Data Quality Engine trực tiếp vào `POST /api/sensors/reading`.
+  7. **Verification**: Thiết lập test suite toàn diện `sensor-data-quality-integrity.test.js` (17/17 pass) và bảo đảm toàn bộ pipeline `verify:quick` (28 suites, 237 tests + 42 UI smoke) đạt 100% pass.
+- [x] **Verification Gate**: `npm --prefix app run verify:quick` đạt 100% pass.
+- [x] **Tài liệu SSOT**: `README.md`, `PRODUCT.md`, `OPERATOR_WORKSPACE_SSOT.md`, `CIVIC_HANDOFF_SSOT.md`, `TERMINOLOGY.md`, `BUG_MEMORY.md`, `TIMELINE.md` đồng bộ 100%.
