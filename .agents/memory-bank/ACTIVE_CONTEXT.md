@@ -62,5 +62,25 @@
   2. Xóa bỏ hoàn toàn việc giả lập 'Inspector Bộ trưởng' hoặc 'Thẩm phán hành chính / Cơ quan cưỡng chế xử phạt'.
   3. Biên soạn cập nhật 2 tài liệu SSOT độc lập: [ROLES.md](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/ROLES.md) (định danh 5 vai trò thực tế & chuẩn hóa tương thích) và [PERMISSIONS.md](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/PERMISSIONS.md) (ma trận phân quyền RBAC & ABAC chi tiết 5x18).
   4. Đồng bộ [AUTH.md](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/AUTH.md), [INDEX.md](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/INDEX.md), [BUG_MEMORY.md](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/BUG_MEMORY.md).
+- [x] **Subagent 8: Citizen & Youth Experience Specialist**:
+  1. Tinh gọn trải nghiệm ghi nhận cộng đồng với luồng **3-Chạm (< 30 giây)**: Chụp ảnh hiện trường ➔ Chọn nguồn phát sinh ô nhiễm ➔ Gửi ngay trong `CreateObservation.jsx`, tự động lấy GPS và gắn nhãn đối chứng.
+  2. Nâng cấp bộ nén ảnh client `< 300KB`, tự động lọc sạch toàn bộ segment EXIF nhạy cảm (bảo vệ danh tính công dân/thanh niên) và sinh mã băm SHA-256 tamper-evident trong `UploadZone.jsx`, `CitizenReportFormSection.jsx`, `CreateObservation.jsx`.
+  3. Rà soát và khóa cứng nhận diện vai trò: Citizen là **nguồn tín hiệu & người theo dõi minh bạch**; không tự ý kết luận vi phạm hay áp đặt chế tài; DustGuard hỗ trợ thiết lập chuỗi bằng chứng Before/After và kết nối tới các kênh tiếp nhận hiện hữu (1022, iHanoi).
+  4. Chuẩn hóa công thức tín chỉ tình nguyện & điểm rèn luyện: **20h = 4.0 tín chỉ ngoại khóa**, 80 Điểm rèn luyện (4 ĐRL/giờ), mã QR ISO/IEC 18004 chuẩn SVG / DataUrl và disclaimer SSOT pháp lý bắt buộc.
+  5. Thiết lập test suite `app/tests/citizen-youth-experience-specialist.test.js` pass 5/5 và toàn bộ verification loop `verify:quick` 28/28 files pass.
+- [x] **Subagent 7: Event & Explainable Priority Scoring Engine Architect**:
+  1. Chuẩn hóa thuật ngữ: Gọi là **'Priority Score'** (0-100) / **'Điểm ưu tiên can thiệp'**, tuyệt đối loại bỏ và không sử dụng thuật ngữ 'Violation Score' (bảo đảm nguyên tắc AI is Assistant, Not Judge).
+  2. Xây dựng công thức **Explainable Priority Score 6 yếu tố cốt lõi**:
+     - *Base severity*: Nồng độ bụi PM2.5 / PM10 so sánh chuẩn QCVN 05:2023.
+     - *Duration*: Thời gian duy trì nồng độ vượt chuẩn liên tục (hours).
+     - *Sensor confidence*: Độ tin cậy cảm biến (Active, Stale, Flatline, Drift, Zero-IoT resilience).
+     - *Sensitive proximity*: Khoảng cách tới công trình nhạy cảm (trường học, bệnh viện, khu dân cư < 300m).
+     - *Citizen corroboration*: Số lượng ghi nhận thực tế từ cộng đồng, đếm independent reporters chống spam.
+     - *Historical recurrence*: Tần suất lặp lại, cảnh báo trước đó, tái phát sau cam kết khắc phục.
+  3. Đảm bảo UI luôn giải thích minh bạch **'Tại sao Score = X'** với các thẻ giải thích trực quan (`+ High PM10`, `+ 3 citizen reports`, `+ 220m from school`, `+ 2 past warnings`) và chuỗi `whyScoreX`.
+  4. Cập nhật module scoring canonical trong codebase (`dust-risk-engine.js`, `riskEngine.js`, `PriorityScoreCard.jsx`, `RiskBreakdownModal.jsx`, `SiteOverviewTab.jsx`).
+  5. Thiết lập test suite toàn diện `explainable-priority-score.test.js` (7/7 tests pass) và kiểm thử boundary, mathematical invariants đạt 100%.
 - [x] **Verification Gate**: `npm --prefix app run verify:quick` đạt 28/28 files pass (237 unit + 42 UI smoke tests).
 - [x] **Tài liệu SSOT**: `README.md`, `PRODUCT.md`, `TERMINOLOGY.md`, `ROLES.md`, `PERMISSIONS.md`, `AUTH.md`, `SCIENTIFIC_RESEARCH_SPEC.md`, `CIVIC_HANDOFF_SSOT.md`, `BUG_MEMORY.md`, `TIMELINE.md` đồng bộ 100%.
+
+

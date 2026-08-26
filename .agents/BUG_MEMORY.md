@@ -113,8 +113,18 @@
   2. `CITIZEN` (Người dân / Thanh niên gửi ghi nhận hiện trường, nhận điểm rèn luyện QR).
   3. `OPERATOR` (Điều phối viên / Reviewer duyệt hàng đợi, tạo dossier, chuyển giao 1022).
   4. `SITE_REPRESENTATIVE` (Đơn vị thi công xem hiện trường, nộp ảnh dập bụi geofence <= 50m).
-  5. `ADMIN` (Quản trị viên hệ thống, cảm biến IoT).
-  Mọi kiểm tra quyền hạn tuân thủ ma trận chuẩn tại [`.agents/ssot/PERMISSIONS.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/PERMISSIONS.md).
+### 🚨 Trap 4.9: Bẫy Thuật Ngữ "Violation Score" & Thiếu Tính Giải Thích Minh Bạch (Black-box Risk)
+- **Nguyên nhân**: Sử dụng thuật ngữ "Violation Score" khiến người dùng và ban giám khảo hiểu nhầm là hệ thống AI tự phong quyền phán quyết hành vi vi phạm pháp luật (trái nguyên tắc *AI is Assistant, Not Judge*), hoặc chấm một điểm số chung chung mà không giải thích được vì sao ra số điểm đó.
+- **Giải pháp**:
+  1. **Chuẩn hóa 100%**: Luôn gọi là **'Priority Score' (0-100)** / **'Điểm ưu tiên can thiệp'**. Tuyệt đối cấm và loại bỏ mọi biến, hằng số, API hay copy text chứa "Violation Score".
+  2. **Công thức 6 yếu tố minh bạch**: Kết hợp Base severity (nồng độ PM vượt chuẩn QCVN 05:2023), Duration (thời gian duy trì liên tục), Sensor confidence (độ tin cậy cảm biến), Sensitive proximity (<300m trường học/bệnh viện), Citizen corroboration (đếm người phản ánh độc lập chống spam), và Historical recurrence (tái diễn).
+  3. **UI Explainability**: Luôn hiển thị danh sách thẻ giải thích trực quan (`+ High PM10 (165 µg/m³)`, `+ 3 citizen reports`, `+ 220m from school`, `+ 2 past warnings`) và dòng diễn giải `whyScoreX` để bất kỳ ai cũng có thể đọc hiểu trong 2 giây.
+
+---
+
+### 🚨 Trap 2.4: Bẫy Trải Nghiệm Ghi Nhận Quá Dài Trên Hiện Trường (Long Field Form Friction Trap)
+- **Nguyên nhân**: Bắt buộc công dân hoặc thanh niên phải qua 5 bước chi tiết khi đang đứng ngoài đường/công trường nắng gió gây bỏ dở ghi nhận.
+- **Giải pháp**: Cung cấp chế độ **Ghi nhận 3-chạm (<30s)**: `[Chạm 1: Chụp/Chọn ảnh ➔ Chạm 2: Chọn nguồn ô nhiễm ➔ Chạm 3: Gửi ngay]` tự động kích hoạt GPS, nén ảnh < 300KB, gỡ EXIF nhạy cảm và sinh hash SHA-256 trong chưa đầy 30 giây.
 
 ---
 
@@ -131,3 +141,8 @@
 ### 🚨 Trap 5.3: Bẫy Tuyên Bố Chi Phí $0 Tuyệt Đối (Claim Inaccuracy)
 - **Nguyên nhân**: Tuyên bố "Hệ thống hoàn toàn 0đ vĩnh viễn" mà bỏ qua các chi phí thực tế khi vận hành sản phẩm.
 - **Giải pháp**: Luôn sử dụng câu claim chuẩn hóa: *"Chi phí hạ tầng pilot có thể gần bằng 0 trong hạn mức miễn phí hiện tại của Cloudflare (ghi nhận khả năng phát sinh tên miền, email, dung lượng mở rộng khi scale)."*
+
+### 🚨 Trap 5.4: Bẫy Đa Tham Số trong Hàm `generateImpactCertificate` khi truyền trực tiếp số giờ
+- **Nguyên nhân**: Khi truyền trực tiếp con số giờ (`20.0`) vào tham số thứ 4 `volunteerLogs` thay vì mảng đối tượng, nếu không phân nhánh sẽ bị `calculateVolunteerHours` hiểu nhầm là số lượt báo cáo (count * 2.5h = 50h).
+- **Giải pháp**: Kiểm tra `typeof volunteerLogs === 'number'` để gán thẳng `vHours = volunteerLogs`, tính toán chính xác 20h = 4.0 tín chỉ và 80 ĐRL.
+
