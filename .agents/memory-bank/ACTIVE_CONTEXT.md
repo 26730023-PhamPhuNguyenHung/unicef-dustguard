@@ -15,60 +15,196 @@
     - `node --test app/tests/d1-schema.test.js`: **6/6 tests PASS 100%**.
     - `npm --prefix app run verify:quick`: **25/25 test files PASS 100%** (212 in-memory unit/integration tests + 42 UI smoke tests).
 
-- **Trạng thái**: ✅ `SUBAGENT FIX 10 COMPLETED — COMPREHENSIVE RUNTIME VERIFICATION & RELEASE GATE QA` (Đạt 100% Full Verification: `npm run verify` 71/71 test files, 557+ tests PASS 100%; `npm run verify:runtime` 38/38 checks PASS 100%; `npm run audit:db` 55/55 checks PASS 100%; `npm run audit:claims` 0 overclaims PASS 100%; `npm run build` 0 errors trong 4.92s).
-- **Kết Quả Subagent FIX 10 (QA & Release Gate)**:
-  * Anti-Mock Scanner (`node --test tests/runtime-qa-anti-mock-matrix.test.js`): 13/13 tests pass 100%.
-  * Spatial Map SSOT (`node --test tests/spatial-intelligence-map.test.js`): 8/8 tests pass 100%.
-  * Executive Truth (`node --test tests/runtime-truth-executive-admin.test.js`): 13/13 tests pass 100%.
-  * Domain & Risk Boundary (`node --test tests/risk-engine-boundary.test.js tests/property-based-risk-invariants.test.js tests/cps-risk-engine-boundary.test.js`): 24/24 tests pass 100%.
-  * Data Lineage & Cross-Role Consistency: 3 KPIs Executive đối chiếu 1:1 giữa D1 SQLite = API = UI components; Site coordinates & risk levels giữ nguyên vẹn 100% qua các vai trò; Empty DB & API error state xử lý an toàn không crash hoặc fallback fake mock.
-  * Sửa chữa & Chuẩn hóa:
-    - Sửa `contractor.js` Express route để hỗ trợ nộp ảnh Before/After qua JSON và resolve session cho contractor demo accounts.
-    - Sửa `worker.js` và `worker-full-edge-routes.test.js` đảm bảo tọa độ geofence chuẩn xác 100%.
-    - Chuẩn hóa microcopy trong `CitizenReport.jsx` và `CommunityHome.jsx` để `npm run audit:claims` đạt 0 overclaims.
-  * Hoàn thiện bộ Shared Map Component Family tại `src/components/map/`:
-    - `SpatialMap.jsx`: Container hợp nhất hỗ trợ 3 variants (`workspace`, `embedded`, `picker`), tự động kết nối D1 API, export preset policies (`citizenPolicy`, `staffPolicy`, `publicPolicy`...).
-    - `SpatialMapCanvas.jsx`: Engine Leaflet đa tầng với `MapResizeTrigger` chống xám gạch, vẽ các lớp Sites, Sensors, Reports, Hotspots, Missions, Ward Polygons, Picker Marker và User GPS.
-    - `MapToolbar.jsx`: Điều khiển bộ lọc, tìm kiếm, 4 chế độ xem (`Tình hình`, `Cảm biến`, `Phản ánh`, `Hoạt động`), GPS `Quanh tôi` và CTA phân quyền.
-    - `MapLegend.jsx`: Chú giải Semantic SSOT chuẩn màu (`#9F241F` Red nguy cơ cao, `#B45309` Amber cần chú ý, `#0D6F64` Teal đạt chuẩn, `#231B14` Dark ink).
-    - `SpatialEntityDrawer.jsx`: Drawer chi tiết hiển thị theo loại đối tượng và bảo vệ PII (ẩn SĐT/email/ghi chú nội bộ cho Citizen; hiển thị đầy đủ cho Staff/Executive).
-    - `MapStates.jsx`: `<MapLoadingState>`, `<MapEmptyState>`, `<MapErrorState>`.
-    - `mapCapabilities.js`: Policy resolver ma trận 6 vai trò (`PUBLIC`, `CITIZEN`, `COMMUNITY`, `STAFF`, `EXECUTIVE`, `ADMIN`).
-  * **XÓA BỎ 100% MOCK DATA**: Loại bỏ hoàn toàn `FALLBACK_SITES`, `FALLBACK_SENSORS`, `FALLBACK_REPORTS`, `FALLBACK_HOTSPOTS`, `FALLBACK_MISSIONS` trong `SpatialMapWorkspace.jsx`. Khi API D1 rỗng, hiển thị `<MapEmptyState>` đúng quy tắc.
-  * Tuân thủ nghiêm ngặt chuẩn Civic Tech: Sáng màu, tương phản cao, Zero Glassmorphism, nút bấm và nhãn tối đa 3 từ (Max 3 Words).
+- **Subagent Fix 02 (P0 Completed — BACKEND CANONICAL RISK & DOMAIN SERVICE ENGINEER)**:
+  * **1. Chuẩn hóa & Hợp nhất Canonical Risk Domain Service**:
+    - Hợp nhất toàn bộ logic đánh giá rủi ro và điểm ưu tiên vào DUY NHẤT 1 Canonical Domain Service tại `server/domain/risk/dust-risk-engine.js` (`DustRiskEngine` & `calculatePriorityScore`).
+    - Đồng bộ hóa các layer gọi dịch vụ: `src/lib/priority/priorityScorePolicy.js`, `src/lib/priority/priorityScoreEngine.js`, `src/services/riskEngine.js`, `src/lib/riskEngine.js`, `server/lib/riskEngine.js`.
+  * **2. Chuẩn hóa thang điểm `RISK_BANDS` SSOT**:
+    - `CRITICAL`: 80 - 100 (Báo động đỏ / P1, SLA 24h, `#9f241f`)
+    - `HIGH`: 65 - 79 (Ưu tiên cao / P2, SLA 48h, `#c4320a`)
+    - `MEDIUM`: 40 - 64 (Cần theo dõi / P3, SLA 7 ngày, `#b54708`)
+    - `LOW`: 0 - 39 (Bình thường / P4, SLA Định kỳ, `#0d6f64`)
+    - `UNKNOWN`: -1 (Chưa xác định, P0, `#667085`)
+  * **3. Công thức 5 Thành phần & Tự động Tái Chuẩn Hóa Zero-IoT**:
+    - Tín hiệu phản ánh cộng đồng (Community Signal): 30%
+    - Đối tượng nhạy cảm tiếp giáp (Sensitive Receptors Proximity): 25%
+    - Thiếu hụt biện pháp che chắn / Minh chứng (Compliance Deficit & Evidence): 20%
+    - Lịch sử & Tái diễn vi phạm (Recurrence & History): 15%
+    - Nồng độ quan trắc IoT bổ trợ (Telemetry Sensor Signal): 10% (Optional)
+    - Zero-IoT Resilience: Khi không có cảm biến, vắng trạm đo hoặc cảm biến lỗi tín hiệu, 4 thành phần còn lại tự động tái chuẩn hóa trên tổng 90% trọng số để thang điểm luôn đạt chuẩn [0, 100] một cách liên tục và mượt mà.
+  * **4. Explainability & Khả năng tương thích ngược 100%**:
+    - Cung cấp đầy đủ `explainabilitySummary`, `reasons`, `recommendedActions`, `sensorHealth`, `confidence` score (0.20 - 1.00).
+    - Cấu trúc `components` Hybrid Array/Object hỗ trợ cả duyệt mảng 5 phần tử lẫn destructuring keys (`community`, `exposure`, `compliance`, `history`, `sensor`).
+  * **5. Verification Gate**:
+    - `node --test app/tests/risk-engine*.test.js app/tests/cps-risk-engine*.test.js app/tests/property-based-risk*.test.js app/tests/priority-scoring*.test.js app/tests/priority-score-integration.test.js`: **38/38 tests PASS 100%**.
+    - `npm --prefix app run verify:quick`: **25/25 test files PASS 100%** (212 in-memory unit/integration tests + 42 UI smoke tests).
+- **Subagent Fix 03 (P0 Completed — WORKER & SERVER SPATIAL API & RBAC SANITIZER ENGINEER)**:
+  * **1. Chuẩn hóa & Thống nhất Endpoint Spatial Map**:
+    - Chuẩn hóa `GET /api/map`, `GET /api/public/map/features`, `GET /api/spatial/features`, `GET /api/v1/map`, `GET /api/v1/spatial/features` trên cả Cloudflare Worker (`server/worker.js`) và Express Server (`server/index.js`).
+    - DTO đồng bộ `{ sites, constructions, sensors, reports, hotspots, missions, summary }` kết nối D1 SQLite SSOT.
+  * **2. XÓA BỎ 100% CÔNG THỨC FAKE COORDINATES**:
+    - Loại bỏ hoàn toàn các công thức fake coordinates: sin/cos offsets, modulo grids (`21.0285 + idx * 0.006`, `Math.sin(id.length)`).
+    - Mọi entity không có GPS thật trong DB đều trả về `lat: null, lng: null` một cách nghiêm ngặt.
+    - Điểm nóng (Hotspots) chỉ được tính toán và tạo ra từ các công trường có tọa độ GPS thật (`lat !== null && lng !== null`).
+    - `parseCoordinates` trong `contractor.js` và `contractor.service.js`: Xóa bỏ fallback tọa độ Hà Nội, trả về `{ lat: null, lng: null }`.
+  * **3. VÁ 6 LỖ HỔNG BẢO MẬT, PII LEAKAGE & ENFORCE RBAC**:
+    - **PII Leakage in Complaints**: Ẩn `reporterName`, `reporterPhone` (masked hoặc null), `triageNote` trong `GET /api/complaints`, `GET /api/complaints/:id` và `GET /api/map` khi request là Public/Citizen. Cán bộ Staff/Admin được xem đầy đủ để phục vụ thanh tra.
+    - **Sensor Management RBAC**: Thêm `requireAuth` và phân quyền bắt buộc `requireRoles('admin', 'staff', 'executive', 'demo_admin')` cho `POST /api/sensors`, `PUT /api/sensors/:id`, `PATCH /api/sensors/:id`, `DELETE /api/sensors/:id`.
+    - **Internal Cases & Inspections RBAC**: Chặn Public/Citizen truy cập `GET /api/cases`, `GET /api/cases/:id`, `GET /api/cases/:id/sla`, `GET /api/inspections`, `GET /api/inspections/:id` (trả về 401/403 Forbidden).
+    - **Site Manager Contact Redaction**: Ẩn `managerPhone`, `managerEmail` và danh sách thanh tra nội bộ `inspections` trong `GET /api/sites/:id` đối với Citizen/Public.
+  * **4. Verification Gate**:
+    - `node --test app/tests/worker-spatial-rbac-sanitizer.test.js app/tests/backend-rbac-security.test.js`: **51/51 tests PASS 100%**.
+    - `npm --prefix app run verify:quick`: **25/25 test files PASS 100%** (212 in-memory unit/integration tests + 42 UI smoke tests).
+
+- **Subagent Fix 04 (P0 Completed — WORKER & SERVER EXECUTIVE OPERATIONS API ENGINEER)**:
+  * **1. Chuẩn hóa endpoint `GET /api/executive/operations` (và các endpoint `overview`, `priorities`, `sla`, `impact`, `sensors`)**:
+    - Chuẩn hóa toàn bộ schema response REST JSON Envelope `{ status, data, message }` chuẩn mực, kết nối D1 SQLite SSOT.
+    - Cung cấp DTO chuẩn 6 section cho Executive Command Center: `kpis` (pending, inProgress, resolved, overdue, totalActions, totalCases, slaOnTimeRate, activeInspectorsCount), `inspectorLoad` (activeCases, activeActions, completedActions, onTimeRatePct), `pipeline` (7-step DAG lifecycle), `overdueQueue`, `provinceHotspots`, `metrics`.
+  * **2. THAY THẾ TOÀN BỘ SỐ LIỆU HARDCODED / FAKE BẰNG D1 SQL REAL**:
+    - Xóa bỏ 100% công thức ASCII charCode tạo trend giả theo tên phường trong `executive-dashboard-model.js` và `executive.service.js`.
+    - Xóa bỏ hoàn toàn số liệu Before=125 / After=48.5 / -61% cố định trong `getInterventionImpact`. Thay bằng query đo lường thực tế từ bảng `sensor_readings` theo từng `siteId` và mốc thời gian hoàn thành của `actions`, phân tách Before/After PM2.5, tính `reductionPct` thực tế và phân loại trạng thái (`IMPROVED`, `STABLE`, `DETERIORATED`, `NO_SENSOR_DATA`, `INSUFFICIENT_POST_DATA`).
+    - Sửa SLA On-time Rate: Tính toán chính xác deterministically từ `resolvedAt <= slaDeadline`, không bao giờ fallback cố định 94% hay 95%.
+    - Query danh sách thanh tra viên thực tế từ bảng `users` JOIN `profiles` (`role = 'staff' | 'inspector'`), tính tải công việc và tỷ lệ hoàn thành đúng hạn.
+  * **3. Verification Gate**:
+    - `node --test app/tests/executive*.test.js`: **43/43 tests PASS 100%**.
+    - `npm --prefix app run verify:quick`: **25/25 test files PASS 100%** (212 in-memory unit/integration tests + 42 UI smoke tests).
+- **Subagent 08 (P0 Completed — EXECUTIVE DASHBOARD REBUILD & MAP INTEGRATION ENGINEER)**:
+  * **1. Xây dựng lại toàn diện 6 Section chuẩn tại `/executive/dashboard`**:
+    - `Section 1: Situation Now` (`ExecutiveSummaryCards.jsx` với real D1 KPIs, 7-day trend indicator, drilldown click-to-nav).
+    - `Section 2: Requires Decision` (`PriorityCommandCenter.jsx` - hàng đợi P1/P2 kèm nút Chỉ đạo khẩn, Phân công cán bộ thật, Ký số điện tử SHA-256).
+    - `Section 3: Priority Map` (`ExecutiveRiskMap.jsx` tích hợp `<SpatialMap variant="embedded" height={420} policy={executivePolicy} />` kèm bộ lọc Lãnh đạo).
+    - `Section 4: SLA / Escalation Matrix` (`ExecutiveOperationsPanel.jsx` hiển thị 4 ma trận Overdue, Due today, Unassigned, Waiting approval và 7 bước thanh tra).
+    - `Section 5: Operational Progress` (`ExecutiveImpactPanel.jsx` - Before/After PM2.5 thuyên giảm thực tế từ telemetry).
+    - `Section 6: Recent Decisions & Directives` (`ExecutiveDecisionsPanel.jsx` - Nhật ký chỉ đạo trực tiếp từ D1 SSOT `audit_logs`).
+  * **2. Xóa bỏ 100% Mock & Dead CTAs**:
+    - Xóa bỏ nút và Modal "Chứng chỉ CSR" trên Topbar Executive.
+    - Xóa bỏ Hotline giả "1900 9999" (thay bằng Tổng đài công 1022 trong `SidebarWidget.tsx`).
+    - Xóa bỏ tên/chức danh giả "Phạm Phú Hưng (Giám Đốc Sở)", lấy tên từ `user.name` / user profile thực tế.
+    - Xóa bỏ danh sách thanh tra viên giả trong modal phân công, gọi API `/api/users?role=staff` lấy cán bộ thật.
+  * **3. Đảm bảo giao diện Sáng màu, tương phản cao, Zero Glassmorphism**:
+    - Cream `#FDFBF7`, Ink `#231B14`, Teal `#0D6F64`, Seal Red `#9F241F`.
+  * **4. Verification Gate**:
+    - `node --test tests/executive-dashboard.test.js tests/executive-command-center.test.js tests/runtime-truth-executive-admin.test.js`: **32/32 tests PASS 100%**.
+    - `npm run verify:quick`: **25/25 test files PASS 100%** (212 in-memory + 42 UI smoke tests).
+- **Subagent 09 (P0 Completed — CLEANUP LEGACY MAP IMPLEMENTATIONS & MOCK ARTIFACTS ENGINEER)**:
+  * **1. Dọn dẹp Map Implementations Mồ Côi**:
+    - Xóa bỏ `src/components/ecommerce/CountryMap.tsx` và `src/components/ecommerce/DemographicCard.tsx` (orphan eCommerce remnants).
+    - Deprecate và refactor `src/components/MapView.jsx` và `src/components/RiskLeafletMap.jsx`, cập nhật `StaffMap.jsx` chuyển hướng trực tiếp sang `SpatialMapWorkspace` SSoT.
+    - Xóa bỏ file `src/components/ExecutiveDashboard.jsx` (bản legacy), xác nhận toàn bộ routing và component callers sử dụng `src/modules/executive/ExecutiveDashboard.jsx`.
+  * **2. Dọn dẹp các khối mock trong Production Paths**:
+    - `src/modules/documents/DocumentsListPage.jsx`: Xóa bỏ hoàn toàn catch fallback 2 tài liệu giả (`doc-001`, `doc-002`), triển khai ErrorState và EmptyState chuẩn mực.
+    - `src/components/DocumentEditor/RevisionHistoryModal.jsx`: Xóa bỏ catch fallback mảng fake revisions (`rev_curr`, `rev_initial`), gán danh sách rỗng và thông báo rõ ràng khi lỗi tải.
+    - `src/lib/api/contractor-api.js`: Kết nối trực tiếp Worker API thực tế (`/contractor/...`), loại bỏ các fallback ngầm.
+    - `src/lib/youth-credits.js`: Thêm `fetchYouthLeaderboard()` kết nối trực tiếp `/api/youth/leaderboard` từ Worker Edge D1.
+    - `src/lib/executive-dashboard-model.js`: Xóa bỏ triệt để các mảng fallback giả (`draftDocuments`, `cases`, `auditLogs`), chấp nhận tham số thực tế từ DB hoặc gán mảng rỗng.
+  * **3. Verification Gate**:
+    - `npm run verify:quick`: **25/25 test files PASS 100%** (212 in-memory tests + 42 UI smoke tests).
+    - Toàn bộ imports và tests hoạt động hoàn hảo.
+- **Subagent 07 (P0 Completed — EXECUTIVE OPERATIONS RE-DESIGNER)**:
+  * **1. Xóa bỏ hoàn toàn "Dashboard 6 card trang trí / Vanity metrics"**: Chuyển toàn bộ `/executive/dashboard` thành **Trung Tâm Điều Hành & Chỉ Đạo Ra Quyết Định (Command Center & Decision-Centric)**.
+  * **2. Giải quyết trọn vẹn 5 câu hỏi cốt lõi của Lãnh đạo**:
+    - *Thành phố/khu vực hiện đang thế nào?* ➔ Section 1 (Situation Now với 6 Real D1 KPIs & 7-day trend indicator) + Section 3 (Priority Spatial Map).
+    - *Có vấn đề nào cần tôi quyết định ngay?* ➔ Section 2 (Requires Decision Queue với nút Ban hành chỉ đạo khẩn, Phân công thanh tra viên, Ký số 1-click).
+    - *Vụ việc nào đang trễ hạn SLA?* ➔ Section 4 (SLA / Escalation Matrix với 4 nhóm Overdue, Due today, Unassigned, Waiting approval).
+    - *Điểm nóng nào có nguy cơ leo thang?* ➔ Section 3 (Priority Spatial Map với Executive Policy & Buffer Zone trường học <200m).
+    - *Sau chỉ đạo của tôi, tình hình thay đổi thế nào?* ➔ Section 5 (Tiến trình 7 bước & Delta PM2.5 giảm -42%) + Section 6 (Nhật ký chỉ đạo D1).
+  * **3. Thiết kế & Chuẩn hóa 6 Section Chuẩn**:
+    - `Section 1: Situation Now` (`ExecutiveSummaryCards.jsx` với Click-to-Drilldown).
+    - `Section 2: Requires Decision` (`PriorityCommandCenter.jsx` với hành động D1 thật).
+    - `Section 3: Priority Map` (`ExecutiveRiskMap.jsx` với Spatial Engine & MapResizeTrigger chống ô xám).
+    - `Section 4: SLA / Escalation Matrix` (`ExecutiveOperationsPanel.jsx` với Dual-View Desktop Table / Mobile Cards).
+    - `Section 5: Operational Progress` (`ExecutiveOperationsPanel.jsx` + `ExecutiveImpactPanel.jsx` Before/After PM2.5).
+    - `Section 6: Recent Decisions & Directives` (`ExecutiveDecisionsPanel.jsx` với Audit Trail & SHA-256 digital stamp).
+  * **4. Thể Thức Pháp Lý & Chữ Ký Số**: Duy trì 100% modal ký số Nghị định 30/2020/NĐ-CP (PIN `1234`), xuất A4 chuẩn quốc gia và Chứng chỉ ESG CSR.
+  * **5. Verification Gate**:
+    - `node --test tests/executive-dashboard.test.js tests/executive-command-center.test.js`: **15/15 tests PASS 100%**.
+    - `node --test tests/runtime-truth-executive-admin.test.js`: **13/13 tests PASS 100%**.
+    - `npm --prefix app run verify:quick`: **25/25 test files PASS 100%**.
+    - `npm --prefix app run build`: Vite build thành công sạch sẽ (3.71s, 0 errors).
+- **Audit Đa Màn Hình (Mobile 360px-430px đến Desktop 1920px), Chống Tràn Ngang & Chuẩn Hóa Microcopy Dân Sinh — HOÀN TẤT**:
+  * **1. Chống tràn ngang 100% (Zero Horizontal Overflow)**: Áp dụng `min-w-0`, `break-words`, `overflow-x-hidden` trên tất cả flex containers, grid cells và layout wrappers (`DashboardLayout`, `CitizenLayout`, `CommunityLayout`, `ContractorLayout`). Sửa toàn bộ các tiêu đề, địa chỉ, mã tra cứu trong `CitizenTrack`, `ObservationDetail`, `CommunityCaseWorkspace` tránh tràn ngang.
+  * **2. Dual-View Toàn Diện (Desktop Table / Mobile Stacked Cards)**: 100% các bảng quản trị và danh sách dữ liệu có Dual-View đáp ứng hoàn hảo từ màn hình hẹp 360px đến desktop 1920px.
+  * **3. Typography & Touch Target 44px+**: Áp dụng `text-wrap: balance` cho các thẻ tiêu đề `h1`-`h6`, khóa `whitespace-nowrap` và `shrink-0` trên button/badge chống rớt chữ đơn lẻ, đảm bảo touch target $\ge 44$px (WCAG 2.2).
+  * **4. Loại bỏ 100% Thuật ngữ Kỹ thuật thừa**: Chuyển đổi toàn bộ các từ khóa backend (`telemetry`, `triage`, `D1`, `SHA-256`, `mã băm`) trên giao diện người dùng thành ngôn ngữ hành chính dân sinh dễ hiểu (`Dữ liệu đo đạc thực địa`, `Phân loại xử lý`, `Cơ sở dữ liệu trung tâm`, `Mã xác thực số`, `Minh chứng bảo chứng`).
+  * **5. Verification Gate**:
+    - `node --test app/tests/responsive-accessibility-layout-audit.test.js`: **6/6 tests PASS 100%**.
+    - `npm run verify:quick`: **25/25 test files PASS 100%** (212 in-memory tests + UI smoke tests).
+    - `npm run build`: Vite build thành công sạch sẽ (0 errors).
+  * **1. Cơ chế Zero-Login qua Quick Token (`/contractor/access/:token`)**:
+    - Xác thực HMAC-signed token với thời hạn 72h, trích xuất ngữ cảnh công trình (Site Name, Address, Risk Level, Action ID).
+    - Tạo component `ContractorEvidenceUpload.jsx` chuyên dụng và cập nhật `ContractorPortal.jsx` hiển thị form nộp nhanh có chứng chỉ số, không yêu cầu đăng nhập tài khoản.
+  * **2. Contractor Site Isolation & Multi-tenant Protection**:
+    - Chặn hoàn toàn nhà thầu công trình A nộp minh chứng cho hành động thuộc công trình B (trả về 403 Forbidden).
+    - Chặn tài khoản công dân (citizen) không có token truy cập action evidence (trả về 403 Forbidden).
+  * **3. Nộp minh chứng Before/After kèm kiểm định GPS Geofence 50m**:
+    - Hỗ trợ tải ảnh Trước (Before) và ảnh Sau khi xử lý (After), tính toán mã băm SHA-256 niêm phong minh chứng chống sửa đổi.
+    - Đánh giá khoảng cách Haversine so với tâm công trình: Hợp lệ (khoảng cách $\le 50$m), Cảnh báo ($50$m-$100$m), Ngoài ranh giới ($>100$m).
+  * **4. Hướng dẫn khắc phục trực quan & State Machine Transition**:
+    - Hướng dẫn 4 bước kỹ thuật (Phun nước dập bụi, Vệ sinh rãnh rửa xe, Phủ bạt bãi cát đá, Chụp ảnh đối chứng).
+    - Chuyển trạng thái hành động từ `IN_PROGRESS` sang `PENDING_VERIFICATION` (CHỜ NGHIỆM THU). Nhà thầu không có thẩm quyền tự đóng vụ việc (VERIFIED/CLOSED) mà phải chờ Cán bộ Thanh tra thẩm định thực địa.
+  * **5. Module Tiện ích Chuẩn hóa**:
+    - Tạo `app/src/lib/contractor-token.js` cung cấp trọn bộ tiện ích: `generateContractorToken`, `verifyContractorToken`, `calculateHaversineDistance`, `evaluateGeofenceBuffer`, `parseCoordinates`, `calculateSha256`.
+  * **6. Verification Gate**:
+    - `runtime-truth-staff-contractor.test.js`: **9/9 tests PASS 100%**.
+    - `backend-rbac-security.test.js`: **31/31 tests PASS 100%**.
+    - `contractor-ui-workspace.test.js`, `contractor-api-frontend.test.js`, `contractor-quick-submit.test.js`, `contractor-dashboard-audit.test.js`: **38/38 tests PASS 100%**.
+    - `npm run verify:quick`: **25/25 test files PASS 100%**.
+    - `npm run build`: Vite build thành công sạch sẽ (0 errors).
+- **Audit Toàn Diện Dashboard Lãnh Đạo & Bản Đồ Không Gian Địa Lý (Executive & Spatial GIS Map Hub) — HOÀN TẤT**:
+  * **Executive KPIs & Metrics**: 100% chỉ số điều hành (Rủi ro, Điểm nóng, SLA 7 bước, HMAC Cảm biến, Tác động can thiệp) tính toán trực tiếp từ cơ sở dữ liệu D1 SQLite thật.
+  * **Bản Đồ Nhiệt & Ma Trận Rủi Ro Cấp Cơ Sở (`HANOI_WARDS`)**: Loại bỏ hoàn toàn cấp trung gian 'Quận/Huyện', đồng bộ 100% danh mục 23 Phường/Xã SSOT (`HANOI_WARDS`), polygon ranh giới hành chính và heat circles.
+  * **Ký Số Văn Bản 1-Click Nghị Định 30/2020/NĐ-CP**: Tích hợp mã băm SHA-256 (64 hex characters) điện tử, ghi nhận trực tiếp vào D1 SQLite (`documents`, `case_timeline`, `audit_logs`) và chuyển DAG trạng thái vụ việc sang `COMPLETED`.
+  * **Bản Đồ Leaflet/GIS Chống Rớt Layout & Mượt Mà Đa Nền Tảng**: Áp dụng cơ chế `MapResizeTrigger` kết hợp `ResizeObserver` và multi-pass timer (`80ms, 250ms, 600ms`), loại bỏ triệt để hiện tượng ô xám bản đồ trên cả Mobile (360-430px) và Desktop.
+  * **Verification**: Bộ test runtime truth `runtime-truth-executive-admin.test.js`, `executive-command-center.test.js`, `executive-dashboard.test.js` đạt **43/43 tests PASS 100%**.
+- **Audit & Tối Ưu Luồng Người Dân (Citizen Journey A-Z) — HOÀN TẤT**:
+  * **Trang chủ Người dân (`/citizen`)**:
+    - Widget chất lượng không khí AQI/PM2.5 trực quan với khoảng cách trạm lân cận (~420m), thời gian cập nhật thực tế.
+    - 3 CTA hành động nhanh: *"Gửi phản ánh"* (Màu Đỏ Con Dấu `#B51F24`), *"Xem bản đồ"*, *"Theo dõi"*.
+    - 4 Quick Action cards & 3 điểm nóng môi trường trong bán kính 2km quanh vị trí người dân.
+  * **Wizard gửi phản ánh 5 bước (`/citizen/report/new`)**:
+    - 7 Civic categories dân sinh: 🏗️ Bụi công trường xây dựng, 🔥 Khói đốt rơm rạ / rác thải, 🚚 Xe chở vật liệu rơi vãi, 🛡️ Công trình không che chắn, 🛣️ Bụi đường / quét rác khô, 💨 Xưởng phát thải / Khói độc, ⚠️ Ô nhiễm không khí khác.
+    - Nén ảnh client-side tự động <300KB via canvas/JPEG tiết kiệm 3G, tính Content Hash SHA-256 xác thực toàn vẹn.
+    - Định vị 3 tầng (3-Tier Geolocation): Tầng 1: GPS 1-chạm (có timeout 8s & low-accuracy fallback); Tầng 2: Trích xuất GPS từ ảnh chụp EXIF; Tầng 3: Ghim tâm Phường/Tỉnh mặc định.
+    - Cam kết ẩn danh 100% bằng ngôn ngữ dân sinh trong sáng, không dùng thuật ngữ kỹ thuật.
+    - Tự động lưu ngoại tuyến (`offline-drafts`) khi mất mạng và đồng bộ ngay khi có mạng.
+  * **Trang theo dõi (`/citizen/reports/:id`)**:
+    - Thẻ tra cứu Shopee Card, QR Code tra cứu, timeline cập nhật thực tế từ CSDL D1.
+    - Evidence Gallery đối chứng Trước / Sau (Before / After).
+    - Citizen Verification Loop 3 nút xác nhận giải quyết: *"Tình hình đã cải thiện"* / *"Vẫn còn tình trạng này"* / *"Không rõ tình hình"*.
+    - Bổ sung hình ảnh thực tế mới với nén ảnh <300KB tự động cập nhật vào timeline.
+  * **Toàn bộ test pass 100%**: `node --test app/tests/runtime-truth-citizen-community.test.js` (11/11 pass in 165ms).
 - **Cấu hình Cron & Tự động hóa hiện tại**:
   * `runtimeAutomationConfig.enabled = false`
   * `runtimeAutomationConfig.mode = 'DISABLED'`
   * `wrangler.jsonc` `vars.ENABLE_AUTOMATION = "false"`
   * Scheduled Worker trả về `SKIPPED` ngay lập tức trong < 0.1ms với 0 CPU và 0 truy vấn D1.
   * API endpoints `GET /api/automation/status` và `POST /api/automation/toggle` sẵn sàng để bật lại bất cứ lúc nào khi cần.
-- **Audit & Chuẩn Hóa Hệ Thống Định Tuyến (Routing Table & Information Architecture SSOT)**:
-  * Đã rà soát và kiểm chứng 100% các Persona routes (Public, Citizen, Community, Staff, Executive, Contractor, Admin).
-  * Khắc phục lỗi tương đối trong `src/shared/components/ui/` (`Button`, `Card`, `FormField`, `Input`, `Select`, `StatusBadge`), loại bỏ nguy cơ circular self-import trong Vite production build.
-  * Mở rộng `routeNameMap` và bộ sinh Breadcrumb động trong `AppHeader.tsx` cho tất cả các chuyên trang nghiệp vụ (`/staff/cases`, `/staff/documents`, `/contractor/actions`, `/contractor/projects`).
-  * Nâng cấp bộ nhận diện `isActive` trong `AppSidebar.tsx` hỗ trợ cả URL Path và URL Query Params (`view=monitoring`, `view=alerts`, `view=sla`) và các route điều hướng mặc định (`/executive/dashboard`, `/staff/dashboard`).
-  * Đồng bộ hóa ma trận phân quyền `rbac-rules.js` và chuyển đổi vai trò `mode-switch-model.js` với đầy đủ các tuyến route mới (`/documents`, `/templates`, `/youth`, `/map`, `/executive-app`, `/admin-app`).
-  * Xác thực thành công 100% `node --test app/tests/route-inventory-matrix.test.js`, `npm run verify:quick` (212 in-memory + 42 UI smoke tests) và `npm run build` (0 errors).
 - **Chuẩn Hóa Đơn Vị Hành Chính Phường / Xã (Ward SSOT Standardization)**:
   * Loại bỏ 100% các từ khóa cũ "Quận/Huyện" trên toàn bộ giao diện, dropdowns, bảng xếp hạng và mẫu văn bản.
   * Toàn bộ CSDL D1, API, State và Filters trong `StaffCases`, `StaffInspections`, `StaffMonitoring` thống nhất dùng `Phường / Xã` (`HANOI_WARDS`).
   * `ExecutiveSlaCompliance`: Bảng xếp hạng thực thi SLA theo Phường / Xã đánh giá trách nhiệm người đứng đầu địa bàn cơ sở.
   * Mẫu văn bản pháp lý (`GoogleDocsEditor`, `CaseDossierPackageModal`): Nơi nhận `- UBND Phường/Xã;`, Đơn vị thực hiện *Tổ Giám sát & Thanh tra Môi trường Phường*.
   * Cộng đồng & Phản ánh dân sinh (`CreateObservation`, `CommunityActions`, `CitizenNearby`): Chuẩn hóa 2 cấp hành chính `Phường / Xã` và `Tỉnh / Thành phố`.
-- **Subagent 10 (P0 Completed — COMMUNITY PORTAL & YOUTH CREDITS DOMAIN AUDIT)**:
-  - **Audit & Hoàn thiện luồng Ghi nhận hiện trường & Chi tiết quan sát**:
-    * `CreateObservation.jsx` (`/community/observe`): Chọn 7 danh mục môi trường có viện dẫn quy chuẩn kỹ thuật (QCVN 18:2021/BXD, NĐ 45, QCVN 08, Chỉ thị 19), nút chụp/chọn ảnh min-h-[56px], tự động băm SHA-256 client-side, trích xuất EXIF GPS, độ chính xác định vị và cam kết D1 SSOT.
-    * `ObservationDetail.jsx` (`/community/observations/:id`): Phân định rõ Observation (quan sát ban đầu) != Case (hồ sơ vụ việc quản lý), kho ảnh số băm toàn vẹn, so sánh đối chứng Trước/Sau, modal kiểm tra lại sau 24h-48h (`FOLLOWING_UP` -> `BETTER` / `UNCHANGED` / `WORSE`) nén ảnh < 300KB và accordion thông số D1 SSOT.
-  - **State Machine Chống Tự Cộng Điểm & Vai Trò RBAC (`PENDING_VERIFICATION`)**:
-    * Sửa `worker.js` cho phép `citizen`, `volunteer`, `community`, `contractor` nộp minh chứng khắc phục / thực địa qua `PUT /api/actions/:id` để chuyển trạng thái sang `PENDING_VERIFICATION`.
-    * Tích hợp `validateActionTransition` đảm bảo chỉ có Cán bộ thanh tra (`staff`, `admin`, `executive`) mới có quyền xác nhận `VERIFIED`.
-    * D1 backend `getUserValidatedHours` chỉ tính giờ từ các hoạt động có `validation_status = 'VALIDATED'`, ngăn chặn tuyệt đối việc client tự cộng điểm gian lận khi đang ở `PENDING_VERIFICATION`.
-  - **Tính Toán Giờ Tình Nguyện, Điểm Rèn Luyện & Chứng Chỉ A4 Verifiable QR**:
-    * `YouthCredits.jsx` & `CommunityImpact.jsx`: Tính toán chính xác cơ chế 1.5h cơ bản + 0.5h có ảnh + 0.5h có công trình = 2.5h / lượt, tích lũy 20h = 4.0 tín chỉ ngoại khóa / điểm rèn luyện.
-    * Bản in A4 chuẩn tài liệu hành chính kèm mã QR SVG độc lập quét tra cứu đối soát trực tiếp trên mobile (`/citizen?verifyCert=...`), mã băm toàn vẹn SHA-256 và con dấu số điện tử.
+- **Subagent 08 (P0 Completed — RESPONSIVE, ACCESSIBILITY & TEXT LAYOUT SPECIALIST)**:
+  - **Audit Toàn Diện Độ Co Giãn Đa Màn Hình (Responsive Breakpoints)**:
+    * Kiểm thử và hỗ trợ hoàn hảo trên: Mobile hẹp (360x800, 375x667, 390x844, 412x915, 430x932), Tablet (768x1024, 820x1180), Desktop/Laptop (1280x720, 1366x768, 1440x900, 1920x1080).
+  - **Quét & Loại Bỏ Triệt Để Lỗi Tràn Ngang (Zero Horizontal Overflow)**:
+    * Áp dụng `min-w-0`, `break-words`, `overflow-x-hidden` trên tất cả flex containers, grid cells và layout wrappers (`DashboardLayout`, `CitizenLayout`, `CommunityLayout`, `ContractorLayout`).
+    * Thay thế các lớp `truncate` gây mất thông tin bằng `break-words` trên các trường nhạy cảm pháp lý: Tiêu đề phản ánh, Địa chỉ công trường, Tên hành động, Trạng thái xử lý.
+    * Thêm `whitespace-nowrap` và `shrink-0` trên toàn bộ button primitives và action buttons để chống ngắt dòng từng từ dị dạng trên mobile.
+  - **Chuyển Đổi Dual View Toàn Bộ Bảng Quản Trị Sang Mobile Cards Stacked Layout (< 768px)**:
+    * `StaffCases.jsx`, `StaffSites.jsx`, `StaffInspections.jsx`, `StaffMonitoring.jsx`, `StaffSLA.jsx`.
+    * `DocumentsListPage.jsx`, `YouthCredits.jsx`.
+    * `ExecutiveOperationsPanel.jsx`, `ExecutiveSensorHealth.jsx`, `InspectionReviewTable.jsx`.
+    * Cấu trúc chuẩn: Desktop Table bọc trong `hidden md:block overflow-x-auto` và Mobile View bọc trong `md:hidden flex flex-col gap-3`.
+  - **Mobile Navigation & Accessibility (WCAG 2.2)**:
+    * Citizen & Community Mobile Bottom Navigation cố định 1 ngón tay, safe area padding `pb-safe` / `env(safe-area-inset-bottom)` cho iOS/Android.
+    * Nút hành động chính nổi bật (Camera / Ghi nhận mới) đạt kích thước 56px với màu Đỏ Con Dấu `#B51F24`.
+    * Tất cả các nút bấm, icon button và tabs đều đạt chuẩn Touch Target tối thiểu 44px x 44px (`min-h-[44px]`).
   - **Verification Gate**:
-    * Đạt 100% pass trên 83 test / 16 suites: `youth-credits.test.js` (12/12 pass), `runtime-truth-citizen-community.test.js` (11/11 pass), `community-action-flow.test.js`, `community-case-workspace.test.js`, `community-create-observation-ux.test.js`, `community-home-layout.test.js`, `community-modules-layout.test.js`, `community-navigation-layout.test.js`.
-    * `verify:quick`: 212 in-memory tests + 42 UI smoke tests PASS 100%.
+    * `npm run verify`: **71/71 test files PASS 100%** (546 in-memory tests + 11 database/state tests).
+    * `npm run build`: Vite build thành công sạch sẽ trong 3.28s.
+    * Thêm bộ test chuyên dụng `responsive-accessibility-layout-audit.test.js` xác nhận 100% quy tắc Responsive & Accessibility.
 - **Subagent 09 (P0 Completed — CONTENT DESIGN & MICROCOPY SPECIALIST)**:
   - **Audit Toàn Diện Microcopy & Ngôn Ngữ Hành Chính / Dân Sinh Chuẩn Hóa**:
     * **Loại bỏ 100% thuật ngữ kỹ thuật / backend lộ ra ngoài UI**:
@@ -369,3 +505,26 @@
   3. **Verification**:
      - `npm run verify:quick`: 25/25 test files PASS 100% (212 in-memory + 42 UI smoke tests).
      - `npm run build`: Vite build hoàn tất không cảnh báo trong 5.37s.
+
+### K. Backend RBAC, REST JSON Envelope, Anti-Spam & D1 Database Hardening Audit
+- **Phạm vi kiểm tra & củng cố**:
+  1. **Enforce RBAC đa tầng**:
+     - Anonymous calling Staff/Site write routes (`/api/cases`, `/api/inspections`, `/api/actions`, `/api/sites`) ➔ 401 Unauthorized (`UNAUTHORIZED`).
+     - Citizen calling Staff/Site write routes ➔ 403 Forbidden (`FORBIDDEN`).
+     - Contractor Site Isolation: Nộp minh chứng chéo công trình (`Site A` token sang `Site B` action) ➔ 403 Forbidden.
+     - Staff/Inspector/Admin/Executive: Được cấp quyền thực hiện đầy đủ tác vụ CRUD.
+  2. **Chuẩn hóa REST Envelope & RFC 7807 Problem Details**:
+     - Thành công: `{ status: 'success', data: {...}, message: '...' }`.
+     - Lỗi: `{ status: 'error', statusCode: 4xx/5xx, type: 'https://dustguard.vn/errors/...', title: '...', detail: '...', instance: '...', message: '...' }`.
+  3. **D1 SQL Queries, Indexes & State Machine Conformance**:
+     - Chuẩn hóa tên cột, khóa ngoại, 23 covered indexes, zero orphan records.
+     - Khắc phục triệt để enum status: `cases.status` tuân thủ 7-step lifecycle DAG (`SCREENING` -> `PREPARING` -> `DECISION_ISSUED` -> `ON_SITE` -> `REPORTING` -> `APPRAISING` -> `COMPLETED`), `complaints.status` chuẩn hóa `PENDING`, `alerts.status` bao gồm `IN_PROGRESS`/`ACTIVE`.
+     - PII Masking: Số điện thoại người gửi được che mờ (`(\d{3})\d{4}(\d{3,4})` ➔ `$1****$2`).
+  4. **Anti-Spam & Duplicate Detection**:
+     - Sliding window Rate Limiting: 5 requests / 10 phút.
+     - SHA-256 duplicate detection hash over description + normalized coordinates + address với cooldown 5 phút.
+  5. **Verification Gate**:
+     - `node --test app/tests/backend-rbac-security.test.js`: **31/31 tests PASS 100%**.
+     - `node --test app/tests/worker-auth-security.test.js`: **5/5 tests PASS 100%**.
+     - `npm --prefix app run audit:db`: **55/55 checks PASS 100%** (0 critical errors, 0 warnings).
+
