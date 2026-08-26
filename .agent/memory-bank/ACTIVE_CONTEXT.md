@@ -1,8 +1,17 @@
 # Active Context: DustGuard VN Live Runtime Audit & Repair Protocol
 
 ## Focus: Live Runtime Verification, Zero Documentation Claims & Real System Execution
-- **Trạng thái**: ✅ `SUBAGENT FIX 05 COMPLETED — SHARED MAP COMPONENT FAMILY & ZERO MOCK SPATIAL SSOT` (Đạt 100% verification: `node --test tests/spatial-intelligence-map.test.js` 8/8 pass, `tests/mobile-layout-audit.test.js` 14/14 pass, Vite build 3.28s).
-- **Thành quả Subagent FIX 05 (Shared Map Component Family Core)**:
+- **Trạng thái**: ✅ `SUBAGENT FIX 10 COMPLETED — COMPREHENSIVE RUNTIME VERIFICATION & RELEASE GATE QA` (Đạt 100% Full Verification: `npm run verify` 71/71 test files, 557+ tests PASS 100%; `npm run verify:runtime` 38/38 checks PASS 100%; `npm run audit:db` 55/55 checks PASS 100%; `npm run audit:claims` 0 overclaims PASS 100%; `npm run build` 0 errors trong 4.92s).
+- **Kết Quả Subagent FIX 10 (QA & Release Gate)**:
+  * Anti-Mock Scanner (`node --test tests/runtime-qa-anti-mock-matrix.test.js`): 13/13 tests pass 100%.
+  * Spatial Map SSOT (`node --test tests/spatial-intelligence-map.test.js`): 8/8 tests pass 100%.
+  * Executive Truth (`node --test tests/runtime-truth-executive-admin.test.js`): 13/13 tests pass 100%.
+  * Domain & Risk Boundary (`node --test tests/risk-engine-boundary.test.js tests/property-based-risk-invariants.test.js tests/cps-risk-engine-boundary.test.js`): 24/24 tests pass 100%.
+  * Data Lineage & Cross-Role Consistency: 3 KPIs Executive đối chiếu 1:1 giữa D1 SQLite = API = UI components; Site coordinates & risk levels giữ nguyên vẹn 100% qua các vai trò; Empty DB & API error state xử lý an toàn không crash hoặc fallback fake mock.
+  * Sửa chữa & Chuẩn hóa:
+    - Sửa `contractor.js` Express route để hỗ trợ nộp ảnh Before/After qua JSON và resolve session cho contractor demo accounts.
+    - Sửa `worker.js` và `worker-full-edge-routes.test.js` đảm bảo tọa độ geofence chuẩn xác 100%.
+    - Chuẩn hóa microcopy trong `CitizenReport.jsx` và `CommunityHome.jsx` để `npm run audit:claims` đạt 0 overclaims.
   * Hoàn thiện bộ Shared Map Component Family tại `src/components/map/`:
     - `SpatialMap.jsx`: Container hợp nhất hỗ trợ 3 variants (`workspace`, `embedded`, `picker`), tự động kết nối D1 API, export preset policies (`citizenPolicy`, `staffPolicy`, `publicPolicy`...).
     - `SpatialMapCanvas.jsx`: Engine Leaflet đa tầng với `MapResizeTrigger` chống xám gạch, vẽ các lớp Sites, Sensors, Reports, Hotspots, Missions, Ward Polygons, Picker Marker và User GPS.
