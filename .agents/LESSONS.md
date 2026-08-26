@@ -1,5 +1,35 @@
 # LESSONS LEARNED
 
+## 13. D1 Schema, Spatial WGS84 Adapter & High-Performance DB Indexing Invariants
+- **Bối cảnh & Vấn đề**:
+  - Dữ liệu tọa độ địa lý trong hệ thống được lưu ở nhiều bảng (`sites`, `observations`, `complaints`, `sensors`) với các định dạng khác nhau: `TEXT` ("lat,lng" hoặc "lat, lng"), `REAL` (`latitude`, `longitude`), hoặc JSON object (`{ lat, lng }`, `{ latitude, longitude }`).
+  - Các truy vấn không gian (Spatial Queries), tính bán kính Geofence 50m nhà thầu, hiển thị Leaflet GIS Map và truy vấn hồ sơ theo hạn xử lý SLA của Lãnh đạo nếu thiếu các composite index chuyên biệt trên D1 SQLite sẽ làm suy giảm hiệu năng khi mở rộng quy mô.
+- **Giải pháp Kiến trúc & Quy tắc Chuẩn hóa**:
+  1. **Canonical D1 Migration 0007 (`migrations/0007_spatial_and_executive_indexes.sql`)**:
+     - Bổ sung các chỉ mục hiệu năng cao trên Cloudflare D1 SQLite SSOT:
+       * `idx_sites_spatial` trên `sites(ward, status, coordinates)` và `idx_sites_coordinates` trên `sites(coordinates)`.
+       * `idx_sensors_spatial` trên `sensors(siteId, status)`.
+       * `idx_complaints_spatial` trên `complaints(ward, status, createdAt DESC)`.
+       * `idx_observations_spatial` trên `observations(latitude, longitude)` và `idx_observations_ward_status` trên `observations(ward, status, created_at DESC)`.
+       * `idx_cases_executive` trên `cases(status, slaDeadline, siteId)`.
+       * `idx_audit_logs_time` trên `audit_logs(createdAt DESC)`.
+       * `idx_handoffs_executive` trên `handoffs(status, created_at DESC)`.
+  2. **Canonical Spatial Adapter (`app/server/domain/spatial/spatial-adapter.js`)**:
+     - Cung cấp trọn gói các hàm chuẩn hóa WGS84: `parseCoordinates`, `serializeCoordinates`, `normalizeEntityCoordinates`, `calculateHaversineDistance`, `evaluateGeofenceBuffer`, `isWithinRadius`, `isValidWgs84`, `formatWgs84`.
+     - Chấp nhận mọi định dạng đầu vào: string `"21.02851, 105.85420"`, object `{ latitude, longitude }` / `{ lat, lng }`, entity objects (`site`, `observation`, `complaint`), array `[lat, lng]`, JSON string.
+     - Tự động gắn kết đồng thời các thuộc tính `{ latitude, longitude, lat, lng, coordinates }` lên mọi thực thể trả về từ database repositories (`site.repository.js`, `observation.repository.js`), ngăn chặn triệt để lỗi `undefined` tọa độ trên giao diện GIS Map và Contractor Workspace.
+  3. **Verification**: Suite `app/tests/d1-schema.test.js` (6/6 tests passing) xác thực toàn diện chỉ mục D1 `sqlite_master`, parsing đa định dạng, tính khoảng cách Haversine & Geofence 50m, và lưu/đọc CSDL SQLite thực tế.
+
+## 01. Cleanup Legacy Map Implementations & Mock Artifacts (Zero-Mock Production SSOT)
+- **Bối cảnh & Vấn đề**:
+  - Tàn dư code mẫu eCommerce (`CountryMap.tsx`, `DemographicCard.tsx`) gây phình to bundle và tăng nợ kỹ thuật.
+  - Sự tồn tại của nhiều bản đồ phân mảnh (`MapView.jsx`, `RiskLeafletMap.jsx`, `ExecutiveDashboard.jsx` legacy) gây phân tán logic và không tận dụng được sức mạnh của `SpatialMapWorkspace` / `SpatialMapCanvas`.
+  - Một số component và model (`DocumentsListPage.jsx`, `RevisionHistoryModal.jsx`, `executive-dashboard-model.js`) có các catch fallback trả về mock data giả lập (`doc-001`, `doc-002`, `rev_curr`, `rev_initial`, fake guest cases), làm sai lệch trạng thái thực tế của hệ thống.
+- **Giải pháp Kiến trúc & Chuẩn Hóa**:
+  1. Xóa bỏ hoàn toàn các file mồ côi `CountryMap.tsx`, `DemographicCard.tsx` và `src/components/ExecutiveDashboard.jsx` (legacy).
+  2. Deprecate và refactor `MapView.jsx` / `RiskLeafletMap.jsx`, chuyển hướng `StaffMap.jsx` sang `SpatialMapWorkspace` chuẩn SSoT.
+  3. Xóa bỏ 100% fallback mock data trong `DocumentsListPage.jsx`, `RevisionHistoryModal.jsx`, `contractor-api.js`, `youth-credits.js` (`fetchYouthLeaderboard()`) và `executive-dashboard-model.js`. Thay thế bằng xử lý ErrorState / EmptyState chân thực.
+
 ## 00. Design System & Component Architecture: Thống Nhất SSOT Primitives & Zero Fragmented Badges
 - **Bối cảnh & Vấn đề**:
   - Khi codebase phát triển qua nhiều domain (Citizen, Community, Staff, Executive, Contractor), việc xuất hiện các badge phân mảnh như `StatusChip`, `ComplaintStatusChip`, hoặc các hàm inline `getStatusBadge` trong từng tab dẫn đến không đồng nhất màu sắc, khó bảo trì, và nguy cơ lệch chuẩn Civic Tech High-Contrast.
@@ -47,6 +77,7 @@
   * Diện tích chạm (Touch Target) tối thiểu 44px x 44px (`min-h-[44px] min-w-[44px]`).
   * Nút hành động chính trên Mobile Bottom Navigation có kích thước 56px với màu Đỏ Con Dấu `#B51F24`.
 - **Safe Area Inset Padding**: Cố định Bottom Navigation cho Citizen & Community luôn tích hợp `pb-[max(0.5rem,env(safe-area-inset-bottom))]` hoặc `@utility pb-safe` để tránh bị che bởi thanh điều hướng cử chỉ trên iOS/Android.
+
 ## 5. Chuẩn Hóa Đơn Vị Hành Chính Cấp Cơ Sở (Ward / Phường-Xã SSOT)
 - **Bối cảnh & Vấn đề**:
   - Khi phân cấp quản lý môi trường đô thị (theo Quyết định 48/2024/QĐ-UBND Hà Nội và tinh gọn mô hình chính quyền đô thị), đơn vị chịu trách nhiệm kiểm tra thực địa, phản ánh dân sinh và tiếp nhận bàn giao là **Cấp Phường / Xã** (Ward) trực thuộc Tỉnh/Thành phố.
@@ -70,29 +101,6 @@
   * Giờ hoạt động chuẩn: 1.5h cơ bản + 0.5h có ảnh minh chứng + 0.5h có công trình liên kết = 2.5h / lượt đã xử lý.
   * Tích lũy 20h tương đương 4.0 tín chỉ ngoại khóa / điểm rèn luyện sinh viên.
   * Xuất bản in A4 chuẩn tài liệu hành chính kèm mã QR SVG độc lập quét kiểm tra ngay trên mobile (`verifyCert`), mã băm toàn vẹn SHA-256 và con dấu số điện tử.
-
-## 6. Ngôn Ngữ Thuần Việt Dễ Hiểu & Quy Tắc Tối Đa 3 Chữ (Max 3 Words SSOT)
-- **Bối cảnh & Vấn đề**:
-  - Việc đưa các từ ngữ viết tắt tiếng Anh hoặc thuật ngữ kỹ thuật (`SLA`, `telemetry`, `hash`, `D1/R2`, `risk engine`, `triage`, `sync`) hoặc các nhãn quá dài lên nút bấm, tiêu đề tab hay menu gây khó hiểu cho người dân, sinh viên và cán bộ cơ sở, đồng thời dễ làm vỡ layout/rớt chữ trên mobile.
-  - Ví dụ: Nút bấm mang tên *"Cập nhật SLA"* hay *"Làm mới dữ liệu"* dài dòng, khó hiểu hơn *"Làm mới"*.
-- **Quy Tắc Tối Thượng (Invariants — Max 3 Words)**:
-  1. **Nút Bấm (Buttons — Tối đa 2 đến 3 chữ)**:
-     - `Cập nhật SLA` / `Làm mới dữ liệu` ➔ **`Làm mới`** (2 chữ).
-     - `Quét cảm biến thủ công` ➔ **`Quét cảm biến`** (3 chữ).
-     - `Xuất Hồ sơ Trọn gói` ➔ **`Xuất hồ sơ`** / **`Xuất PDF`** (2 chữ).
-     - `Phản ánh ô nhiễm môi trường` ➔ **`Gửi phản ánh`** (3 chữ).
-     - `Bản đồ quanh tôi` ➔ **`Xem bản đồ`** (3 chữ).
-  2. **Thanh Menu & Điều Hướng (Navigation & Tabs — Tối đa 1 đến 3 chữ)**:
-     - `Giám sát SLA` ➔ **`Hạn khắc phục`** (3 chữ).
-     - `Ma trận Rủi ro 2D` ➔ **`Ma trận`** (2 chữ).
-     - `Phân tích văn bản pháp luật` ➔ **`Phân tích luật`** (3 chữ).
-     - `Tra cứu căn cứ pháp lý` ➔ **`Tra cứu luật`** (3 chữ).
-     - `Dựng hồ sơ vi phạm` ➔ **`Lập hồ sơ`** (3 chữ).
-     - `Soạn thảo biên bản` ➔ **`Soạn biên bản`** (3 chữ).
-     - `Kiểm toán thiết bị` ➔ **`Thiết bị`** (2 chữ).
-     - `Phân tích & Điểm nóng` ➔ **`Điểm nóng`** (2 chữ).
-  3. **Kỹ Thuật Phòng Vệ Layout**:
-     - 100% nút bấm, badge, tabs phải có `whitespace-nowrap shrink-0` và `min-h-[44px]` (hoặc `min-h-[40px]`).
 
 ## 7. Citizen Journey & Civic Engagement Invariants (Luồng Người Dân Từ A-Z)
 - **Bối cảnh & Vấn đề**:
@@ -154,3 +162,24 @@
      - Chiều rộng vùng in khả dụng: 9,355 DXA; bảng tính độ rộng cột chính xác không thất thoát twips.
   4. **Verification**:
      - 100% passing test suites: `legal-ssot-mapping.test.js` (6/6), `legal-rule-engine-crud.test.js` (5/5), `document-engine-google-docs.test.js` (5/5), `docx-legal-exporter.test.js` (3/3), `official-document.test.js` (5/5).
+
+## 10. Shared Map Component Family, Zero Mock & Role-Aware Spatial Intelligence SSOT
+- **Bối cảnh & Vấn đề**:
+  - Bản đồ GIS là linh hồn của Civic Tech, nhưng trước đây các mảng mock (`FALLBACK_SITES`, `FALLBACK_SENSORS`, `FALLBACK_REPORTS`, `FALLBACK_HOTSPOTS`, `FALLBACK_MISSIONS`) nằm rải rác trong `SpatialMapWorkspace.jsx`, làm sai lệch tính chân thực của dữ liệu Cloudflare D1.
+  - Thiếu bộ component dùng chung (Shared Component Family) khiến việc nhúng bản đồ vào widget Dashboard (`variant="embedded"`) hoặc bộ chọn tọa độ (`variant="picker"`) bị trùng lặp code Leaflet và dễ gây lỗi xám gạch (grey tiles) khi thay đổi kích thước màn hình.
+  - Chưa phân tách quyền bảo vệ PII (số điện thoại, email, danh tính người phản ánh) và ghi chú nội bộ cán bộ thanh tra giữa công dân (`citizen`/`public`) và cán bộ (`staff`/`executive`/`admin`).
+- **Kiến Trúc & Giải Pháp Chuẩn Hóa (`src/components/map/`)**:
+  1. **Shared Map Component Family**:
+     - `SpatialMap.jsx`: Container hợp nhất hỗ trợ 3 variants (`workspace`, `embedded`, `picker`), tự động fallback D1 API khi features là `null`, export các preset policy (`citizenPolicy`, `staffPolicy`, `publicPolicy`...).
+     - `SpatialMapCanvas.jsx`: Leaflet rendering engine hỗ trợ đa tầng (Sites, Sensors, Reports, Hotspots, Missions, Ward Polygons, User GPS, Picker Marker) kết hợp `MapResizeTrigger` chống xám gạch đa tần số (50ms, 150ms, 350ms, 800ms & ResizeObserver).
+     - `MapToolbar.jsx`: Thanh điều khiển bộ lọc, tìm kiếm thời gian thực, chuyển chế độ xem (Tình hình, Cảm biến, Phản ánh, Hoạt động), GPS Quanh tôi và CTA phân quyền.
+     - `MapLegend.jsx`: Chú giải Semantic SSOT với bảng màu Civic Tech tương phản cao (`#9F241F` Red nguy cơ cao, `#B45309` Amber cần chú ý, `#0D6F64` Teal đạt chuẩn, `#231B14` Dark ink).
+     - `SpatialEntityDrawer.jsx`: Drawer chi tiết phân quyền dữ liệu (ẩn PII/ghi chú nội bộ cho Citizen; hiển thị đầy đủ thông tin kiểm tra cho Staff/Executive).
+     - `MapStates.jsx`: Bộ 3 components trạng thái chuẩn (`<MapLoadingState>`, `<MapEmptyState>`, `<MapErrorState>`).
+     - `mapCapabilities.js`: Policy resolver ma trận 6 vai trò (`PUBLIC`, `CITIZEN`, `COMMUNITY`, `STAFF`, `EXECUTIVE`, `ADMIN`).
+  2. **Zero Mock Invariant**:
+     - 100% dữ liệu không gian lấy từ Cloudflare D1 persistent storage (`/api/map`).
+     - Khi API rỗng hoặc không có dữ liệu, hiển thị `<MapEmptyState>` đúng quy tắc thay vì nạp dữ liệu ảo.
+  3. **Verification**:
+     - Test suite `tests/spatial-intelligence-map.test.js` (8/8 tests pass 100%).
+     - Đóng gói frontend `npm run build` thành công trong 3.28s.

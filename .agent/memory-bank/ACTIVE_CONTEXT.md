@@ -1,7 +1,18 @@
 # Active Context: DustGuard VN Live Runtime Audit & Repair Protocol
 
 ## Focus: Live Runtime Verification, Zero Documentation Claims & Real System Execution
-- **Trạng thái**: ✅ `CRON ENGINE CURRENTLY DISABLED (KILL SWITCH ACTIVE)` (Đạt 100% Release Verification Gate: 71/71 test files PASS, 557+ tests pass 100%, OpenAPI contract parity 100%, Vite build 3.9s).
+- **Trạng thái**: ✅ `SUBAGENT FIX 05 COMPLETED — SHARED MAP COMPONENT FAMILY & ZERO MOCK SPATIAL SSOT` (Đạt 100% verification: `node --test tests/spatial-intelligence-map.test.js` 8/8 pass, `tests/mobile-layout-audit.test.js` 14/14 pass, Vite build 3.28s).
+- **Thành quả Subagent FIX 05 (Shared Map Component Family Core)**:
+  * Hoàn thiện bộ Shared Map Component Family tại `src/components/map/`:
+    - `SpatialMap.jsx`: Container hợp nhất hỗ trợ 3 variants (`workspace`, `embedded`, `picker`), tự động kết nối D1 API, export preset policies (`citizenPolicy`, `staffPolicy`, `publicPolicy`...).
+    - `SpatialMapCanvas.jsx`: Engine Leaflet đa tầng với `MapResizeTrigger` chống xám gạch, vẽ các lớp Sites, Sensors, Reports, Hotspots, Missions, Ward Polygons, Picker Marker và User GPS.
+    - `MapToolbar.jsx`: Điều khiển bộ lọc, tìm kiếm, 4 chế độ xem (`Tình hình`, `Cảm biến`, `Phản ánh`, `Hoạt động`), GPS `Quanh tôi` và CTA phân quyền.
+    - `MapLegend.jsx`: Chú giải Semantic SSOT chuẩn màu (`#9F241F` Red nguy cơ cao, `#B45309` Amber cần chú ý, `#0D6F64` Teal đạt chuẩn, `#231B14` Dark ink).
+    - `SpatialEntityDrawer.jsx`: Drawer chi tiết hiển thị theo loại đối tượng và bảo vệ PII (ẩn SĐT/email/ghi chú nội bộ cho Citizen; hiển thị đầy đủ cho Staff/Executive).
+    - `MapStates.jsx`: `<MapLoadingState>`, `<MapEmptyState>`, `<MapErrorState>`.
+    - `mapCapabilities.js`: Policy resolver ma trận 6 vai trò (`PUBLIC`, `CITIZEN`, `COMMUNITY`, `STAFF`, `EXECUTIVE`, `ADMIN`).
+  * **XÓA BỎ 100% MOCK DATA**: Loại bỏ hoàn toàn `FALLBACK_SITES`, `FALLBACK_SENSORS`, `FALLBACK_REPORTS`, `FALLBACK_HOTSPOTS`, `FALLBACK_MISSIONS` trong `SpatialMapWorkspace.jsx`. Khi API D1 rỗng, hiển thị `<MapEmptyState>` đúng quy tắc.
+  * Tuân thủ nghiêm ngặt chuẩn Civic Tech: Sáng màu, tương phản cao, Zero Glassmorphism, nút bấm và nhãn tối đa 3 từ (Max 3 Words).
 - **Cấu hình Cron & Tự động hóa hiện tại**:
   * `runtimeAutomationConfig.enabled = false`
   * `runtimeAutomationConfig.mode = 'DISABLED'`
