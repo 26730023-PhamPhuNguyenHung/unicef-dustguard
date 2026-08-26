@@ -98,6 +98,24 @@
   1. Cung cấp nút **"Sao chép nộp 1022 / iHanoi (1-Chạm)"** tự động định dạng văn bản chuẩn (Địa chỉ, Tọa độ GPS, Diễn biến Trước/Sau, Link Dossier A4 và Mã QR).
   2. Bổ sung ô nhập & quản lý **Mã Ticket / Biên nhận 1022** ngay trong Không gian Vụ việc (`CommunityCaseWorkspace.jsx`), lưu trữ vào D1 SSOT và công khai minh bạch trạng thái (`ĐÃ TIẾP NHẬN` / `ĐANG XỬ LÝ` / `ĐÃ KHẮC PHỤC`) cho toàn bộ cộng đồng cùng giám sát.
 
+### 🚨 Trap 4.7: Bẫy Đứt Gãy Chu Trình Khép Kín (Broken Closed-Loop Trap)
+- **Nguyên nhân**: Đóng hồ sơ hoặc nghiệm thu vội vã chỉ dựa trên báo cáo miệng hoặc lời hứa hẹn khắc phục của đơn vị thi công mà không có kiểm tra đối chứng thực địa chu trình 24h–48h.
+- **Giải pháp**: Bắt buộc tuân thủ 11-Stage Canonical Workflow trong [`.agents/ssot/WORKFLOWS.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/WORKFLOWS.md). Chỉ được chuyển sang trạng thái `RESOLVED` / `CLOSED` khi có:
+  1. Cặp ảnh đối chứng Before (Trước) và After (Sau) đạt kiểm tra Geofence $\le 50\text{m}$.
+  2. Mã băm SHA-256 tamper-evident được niêm phong vào hồ sơ.
+  3. Kết quả tái kiểm tra thực địa Follow-up đạt trạng thái `BETTER`.
+  4. Định lượng rõ ràng chỉ số $\Delta\text{Risk}$ và giá trị bảo vệ học đường/cộng đồng lân cận.
+
+### 🚨 Trap 4.8: Bẫy Giả Lập Vai Trò Quyền Lực Nhà Nước (Bureaucratic Role Illusion)
+- **Nguyên nhân**: Tạo ra hệ thống vai trò phức tạp giả lập các cơ quan chức năng (Inspector Bộ trưởng, Thẩm phán, Cơ quan cưỡng chế xử phạt) khiến dự án đi sai lệch bản chất CivicTech và gây rủi ro pháp lý/nghiệp vụ.
+- **Giải pháp**: Tinh gọn hệ thống Role chỉ giữ đúng 5 vai trò thực tế SSOT theo [`.agents/ssot/ROLES.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/ROLES.md):
+  1. `PUBLIC` (Công chúng xem AQI tổng hợp, xu hướng).
+  2. `CITIZEN` (Người dân / Thanh niên gửi ghi nhận hiện trường, nhận điểm rèn luyện QR).
+  3. `OPERATOR` (Điều phối viên / Reviewer duyệt hàng đợi, tạo dossier, chuyển giao 1022).
+  4. `SITE_REPRESENTATIVE` (Đơn vị thi công xem hiện trường, nộp ảnh dập bụi geofence <= 50m).
+  5. `ADMIN` (Quản trị viên hệ thống, cảm biến IoT).
+  Mọi kiểm tra quyền hạn tuân thủ ma trận chuẩn tại [`.agents/ssot/PERMISSIONS.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/PERMISSIONS.md).
+
 ---
 
 ## 📷 5. Image Processing, EXIF Privacy & Cost Claims Traps

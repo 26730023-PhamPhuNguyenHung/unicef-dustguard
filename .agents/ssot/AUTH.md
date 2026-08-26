@@ -68,34 +68,37 @@ export interface IdentityContext {
 
 ## 3. Vai trò Hệ thống (SSOT Roles) & Ma trận Phân quyền (Access Matrix)
 
-### 3.1. Danh mục Vai trò (Roles SSOT)
+> 📖 **Xem chi tiết đầy đủ tại**:
+> - [`.agents/ssot/ROLES.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/ROLES.md) (Định danh 5 vai trò thực tế & quy tắc chuẩn hóa)
+> - [`.agents/ssot/PERMISSIONS.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/PERMISSIONS.md) (Ma trận phân quyền RBAC & ABAC chi tiết)
+
+### 3.1. Danh mục 5 Vai trò Thực tế (Roles SSOT)
 ```ts
-export const ROLES = {
-  CITIZEN: 'citizen',           // Công dân tạo phản ánh, xem tiến độ công khai
-  YOUTH_MEMBER: 'youth_member', // Thanh niên tình nguyện, tích lũy tín chỉ xanh
-  STAFF: 'staff',               // Cán bộ hiện trường, tiếp nhận & xử lý hồ sơ
-  INSPECTOR: 'inspector',       // Thanh tra viên môi trường, lập biên bản vi phạm
-  EXECUTIVE: 'executive',       // Lãnh đạo cơ quan, phê duyệt quyết định xử phạt
-  CONTRACTOR: 'contractor',     // Nhà thầu thi công, nộp giải trình & khắc phục
-  ADMIN: 'admin',               // Quản trị viên hệ thống
-  SUPER_ADMIN: 'super_admin',   // Quản trị cấp cao tối cao
-  SYSTEM: 'system',             // Tiến trình tự động (Risk Engine, Alert Engine)
-} as const;
+export const ROLES = Object.freeze({
+  PUBLIC: 'public',                           // Công chúng xem AQI tổng hợp, xu hướng
+  CITIZEN: 'citizen',                         // Người dân / Thanh niên gửi ghi nhận, nhận điểm rèn luyện QR
+  OPERATOR: 'operator',                       // Điều phối viên / Reviewer duyệt hàng đợi, chuyển giao 1022
+  SITE_REPRESENTATIVE: 'site_representative', // Đơn vị thi công xem hiện trường, nộp ảnh dập bụi geofence <= 50m
+  ADMIN: 'admin',                             // Quản trị viên hệ thống, cấu hình cảm biến IoT
+});
 ```
 
-### 3.2. Ma trận Phân quyền Tài nguyên (Access Control Matrix)
+### 3.2. Ma trận Phân quyền Tài nguyên Rút gọn (High-Level Access Control Matrix)
 
-| Tài nguyên / Hành động | Citizen | Youth | Contractor | Staff | Inspector | Executive | Admin |
-|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| **Tạo phản ánh/Quan sát (`/community/observe`)** | ✅ | ✅ | ❌ | ✅ | ✅ | ✅ | ✅ |
-| **Xem hồ sơ cá nhân / Tín chỉ thanh niên** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Xem danh sách công trường công khai** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Nộp văn bản giải trình nhà thầu** | ❌ | ❌ | ✅ (Own) | ❌ | ❌ | ❌ | ✅ |
-| **Tiếp nhận & Chuyển trạng thái vụ việc** | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ |
-| **Lập biên bản vi phạm hành chính** | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ |
-| **Phê duyệt & Ký số quyết định xử phạt** | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ |
-| **Cấu hình cảm biến & Hệ thống cảnh báo** | ❌ | ❌ | ❌ | ❌ | Giới hạn | Giới hạn | ✅ |
-| **Quản trị hệ thống, Reset & D1 Safe Guards** | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
+| Tài nguyên / Hành động | `PUBLIC` | `CITIZEN` | `OPERATOR` | `SITE_REPRESENTATIVE` | `ADMIN` |
+|---|:---:|:---:|:---:|:---:|:---:|
+| **Xem bản đồ AQI & xu hướng chung** | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Xem danh sách công trường công khai** | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Gửi ghi nhận hiện trường (`Observation`)** | ❌ | ✅ | ✅ | ❌ | ✅ |
+| **Tích lũy giờ tình nguyện & nhận QR chứng nhận** | ❌ | ✅ | ✅ | ❌ | ✅ |
+| **Duyệt hàng đợi ghi nhận (`Review Queue`)** | ❌ | ❌ | ✅ | ❌ | ✅ |
+| **Tạo & quản lý vụ việc theo dõi (`Case`)** | ❌ | ❌ | ✅ | ❌ | ✅ |
+| **Kết xuất Hồ sơ thực chứng A4 (SHA-256)** | ❌ | ❌ | ✅ | ❌ | ✅ |
+| **Chuyển giao tới 1022 / iHanoi / Email** | ❌ | ❌ | ✅ | ❌ | ✅ |
+| **Xem hồ sơ cảnh báo công trường được gán** | ❌ | ❌ | ✅ | ✅ (Own Site) | ✅ |
+| **Nộp ảnh đối chứng dập bụi (Geofence <= 50m)** | ❌ | ❌ | ❌ | ✅ (Own Site + GPS) | ✅ |
+| **Cấu hình cảm biến IoT & HMAC-SHA256 PSK** | ❌ | ❌ | ❌ | ❌ | ✅ |
+| **Quản trị người dùng & Phân quyền hệ thống** | ❌ | ❌ | ❌ | ❌ | ✅ |
 
 ---
 
