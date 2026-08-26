@@ -7,10 +7,11 @@
 ## ⚡ 1. Golden Rules (Tối thượng - Không vi phạm)
 1. **D1 SQLite is Persistent SSOT**: Database thật tại `prisma/dev.db` và Cloudflare D1. Không dùng client localStorage làm CSDL.
 2. **Zero Mock in Business Paths**: Không hardcode fake data trong catch blocks hay API wrappers. Luôn dùng ErrorState/EmptyState chân thực.
-3. **Observation != Case**: Ghi nhận (Observation) là phát hiện ban đầu từ cộng đồng/thanh niên; Vụ việc (Case) là hồ sơ thanh tra xử lý 7 bước có thẩm quyền.
-4. **Zero-IoT Resilience**: Hệ thống hoạt động 100% khi có 0 cảm biến (chuẩn hóa trọng số `sum(score * w) / sum(w)`).
-5. **Light Mode High-Contrast Civic Tech**: Tuyệt đối **KHÔNG Glassmorphism** (`backdrop-blur-*`). Màu chủ đạo: `#FDFBF7` cream, `#231b14` ink, `#0d6f64` teal, `#9f241f` seal red. Nền sáng chữ đậm, nền đậm chữ sáng. Touch target tối thiểu **44px x 44px**.
-6. **Windows PowerShell CLI**: Chạy lệnh trực tiếp qua CLI, không bảo user làm. Không dùng Unix pipe (`| grep`, `export`), dùng `Select-String`, `$env:`.
+3. **Observation != Case**: Ghi nhận (Observation) là phát hiện ban đầu từ cộng đồng/thanh niên; Vụ việc (Case) là hồ sơ theo dõi dài hạn đa bên để đối chứng và phối hợp khắc phục.
+4. **Zero-IoT Resilience**: Hệ thống hoạt động 100% khi có 0 cảm biến (chuẩn hóa trọng số `sum(score * w) / sum(w)`). Cảm biến IoT là module mở rộng giá rẻ (< $25).
+5. **AI is Assistant, Not Judge**: AI hỗ trợ tóm tắt, chuẩn hóa và kiểm tra ảnh; con người quyết định và hành động khắc phục.
+6. **Light Mode High-Contrast Civic Tech**: Tuyệt đối **KHÔNG Glassmorphism** (`backdrop-blur-*`). Màu chủ đạo: `#FDFBF7` cream, `#231b14` ink, `#0d6f64` teal, `#9f241f` seal red. Nền sáng chữ đậm, nền đậm chữ sáng. Touch target tối thiểu **44px x 44px**.
+7. **Windows PowerShell CLI**: Chạy lệnh trực tiếp qua CLI, không bảo user làm. Không dùng Unix pipe (`| grep`, `export`), dùng `Select-String`, `$env:`.
 
 ---
 
@@ -33,7 +34,7 @@
 - **Auth & RBAC**: [`.agents/ssot/AUTH.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/AUTH.md)
 - **Executive & Signing**: [`.agents/ssot/EXECUTIVE_OPS_SSOT.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/EXECUTIVE_OPS_SSOT.md)
 - **SSOT Timeline & Commits**: [`.agents/ssot/TIMELINE.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/TIMELINE.md)
-- **Bug Memory & Traps**: [`.agents/BUG_MEMORY.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/BUG_MEMORY.md)
+- **Bug Memory & Traps**: [`.agents/BUG_MEMORY.md`](file:///d:/07-Agents/unicef-dustguard/.agents/BUG_MEMORY.md)
 - **Architecture Lessons**: [`.agents/LESSONS.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/LESSONS.md)
 
 ---

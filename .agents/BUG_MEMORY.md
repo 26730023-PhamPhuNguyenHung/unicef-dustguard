@@ -76,3 +76,7 @@
 ### 🚨 Trap 4.2: Gian lận ảnh khắc phục nhà thầu
 - **Nguyên nhân**: Nhà thầu tải ảnh từ nơi khác hoặc ảnh cũ không đúng hiện trường.
 - **Giải pháp**: Kiểm tra Geofence bằng công thức Haversine giữa vị trí GPS của ảnh và tọa độ công trình. Nếu khoảng cách `> 50m`, hệ thống từ chối hoặc cảnh báo đỏ `geofenceValid: false`.
+
+### 🚨 Trap 4.3: Bẫy Ảo Tưởng Thẩm Quyền Hành Chính & Mock Token PKI
+- **Nguyên nhân**: Cố gắng giả lập luồng ký số USB Token Ban Cơ Yếu / CA Nhà nước với mã PIN giả (PIN 1234), hoặc tự phong quyền ra quyết định xử phạt vi phạm hành chính thay cơ quan nhà nước.
+- **Giải pháp**: Định vị đúng Civic Tech: Bằng chứng số chống sửa đổi (Tamper-Evident SHA-256 Digest). DustGuard đóng vai trò cuốn nhật ký đối chứng minh bạch (Dossier A4) để cộng đồng và thanh niên đối thoại xây dựng với Ban Quản lý Dự án hoặc gửi UBND Phường hỗ trợ xử lý.
