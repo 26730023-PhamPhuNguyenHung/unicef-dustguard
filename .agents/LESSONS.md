@@ -159,14 +159,23 @@
 - **Dual-View Table Pattern (Desktop Table & Mobile Cards)**: Trên các bảng dữ liệu quản trị, không cố gắng nhồi nhét bảng nhiều cột trên màn hình hẹp (< 768px). Triển khai kiến trúc 2 tầng: Desktop Table (`hidden md:block`) & Mobile Cards (`md:hidden flex flex-col gap-3`).
 - **Safe Area Inset Padding**: Cố định Bottom Navigation cho Citizen & Community luôn tích hợp `pb-[max(0.5rem,env(safe-area-inset-bottom))]` hoặc `@utility pb-safe` để tránh bị che bởi thanh điều hướng cử chỉ trên iOS/Android.
 
-## 17. Chuẩn Hóa Đơn Vị Hành Chính Cấp Cơ Sở (Ward / Phường-Xã SSOT)
+## 18. Ngôn Ngữ Thuần Việt Dễ Hiểu & Cấm Thuật Ngữ Kỹ Thuật / Jargon (Plain Civic Language SSOT)
 - **Bối cảnh & Vấn đề**:
-  - Khi phân cấp quản lý môi trường đô thị (theo Quyết định 48/2024/QĐ-UBND Hà Nội và tinh gọn mô hình chính quyền đô thị), đơn vị chịu trách nhiệm kiểm tra thực địa, phản ánh dân sinh và tiếp nhận bàn giao là **Cấp Phường / Xã** (Ward) trực thuộc Tỉnh/Thành phố.
-  - Việc để sót các khái niệm trung gian "Quận/Huyện" (District) rải rác trên dropdown bộ lọc, bảng xếp hạng điều hành lãnh đạo hoặc nơi nhận văn bản gây phân mảnh dữ liệu và nhầm lẫn trách nhiệm giải trình.
-- **Giải pháp Kiến trúc & Quy tắc Chuẩn hóa**:
-  1. **Schema & API**: Bảng `sites`, `complaints`, `observations`, `campaigns` đều lưu trực tiếp `ward` và `province`. Không tạo cột `district` dư thừa.
-  2. **Bộ Lọc Đa Tầng (Filter Triage)**: Luôn trích xuất danh sách duy nhất các Phường (`distinctWards`) từ CSDL để người dùng lọc chính xác theo địa bàn (`Phường Mai Dịch`, `Phường Mễ Trì`, `Phường Quan Hoa`, `Phường Dịch Vọng Hậu`...).
-  3. **Văn Bản Hành Chính**: Nơi nhận chuẩn hóa là `- UBND Phường/Xã;`, cơ quan phối hợp là *Tổ Giám sát & Thanh tra Môi trường Phường*.
-  4. **Executive SLA Ranking**: Bảng xếp hạng năng lực giải quyết khiếu nại và cam kết 48h SLA phải nhóm và hiển thị theo Phường/Xã để đánh giá đúng trách nhiệm người đứng đầu cơ sở.
+  - Việc đưa các từ ngữ viết tắt tiếng Anh hoặc thuật ngữ kỹ thuật (`SLA`, `telemetry`, `hash`, `D1/R2`, `risk engine`, `triage`, `sync`) lên nút bấm, tiêu đề tab hay menu gây khó hiểu cho người dân, sinh viên tình nguyện và cán bộ điều hành cấp cơ sở.
+  - Ví dụ: Nút bấm mang tên *"Cập nhật SLA"* gây mơ hồ về mặt hành vi so với *"Làm mới dữ liệu"* hoặc *"Cập nhật tiến độ"*.
+- **Quy Tắc Tối Thượng (Invariants)**:
+  1. **Nút Bấm (Buttons)**: Phải dùng động từ thuần Việt, rõ ràng hành vi tiếp theo:
+     - `Cập nhật SLA` ➔ **`Làm mới dữ liệu`** / **`Cập nhật tiến độ`**.
+     - `Trigger scan` ➔ **`Quét cảm biến`**.
+     - `Export Dossier` ➔ **`Xuất hồ sơ A4`** / **`Xuất PDF`**.
+     - `Submit` ➔ **`Gửi phản ánh`** / **`Nộp minh chứng`**.
+  2. **Thanh Menu & Điều Hướng (Navigation & Tabs)**: Dùng từ ngữ nghiệp vụ dân sinh, trực diện:
+     - `Giám sát SLA` ➔ **`Hạn khắc phục`** / **`Thời hạn xử lý`** (24h/48h).
+     - `Kiểm toán thiết bị` ➔ **`Thiết bị`**.
+     - `Phân tích & Điểm nóng` ➔ **`Điểm nóng`**.
+     - `Phân tích văn bản pháp luật` ➔ **`Phân tích văn bản`**.
+  3. **Ngắn Gọn & Chống Rớt Chữ (Compact & Anti-Orphan)**:
+     - Tên nút tối đa 2-3 từ, luôn gắn `whitespace-nowrap shrink-0` và `min-h-[44px]` (hoặc `min-h-[40px]`).
+     - Không dùng từ ngữ đa tầng trừu tượng làm dài dòng giao diện.
 
 
