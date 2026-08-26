@@ -7,7 +7,10 @@
 ## 📅 Timeline & Commit Log
 
 | Mốc Thời Gian | Commit Hash | Phạm Vi / Scope | Mô Tả Thay Đổi & Giá Trị Nghiệp Vụ | Trạng Thái Kiểm Thử |
-| **2026-08-26** | `HEAD` | `feat(civic-integration)` | Tích hợp tính năng Bàn giao 1-Chạm sang Cổng 1022 & iHanoi, Thẻ QR Dossier và Ô nhập mã số tiếp nhận (Mã Ticket / Biên nhận) công khai | 28/28 Pass (237 unit + 42 UI) |
+| **2026-08-26** | `HEAD` | `docs(workflows-ssot)` | Chuẩn hóa Canonical 11-Stage Pipeline, Closed-Loop Impact Architecture (Before vs After, Geofence 50m, SHA-256) và Municipal Civic Handoff (1022/iHanoi Dossier A4/QR/API) trong WORKFLOWS.md | 28/28 Pass (237 unit + 42 UI) |
+| **2026-08-26** | `03ffec2` | `docs(terminology-ssot)` | Chuẩn hóa bộ từ điển thuật ngữ khoa học SSOT TERMINOLOGY.md, tuân thủ 100% nguyên tắc khiêm tốn, khách quan, khoa học; định vị Environmental Intelligence & Decision Support trong README.md; xác thực 28/28 test suites pass | 28/28 Pass (237 unit + 42 UI) |
+| **2026-08-26** | `e1d48c2` | `docs(scientific-spec)` | Tái kiến trúc định vị DustGuard thành Nền tảng Trí tuệ Môi trường & Hỗ trợ Ra Quyết định, phân loại 100% tính năng 3 vùng (Tier A Core Owned, Tier B DSS, Tier C External Authority), ban hành SCIENTIFIC_RESEARCH_SPEC.md & PRODUCT.md | 28/28 Pass (237 unit + 42 UI) |
+| **2026-08-26** | `c9be412` | `feat(civic-integration)` | Tích hợp tính năng Bàn giao 1-Chạm sang Cổng 1022 & iHanoi, Thẻ QR Dossier và Ô nhập mã số tiếp nhận (Mã Ticket / Biên nhận) công khai | 28/28 Pass (237 unit + 42 UI) |
 | **2026-08-26** | `c7da34b` | `feat(devops-privacy)` | Chuẩn hóa claim chi phí pilot gần bằng 0 Cloudflare, tự động xóa EXIF bảo vệ quyền riêng tư & nén ảnh < 300KB | 26/26 Pass (225 unit + 42 UI) |
 | **2026-08-26** | `0c2bb3a` | `feat(civic-handoff)` | Chuẩn hóa Structured Civic Dossier đối thoại xây dựng, định vị 1022/iHanoi là Điểm Tích Hợp và loại bỏ từ ngữ áp đặt | 26/26 Pass (225 unit + 42 UI) |
 | **2026-08-26** | `d1edb19` | `feat(qa-domain)` | Chuẩn hóa định nghĩa SHA-256 tamper-evident, khóa bất biến Observation != Case và Follow-up 3 trạng thái | 26/26 Pass (225 unit + 42 UI) |

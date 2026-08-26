@@ -27,6 +27,20 @@
 ---
 
 ## 🛠️ KIỂM TRA HỆ THỐNG & NHIỆM VỤ ĐÃ HOÀN TẤT
+- [x] **Subagent 2: Domain Model & Data Schema Architect**:
+  1. Tái cấu trúc Domain Model lấy **'Environmental Event'** làm trung tâm (loại bỏ hoàn toàn tư duy 'vi phạm/violation' và ảo tưởng quyền lực chế tài).
+  2. Phân định rõ ràng 3 tầng kiến trúc dữ liệu: **Measurement** (bản ghi đo đạc thô, time-series trung tính) ≠ **Signal** (dấu hiệu bất thường phát hiện từ đo đạc/quan sát) ≠ **Event** (sự kiện môi trường tập hợp signals cần theo dõi & hành động).
+  3. Thiết lập Schema và Máy trạng thái 11 bước chuẩn của Event: `detected` ➔ `needs_review` ➔ `under_review` ➔ `needs_verification` ➔ `verified_signal` ➔ `forwarded` ➔ `action_in_progress` ➔ `monitoring` ➔ `resolved` ➔ `closed` / `dismissed`.
+  4. Biên soạn và đồng bộ 2 tài liệu SSOT kiến trúc miền: [DATA_MODEL.md](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/DATA_MODEL.md) và [DOMAIN.md](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/DOMAIN.md).
+- [x] **Subagent 1: Product Scope & Scientific Positioning Auditor**:
+  1. Tái kiến trúc định vị DustGuard thành **Nền tảng Trí tuệ Môi trường & Hỗ trợ Ra Quyết định (Environmental Intelligence & Decision Support Platform)**.
+  2. Phân loại 100% tính năng thành 3 nhóm ranh giới minh bạch: Tier A (Core Owned), Tier B (Decision Support - AI as Assistant), Tier C (External Authority Integration).
+  3. Hoàn thiện và đồng bộ 2 tài liệu SSOT học thuật & sản phẩm: [PRODUCT.md](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/PRODUCT.md) và [SCIENTIFIC_RESEARCH_SPEC.md](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/SCIENTIFIC_RESEARCH_SPEC.md).
+- [x] **Subagent 3: Canonical Workflow & Handoff Architect**:
+  1. Chuẩn hóa **1 Canonical Workflow 11 giai đoạn duy nhất** (`ENVIRONMENTAL SIGNAL ➔ DATA VALIDATION ➔ EVENT DETECTION ➔ CORRELATION ➔ PRIORITY ASSESSMENT ➔ REVIEW QUEUE ➔ HUMAN VERIFICATION ➔ EXTERNAL/INTERNAL ACTION ➔ FOLLOW-UP ➔ IMPACT MEASUREMENT ➔ CLOSED/MONITORING`).
+  2. Thiết lập quy trình **Closed-Loop Impact** đo lường đối chứng Before vs After (kiểm tra Geofence $\le 50\text{m}$, SHA-256 tamper-evident, $\Delta\text{Risk}$, nồng độ bụi và tín chỉ thanh niên).
+  3. Chuẩn hóa 3 phương thức **Civic Handoff sang 1022 / iHanoi** (Dossier A4 4 khối, 1-Touch Quick Dispatch Format, và Official API JSON Schema `v2.0-canonical`).
+  4. Biên soạn ban hành tài liệu SSOT [WORKFLOWS.md](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/WORKFLOWS.md) và cập nhật [INDEX.md](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/INDEX.md), [BUG_MEMORY.md](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/BUG_MEMORY.md), [TIMELINE.md](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/TIMELINE.md).
 - [x] **Civic Handoff & Tích hợp (Civic Handoff Specialist)**:
   1. Loại bỏ 100% từ ngữ áp đặt ("buộc công trình phải...") ➔ Thay bằng: *"giúp cộng đồng tạo chuỗi bằng chứng trước–sau, vị trí và dòng thời gian rõ ràng; từ đó một vấn đề có thể được theo dõi tốt hơn và, khi cần, được chuyển tới đơn vị có trách nhiệm xử lý."*
   2. Định vị rõ ràng **Tổng đài 1022** và **Cổng Công dân số iHanoi** là **ĐIỂM TÍCH HỢP** kết nối case, không thay thế hệ thống chính thức của cơ quan nhà nước.
@@ -34,5 +48,14 @@
   4. Tạo tài liệu SSOT [CIVIC_HANDOFF_SSOT.md](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/CIVIC_HANDOFF_SSOT.md) và test suite `app/tests/civic-handoff-integration.test.js` đạt 4/4 pass.
 - [x] **DevOps & Field Operations Lead**: Chuẩn hóa claim chi phí pilot gần bằng 0 Cloudflare, tự động xóa EXIF bảo vệ quyền riêng tư & nén ảnh < 300KB, test suite `image-compressor-privacy.test.js` đạt 6/6 pass.
 - [x] **QA & Domain Logic Verifier**: Chuẩn hóa định nghĩa SHA-256 tamper-evident, khóa bất biến Observation != Case và Follow-up 3 trạng thái.
-- [x] **Verification Gate**: `npm --prefix app run verify:quick` đạt 26/26 files pass (225 unit + 42 UI smoke tests).
-- [x] **Tài liệu SSOT**: `README.md`, `PRODUCT.md`, `CIVIC_HANDOFF_SSOT.md`, `BUG_MEMORY.md`, `TIMELINE.md` đồng bộ 100%.
+- [x] **Subagent 10: Scientific Terminology & Runtime Verification Lead**:
+  1. Biên soạn hoàn chỉnh tài liệu SSOT [TERMINOLOGY.md](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/TERMINOLOGY.md) chuẩn hóa toàn bộ từ điển thuật ngữ khoa học & ngôn ngữ học Civic Tech, tuân thủ 100% nguyên tắc khiêm tốn, khách quan, khoa học.
+  2. Cập nhật toàn diện `README.md` phản ánh chính xác định vị: **Nền tảng Environmental Intelligence & Decision Support Vì Hành Động Cộng Đồng**.
+  3. Xác thực toàn bộ 28/28 test suites (237 unit + 42 UI smoke tests) vượt qua 100% qua lệnh `npm --prefix app run verify:quick`.
+- [x] **Subagent 4: Role & Permission Auditor**:
+  1. Tinh gọn hệ thống Role chỉ giữ đúng 5 vai trò thực tế duy nhất: `PUBLIC` (Công chúng xem AQI tổng hợp), `CITIZEN` (Người dân / Thanh niên gửi ghi nhận, nhận điểm rèn luyện QR), `OPERATOR` (Điều phối viên / Reviewer duyệt hàng đợi, tạo dossier, chuyển giao 1022), `SITE_REPRESENTATIVE` (Đơn vị thi công xem hiện trường, nộp ảnh dập bụi geofence <= 50m), `ADMIN` (Quản trị hệ thống, cảm biến IoT).
+  2. Xóa bỏ hoàn toàn việc giả lập 'Inspector Bộ trưởng' hoặc 'Thẩm phán hành chính / Cơ quan cưỡng chế xử phạt'.
+  3. Biên soạn cập nhật 2 tài liệu SSOT độc lập: [ROLES.md](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/ROLES.md) (định danh 5 vai trò thực tế & chuẩn hóa tương thích) và [PERMISSIONS.md](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/PERMISSIONS.md) (ma trận phân quyền RBAC & ABAC chi tiết 5x18).
+  4. Đồng bộ [AUTH.md](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/AUTH.md), [INDEX.md](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/INDEX.md), [BUG_MEMORY.md](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/BUG_MEMORY.md).
+- [x] **Verification Gate**: `npm --prefix app run verify:quick` đạt 28/28 files pass (237 unit + 42 UI smoke tests).
+- [x] **Tài liệu SSOT**: `README.md`, `PRODUCT.md`, `TERMINOLOGY.md`, `ROLES.md`, `PERMISSIONS.md`, `AUTH.md`, `SCIENTIFIC_RESEARCH_SPEC.md`, `CIVIC_HANDOFF_SSOT.md`, `BUG_MEMORY.md`, `TIMELINE.md` đồng bộ 100%.
