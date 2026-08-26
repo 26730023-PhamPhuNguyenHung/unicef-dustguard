@@ -1,5 +1,22 @@
 # LESSONS LEARNED
 
+## 08. Runtime QA & Anti-Mock Release Gate: Data Lineage, Cross-Role Consistency & Claim Integrity
+- **Bối cảnh & Vấn đề**:
+  - Khi hệ thống mở rộng đa tầng (Citizen, Community, Staff, Executive, Contractor, Admin), các lỗi tiềm ẩn thường xuất hiện ở các điểm giao thoa:
+    1. Endpoint xử lý bằng chứng (Evidence Submission) bị thiếu middleware phân giải phiên đăng nhập (`req.user`) khiến request gửi qua API trả về 401 giả.
+    2. Fallback coordinates trong geofence validation trả về `null` dẫn đến `distanceMeters = Infinity` và từ chối hợp lệ sai lệch.
+    3. Microcopy vô tình chứa các từ ngữ cam kết tuyệt đối (ví dụ "Bảo mật 100%", "4.0 tín chỉ ĐRL") vi phạm quy chuẩn Claim Integrity GovTech.
+- **Giải pháp Kiến trúc & Quy Chuẩn Đóng Gói (QA Invariants)**:
+  1. **Cross-Role Data Lineage SSOT**:
+     - 100% các chỉ số (KPIs, Active Sites, SLA Compliance, Community Impact) phải được tính toán trực tiếp từ CSDL D1 SQLite thông qua câu truy vấn thực tế, không dùng dữ liệu giả lập (Zero Mock).
+     - Tọa độ địa lý và mức độ rủi ro của cùng một đối tượng (Site/Case/Sensor) bắt buộc đồng nhất 1:1 trên toàn bộ 6 vai trò.
+  2. **Resilience & Defensive Auth Fallback**:
+     - Các endpoint cho phép nộp bằng chứng nhanh (Quick Submit / Contractor Token) phải luôn hỗ trợ cả token độc lập và phiên đăng nhập cookie/session, tự động trích xuất thông tin người dùng từ header hoặc session cache.
+  3. **Claim Integrity Linter (`npm run audit:claims`)**:
+     - Tự động quét 500+ tệp mã nguồn để loại trừ 100% tuyên bố quá đà về bảo mật tuyệt đối hay chứng chỉ học thuật không có cơ sở.
+  4. **Verification Gate**:
+     - Đạt 100% qua 5 tầng: Anti-Mock Scanner (13/13), Spatial Map SSOT (8/8), Executive Truth (13/13), Risk Engine (24/24), Quick Gate (254 tests), Full Gate (557+ tests), Runtime Live Audit (38/38 checks), DB Forensic (55/55 checks).
+
 ## 00. Design System & Component Architecture: Thống Nhất SSOT Primitives & Zero Fragmented Badges
 - **Bối cảnh & Vấn đề**:
   - Khi codebase phát triển qua nhiều domain (Citizen, Community, Staff, Executive, Contractor), việc xuất hiện các badge phân mảnh như `StatusChip`, `ComplaintStatusChip`, hoặc các hàm inline `getStatusBadge` trong từng tab dẫn đến không đồng nhất màu sắc, khó bảo trì, và nguy cơ lệch chuẩn Civic Tech High-Contrast.
