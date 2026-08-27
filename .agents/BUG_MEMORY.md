@@ -28,6 +28,10 @@
 - **Nguyên nhân**: Khi `navigator.geolocation` trả về lỗi (User denied geolocation), code fallback tự ý gán tọa độ trung tâm `21.033333, 105.800000` hoặc `DEFAULT_CENTER`. Điều này làm sai lệch toàn bộ bản đồ, tập trung mọi phản ánh ở khắp nơi vào một điểm duy nhất, tạo điểm nóng giả lập và làm hỏng tính toàn vẹn của bằng chứng số.
 - **Giải pháp**: Nếu không lấy được GPS, luôn gán `lat: null, lng: null` và cung cấp component `GeoLocationPicker` cho phép người dùng tự tra cứu địa chỉ bằng OpenStreetMap hoặc tự ghim vị trí. Tuyệt đối không bao giờ tự động gán tọa độ giả.
 
+### 🚨 Trap 1.5: Thiếu cột trong D1 SQLite gây crash ngầm trong Background Automation (no such column: priority)
+- **Nguyên nhân**: Code backend `worker.js` hoặc service đọc/ghi các trường (`priority`, `assignedTo`, `category`, `feedbackNote`) nhưng câu lệnh migration SQL ban đầu chưa bổ sung các cột này vào bảng `cases` hoặc `complaints`, dẫn đến lỗi `"CaseAttentionError: no such column: priority"` trong cron automation logs.
+- **Giải pháp**: Áp dụng migration bổ sung additive (`0008_comprehensive_schema_unification.sql`) và đồng bộ `prisma/schema.prisma`. Trước khi đọc/ghi thuộc tính mới, luôn kiểm tra schema D1 và khai báo default value an toàn.
+
 ---
 
 ## ⚛️ 2. React Hooks & UI Architecture Traps

@@ -6,13 +6,8 @@
 
 ## 📅 Timeline & Commit Log
 
-| **2026-08-27** | `HEAD` | `feat(ssot-master)` | # DUSTGUARD VN — SSOT TIMELINE & REVISION HISTORY
-
-## 2026-08-27 — HOÀN THÀNH TOÀN DIỆN FULL BA & SYSTEM ARCHITECTURE AUDIT (SSOT MASTER SUITE)
-- **Thiết lập 11 Tài liệu BA & Kiến Trúc SSOT Chuyên Sâu**:
-  - `MASTER_FEATURE_SPEC.md`, `BA_PRODUCT_SPEC.md`, `CRUD_MATRIX.md`, `DOMAIN_MODEL.md`, `STATE_MACHINES.md`, `USER_FLOWS.md`, `API_CONTRACT.md`, `DATABASE_SPEC.md`, `RBAC_MATRIX.md`, `FEATURE_COMPLETENESS.md`, `IMPLEMENTATION_GAPS.md`, `ARCHITECTURE_DECISIONS.md`.
-- **Thành quả**: Toàn bộ hệ thống được định nghĩa chặt chẽ từ UI ➔ API ➔ D1/R2 Persistence ➔ RBAC ➔ State Machine ➔ Audit Trail. Không còn tình trạng sai lệch kiến trúc hoặc phụ thuộc dữ liệu giả lập.
-- **Tiếp theo**: Thực thi Vertical Slice P0 (Khử fallback mock, kết nối API D1 ký số).
+| **2026-08-27** | `HEAD` | `feat(feature-preservation)` | Hoàn thành toàn diện 10-Subagent Git History Audit & Khôi phục tính năng từ các bản có LOC nhiều nhất: Ban hành FEATURE_PRESERVATION_AUDIT.md; Migration 0008 bổ sung các trường còn thiếu trong D1 SQLite & Prisma (priority, createdBy, assignedTo, feedbackNote, v.v.); Khôi phục 100% Dual Parity Backend & OpenAPI 3.0.3 (353 routes); Nâng cấp DataTable SSOT (Multi-select Checkbox + Floating Bulk Actions + Density switcher); Nâng cấp Modal SSOT (React Portal + Responsive Bottom Sheet); Ban hành Timeline SSOT; Khôi phục Top 3 Podium CLB Môi Trường và Micro-Missions vào YouthCredits; Verify Quick Gate pass 100% (279/279 tests) | Quick Gate Pass 100% (237 unit + 42 UI smoke) |
+| **2026-08-27** | `HEAD` | `feat(ssot-master)` | Hoàn thành toàn diện Full BA & System Architecture Audit: Thiết lập 11 tài liệu BA & Kiến trúc SSOT chuyên sâu (Master Feature, BA Product, CRUD Matrix, Domain Model, State Machines, User Flows, API Contract, Database Spec, RBAC Matrix, Feature Completeness, Architecture Decisions, Implementation Gaps) | Quick Gate Pass 100% (237 unit + 42 UI smoke) |
 
 ---
 

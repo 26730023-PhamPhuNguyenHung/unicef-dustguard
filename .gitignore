@@ -25,3 +25,6 @@ user.env
 *.sqlite-wal
 prisma/*.db-shm
 prisma/*.db-wal
+
+# CodeLens Graph local index
+.codelens/

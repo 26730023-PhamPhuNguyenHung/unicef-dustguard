@@ -1,21 +1,15 @@
-## 🚀 HOÀN THÀNH TOÀN DIỆN FULL BA & SYSTEM ARCHITECTURE AUDIT (SSOT COMPLETED)
-- **11 Tài Liệu BA & Kiến Trúc SSOT Đã Được Thiết Lập Đầy Đủ**:
-  1. [`MASTER_FEATURE_SPEC.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/MASTER_FEATURE_SPEC.md): File kim chỉ nam đọc đầu tiên trước mọi lần coding.
-  2. [`BA_PRODUCT_SPEC.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/BA_PRODUCT_SPEC.md): Đặc tả phân tích nghiệp vụ & yêu cầu sản phẩm toàn diện cho 5 Actors.
-  3. [`CRUD_MATRIX.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/CRUD_MATRIX.md): Ma trận thẩm quyền thao tác dữ liệu (Object-level security).
-  4. [`DOMAIN_MODEL.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/DOMAIN_MODEL.md): Đặc tả toàn bộ thực thể, trường dữ liệu, validation & quan hệ.
-  5. [`STATE_MACHINES.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/STATE_MACHINES.md): Cây trạng thái bất biến 10 bước Case DAG, Remediation, Document.
-  6. [`USER_FLOWS.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/USER_FLOWS.md): 6 Luồng hành trình người dùng End-to-End kèm Failure Handling.
-  7. [`API_CONTRACT.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/API_CONTRACT.md): Hợp đồng giao tiếp API, chuẩn mã lỗi RFC-7807, chặn Orphan API/UI.
-  8. [`DATABASE_SPEC.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/DATABASE_SPEC.md): Cấu trúc 19 bảng D1 SQLite, Index không gian WGS84, Soft Delete.
-  9. [`RBAC_MATRIX.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/RBAC_MATRIX.md): Ma trận phân quyền hành động & bảo vệ dữ liệu cấp độ đối tượng.
-  10. [`FEATURE_COMPLETENESS.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/FEATURE_COMPLETENESS.md): Ma trận kiểm định mức độ hoàn thiện thực tế (Zero Mock).
-  11. [`ARCHITECTURE_DECISIONS.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/memory-bank/ARCHITECTURE_DECISIONS.md): 7 Quyết định kiến trúc ADRs bất biến.
-  12. [`IMPLEMENTATION_GAPS.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/memory-bank/IMPLEMENTATION_GAPS.md): Báo cáo điểm nghẽn & kế hoạch vertical slice P0-P3.
+## 🚀 HOÀN THÀNH TOÀN DIỆN 10-SUBAGENT GIT HISTORY AUDIT & FEATURE PRESERVATION
+- **Báo cáo Hoàn chỉnh**: [`FEATURE_PRESERVATION_AUDIT.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/FEATURE_PRESERVATION_AUDIT.md)
+- **Thành Quả Khôi Phục & Nâng Cấp Hệ Thống**:
+  - **Database SSOT**: Migration `0008_comprehensive_schema_unification.sql` bổ sung toàn bộ các trường dữ liệu bị thiếu trong D1 SQLite (`priority`, `assignedTo`, `category`, `severity`, `feedbackNote`, `actionId`, `isTampered`, `contractorName`).
+  - **Backend & OpenAPI Parity**: Khôi phục 100% route alignment giữa Cloudflare Worker, Express và OpenAPI 3.0.3 spec (353 endpoints, 0 sai lệch).
+  - **UI Component SSOT**: Nâng cấp `DataTable.jsx` (Multi-select Checkbox + Floating Bulk Actions + Density switcher), `Modal.jsx` (Portal DOM + Responsive Bottom Sheet), và tạo mới `Timeline.jsx` SSOT.
+  - **Youth & Volunteer Workspace**: Tích hợp Bảng xếp hạng thi đua CLB Môi Trường (Top 3 Podium) và Trung tâm Nhiệm vụ Khảo sát Thực địa Micro-Missions vào `YouthCredits.jsx`.
+- **Kiểm Thử Xác Thực**: `npm --prefix app run verify:quick` đạt **279/279 tests PASS 100%** (237 unit + 42 UI smoke, 0 failures).
 
 ## Nhiệm vụ hiện tại
-- **Mục tiêu**: Tiến hành giải quyết dứt điểm các điểm nghẽn P0 (Khử fallback mock trong Staff/Community, Nối API Ký số A4 vào D1).
-- **Trạng thái**: ✅ **SSOT & ARCHITECTURE AUDIT HOÀN TẤT 100% — SẴN SÀNG TRIỂN KHAI VERTICAL SLICE P0**
+- **Mục tiêu**: Toàn bộ tính năng từ các bản có LOC lớn nhất đã được audit, bảo toàn và nâng cấp trên nền tảng SSOT Clean Architecture.
+- **Trạng thái**: ✅ **10-SUBAGENT GIT AUDIT & FEATURE PRESERVATION COMPLETED 100%**
 
 ## Danh mục trang đã nghiệm thu trực quan và auto-fix:
 1. `/` (`LandingPage.jsx`) — Đạt chuẩn Civic Tech.
