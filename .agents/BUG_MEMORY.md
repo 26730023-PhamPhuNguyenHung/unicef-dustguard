@@ -4,6 +4,14 @@
 
 ---
 
+## 🌐 0. API Request & Network Traps
+
+### 🚨 Trap 0.1: Lặp tiền tố URL `/api/api/...` khi gọi API Client
+- **Nguyên nhân**: `request(path)` định nghĩa `API_BASE = '/api'`, khi caller truyền `path = '/api/cases'` hoặc `path = '/api/observations'`, chuỗi URL bị ghép thành `${API_BASE}${path}` = `'/api/api/cases'`, dẫn đến lỗi HTTP 404 Not Found ngầm và kích hoạt fallback mock.
+- **Giải pháp**: Luôn chuẩn hóa `cleanPath = path.startsWith('/api/') ? path.slice(4) : path` trong `request.js` và `getApiFileUrl` trước khi nối `${API_BASE}`.
+
+---
+
 ## 🗄️ 1. D1 SQLite & Database Traps
 
 ### 🚨 Trap 1.1: Tọa độ GIS Map / Contractor Workspace bị `undefined`
