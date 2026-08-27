@@ -32,6 +32,12 @@
 - **Nguyên nhân**: Dùng class Tailwind `backdrop-blur-xs` hoặc `backdrop-blur` trên sticky headers hoặc modals làm mờ nền, vi phạm quy tắc cấm tuyệt đối glassmorphism và bị bộ kiểm thử Visual Regression Audit đánh rớt.
 - **Giải pháp**: Luôn dùng màu nền đặc vững chắc (`bg-[#FDFBF7]` hoặc `bg-white`) kèm border tương phản cao (`border-ink-900/10`) cho toàn bộ thanh điều hướng, modals và thẻ hiển thị.
 
+### 🚨 Trap 1.14: Onboarding Trạm đo IoT bị lỗi 404 hoặc dùng fake timer thay vì SSOT telemetry
+- **Nguyên nhân**: Backend telemetry endpoint chỉ tìm sensor đã tạo sẵn bằng tay, gây lỗi 404 khi thiết bị gửi tín hiệu đầu tiên; hoặc frontend dùng timer giả đếm ngược để chuyển trạng thái "Đã kết nối".
+- **Giải pháp**: 
+  1. Hỗ trợ Auto-Provisioning: Tự động tạo bản ghi trạm đo gắn với site mặc định khi có gói telemetry đầu tiên đến nếu chưa tồn tại.
+  2. Derive trạng thái trung thực từ CSDL: `ONLINE` khi `Date.now() - lastReadingAt <= 15 phút`, `READY` khi chưa có bản ghi đo nào, `OFFLINE` khi quá 15 phút. Tuyệt đối không dùng fake timer.
+
 ### 🚨 Trap 1.1: Tọa độ GIS Map / Contractor Workspace bị `undefined`
 - **Nguyên nhân**: Repository chỉ trả về chuỗi `coordinates: "21.028,105.854"` hoặc tên cột lẻ `latitude`, trong khi frontend UI đọc `lat` / `lng`.
 - **Giải pháp**: Luôn bọc entity qua `app/server/domain/spatial/spatial-adapter.js` bằng hàm `normalizeEntityCoordinates(entity)`. Hàm này sẽ tự động gắn kết đồng thời cả 5 thuộc tính: `{ latitude, longitude, lat, lng, coordinates }`.

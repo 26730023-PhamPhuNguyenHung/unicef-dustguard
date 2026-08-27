@@ -1,3 +1,23 @@
+# ACTIVE CONTEXT — DUSTGUARD VN
+
+## 1. Focus Hiện Tại
+- **HOÀN TẤT FINAL ARCHITECTURE CONSOLIDATION & ZERO-FRICTION IOT SETUP FLOW**:
+  - Ban hành tài liệu kiến trúc SSOT [`docs/final-product-architecture.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/docs/final-product-architecture.md).
+  - Chuẩn hóa 5 Human Actors + 1 Device Entity (`IoT Node`), loại bỏ hoàn toàn mock data hardcode.
+  - Xây dựng Trung tâm Trải nghiệm Interactive Demo Hub (`/demo`) và Trực quan hóa IoT (`/demo/iot`).
+  - Xây dựng quy trình Lắp đặt Trạm đo IoT 3 bước đơn giản (`IoTSetupModal.jsx`) với polling CSDL thật và mô phỏng cấp nguồn phần cứng.
+  - Trạng thái Node derived chính xác từ `lastReadingAt` (`ONLINE`, `READY`, `OFFLINE`).
+  - Toàn bộ 74/74 test files (586 tests) PASS 100%, Vite build hoàn tất trong 2.99s.
+
+## 2. Các Mốc Vừa Hoàn Thành
+- [x] Tạo tài liệu kiến trúc tổng hợp [`docs/final-product-architecture.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/docs/final-product-architecture.md).
+- [x] Mở rộng `schema-healer.js` và nạp Golden Scenario trọn vẹn (Sensors, Readings, Alerts, Cases).
+- [x] Triển khai Interactive Demo Hub [`DemoHub.jsx`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/app/src/modules/public/DemoHub.jsx) và IoT Live Visualizer [`IoTDemo.jsx`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/app/src/modules/public/IoTDemo.jsx).
+- [x] Triển khai Modal Lắp đặt Trạm đo IoT 3 bước [`IoTSetupModal.jsx`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/app/src/modules/staff/components/IoTSetupModal.jsx).
+- [x] Thêm Acceptance Test Suite [`iot-node-setup-and-status-lifecycle.test.js`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/app/tests/iot-node-setup-and-status-lifecycle.test.js).
+- [x] Nghiệm thu trực quan Chrome DevTools cho toàn bộ 3 bước thiết lập trạm đo.
+- [x] Đạt Full Release Gate Verification (74 files, 586 tests PASS 100%).
+
 ## 🚀 HOÀN TẤT 100%: FINAL ARCHITECTURE CONSOLIDATION & INTERACTIVE DEMO HUB (/demo)
 - **Mục tiêu hoàn thành**: Audit toàn bộ codebase, chốt mô hình sản phẩm thống nhất, giải quyết toàn bộ các điểm mâu thuẫn kiến trúc; Chuyển nút CTA "Xem demo" trên Landing Page trỏ về Trung tâm Demo (`/demo`) thay vì `/login`; Phân định rõ 5 Actors (`CITIZEN`, `COMMUNITY`, `GOVERNMENT_STAFF`, `CONTRACTOR`, `ADMIN`) và 1 Chủ thể Thiết bị (`IoT Node Device`); Xây dựng Golden Demo Scenario xuyên suốt 60 giây và trực quan hóa Trạm đo IoT (`/demo/iot`).
 - **Chi tiết triển khai kỹ thuật**:
