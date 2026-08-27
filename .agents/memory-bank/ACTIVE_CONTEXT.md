@@ -1,4 +1,9 @@
 ## 🚀 THỰC THI DI CHUYỂN TOÀN BỘ UI THEO SSOT — MASTER PROMPT OPERATIONAL COMPLETION (COMPLETED & VERIFIED)
+- **Chuẩn Hóa Màu Sắc & Khắc Phục Tình Trạng "Đỏ Quá Mức" (Palette Harmonization)**:
+  - Chuyển toàn bộ active state trên Navigation Sidebar (`AppSidebar.tsx`) từ màu đỏ cảnh báo (`seal-50`, `text-seal-700`) sang màu xanh Civic Tech trầm tĩnh (`bg-teal-50 text-teal-800 border-teal-600`).
+  - Chuẩn hóa màu avatar fallback (`UserDropdown.tsx`) sang `#0d6f64` (Civic Teal) thay vì màu đỏ `#9f241f`.
+  - Khử toàn bộ các nút bấm và badge màu đỏ/tím bất hợp lý trong `ExecutiveDashboard.jsx`, `ExecutiveSummaryCards.jsx`, `PriorityCommandCenter.jsx`, `ExecutiveCaseDrawer.jsx`, và `SharedCaseDrawer.jsx`.
+  - Giữ màu đỏ (`red-600`/`seal-600`) cho đúng mục đích cảnh báo nguy cấp/quá hạn SLA thực tế, không dùng tràn lan cho các thao tác bình thường.
 - **Tóm tắt Công việc & Kết Quả Đạt Được (50 Mục Toàn diện)**:
   1. **Foundation & RBAC SSOT**: Xóa bỏ role switcher hardcode frontend, chuẩn hóa cấu trúc User (Role, Organization, Scope), Case Entity trung tâm kết nối trực tiếp với các entity con.
   2. **Shared Case Drawer SSOT**: Tạo component [`SharedCaseDrawer.jsx`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/app/src/modules/cases/components/SharedCaseDrawer.jsx) dùng chung cho tất cả các workspace (Executive, Staff, Contractor, Admin nhìn cùng 1 hồ sơ, chỉ khác bộ action cho phép).
