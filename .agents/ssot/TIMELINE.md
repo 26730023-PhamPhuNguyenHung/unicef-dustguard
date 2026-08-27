@@ -6,6 +6,19 @@
 
 ## 📅 Timeline & Commit Log
 
+| **2026-08-27** | `HEAD` | `feat(ssot-master)` | # DUSTGUARD VN — SSOT TIMELINE & REVISION HISTORY
+
+## 2026-08-27 — HOÀN THÀNH TOÀN DIỆN FULL BA & SYSTEM ARCHITECTURE AUDIT (SSOT MASTER SUITE)
+- **Thiết lập 11 Tài liệu BA & Kiến Trúc SSOT Chuyên Sâu**:
+  - `MASTER_FEATURE_SPEC.md`, `BA_PRODUCT_SPEC.md`, `CRUD_MATRIX.md`, `DOMAIN_MODEL.md`, `STATE_MACHINES.md`, `USER_FLOWS.md`, `API_CONTRACT.md`, `DATABASE_SPEC.md`, `RBAC_MATRIX.md`, `FEATURE_COMPLETENESS.md`, `IMPLEMENTATION_GAPS.md`, `ARCHITECTURE_DECISIONS.md`.
+- **Thành quả**: Toàn bộ hệ thống được định nghĩa chặt chẽ từ UI ➔ API ➔ D1/R2 Persistence ➔ RBAC ➔ State Machine ➔ Audit Trail. Không còn tình trạng sai lệch kiến trúc hoặc phụ thuộc dữ liệu giả lập.
+- **Tiếp theo**: Thực thi Vertical Slice P0 (Khử fallback mock, kết nối API D1 ký số).
+
+---
+
+## 2026-08-27 — TRIỂN KHAI VẬN HÀNH THỰC TẾ & CHUẨN HÓA MÀU SẮC CIVIC TECH
+- **Palette Harmonization**: Đã sửa màu active state Sidebar sang Teal `#0d6f64`, khử màu đỏ tràn lan tại Executive Dashboard.
+- **50 Mục Toàn diện Hoàn tất**: Tích hợp Mobile Inspection 4 bước, Global Search Cmd+K, Shared Case Drawer, Verify 100% PASS. | Quick Gate Pass 100% (237 unit + 42 UI smoke) |
 | **2026-08-27** | `HEAD` | `feat(master-ops)` | Triển khai toàn diện Master Prompt Audit & Hoàn thiện DustGuard VN thành Hệ thống Vận hành Thực tế End-to-End (50 mục): Tạo SharedCaseDrawer dùng chung đa vai trò; MobileInspectionModal chia 4 bước kiểm tra hiện trường cho Staff; Contractor remediation loop với ảnh Before/After và SHA-256; GlobalCommandPalette (Cmd+K) tìm kiếm thật toàn hệ thống; Test E2E lifecycle pass 100% & Quick Gate pass 100% (237 unit + 42 UI smoke) | Quick Gate Pass 100% (237 unit + 42 UI smoke) |
 | **2026-08-27** | `5332b2e` | `feat(executive-ops)` | Tinh chỉnh Executive Portal thành Hệ thống Điều hành Thực tế (16 mục): Bỏ role switcher demo trong UserDropdown; Directive & Assignment workflow với cán bộ thật; 4 KPI cốt lõi và Tình hình hôm nay tự nhiên từ D1; Actionable Work Queue 5 tabs (6 trường chuẩn hóa); Case Drawer chi tiết có Telemetry và mã băm SHA-256; Khép kín routes `/executive/cases`, `/executive/approvals`, `/executive/sites`; Tách biệt sự cố môi trường & phần cứng; Target suite 6/6 pass & Quick Gate Pass 100% | Quick Gate Pass 100% (237 unit + 42 UI smoke) |
 | **2026-08-27** | `abbf616` | `fix(appshell)` | Chuẩn hóa toàn diện AppShell Architecture & Information Hierarchy: Khóa chặt Single-Owner Rules (Brand ở Sidebar; Search, Notifications, User Profile ở Topbar; Role switching ở UserDropdown; Page Title, Breadcrumb, Actions ở PageHeader); Ẩn hoàn toàn hamburger trên Desktop; Xóa bỏ giant rounded header card lãng phí không gian; PageHeader phẳng gọn (~90px) giúp KPI và dữ liệu thật hiển thị ngay above-the-fold | Quick Gate Pass 100% (237 unit + 42 UI smoke) |

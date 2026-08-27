@@ -1,25 +1,21 @@
-## 🚀 THỰC THI DI CHUYỂN TOÀN BỘ UI THEO SSOT — MASTER PROMPT OPERATIONAL COMPLETION (COMPLETED & VERIFIED)
-- **Chuẩn Hóa Màu Sắc & Khắc Phục Tình Trạng "Đỏ Quá Mức" (Palette Harmonization)**:
-  - Chuyển toàn bộ active state trên Navigation Sidebar (`AppSidebar.tsx`) từ màu đỏ cảnh báo (`seal-50`, `text-seal-700`) sang màu xanh Civic Tech trầm tĩnh (`bg-teal-50 text-teal-800 border-teal-600`).
-  - Chuẩn hóa màu avatar fallback (`UserDropdown.tsx`) sang `#0d6f64` (Civic Teal) thay vì màu đỏ `#9f241f`.
-  - Khử toàn bộ các nút bấm và badge màu đỏ/tím bất hợp lý trong `ExecutiveDashboard.jsx`, `ExecutiveSummaryCards.jsx`, `PriorityCommandCenter.jsx`, `ExecutiveCaseDrawer.jsx`, và `SharedCaseDrawer.jsx`.
-  - Giữ màu đỏ (`red-600`/`seal-600`) cho đúng mục đích cảnh báo nguy cấp/quá hạn SLA thực tế, không dùng tràn lan cho các thao tác bình thường.
-- **Tóm tắt Công việc & Kết Quả Đạt Được (50 Mục Toàn diện)**:
-  1. **Foundation & RBAC SSOT**: Xóa bỏ role switcher hardcode frontend, chuẩn hóa cấu trúc User (Role, Organization, Scope), Case Entity trung tâm kết nối trực tiếp với các entity con.
-  2. **Shared Case Drawer SSOT**: Tạo component [`SharedCaseDrawer.jsx`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/app/src/modules/cases/components/SharedCaseDrawer.jsx) dùng chung cho tất cả các workspace (Executive, Staff, Contractor, Admin nhìn cùng 1 hồ sơ, chỉ khác bộ action cho phép).
-  3. **Staff Mobile-First & Inspection Step-by-step**:
-     - Tạo [`MobileInspectionModal.jsx`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/app/src/modules/staff/components/MobileInspectionModal.jsx) chia 4 bước kiểm tra hiện trường: Check-in (có fallback GPS/Cổng) ➔ Đánh giá 6/10 tiêu chí dập bụi ➔ Chụp ảnh đối chứng & băm SHA-256 ➔ Ban hành yêu cầu khắc phục với thời hạn SLA (4h, 12h, 24h, 48h).
-  4. **Contractor Workspace Remediation Loop**: 4 khu vực rõ ràng (*Cần xử lý ngay, Đang khắc phục, Chờ xác nhận, Hoàn thành*), khóa cứng quyền không cho nhà thầu tự ý đóng case.
-  5. **Citizen / Community Workspace**: Ánh xạ status kỹ thuật sang 4 bước ngôn ngữ dân sự (*Đã tiếp nhận ➔ Đang kiểm tra ➔ Đang xử lý ➔ Đã xử lý*) kèm timeline minh bạch.
-  6. **Global Command Palette (Cmd+K) & Search SSOT**:
-     - Tạo [`GlobalCommandPalette.tsx`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/app/src/components/common/GlobalCommandPalette.tsx) tích hợp trực tiếp vào `AppHeader.tsx`, tìm kiếm thật từ D1 DB (Mã hồ sơ, Tên công trình, Cảnh báo, Cán bộ).
-  7. **Verification & Audit Gate**:
-     - Viết [`end-to-end-operational-audit.test.js`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/app/tests/end-to-end-operational-audit.test.js) kiểm tra toàn bộ luồng Signal ➔ Assign ➔ Direct ➔ Remediate ➔ Approve ➔ Close.
-     - Quick Gate `npm --prefix app run verify:quick` đạt **100% PASS** (28 files, 237 unit tests + 42 UI smoke tests).
+## 🚀 HOÀN THÀNH TOÀN DIỆN FULL BA & SYSTEM ARCHITECTURE AUDIT (SSOT COMPLETED)
+- **11 Tài Liệu BA & Kiến Trúc SSOT Đã Được Thiết Lập Đầy Đủ**:
+  1. [`MASTER_FEATURE_SPEC.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/MASTER_FEATURE_SPEC.md): File kim chỉ nam đọc đầu tiên trước mọi lần coding.
+  2. [`BA_PRODUCT_SPEC.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/BA_PRODUCT_SPEC.md): Đặc tả phân tích nghiệp vụ & yêu cầu sản phẩm toàn diện cho 5 Actors.
+  3. [`CRUD_MATRIX.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/CRUD_MATRIX.md): Ma trận thẩm quyền thao tác dữ liệu (Object-level security).
+  4. [`DOMAIN_MODEL.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/DOMAIN_MODEL.md): Đặc tả toàn bộ thực thể, trường dữ liệu, validation & quan hệ.
+  5. [`STATE_MACHINES.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/STATE_MACHINES.md): Cây trạng thái bất biến 10 bước Case DAG, Remediation, Document.
+  6. [`USER_FLOWS.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/USER_FLOWS.md): 6 Luồng hành trình người dùng End-to-End kèm Failure Handling.
+  7. [`API_CONTRACT.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/API_CONTRACT.md): Hợp đồng giao tiếp API, chuẩn mã lỗi RFC-7807, chặn Orphan API/UI.
+  8. [`DATABASE_SPEC.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/DATABASE_SPEC.md): Cấu trúc 19 bảng D1 SQLite, Index không gian WGS84, Soft Delete.
+  9. [`RBAC_MATRIX.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/RBAC_MATRIX.md): Ma trận phân quyền hành động & bảo vệ dữ liệu cấp độ đối tượng.
+  10. [`FEATURE_COMPLETENESS.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/FEATURE_COMPLETENESS.md): Ma trận kiểm định mức độ hoàn thiện thực tế (Zero Mock).
+  11. [`ARCHITECTURE_DECISIONS.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/memory-bank/ARCHITECTURE_DECISIONS.md): 7 Quyết định kiến trúc ADRs bất biến.
+  12. [`IMPLEMENTATION_GAPS.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/memory-bank/IMPLEMENTATION_GAPS.md): Báo cáo điểm nghẽn & kế hoạch vertical slice P0-P3.
 
 ## Nhiệm vụ hiện tại
-- **Mục tiêu**: Toàn bộ hệ thống DustGuard VN đã hoàn thiện theo Master Prompt vận hành thực tế end-to-end.
-- **Trạng thái**: ✅ **100% MASTER PROMPT OPERATIONAL SYSTEM HOÀN TẤT & VERIFIED**
+- **Mục tiêu**: Tiến hành giải quyết dứt điểm các điểm nghẽn P0 (Khử fallback mock trong Staff/Community, Nối API Ký số A4 vào D1).
+- **Trạng thái**: ✅ **SSOT & ARCHITECTURE AUDIT HOÀN TẤT 100% — SẴN SÀNG TRIỂN KHAI VERTICAL SLICE P0**
 
 ## Danh mục trang đã nghiệm thu trực quan và auto-fix:
 1. `/` (`LandingPage.jsx`) — Đạt chuẩn Civic Tech.
