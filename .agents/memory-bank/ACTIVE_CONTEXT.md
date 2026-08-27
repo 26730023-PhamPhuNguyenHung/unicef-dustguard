@@ -1,16 +1,19 @@
-## 📜 CHUẨN HÓA TOÀN BỘ SẢN PHẨM THEO PRODUCT NARRATIVE & LANDING PAGE MỚI (COMPLETED & VERIFIED)
+## 🚀 THỰC THI DI CHUYỂN TOÀN BỘ UI THEO SSOT — PHASE 1: STAFF HUB & GLOBAL SHELL (COMPLETED & VERIFIED)
 - **Tóm tắt Công việc & Kết Quả Đạt Được**:
-  1. **North Star & Canonical Loop**: Khóa cứng chuỗi thống nhất `TÍN HIỆU (Signals) ➔ ƯU TIÊN (Priority Score & Reasoning) ➔ HỒ SƠ VỤ VIỆC (Case SSOT) ➔ HÀNH ĐỘNG (Action & Ownership) ➔ TÁI KIỂM / THEO DÕI (Follow-up Window 24-48h) ➔ KẾT QUẢ / TÁC ĐỘNG (Outcome: Operational & Environmental)`.
-  2. **Terminology & Copywriting**: Loại bỏ hoàn toàn các từ ngữ áp đặt pháp lý hoặc kết luận vi phạm cưỡng chế ("xử phạt", "án phạt", "vi phạm pháp luật") trên toàn bộ giao diện điều hành. Thay bằng "Mức độ ưu tiên", "Điểm ưu tiên (0-100)", "Lý do ưu tiên", "Đề xuất phối hợp khắc phục / Báo cáo 1022".
-  3. **Staff Action Queue**: Đặt hàng đợi tác nghiệp (Operational Review Queue) lên trung tâm màn hình `StaffDashboard.jsx`, với đầy đủ lý do ưu tiên, dữ liệu đo kiểm QCVN 05, ảnh GPS gắn hash SHA-256 tamper-evident, và modal thẩm tra 4 kết quả xác minh.
-  4. **Executive Funnel & Impact**: Tích hợp phễu vận hành `Executive Funnel` (Tín hiệu ➔ Case ➔ Phân công ➔ Hành động ➔ Tái kiểm ➔ Hoàn tất có đối chứng) và phân tách rõ kết quả vận hành (số hồ sơ hoàn tất) vs kết quả môi trường (mức giảm PM2.5, đối chứng Before/After).
-  5. **Contractor & Community Experience**: Tinh gọn cổng nhà thầu `ContractorDashboard.jsx` (tiếp nhận yêu cầu dập bụi, nộp minh chứng geofence 50m) và Community module (luồng 3-chạm, theo dõi tiến độ đơn giản, tín chỉ tình nguyện 20h = 4.0 tín chỉ).
-  6. **Kiểm thử Trực quan Chrome DevTools MCP**: Kiểm tra thực tế trên trình duyệt thật đa viewport (Desktop 1440x900, Tablet 768x1024, Mobile 390x844), chụp ảnh nghiệm thu không còn lỗi rớt chữ, tràn lề hay vi phạm design tokens.
-  7. **Verification Pipeline**: `verify:quick` PASS 100% (237 unit + 42 UI smoke tests).
+  1. **SSOT Architecture Audit**: Ban hành trọn bộ 9 tài liệu SSOT tại `docs/architecture/` (Route registry, Component SSOT, D1 ERD, API matrix, Permissions, Design system, Consistency matrix).
+  2. **Canonical Components Integration**:
+     - `BrandLogo` SSOT: Tích hợp vào `AppSidebar.tsx`, `AppHeader.tsx`, `CommunityNavigation.jsx`, `ContractorLayout.jsx`.
+     - `PageHeader` SSOT: Tích hợp đồng bộ trên `StaffDashboard.jsx`, `StaffCases.jsx`, `StaffSites.jsx`, `StaffComplaints.jsx`, `StaffInspections.jsx`, `DocumentsListPage.jsx`, `UnifiedOperationsCenter.jsx`.
+     - `DataTable` SSOT, `Modal` SSOT, `Tabs` SSOT, `navigationRegistry`: Sẵn sàng cho toàn bộ portals.
+  3. **Visual & Layout Defensiveness**:
+     - Đảm bảo 100% Zero-Glassmorphism, nền sáng chữ đậm (#FDFBF7), tương phản cao.
+     - Touch targets đạt chuẩn $\ge 44\text{px}$ trên tất cả buttons/links trên mobile.
+     - Phân định rõ ràng Responsive: Desktop Table $\ge 768\text{px}$ và Mobile Card List View $< 768\text{px}$, không truncate rớt chữ.
+  4. **Verification Loop**: `npm --prefix app run verify:quick` đạt 100% PASS (237 unit tests + 42 UI smoke tests).
 
 ## Nhiệm vụ hiện tại
-- **Mục tiêu**: Chuẩn hóa toàn diện DustGuard VN theo Product Narrative & Landing Page mới.
-- **Trạng thái**: ✅ **HOÀN TẤT TOÀN DIỆN (100% CODE NORMALIZATION + 100% DEVTOOLS VISUAL AUDIT + 100% TESTS PASS)**
+- **Mục tiêu**: Hoàn tất Phase 1 Staff Hub Migration & chuẩn bị tiếp nối Phase 2 (Community/Citizen) và Phase 3 (Contractor/Executive).
+- **Trạng thái**: ✅ **PHASE 1 STAFF HUB HOÀN TẤT 100% — VERIFIED & COMMITTED**
 
 ## Danh mục trang đã nghiệm thu trực quan và auto-fix:
 1. `/` (`LandingPage.jsx`) — Đạt chuẩn Civic Tech.
