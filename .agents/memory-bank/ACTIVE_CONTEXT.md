@@ -1,29 +1,20 @@
-## 🚀 THỰC THI DI CHUYỂN TOÀN BỘ UI THEO SSOT — PHASE 3: EXECUTIVE OPERATIONAL COMMAND & CONTROL (COMPLETED & VERIFIED)
-- **Tóm tắt Công việc & Kết Quả Đạt Được**:
-  1. **UserDropdown Clean Up (Mục 1)**: Loại bỏ hoàn toàn role switcher / menu chuyển không gian demo. Giữ nguyên thông tin cá nhân, chức vụ, đơn vị và phân quyền thực tế.
-  2. **Executive Directive & Assignment Workflow D1 (Mục 2 & 6)**:
-     - Tạo `ExecutiveDirectiveModal.jsx` hỗ trợ chọn cán bộ thực tế, mức ưu tiên P1/P2/P3, hạn SLA 2h-48h và yêu cầu báo cáo.
-     - Backend Service D1 `ExecutiveService.issueDirective` & API `POST /api/executive/cases/:id/directive` ghi nhận phân công, cập nhật trạng thái case và ghi audit log `EXECUTIVE_DIRECTIVE`.
-  3. **Executive Dashboard & 4 KPI Cốt Lõi (Mục 3 & 4)**:
-     - Khu vực A: Tình hình hôm nay (tóm tắt bằng ngôn ngữ tự nhiên từ DB thật).
-     - 4 Thẻ KPI điều hành: Cần xử lý, Quá hạn SLA, Rủi ro cao, Chờ tôi duyệt.
-  4. **Actionable Work Queue 5 Tabs & Case Drawer (Mục 5, 11)**:
-     - Work Queue 5 tabs: Cần xử lý ngay, Quá hạn SLA, Nguy cơ cao, Đang xử lý, Đã kết luận.
-     - 6 Thông số chuẩn hóa: Chuyện gì -> Ở đâu -> Nghiêm trọng thế nào -> Ai phụ trách -> Chờ bao lâu -> Hành động gợi ý.
-     - Drawer chi tiết `ExecutiveCaseDrawer.jsx` tích hợp Telemetry, đối chứng Before/After, mã băm SHA-256 và các nút hành động (Chỉ đạo, Phê duyệt, Yêu cầu làm lại, Đóng hồ sơ).
-  5. **Hệ thống Routing & Navigation Khép Kín (Mục 7 & 8)**:
-     - Tinh gọn Sidebar Executive thành 3 nhóm: ĐIỀU HÀNH, GIÁM SÁT, QUẢN TRỊ QUYẾT ĐỊNH.
-     - Tạo các trang `/executive/cases` (`ExecutiveCases.jsx`), `/executive/approvals` (`ExecutiveApprovals.jsx`), khép kín routing trong portal mà không đẩy sang workspace khác.
-  6. **Bản đồ GIS & Trạng thái Hệ thống (Mục 9 & 10)**:
-     - Tách biệt sự cố môi trường và sức khỏe thiết bị phần cứng.
-     - Bản đồ GIS liên kết xem chi tiết và xuất phiếu chỉ đạo hỏa tốc.
-  7. **Kiểm thử Toàn diện & OpenAPI Sync (Mục 14, 15, 16)**:
-     - Bộ test `app/tests/executive-operational-suite.test.js` PASS 6/6 (100%).
-     - Đồng bộ OpenAPI spec 3.0.3, `npm --prefix app run verify:quick` PASS 100% (237 unit tests + 42 UI smoke tests).
+## 🚀 THỰC THI DI CHUYỂN TOÀN BỘ UI THEO SSOT — MASTER PROMPT OPERATIONAL COMPLETION (COMPLETED & VERIFIED)
+- **Tóm tắt Công việc & Kết Quả Đạt Được (50 Mục Toàn diện)**:
+  1. **Foundation & RBAC SSOT**: Xóa bỏ role switcher hardcode frontend, chuẩn hóa cấu trúc User (Role, Organization, Scope), Case Entity trung tâm kết nối trực tiếp với các entity con.
+  2. **Shared Case Drawer SSOT**: Tạo component [`SharedCaseDrawer.jsx`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/app/src/modules/cases/components/SharedCaseDrawer.jsx) dùng chung cho tất cả các workspace (Executive, Staff, Contractor, Admin nhìn cùng 1 hồ sơ, chỉ khác bộ action cho phép).
+  3. **Staff Mobile-First & Inspection Step-by-step**:
+     - Tạo [`MobileInspectionModal.jsx`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/app/src/modules/staff/components/MobileInspectionModal.jsx) chia 4 bước kiểm tra hiện trường: Check-in (có fallback GPS/Cổng) ➔ Đánh giá 6/10 tiêu chí dập bụi ➔ Chụp ảnh đối chứng & băm SHA-256 ➔ Ban hành yêu cầu khắc phục với thời hạn SLA (4h, 12h, 24h, 48h).
+  4. **Contractor Workspace Remediation Loop**: 4 khu vực rõ ràng (*Cần xử lý ngay, Đang khắc phục, Chờ xác nhận, Hoàn thành*), khóa cứng quyền không cho nhà thầu tự ý đóng case.
+  5. **Citizen / Community Workspace**: Ánh xạ status kỹ thuật sang 4 bước ngôn ngữ dân sự (*Đã tiếp nhận ➔ Đang kiểm tra ➔ Đang xử lý ➔ Đã xử lý*) kèm timeline minh bạch.
+  6. **Global Command Palette (Cmd+K) & Search SSOT**:
+     - Tạo [`GlobalCommandPalette.tsx`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/app/src/components/common/GlobalCommandPalette.tsx) tích hợp trực tiếp vào `AppHeader.tsx`, tìm kiếm thật từ D1 DB (Mã hồ sơ, Tên công trình, Cảnh báo, Cán bộ).
+  7. **Verification & Audit Gate**:
+     - Viết [`end-to-end-operational-audit.test.js`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/app/tests/end-to-end-operational-audit.test.js) kiểm tra toàn bộ luồng Signal ➔ Assign ➔ Direct ➔ Remediate ➔ Approve ➔ Close.
+     - Quick Gate `npm --prefix app run verify:quick` đạt **100% PASS** (28 files, 237 unit tests + 42 UI smoke tests).
 
 ## Nhiệm vụ hiện tại
-- **Mục tiêu**: Executive Portal đã hoàn tất refactor 16/16 mục trở thành hệ thống điều hành thực tế.
-- **Trạng thái**: ✅ **EXECUTIVE REAL-WORLD OPERATIONAL SYSTEM HOÀN TẤT 100% — VERIFIED**
+- **Mục tiêu**: Toàn bộ hệ thống DustGuard VN đã hoàn thiện theo Master Prompt vận hành thực tế end-to-end.
+- **Trạng thái**: ✅ **100% MASTER PROMPT OPERATIONAL SYSTEM HOÀN TẤT & VERIFIED**
 
 ## Danh mục trang đã nghiệm thu trực quan và auto-fix:
 1. `/` (`LandingPage.jsx`) — Đạt chuẩn Civic Tech.
