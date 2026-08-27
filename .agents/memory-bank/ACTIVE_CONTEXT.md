@@ -1,22 +1,37 @@
 # ACTIVE CONTEXT — DUSTGUARD VN
 
 ## 1. Focus Hiện Tại
-- **HOÀN TẤT FINAL ARCHITECTURE CONSOLIDATION & ZERO-FRICTION IOT SETUP FLOW**:
-  - Ban hành tài liệu kiến trúc SSOT [`docs/final-product-architecture.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/docs/final-product-architecture.md).
-  - Chuẩn hóa 5 Human Actors + 1 Device Entity (`IoT Node`), loại bỏ hoàn toàn mock data hardcode.
-  - Xây dựng Trung tâm Trải nghiệm Interactive Demo Hub (`/demo`) và Trực quan hóa IoT (`/demo/iot`).
-  - Xây dựng quy trình Lắp đặt Trạm đo IoT 3 bước đơn giản (`IoTSetupModal.jsx`) với polling CSDL thật và mô phỏng cấp nguồn phần cứng.
-  - Trạng thái Node derived chính xác từ `lastReadingAt` (`ONLINE`, `READY`, `OFFLINE`).
-  - Toàn bộ 74/74 test files (586 tests) PASS 100%, Vite build hoàn tất trong 2.99s.
+- **HOÀN TẤT 100% ĐỢT AUDIT & CLEANUP TRIỆT ĐỂ BẢN ĐỒ / LEGACY MODULES**:
+  - Khắc phục triệt để lỗi runtime `ReferenceError: selectedEntity is not defined` và `setSelectedEntity is not defined` trong `SpatialMap.jsx`.
+  - Chuẩn hóa `ErrorBoundary.jsx` phân định Dev vs Production (ẩn raw error ra UI).
+  - Loại bỏ hoàn toàn các file legacy, proxy barrels và dead components: `MapView.jsx`, `RiskLeafletMap.jsx`, `MapDynamicLegend.jsx`, `modules/executive/ExecutiveRiskMap.jsx`.
+  - Dọn sạch 40+ dead imports, unused states và redundant distance helpers trong `CitizenReport.jsx`, `CitizenNearby.jsx`, `StaffDashboard.jsx`, `StaffComplaints.jsx`, `ExecutiveRiskMap.jsx`, `ExecutiveHeatmap.jsx`, `MapToolbar.jsx`, `SpatialEntityDrawer.jsx`, `MapStates.jsx`.
+  - Cập nhật test suites và ban hành tài liệu SSOT [`docs/map-architecture.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/docs/map-architecture.md).
+  - Toàn bộ verification pipelines (Targeted tests, `verify:quick`, `verify:changed`, Vite production build) PASS 100%.
 
 ## 2. Các Mốc Vừa Hoàn Thành
-- [x] Tạo tài liệu kiến trúc tổng hợp [`docs/final-product-architecture.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/docs/final-product-architecture.md).
-- [x] Mở rộng `schema-healer.js` và nạp Golden Scenario trọn vẹn (Sensors, Readings, Alerts, Cases).
-- [x] Triển khai Interactive Demo Hub [`DemoHub.jsx`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/app/src/modules/public/DemoHub.jsx) và IoT Live Visualizer [`IoTDemo.jsx`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/app/src/modules/public/IoTDemo.jsx).
-- [x] Triển khai Modal Lắp đặt Trạm đo IoT 3 bước [`IoTSetupModal.jsx`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/app/src/modules/staff/components/IoTSetupModal.jsx).
-- [x] Thêm Acceptance Test Suite [`iot-node-setup-and-status-lifecycle.test.js`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/app/tests/iot-node-setup-and-status-lifecycle.test.js).
-- [x] Nghiệm thu trực quan Chrome DevTools cho toàn bộ 3 bước thiết lập trạm đo.
-- [x] Đạt Full Release Gate Verification (74 files, 586 tests PASS 100%).
+- [x] Khởi chạy 10 Subagents audit song song toàn diện hệ thống Bản đồ.
+- [x] Lập báo cáo tổng hợp Root Cause, Legacy Remaining, Active Arch, Action Plan.
+- [x] Vá lỗi biến phạm vi `effectiveSelectedEntity` và `handleSelectEntity(null)` trong `SpatialMap.jsx`.
+- [x] Cải tiến `ErrorBoundary.jsx` bảo vệ an toàn thông tin lỗi cho người dùng cuối.
+- [x] Xóa sạch các file mồ côi và barrel trùng lặp (`MapView.jsx`, `RiskLeafletMap.jsx`, `MapDynamicLegend.jsx`, `ExecutiveRiskMap.jsx`).
+- [x] Dọn sạch dead imports và helpers thừa trong 9 components/modules.
+- [x] Cập nhật assertions trong `spatial-intelligence-map.test.js` & `mobile-layout-audit.test.js`.
+- [x] Viết tài liệu chuẩn kiến trúc bản đồ [`docs/map-architecture.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/docs/map-architecture.md).
+- [x] Kiểm thử toàn bộ hệ thống (`verify:quick`, `verify:changed`, build) PASS 100%.
+
+## 🚀 HOÀN TẤT 100%: COMPREHENSIVE MAP AUDIT & LEGACY MODULES CLEANUP
+- **Mục tiêu hoàn thành**: Audit và dọn dẹp triệt để toàn bộ hệ thống Bản đồ Không gian của DustGuard VN; giải quyết dứt điểm lỗi `ReferenceError: selectedEntity is not defined` từ nguyên nhân gốc rễ; loại bỏ toàn bộ rác dead code, legacy components và proxy barrels thừa; đảm bảo kiến trúc One Map SSOT tinh gọn, ổn định, responsive, không rò rỉ lỗi kỹ thuật ra giao diện production.
+- **Chi tiết triển khai kỹ thuật**:
+  1. **Root Cause Resolution (`SpatialMap.jsx`)**: Truyền đúng computed state `selectedEntity={effectiveSelectedEntity}` và handler an toàn `onClose={() => handleSelectEntity(null)}` cho `SpatialEntityDrawer`. Chuẩn hóa kiểm tra `policy?.can` trong hàm `resolveMapCapabilities`.
+  2. **Error Boundary Hardening (`ErrorBoundary.jsx`)**: Ẩn chuỗi lỗi kỹ thuật ở chế độ production, gói stack trace vào thẻ `<details>` collapsible có thể đóng mở trong môi trường development.
+  3. **Legacy Files Deletion**: Xóa an toàn `MapView.jsx` (410 LOC), `RiskLeafletMap.jsx` (242 LOC), `MapDynamicLegend.jsx` (13 LOC), `src/modules/executive/ExecutiveRiskMap.jsx` (3 LOC). Gỡ bỏ hook không sử dụng `useMapData()` khỏi `useApiData.js`.
+  4. **Dead Imports & Code Cleanup**: Dọn sạch hơn 40 unused icon imports, unused states và redundant distance helpers trên 9 files liên quan (`CitizenReport.jsx`, `CitizenNearby.jsx`, `StaffDashboard.jsx`, `StaffComplaints.jsx`, `ExecutiveRiskMap.jsx`, `ExecutiveHeatmap.jsx`, `MapToolbar.jsx`, `SpatialEntityDrawer.jsx`, `MapStates.jsx`).
+  5. **Tài liệu & Kiểm thử SSOT**:
+     - Tạo [`docs/map-architecture.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/docs/map-architecture.md) làm SSOT ngăn chặn việc import lại mã nguồn cũ.
+     - Cập nhật Trap 1.15 trong [`.agents/BUG_MEMORY.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/BUG_MEMORY.md).
+     - Cập nhật test suite `spatial-intelligence-map.test.js` & `mobile-layout-audit.test.js`.
+     - Chạy `npm --prefix app run verify:quick` và `npm --prefix app run build` PASS 100%.
 
 ## 🚀 HOÀN TẤT 100%: FINAL ARCHITECTURE CONSOLIDATION & INTERACTIVE DEMO HUB (/demo)
 - **Mục tiêu hoàn thành**: Audit toàn bộ codebase, chốt mô hình sản phẩm thống nhất, giải quyết toàn bộ các điểm mâu thuẫn kiến trúc; Chuyển nút CTA "Xem demo" trên Landing Page trỏ về Trung tâm Demo (`/demo`) thay vì `/login`; Phân định rõ 5 Actors (`CITIZEN`, `COMMUNITY`, `GOVERNMENT_STAFF`, `CONTRACTOR`, `ADMIN`) và 1 Chủ thể Thiết bị (`IoT Node Device`); Xây dựng Golden Demo Scenario xuyên suốt 60 giây và trực quan hóa Trạm đo IoT (`/demo/iot`).

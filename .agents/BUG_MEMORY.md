@@ -38,6 +38,10 @@
   1. Hỗ trợ Auto-Provisioning: Tự động tạo bản ghi trạm đo gắn với site mặc định khi có gói telemetry đầu tiên đến nếu chưa tồn tại.
   2. Derive trạng thái trung thực từ CSDL: `ONLINE` khi `Date.now() - lastReadingAt <= 15 phút`, `READY` khi chưa có bản ghi đo nào, `OFFLINE` khi quá 15 phút. Tuyệt đối không dùng fake timer.
 
+### 🚨 Trap 1.15: ReferenceError `selectedEntity` do alias prop destructuring & rác module legacy
+- **Nguyên nhân**: Trong `SpatialMap.jsx`, prop `selectedEntity` được destructure thành `explicitSelectedEntity`, state nội bộ là `internalSelectedEntity`, computed value là `effectiveSelectedEntity` và handler là `handleSelectEntity(entity)`. Nhưng khi render JSX của `SpatialEntityDrawer`, code gọi nhầm biến không tồn tại `selectedEntity` và hàm `setSelectedEntity`, gây crash Virtual DOM.
+- **Giải pháp**: Luôn truyền đúng computed SSOT `selectedEntity={effectiveSelectedEntity}` và handler `onClose={() => handleSelectEntity(null)}`. Đồng thời dọn dẹp sạch toàn bộ các file legacy và proxy barrels không còn consumer (`MapView.jsx`, `RiskLeafletMap.jsx`, `MapDynamicLegend.jsx`).
+
 ### 🚨 Trap 1.1: Tọa độ GIS Map / Contractor Workspace bị `undefined`
 - **Nguyên nhân**: Repository chỉ trả về chuỗi `coordinates: "21.028,105.854"` hoặc tên cột lẻ `latitude`, trong khi frontend UI đọc `lat` / `lng`.
 - **Giải pháp**: Luôn bọc entity qua `app/server/domain/spatial/spatial-adapter.js` bằng hàm `normalizeEntityCoordinates(entity)`. Hàm này sẽ tự động gắn kết đồng thời cả 5 thuộc tính: `{ latitude, longitude, lat, lng, coordinates }`.
