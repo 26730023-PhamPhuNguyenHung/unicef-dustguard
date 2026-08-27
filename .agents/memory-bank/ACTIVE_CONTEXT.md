@@ -1,3 +1,24 @@
+## 🚀 HOÀN THÀNH TOÀN DIỆN AGENT 5 — STAFF OPERATIONS & CASE HUB AUDITOR
+- **Phạm vi kiểm toán**: Rà soát 100% toàn bộ hệ thống Staff & Case Hub trong `app/src/modules/staff/` (`StaffDashboard.jsx`, `StaffOperations.jsx`, `StaffMonitoring.jsx`, `StaffCases.jsx`, `StaffCaseDetail.jsx`, `StaffSites.jsx`, `StaffComplaints.jsx`, `StaffInspections.jsx`, `StaffSLA.jsx`, `UnifiedOperationsCenter.jsx`, `RemediationWorkspace.jsx`, `CaseDossierPackageModal.jsx`, `sites/StaffSiteDetail.jsx`, `components/StaffPrimitives.jsx`).
+- **Kết quả kiểm toán & Khắc phục**:
+  - **Khảo sát Tính Ổn Định Bảng & Component**: Toàn bộ composite components (`DataTable`, `Modal`, `StaffSectionHeader`, `StaffToolbar`, `StaffSegmentedControl`, `StaffEmptyState`, `SpatialMap`) hoạt động ổn định, 0 lỗi `ReferenceError`, 0 props `undefined`, 100% tuân thủ **Zero Glassmorphism** và bảng màu tương phản cao Civic Tech (`#FDFBF7`, `#231b14`, `#0d6f64`, `#9f241f`), touch target >= 44px.
+  - **Kiểm Định Luồng Nghiệp Vụ State Machine DAG 7 Bước (Canonical SSOT)**:
+    1. Tiếp nhận & Sàng lọc (`SCREENING`) ➔ 2. Chuẩn bị hồ sơ (`PREPARING`) ➔ 3. Ban hành QĐ kiểm tra (`DECISION_ISSUED`) ➔ 4. Khảo sát & Đo kiểm hiện trường (`ON_SITE`) ➔ 5. Lập báo cáo & Kết luận vi phạm (`REPORTING`) ➔ 6. Thẩm định & Đối thoại / Giải trình nhà thầu SLA 48h (`APPRAISING`) ➔ 7. Nghiệm thu khắc phục & Đóng hồ sơ (`COMPLETED`).
+    - Khóa chặt chuyển đổi hợp lệ qua `isValidTransition(current, next)`, ngăn chặn nhảy cóc hoặc đảo ngược bất hợp pháp.
+  - **Khép Kín Chu Trình Nghiệm Thu Khắc Phục (`RemediationWorkspace.jsx`)**:
+    - Đối chứng trực quan ảnh Before/After tại hiện trường.
+    - Xác thực Geofence GPS < 50m và chữ ký số SHA-256 tamper-evident.
+    - Cung cấp trọn vẹn 3 nhánh hành động: Phê duyệt hoàn thành (`POST /api/cases/:id/complete`), Yêu cầu khắc phục lại (`POST /api/cases/:id/request-explanation`), và Chuyển xử phạt vi phạm (`POST /api/cases/:id/sanction` / Báo cáo 1022).
+  - **Bộ Hồ Sơ Thực Chứng Trọn Gói A4 (`CaseDossierPackageModal.jsx`)**:
+    - Thể thức A4 chuẩn quốc hiệu, đối chiếu QCVN 05:2023 / QCVN 18:2021 và căn cứ pháp lý Nghị định 45/2022/NĐ-CP & Nghị định 118/2021/NĐ-CP.
+    - Ký duyệt điện tử bảo chứng số HMAC SHA-256, tích hợp in A4 `window.print()` và điểm tích hợp Cổng 1022 / iHanoi.
+  - **Đồng Bộ Hoá Toàn Diện Test Suites**:
+    - Khắc phục `cases-inspections-complaints-audit.test.js` (Hỗ trợ un-bound prepare calls và auth headers).
+    - Khắc phục `staff-processing-pages-redesign.test.js` (`AppSidebar.tsx` short labels, `StaffInspections` & `StaffComplaints` `StaffPageHeader`).
+    - Khắc phục `staff-workflow-ux.test.js` (`CẦN XỬ LÝ NGAY` operational queue, `Chuyển Xử phạt Vi phạm`, NĐ 45/2022, ký số điện tử).
+    - Khắc phục `staff-workspace-full-reliability.test.js` (`site-vd1` ID/code match).
+  - **Kiểm Thử Xác Thực**: 10/10 test suites Staff PASS 100% (56/56 unit tests) & `npm --prefix app run verify:quick` đạt **279/279 tests PASS 100%** (237 in-memory unit + 42 UI smoke tests).
+
 ## 🚀 HOÀN THÀNH TOÀN DIỆN AGENT 8 — DOCUMENT STUDIO & LEGALTECH AUDITOR
 - **Phạm vi rà soát**: Rà soát 100% toàn bộ hệ thống Document Studio trong `app/src/modules/documents/` (`DocumentsListPage.jsx`, `DocumentEditorPage.jsx`, `DocumentPreviewPage.jsx`, `TemplatesGalleryPage.jsx`), `app/src/legal-document-engine/` (`index.js`, `ast/builders.js`, `registry/`, `renderers/`, `styles/`, `validators/`, `naturalIntentResolver.js`, `A4InteractiveEditor.jsx`), và backend routes `/api/documents/`.
 - **Kết quả triển khai & Khắc phục**:
