@@ -14,6 +14,14 @@
 
 ## 🗄️ 1. D1 SQLite & Database Traps
 
+### 🚨 Trap 1.10: Đếm số lượng người tham gia chiến dịch bị hardcode tĩnh hoặc sai lệch SSOT
+- **Nguyên nhân**: Frontend hardcode số `1.200+`, `107`, `54` hoặc backend dùng cột số nguyên tĩnh `participant_count` không được cập nhật khi có bản ghi mới.
+- **Giải pháp**: Luôn query `COUNT(DISTINCT coalesce(user_id, email, phone, id))` từ bảng `campaign_participants WHERE campaign_id = ? AND status IN ('APPROVED', 'ACTIVE', 'COMPLETED')` để số lượng luôn tăng $N \to N+1$ chính xác ngay khi người dùng đăng ký hoặc cán bộ phê duyệt.
+
+### 🚨 Trap 1.11: Chiến dịch DRAFT / ARCHIVED bị lộ ra Public Discovery
+- **Nguyên nhân**: Public endpoint `GET /api/community/discover` không lọc mệnh đề `WHERE status IN ('OPEN', 'ACTIVE') AND visibility = 'PUBLIC' AND (deleted_at IS NULL)`, dẫn đến các chiến dịch nháp hoặc đã lưu trữ vẫn hiển thị với công chúng.
+- **Giải pháp**: Phân định rạch ròi giữa Public Query (`status IN ('OPEN', 'ACTIVE')`) và Backoffice Admin Query (xem được toàn bộ `DRAFT`, `OPEN`, `ACTIVE`, `COMPLETED`, `ARCHIVED`).
+
 ### 🚨 Trap 1.1: Tọa độ GIS Map / Contractor Workspace bị `undefined`
 - **Nguyên nhân**: Repository chỉ trả về chuỗi `coordinates: "21.028,105.854"` hoặc tên cột lẻ `latitude`, trong khi frontend UI đọc `lat` / `lng`.
 - **Giải pháp**: Luôn bọc entity qua `app/server/domain/spatial/spatial-adapter.js` bằng hàm `normalizeEntityCoordinates(entity)`. Hàm này sẽ tự động gắn kết đồng thời cả 5 thuộc tính: `{ latitude, longitude, lat, lng, coordinates }`.

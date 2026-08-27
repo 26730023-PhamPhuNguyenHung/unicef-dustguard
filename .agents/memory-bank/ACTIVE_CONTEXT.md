@@ -1,3 +1,27 @@
+## 🚀 HOÀN TẤT 100%: BACKOFFICE QUẢN LÝ CỘNG ĐỒNG & CHIẾN DỊCH (COMMUNITY & CAMPAIGN MANAGEMENT)
+- **Mục tiêu hoàn thành**: Bổ sung hệ thống Backoffice CRUD thật cho Admin / Staff quản trị Chiến dịch, Câu lạc bộ, Đăng ký tham gia và Thành viên; Tách bạch Public Discovery (`/community/discover`, `/community/campaigns/:slug`, `/community/clubs/:slug`) và Backoffice Management (`/staff/community/*` & `/admin/community/*`); Dùng chung 1 SSOT Cloudflare D1 persistent database; Xóa bỏ toàn bộ hardcode fake stats & copy claim quá mức.
+- **Chi tiết triển khai kỹ thuật**:
+  1. **Database Schema & D1 Auto-healing Engine**:
+     - Tạo migration `0010_community_campaign_management.sql`.
+     - Cập nhật `schema-healer.js` tự động kiểm tra và thêm cột cho `communities`, `campaigns`, `community_memberships`, `campaign_participants`, `campaign_clubs`.
+  2. **Backend Repositories & API Endpoints**:
+     - `community-admin.repository.js`: CRUD chiến dịch, CLB, xét duyệt người tham gia, phân bổ thành viên, tự động tạo audit logs an toàn.
+     - `server/routes/api/community-admin.js` & `server/routes/api/community.js`: Định tuyến Express và Hono Worker cho `/api/admin/community/*` và `/api/community/*`.
+  3. **Giao Diện Backoffice Chuẩn Sao Sáng & Civic Tech Light UI**:
+     - `CommunityDashboard.jsx`: 4 thẻ KPI động, Hàng đợi duyệt tham gia 1 chạm, Danh sách chiến dịch gần đây.
+     - `CampaignsList.jsx`: Bảng quản lý chiến dịch với tìm kiếm, lọc trạng thái/loại hình, chuyển trạng thái nhanh (Mở / Nháp / Lưu trữ).
+     - `CampaignEditor.jsx`: Form tạo và sửa chiến dịch đầy đủ tiêu chí 300m quanh trường học.
+     - `CampaignDetailView.jsx`: 5 tabs chi tiết (Tổng quan, Người tham gia, CLB phối hợp, Ghi nhận hiện trường, Lịch sử).
+     - `ClubsList.jsx`, `ClubEditor.jsx`, `ClubDetailView.jsx`: Quản lý danh mục CLB, trường học, đầu mối liên hệ.
+     - `ParticipationsList.jsx`: Quản lý tình nguyện viên với chức năng Duyệt / Hoàn thành / Từ chối.
+     - `MembersList.jsx`: Quản lý danh sách thành viên trực thuộc CLB.
+  4. **Public Detail & Discovery Refactor**:
+     - `PublicCampaignDetail.jsx` & `PublicClubDetail.jsx`: Trang chi tiết công khai với form đăng ký tham gia trực tiếp vào DB.
+     - `CommunityDiscover.jsx`: Đọc 100% từ DB thật qua `/api/community/discover`, copy trung tính khiêm tốn, đổi "Tín chỉ Xanh 4.0" thành "Hoạt động tình nguyện".
+  5. **Xác thực Kiểm thử**:
+     - `tests/community-admin-crud.test.js`: 6/6 tests PASS 100%.
+     - `npm --prefix app run verify:quick`: 28/28 test files (237 unit tests + 42 UI smoke tests + OpenAPI 313 routes) PASS 100%.
+
 ## 🚀 HOÀN TẤT 100% HỆ THỐNG REUSABLE PRIMITIVES & UX SAO SÁNG TRONG DUSTGUARD VN
 - **Đã hoàn thiện & kiểm định 100% các thành phần cốt lõi**:
   1. `PageHeader.jsx`: Tiêu đề, Breadcrumb, Subtitle, Action Buttons.
