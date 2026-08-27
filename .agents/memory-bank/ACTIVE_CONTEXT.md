@@ -1,3 +1,16 @@
+## 🚀 HOÀN THÀNH TOÀN DIỆN: BỎ MODULE BẢN ĐỒ ĐỘC LẬP & TÁI CẤU TRÚC ĐỊA ĐIỂM THEO CASE DETAIL
+- **Mục tiêu hoàn thành**: Loại bỏ hoàn toàn màn hình/module "Bản đồ" độc lập khỏi Primary Navigation (do DustGuard không phải GIS platform mà là công cụ xử lý hồ sơ ô nhiễm); Chuyển Bản đồ thành **Contextual Location Information** bên trong từng Case Detail (`CaseLocationSection.jsx`).
+- **Chi tiết kỹ thuật**:
+  1. **Primary Navigation Tinh Gọn**: 1. Tổng quan (`/staff/dashboard`), 2. Hồ sơ vụ việc (`/staff/cases`), 3. Công trình & Trạm đo (`/staff/sites`), 4. Báo cáo & Văn bản (`/staff/documents`), 5. Cài đặt hệ thống (`/staff/settings`).
+  2. **`CaseLocationSection.jsx`**:
+     - Hiển thị tên công trình, địa chỉ chi tiết, phường/xã, quận/huyện, tỉnh/thành phố.
+     - Tọa độ GPS WGS84 chính xác (nếu có).
+     - Google Maps Embed Iframe nhẹ, 100% miễn phí không tốn billing API hay load nặng client thư viện Map.
+     - Nút `Mở Google Maps` ra tab mới (`google.com/maps/search/?api=1&query=...`).
+     - Nút `Sao chép địa chỉ / tọa độ` với phản hồi trực quan.
+     - Responsive mượt mà: Desktop nằm cạnh thông tin, Mobile nằm dưới gọn gàng, zero horizontal scroll.
+  3. **Kiểm Thử Xác Thực**: 28/28 test files PASS 100% (237 unit tests + 42 UI smoke tests) qua `npm --prefix app run verify:quick`.
+
 ## 🚀 HOÀN THÀNH TOÀN DIỆN: ĐƠN GIẢN HÓA DUSTGUARD THEO TRIẾT LÝ UX QUẢN LÝ SAO SÁNG
 - **Mục tiêu hoàn thành**: Đơn giản hóa, tăng tính thực dụng và dễ vận hành của DustGuard dựa trên UX Reference từ `D:\02-Agency-Freelance\clients\lms-saosang\apps\quanly`, lấy luồng **Phát hiện ➔ Hồ sơ (Case SSOT) ➔ Xử lý ➔ Hoàn tất** làm trung tâm.
 - **Kết quả triển khai cốt lõi**:
