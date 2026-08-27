@@ -22,6 +22,12 @@
 - **Nguyên nhân**: Public endpoint `GET /api/community/discover` không lọc mệnh đề `WHERE status IN ('OPEN', 'ACTIVE') AND visibility = 'PUBLIC' AND (deleted_at IS NULL)`, dẫn đến các chiến dịch nháp hoặc đã lưu trữ vẫn hiển thị với công chúng.
 - **Giải pháp**: Phân định rạch ròi giữa Public Query (`status IN ('OPEN', 'ACTIVE')`) và Backoffice Admin Query (xem được toàn bộ `DRAFT`, `OPEN`, `ACTIVE`, `COMPLETED`, `ARCHIVED`).
 
+### 🚨 Trap 1.12: Nhiệm vụ bị nhận việc vô hạn (vượt quá slot) hoặc cộng điểm ảo khi chưa nghiệm thu
+- **Nguyên nhân**: Không kiểm tra `COUNT(task_participants) < max_participants` ở tầng Repository và cộng điểm trực tiếp ngay khi nộp bằng chứng thay vì chờ Cán bộ xác minh duyệt.
+- **Giải pháp**:
+  1. Kiểm soát số lượng người tham gia chặt chẽ tại `joinTask`: `SELECT COUNT(id) FROM task_participants WHERE task_id = ?` và chặn nếu `>= max_participants`.
+  2. Điểm và giờ rèn luyện (`youth_activities`, `impact_events`) chỉ được ghi nhận vào DB SSOT khi và chỉ khi Cán bộ thực hiện `approveSubmission`. Khi `requestRevision`, bắt buộc nhập `review_note` và không cộng điểm.
+
 ### 🚨 Trap 1.1: Tọa độ GIS Map / Contractor Workspace bị `undefined`
 - **Nguyên nhân**: Repository chỉ trả về chuỗi `coordinates: "21.028,105.854"` hoặc tên cột lẻ `latitude`, trong khi frontend UI đọc `lat` / `lng`.
 - **Giải pháp**: Luôn bọc entity qua `app/server/domain/spatial/spatial-adapter.js` bằng hàm `normalizeEntityCoordinates(entity)`. Hàm này sẽ tự động gắn kết đồng thời cả 5 thuộc tính: `{ latitude, longitude, lat, lng, coordinates }`.

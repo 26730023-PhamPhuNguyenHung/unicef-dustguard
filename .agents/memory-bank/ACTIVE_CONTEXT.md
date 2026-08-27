@@ -1,3 +1,27 @@
+## 🚀 HOÀN TẤT 100%: BACKOFFICE QUẢN LÝ NHIỆM VỤ & THỰC ĐỊA (TASK MANAGEMENT & COMMUNITY ACTIONS LIFECYCLE)
+- **Mục tiêu hoàn thành**: Audit và hoàn thiện trọn vẹn Backoffice cho feature "Nhiệm vụ" của DustGuard VN; Xóa bỏ 100% hardcode mock ở public `/community/actions`; Quản lý toàn bộ vòng đời phân công, nhận việc, nộp minh chứng băm SHA-256 và duyệt nghiệm thu cộng điểm tình nguyện / giờ rèn luyện thật vào D1 SSOT.
+- **Chi tiết triển khai kỹ thuật**:
+  1. **Database Schema & D1 Auto-healing (`0011_task_management_ssot.sql` & `schema-healer.js`)**:
+     - Tạo 4 bảng: `tasks`, `task_participants`, `task_submissions`, `task_timelines`.
+     - Cập nhật schema-healer với composite indexes và auto-migration cho Cloudflare D1 / dev.db.
+  2. **Backend SSOT Repositories & API Endpoints**:
+     - `task.repository.js`: CRUD nhiệm vụ, phân bổ loại giao việc (`open`, `individual`, `club`), kiểm soát quota `max_participants`, luồng state machine `joinTask` ➔ `startTask` ➔ `submitTaskProof` (SHA-256) ➔ `requestRevision` ➔ `approveSubmission`.
+     - Tích hợp tự động ghi nhận bản ghi điểm và giờ vào `youth_activities` (minutes) và `impact_events` (points) khi nghiệm thu.
+     - Express routes (`api/tasks.js`) & Cloudflare Worker Hono endpoints (`server/worker.js`) đồng bộ 100%.
+  3. **Giao Diện Backoffice Staff Task Management**:
+     - `StaffTasksList.jsx`: Thống kê 4 counters động (Đang mở, Đang làm, Chờ xác minh, Quá hạn), tìm kiếm và bộ lọc đa chiều.
+     - `StaffTaskEditor.jsx`: Form tạo và chỉnh sửa nhiệm vụ gắn trực tiếp dữ liệu relations thật từ `cases`, `campaigns`, `sites`, `clubs`, `users`.
+     - `StaffTaskDetail.jsx`: 6 Sections chuẩn hóa (Thông tin nhiệm vụ, Nguồn liên kết, Người tham gia, Minh chứng nộp, Hàng đợi nghiệm thu & Duyệt/Yêu cầu sửa, Lịch sử dòng thời gian).
+     - Định tuyến `App.jsx` (`/staff/tasks`, `/staff/tasks/new`, `/staff/tasks/:id`, `/staff/tasks/:id/edit`) và thêm menu "Nhiệm vụ" vào thanh Sidebar.
+  4. **Tái Cấu Trúc Public `/community/actions`**:
+     - Kết nối 100% DB thật qua `/api/tasks` và `/api/youth/credits/overview`.
+     - Xóa bỏ mảng mock `actions`, số điểm hardcode `340 pts`, xóa claim/slogan marketing.
+     - Nút "Xem hồ sơ" chỉ hiện khi có `case_id`, "Xem chiến dịch" khi có `campaign_id`.
+  5. **Xác thực Kiểm thử & Release Gate**:
+     - `tests/tasks-backoffice-and-community-lifecycle.test.js`: 6/6 tests PASS 100%.
+     - `verify:quick`: 28 test files (237 unit tests + 42 UI smoke tests + OpenAPI 380 operations) PASS 100%.
+     - `verify:full`: 74/74 test files (575 tests + D1 DB state tests + Vite production build) PASS 100%.
+
 ## 🚀 HOÀN TẤT 100%: VERTICAL SLICE 1 END-TO-END (OBSERVATION ➔ CASE ➔ INSPECTION ➔ REMEDIATION ➔ DOCUMENT ➔ CLOSE)
 - **Mục tiêu hoàn thành**: Triển khai luồng vòng đời vận hành thực tế 100% dữ liệu D1 SQLite, nối trọn vẹn giữa UI, API, Data Model và Timeline Audit Trail.
 - **8 Bước Lifecycle Đã Xác Thực**:
