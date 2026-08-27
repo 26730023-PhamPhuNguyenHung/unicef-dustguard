@@ -48,6 +48,10 @@
 - **Nguyên nhân**: `useEffect` phụ thuộc vào một biến được tạo bởi `useMemo` ở dòng code phía dưới nó ➔ Bị lỗi `ReferenceError: Cannot access '...' before initialization`.
 - **Giải pháp**: Luôn khai báo toàn bộ `useState`, `useRef`, `useMemo`, `useCallback` **TRƯỚC** tất cả các `useEffect`.
 
+### 🚨 Trap 2.14: Phân mảnh trải nghiệm do chia quá nhiều Module & Navigation riêng lẻ (Mental Model Confusion)
+- **Nguyên nhân**: Tạo quá nhiều trang con lắt nhắt (Alerts, Complaints, Inspections, SLA, Documents, AI) khiến cán bộ phải nhảy qua lại 5-7 màn hình để giải quyết 1 sự vụ.
+- **Giải pháp**: Áp dụng triết lý UX từ Quản lý Sao Sáng: Lấy **Case làm SSOT trung tâm**. Mọi dữ liệu (tín hiệu, đo kiểm, ảnh Before/After, biên bản, giải trình SLA) đều đưa vào 1 màn hình Case Detail duy nhất theo luồng **Phát hiện ➔ Hồ sơ ➔ Xử lý ➔ Hoàn tất**. Rút gọn Sidebar chỉ còn 5 mục chính phẳng, trực diện.
+
 ### 🚨 Trap 2.2: Rò rỉ bộ nhớ từ Timer đếm ngược / Event Listener
 - **Nguyên nhân**: `setInterval` trong countdown SLA 48h hoặc `window.addEventListener('keydown')` trong Modal không có hàm cleanup khi unmount.
 - **Giải pháp**: Luôn return hàm hủy trong `useEffect`:

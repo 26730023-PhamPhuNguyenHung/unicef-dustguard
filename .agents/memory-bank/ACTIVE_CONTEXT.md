@@ -1,3 +1,16 @@
+## 🚀 HOÀN THÀNH TOÀN DIỆN: ĐƠN GIẢN HÓA DUSTGUARD THEO TRIẾT LÝ UX QUẢN LÝ SAO SÁNG
+- **Mục tiêu hoàn thành**: Đơn giản hóa, tăng tính thực dụng và dễ vận hành của DustGuard dựa trên UX Reference từ `D:\02-Agency-Freelance\clients\lms-saosang\apps\quanly`, lấy luồng **Phát hiện ➔ Hồ sơ (Case SSOT) ➔ Xử lý ➔ Hoàn tất** làm trung tâm.
+- **Kết quả triển khai cốt lõi**:
+  1. **Case là Trung tâm SSOT**: Tích hợp toàn diện thông tin, ảnh đối chứng, trạm đo, biên bản, nhà thầu và SLA vào 1 Case Detail, loại bỏ nhu cầu phân mảnh qua 5-7 trang.
+  2. **Tinh gọn Sidebar Staff/Operator**: Giảm từ 5 nhóm 14 mục cồng kềnh xuống **5 mục phẳng rõ ràng** (Tổng quan, Hồ sơ vụ việc, Bản đồ hiện trường, Công trình & Trạm đo, Báo cáo & Văn bản, Cài đặt) + Thẻ Trực ban / Đội Cơ động 1 ở chân sidebar theo phong cách Sao Sáng.
+  3. **Bộ Reusable Primitives Chuẩn Hóa**:
+     - `PageHeader.jsx`: Title, Subtitle, StatusBadge, Action buttons gọn gàng.
+     - `MetricCard.jsx`: Card 4 tone (`teal`, `seal`, `amber`, `blue`), viền trái màu đậm, icon nổi, zero glassmorphism.
+     - `StatusBadge.jsx`: Hệ thống màu sắc trạng thái thống nhất cho toàn bộ hệ thống.
+     - `UnifiedDataTable.jsx`: Bảng tương tác cao, search tích hợp, filter chips 1 chạm, row-click mở hồ sơ.
+  4. **Progressive Disclosure**: Đưa toàn bộ thông tin kỹ thuật sâu (HMAC SHA-256, telemetry thô, legal engine scoring breakdown) vào Tab/Drawer nâng cao.
+  5. **Kiểm Thử Xác Thực**: 28/28 test files PASS 100% (237 in-memory unit tests + 42 UI smoke tests) qua `npm --prefix app run verify:quick`.
+
 ## 🚀 HOÀN THÀNH TOÀN DIỆN AGENT 10 — VERIFICATION & INTEGRATION LEAD
 - **Phạm vi thẩm định**: Rà soát 100% toàn bộ 131 test files trong `app/tests/` (hơn 1100 unit & integration tests, 42 UI smoke tests), kiểm tra tính toàn vẹn D1 Database, SpatialMap, Auto-healing schema, Youth Credits, và tích hợp liên Agent 1-9.
 - **Kết quả kiểm toán & Khắc phục**:
