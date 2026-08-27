@@ -1,3 +1,14 @@
+## 🚀 HOÀN TẤT 100%: BATCH 1 USER MANAGEMENT & BACKOFFICE AUDIT
+- **Sửa lỗi Vite Import**: Khắc phục dứt điểm lỗi import `StatusBadge.jsx`, `MetricCard.jsx`, `UnifiedDataTable.jsx` trong `src/shared/components/`.
+- **Màn hình Quản trị Người dùng (`/admin/users`)**:
+  - Xây dựng component `UsersManagement.jsx` kết nối trực tiếp D1 SQLite API thật.
+  - Hỗ trợ đầy đủ Tìm kiếm (Họ tên, Email, Đơn vị), Lọc theo Vai trò (Role) và Trạng thái (ACTIVE / INACTIVE).
+  - Modal tạo người dùng mới, Modal đổi vai trò (Role), Nút Khóa / Mở tài khoản tức thì.
+  - Đăng ký định tuyến `/staff/users` và `/admin/users` trong `App.jsx`, tích hợp mục "Quản lý người dùng" vào thanh Sidebar.
+- **Xác thực Kiểm thử**:
+  - `npm --prefix app run build`: Vite build PASS 100% (0 errors).
+  - `npm --prefix app run verify:quick`: 28 test suites, 279 tests PASS 100%.
+
 ## 🚀 HOÀN TẤT 100%: BACKOFFICE QUẢN LÝ CỘNG ĐỒNG & CHIẾN DỊCH (COMMUNITY & CAMPAIGN MANAGEMENT)
 - **Mục tiêu hoàn thành**: Bổ sung hệ thống Backoffice CRUD thật cho Admin / Staff quản trị Chiến dịch, Câu lạc bộ, Đăng ký tham gia và Thành viên; Tách bạch Public Discovery (`/community/discover`, `/community/campaigns/:slug`, `/community/clubs/:slug`) và Backoffice Management (`/staff/community/*` & `/admin/community/*`); Dùng chung 1 SSOT Cloudflare D1 persistent database; Xóa bỏ toàn bộ hardcode fake stats & copy claim quá mức.
 - **Chi tiết triển khai kỹ thuật**:
