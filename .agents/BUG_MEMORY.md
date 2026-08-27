@@ -192,5 +192,14 @@
 - **Nguyên nhân**: Cảm biến bị treo phần cứng (ADC freeze) hoặc mạch vi điều khiển phát lại giá trị tĩnh cũ qua mạng, khiến hệ thống tưởng nồng độ bụi ổn định bình thường.
 - **Giải pháp**: Tích hợp thuật toán phát hiện Flatline trong `DataQualityEngine.detectFlatline`: Nếu nhận $\ge 5$ mẫu đo liên tiếp có giá trị PM10 & PM2.5 giống hệt nhau trải dài $\ge 10$ phút, lập tức đánh dấu cảm biến `FAULTY`, hạ điểm chất lượng dữ liệu và kích hoạt cảnh báo kiểm tra bảo dưỡng phần cứng.
 
+---
 
+## 🎨 7. Layout, Breakpoint & Responsive Table Traps
 
+### 🚨 Trap 7.1: Bẫy Tailwind Template String `hidden` ghi đè `lg:flex`
+- **Nguyên nhân**: Dùng `${isOpen ? 'flex' : 'hidden'} lg:flex-row ...` mà không ghi rõ `hidden lg:flex`. Kết quả là class `hidden` (display: none) luôn thắng trên Desktop vì thiếu class `lg:flex` để override.
+- **Giải pháp**: Luôn viết rõ `${isOpen ? 'flex' : 'hidden lg:flex'}` cho các thanh công cụ / menu điều khiển header để đảm bảo luôn hiển thị đầy đủ trên màn hình máy tính.
+
+### 🚨 Trap 7.2: Bẫy Rớt Dòng Đơn Ký Tự / Đơn Vị (`µg/m³`, `Phạm Hoàng Nam`)
+- **Nguyên nhân**: Bảng dữ liệu chia các cột thông số (chỉ số PM, ngày giờ, tên cán bộ) thành độ rộng quá hẹp (`w-24`, `w-28`), trong khi text tiếng Việt hoặc chuỗi đơn vị `PM10 175 µg/m³` bị ngắt chữ đơn lẻ.
+- **Giải pháp**: Áp dụng `whitespace-nowrap` trên các cột chỉ số đo kiểm, mốc SLA, tên cán bộ và nút hành động; đồng thời cấp `min-w-[320px]` kèm `line-clamp-2` cho cột Tên vụ việc / Công trình để tận dụng trọn vẹn bề ngang màn hình lớn.
