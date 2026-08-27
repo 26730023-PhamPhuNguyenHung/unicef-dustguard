@@ -1,3 +1,18 @@
+## 🚀 HOÀN TẤT 100%: VERTICAL SLICE 1 END-TO-END (OBSERVATION ➔ CASE ➔ INSPECTION ➔ REMEDIATION ➔ DOCUMENT ➔ CLOSE)
+- **Mục tiêu hoàn thành**: Triển khai luồng vòng đời vận hành thực tế 100% dữ liệu D1 SQLite, nối trọn vẹn giữa UI, API, Data Model và Timeline Audit Trail.
+- **8 Bước Lifecycle Đã Xác Thực**:
+  1. Phản ánh / Ghi nhận hiện trường (`POST /api/complaints`)
+  2. Tiếp nhận & Phân loại chuyển thành Hồ sơ Vụ việc (`POST /api/complaints/:id/convert-to-case`) ➔ Tạo Case mới, gắn `complaintId`, đổi status `LINKED`.
+  3. Phân công Cán bộ thanh tra (`POST /api/cases/:id/assign`) ➔ Ghi nhận vào `case_timelines`.
+  4. Khảo sát Hiện trường & Tiêu chí Tham chiếu (`inspections` + `evidences`) ➔ Ghi nhận 10 tiêu chí kiểm tra và ảnh hiện trường.
+  5. Yêu cầu Nhà thầu khắc phục vi phạm (`transitionCaseStatus('ON_SITE')`) ➔ Gửi thông báo và kích hoạt trạng thái tiếp nhận.
+  6. Nhà thầu nộp ảnh đối chứng Before/After và giải trình (`contractorExplanations` + `evidences`).
+  7. Thẩm định & Sinh văn bản chính thức (`draftDocuments` approved).
+  8. Hoàn tất & Đóng hồ sơ (`transitionCaseStatus('COMPLETED')`) ➔ Ghi nhận toàn bộ Timeline & Audit Log.
+- **Xác thực Kiểm thử**:
+  - `tests/vertical-slice-1.test.js`: PASS 100% (8/8 lifecycle steps).
+  - `npm --prefix app run verify:quick`: 28 test suites, 279 tests PASS 100%.
+
 ## 🚀 HOÀN TẤT 100%: BATCH 1 USER MANAGEMENT & BACKOFFICE AUDIT
 - **Sửa lỗi Vite Import**: Khắc phục dứt điểm lỗi import `StatusBadge.jsx`, `MetricCard.jsx`, `UnifiedDataTable.jsx` trong `src/shared/components/`.
 - **Màn hình Quản trị Người dùng (`/admin/users`)**:
