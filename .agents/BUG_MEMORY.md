@@ -98,6 +98,13 @@
 ## 🛡️ 4. Domain & Business Logic Traps
 
 ### 🚨 Trap 4.1: Trừ điểm rủi ro khi thiếu cảm biến IoT (Zero-IoT Violation)
+- **Nguyên nhân**: Điểm ưu tiên can thiệp bị giảm về 0 nếu công trình chưa gắn cảm biến đo bụi.
+- **Giải pháp**: Chuẩn hóa trọng số `sum(score * w) / sum(w)` trên các kênh đo khả dụng. Không bao giờ gán điểm 0 cho công trình vi phạm chỉ vì thiếu cảm biến.
+
+### 🚨 Trap 4.2: Hardcoded Test Paths `src/modules/...` làm fail test khi chạy đa thư mục
+- **Nguyên nhân**: File test dùng `path.resolve('src/modules/...')` khiến test chỉ chạy được khi CWD là thư mục con `app`, nếu chạy từ root `D:/...` sẽ bị lỗi `ENOENT`.
+- **Giải pháp**: Luôn dùng helper `getFilePath(relPath)` tìm kiếm lần lượt ở `[CWD, app, ..]` để hỗ trợ cả lệnh chạy đơn lẻ `node --test app/tests/<file>.test.js` từ root và `npm test` bên trong thư mục `app`.
+
 - **Nguyên nhân**: Gán điểm 0 cho phần cảm biến khiến điểm tổng bị kéo tụt một cách oan uổng.
 - **Giải pháp**: Khi `sensor.available === false`, tự động chuẩn hóa 4 thành phần còn lại chia cho tổng trọng số 90% (`sum(score * w) / 0.90`).
 
@@ -207,3 +214,15 @@
 ### 🚨 Trap 7.2: Bẫy Rớt Dòng Đơn Ký Tự / Đơn Vị (`µg/m³`, `Phạm Hoàng Nam`)
 - **Nguyên nhân**: Bảng dữ liệu chia các cột thông số (chỉ số PM, ngày giờ, tên cán bộ) thành độ rộng quá hẹp (`w-24`, `w-28`), trong khi text tiếng Việt hoặc chuỗi đơn vị `PM10 175 µg/m³` bị ngắt chữ đơn lẻ.
 - **Giải pháp**: Áp dụng `whitespace-nowrap` trên các cột chỉ số đo kiểm, mốc SLA, tên cán bộ và nút hành động; đồng thời cấp `min-w-[320px]` kèm `line-clamp-2` cho cột Tên vụ việc / Công trình để tận dụng trọn vẹn bề ngang màn hình lớn.
+
+---
+
+## 🏗️ 8. Contractor Workspace & Zero-Login Geofence Traps
+
+### 🚨 Trap 8.1: Bẫy Token Hết Hạn & Lộ Dữ Liệu Chéo Nhà Thầu (Tenant Isolation)
+- **Nguyên nhân**: Token truy cập Zalo/SMS không có thời hạn hết hạn cứng (TTL 72h) hoặc không kiểm tra giới hạn công trình phụ trách, khiến người có link xem được các dự án của nhà thầu khác.
+- **Giải pháp**: 
+  1. Token Zero-Login HMAC có thời hạn tối đa 72 giờ (`expiresAt`), gắn cố định với `siteId` và `actionId`.
+  2. Tại route `/contractor/access/:token` (`ContractorPortal.jsx`), xác thực token ngay lập tức; nếu hết hạn thì báo lỗi rõ ràng và khóa quyền thao tác.
+  3. Mọi yêu cầu nộp minh chứng nhanh (`POST /api/contractor/quick-submit`) đều tính toán khoảng cách Haversine so với tọa độ công trình và lưu mã băm SHA-256 đối chứng vào D1 SSOT.
+
