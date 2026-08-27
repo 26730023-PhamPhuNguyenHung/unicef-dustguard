@@ -271,5 +271,29 @@
   1. Khi phê duyệt (`approveDraftDocument`), hệ thống tính toán SHA-256 trên toàn bộ nội dung và tạo HMAC signature digest với secret máy chủ lưu vào `draft.hash`.
   2. Tại endpoint `/api/documents/drafts/:id/verify-signature`, hệ thống tái tính toán chữ ký từ nội dung hiện tại và so sánh thời gian thực bằng `crypto.timingSafeEqual`. Nếu nội dung bị thay đổi dù chỉ 1 ký tự, `verified: false` ngay lập tức.
 
+---
+
+## 🧪 11. Test Runner, ESM & Verification Pipeline Traps
+
+### 🚨 Trap 11.1: Node ESM `ERR_UNKNOWN_FILE_EXTENSION` Khi Module JS Thuần Import File `.jsx`
+- **Nguyên nhân**: Trong runtime Node.js ESM thuần (`node --test`), các module thư viện chia sẻ (như `legal-document-engine/index.js`) nếu import trực tiếp React component có đuôi `.jsx` sẽ bị lỗi `ERR_UNKNOWN_FILE_EXTENSION` vì Node không parse JSX.
+- **Giải pháp**: Tách biệt rõ ràng: Module core logic thuần JS chỉ export schema/validator/generator JS. Các React JSX component (như `A4InteractiveEditor.jsx`) được import trực tiếp từ phía React UI components.
+
+### 🚨 Trap 11.2: Path Resolution Bị Lặp Thư Mục (`app/app/...`) Trong Test Suites
+- **Nguyên nhân**: Dùng `path.resolve('app/src/...')` khi test runner chạy tại thư mục `app/` sẽ dẫn đến đường dẫn `app/app/src/...` gây lỗi `ENOENT`.
+- **Giải pháp**: Luôn dùng helper đa nền tảng:
+  ```javascript
+  function resolveAppPath(relPath) {
+    const clean = relPath.replace(/^app\//, '');
+    if (fs.existsSync(path.resolve(clean))) return path.resolve(clean);
+    if (fs.existsSync(path.resolve('app', clean))) return path.resolve('app', clean);
+    return path.resolve(clean);
+  }
+  ```
+
+### 🚨 Trap 11.3: Regex Zero-Glassmorphism Bắt Nhầm Lớp `backdrop-blur-none`
+- **Nguyên nhân**: Regex kiểm tra zero-glassmorphism `/backdrop-blur/` kiểm tra mọi từ khóa chứa `backdrop-blur`, bao gồm cả `backdrop-blur-none`.
+- **Giải pháp**: Loại bỏ hoàn toàn lớp thay vì gán `backdrop-blur-none`, vì không có blur là mặc định của CSS thuần Civic Tech.
+
 
 

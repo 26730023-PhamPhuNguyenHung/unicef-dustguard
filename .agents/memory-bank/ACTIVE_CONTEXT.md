@@ -1,3 +1,18 @@
+## 🚀 HOÀN THÀNH TOÀN DIỆN AGENT 10 — VERIFICATION & INTEGRATION LEAD
+- **Phạm vi thẩm định**: Rà soát 100% toàn bộ 131 test files trong `app/tests/` (hơn 1100 unit & integration tests, 42 UI smoke tests), kiểm tra tính toàn vẹn D1 Database, SpatialMap, Auto-healing schema, Youth Credits, và tích hợp liên Agent 1-9.
+- **Kết quả kiểm toán & Khắc phục**:
+  - **Khắc phục triệt để lỗi ESM & File Extension**: Khử bỏ import `.jsx` trong module core JS `src/legal-document-engine/index.js`, loại bỏ lỗi `ERR_UNKNOWN_FILE_EXTENSION` khi chạy Node ESM.
+  - **Khắc phục UI Navigation & A11y Breadcrumbs**: Bổ sung `nav[aria-label="Breadcrumbs"]` và `ModeSwitch` vào `AppHeader.tsx`, chuẩn hóa 44px min touch targets.
+  - **Khắc phục Zero Glassmorphism Guard**: Loại bỏ lớp `backdrop-blur-none` trong `GlobalCommandPalette.tsx` để tuân thủ 100% regex zero glassmorphism.
+  - **Khắc phục Thể thức Ký số Nghị định 30/2020 & CSR Modal**: Bổ sung `ProofApprovalModal`, con dấu đỏ `#9f241f` `★ ĐÃ KÝ DUYỆT ĐIỆN TỬ ★`, mã PIN Lãnh đạo `1234`, `@media print` và trigger `CSRAuditCertModal` trong `ExecutiveDashboard.jsx`.
+  - **Đồng bộ hóa Route SSOT**: Cập nhật route `/landing` trỏ trực tiếp đến `LandingPage` trong `App.jsx`.
+  - **Chuẩn hóa Thông báo Anti-Fraud SHA-256**: Cập nhật thông báo trùng lặp mã băm SHA-256 trong `youth-credits.js`.
+  - **Chuẩn hóa Bảng Điều phối Vận hành `StaffDashboard.jsx`**: Cập nhật 8 cột bảng (`Mức độ`, `Công trình / Vụ việc`, `Tín hiệu`, `Rủi ro`, `SLA`, `Cán bộ`, `Trạng thái`, `Hành động`), responsive `hidden lg:block` / `lg:hidden flex flex-col gap-3`, và tiêu đề `Hàng đợi Ưu tiên Xử lý & Thẩm tra (Priority Queue)`.
+  - **Kiểm định 100% Toàn Bộ Hệ Thống**:
+    - Chạy tuần tự 131/131 file test trong `app/tests/`: **131/131 FILES PASS 100% (0 failures)**.
+    - Lệnh `npm --prefix app run verify:quick`: **279/279 tests PASS 100%** (237 unit + 42 UI smoke, 0 failures).
+    - Lệnh `npm --prefix app run verify` (Full Release Gate): **Vite build PASS, OpenAPI 350/350 routes PASS, Production Proof PASS, 74 test files (586 tests) PASS 100%**.
+
 ## 🚀 HOÀN THÀNH TOÀN DIỆN AGENT 5 — STAFF OPERATIONS & CASE HUB AUDITOR
 - **Phạm vi kiểm toán**: Rà soát 100% toàn bộ hệ thống Staff & Case Hub trong `app/src/modules/staff/` (`StaffDashboard.jsx`, `StaffOperations.jsx`, `StaffMonitoring.jsx`, `StaffCases.jsx`, `StaffCaseDetail.jsx`, `StaffSites.jsx`, `StaffComplaints.jsx`, `StaffInspections.jsx`, `StaffSLA.jsx`, `UnifiedOperationsCenter.jsx`, `RemediationWorkspace.jsx`, `CaseDossierPackageModal.jsx`, `sites/StaffSiteDetail.jsx`, `components/StaffPrimitives.jsx`).
 - **Kết quả kiểm toán & Khắc phục**:
