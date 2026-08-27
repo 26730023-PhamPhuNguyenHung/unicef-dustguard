@@ -6,6 +6,7 @@
 
 ## 📅 Timeline & Commit Log
 
+| **2026-08-27** | `HEAD` | `feat(product-narrative)` | Chuẩn hóa toàn bộ sản phẩm DustGuard VN theo Product Narrative mới: Khóa chuỗi Tín hiệu ➔ Ưu tiên ➔ Case ➔ Hành động ➔ Tái kiểm ➔ Tác động; Action Queue trên Staff Dashboard, Executive Funnel trên Executive Dashboard; loại bỏ 100% từ ngữ kết luận pháp lý vi phạm cưỡng chế; nghiệm thu DevTools trực quan Desktop & Mobile | Quick Gate Pass 100% (237 unit + 42 UI smoke) |
 | **2026-08-26** | `HEAD` | `feat(document-studio)` | Nâng cấp Administrative Document Studio toàn diện: Visual Merge Field Engine (ẩn raw syntax), Variable Registry SSOT 6 nhóm, A4 Multi-page Canvas & Ruler, Outline Navigator 2 tab, Pre-flight Check và Export Parity | 74/74 Release Gate Pass (575 unit + 11 db + 42 UI) |
 | **2026-08-26** | `8e5e74c` | `feat(spatial-ssot)` | Rebuild DustGuard Spatial Map thành hệ thống tọa độ thật SSOT: Loại bỏ 100% fake mock coordinates (idx%5, 0.4+idx*0.4, 21.033 fallback), bổ sung Location SSOT Model, Geocoding Service, GeoLocationPicker đa năng, và nâng cấp Backend Spatial API với missingLocation counts, bbox filter | 74/74 Release Gate Pass (575 unit + 11 db + 42 UI) |
 | **2026-08-26** | `HEAD` | `fix(runtime)` | Khôi phục toàn diện runtime sau refactor: Fix TDZ Re-export `RiskBadge`, bổ sung `SectionErrorBoundary` ngăn ngừa sụp đổ dashboard, sửa lỗi `openCases` undefined, chuẩn hóa imports `PageBreadCrumb` và marker exports `createPickerMarker` | 28/28 Quick Gate (237 unit + 42 UI) Pass 100% |

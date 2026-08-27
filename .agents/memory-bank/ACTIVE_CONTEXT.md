@@ -1,31 +1,16 @@
-# ACTIVE CONTEXT — DUSTGUARD VN
-
-## 📜 REBUILD DUSTGUARD ADMINISTRATIVE DOCUMENT STUDIO (COMPLETED & VERIFIED)
+## 📜 CHUẨN HÓA TOÀN BỘ SẢN PHẨM THEO PRODUCT NARRATIVE & LANDING PAGE MỚI (COMPLETED & VERIFIED)
 - **Tóm tắt Công việc & Kết Quả Đạt Được**:
-  1. **Visual Merge Field Engine**:
-     - Xây dựng Tiptap Extension `MergeFieldNode` loại bỏ 100% việc hiển thị thô `{{variable}}` trong Normal Mode. Thay bằng visual inline merge chip với subtle styling, hover tooltip nguồn dữ liệu SSOT và cảnh báo `[Thiếu: Tên trường]`.
-     - Hỗ trợ chuyển đổi nhanh sang "Chế độ Mẫu (Template Mode)" khi cần xem mã raw.
-  2. **Variable Registry SSOT (`src/lib/documents/variable-registry.js`)**:
-     - Chuẩn hóa danh mục các trường dữ liệu theo 6 nhóm nghiệp vụ: Công trình (`site`), Kiểm tra (`inspection`), Quan trắc (`telemetry`), Vi phạm & Pháp lý (`legal`), Thể thức văn bản (`doc`), Chữ ký & Thẩm quyền (`signer`).
-     - Tích hợp hàm `validateDocumentVariables` thực hiện Pre-flight Check trước khi xuất bản.
-  3. **Multi-Page A4 Canvas & Real Pagination**:
-     - `A4PageContainer.jsx`: Khổ giấy A4 chuẩn $210\text{mm} \times 297\text{mm}$ với lề NĐ 30/2020 (trái 30mm, phải 15mm, trên/dưới 20mm), thước đo lề `PageRuler.jsx`, số trang thật `Trang X / Y`, và semantic `PageBreakNode`.
-     - Bottom Status Bar: Đếm từ thời gian thực, badge trạng thái tài liệu, autosave indicator và thanh trượt điều khiển Zoom (75% - 150%).
-  4. **Document Navigator & Compact Data Panel**:
-     - `DocumentOutline.jsx`: 2 tabs (Cấu trúc Outline tự động trích xuất Headings và Thư viện Mẫu văn bản chuẩn NĐ 30/2020 & 118/2021 có xác nhận an toàn).
-     - `DataBindingsPanel.jsx`: Accordion 6 nhóm, tìm kiếm thông minh, thống kê SSOT và nút `+` chèn nhanh visual node tại con trỏ (caret).
-  5. **Pre-flight Check & Export Parity**:
-     - `PreflightCheckModal.jsx`: Cảnh báo các biến thiếu trước khi xuất PDF / DOCX, hỗ trợ xuất bản nháp hoặc quay lại chỉnh sửa.
-     - `GoogleDocsEditor.jsx` & `DocumentEditorPage.jsx`: Tích hợp toàn diện, hỗ trợ phím tắt `Ctrl+S`, query params hydration (`?template=...`, `?siteId=...`), và D1 API persistence thật.
-  6. **Kiểm Thử Đạt Chuẩn Tuyệt Đối**:
-     - `app/tests/administrative-document-studio.test.js`: PASS 8/8.
-     - `app/tests/official-document.test.js` & `documents-legal-updates.test.js`: PASS 11/11.
-     - `npm run verify:quick`: PASS 100% (237 unit + 42 UI smoke tests).
-     - `npm run verify`: PASS 100% (74/74 test files, 575 in-memory + 11 database integration tests).
+  1. **North Star & Canonical Loop**: Khóa cứng chuỗi thống nhất `TÍN HIỆU (Signals) ➔ ƯU TIÊN (Priority Score & Reasoning) ➔ HỒ SƠ VỤ VIỆC (Case SSOT) ➔ HÀNH ĐỘNG (Action & Ownership) ➔ TÁI KIỂM / THEO DÕI (Follow-up Window 24-48h) ➔ KẾT QUẢ / TÁC ĐỘNG (Outcome: Operational & Environmental)`.
+  2. **Terminology & Copywriting**: Loại bỏ hoàn toàn các từ ngữ áp đặt pháp lý hoặc kết luận vi phạm cưỡng chế ("xử phạt", "án phạt", "vi phạm pháp luật") trên toàn bộ giao diện điều hành. Thay bằng "Mức độ ưu tiên", "Điểm ưu tiên (0-100)", "Lý do ưu tiên", "Đề xuất phối hợp khắc phục / Báo cáo 1022".
+  3. **Staff Action Queue**: Đặt hàng đợi tác nghiệp (Operational Review Queue) lên trung tâm màn hình `StaffDashboard.jsx`, với đầy đủ lý do ưu tiên, dữ liệu đo kiểm QCVN 05, ảnh GPS gắn hash SHA-256 tamper-evident, và modal thẩm tra 4 kết quả xác minh.
+  4. **Executive Funnel & Impact**: Tích hợp phễu vận hành `Executive Funnel` (Tín hiệu ➔ Case ➔ Phân công ➔ Hành động ➔ Tái kiểm ➔ Hoàn tất có đối chứng) và phân tách rõ kết quả vận hành (số hồ sơ hoàn tất) vs kết quả môi trường (mức giảm PM2.5, đối chứng Before/After).
+  5. **Contractor & Community Experience**: Tinh gọn cổng nhà thầu `ContractorDashboard.jsx` (tiếp nhận yêu cầu dập bụi, nộp minh chứng geofence 50m) và Community module (luồng 3-chạm, theo dõi tiến độ đơn giản, tín chỉ tình nguyện 20h = 4.0 tín chỉ).
+  6. **Kiểm thử Trực quan Chrome DevTools MCP**: Kiểm tra thực tế trên trình duyệt thật đa viewport (Desktop 1440x900, Tablet 768x1024, Mobile 390x844), chụp ảnh nghiệm thu không còn lỗi rớt chữ, tràn lề hay vi phạm design tokens.
+  7. **Verification Pipeline**: `verify:quick` PASS 100% (237 unit + 42 UI smoke tests).
 
 ## Nhiệm vụ hiện tại
-- **Mục tiêu**: UI/UX Auto-Fixer Agent — Duyệt toàn bộ các route trên hệ thống qua Chrome DevTools MCP, visual audit đa viewport (Desktop 1440x900 & Mobile 390x844), sửa dứt điểm các lỗi rớt chữ, tràn lề, scrollbar thô và nút bấm thiếu đồng bộ.
-- **Trạng thái**: ✅ **HOÀN TẤT TOÀN DIỆN TẤT CẢ CÁC TRANG (PASS 100% VISUAL AUDIT + 100% TESTS)**
+- **Mục tiêu**: Chuẩn hóa toàn diện DustGuard VN theo Product Narrative & Landing Page mới.
+- **Trạng thái**: ✅ **HOÀN TẤT TOÀN DIỆN (100% CODE NORMALIZATION + 100% DEVTOOLS VISUAL AUDIT + 100% TESTS PASS)**
 
 ## Danh mục trang đã nghiệm thu trực quan và auto-fix:
 1. `/` (`LandingPage.jsx`) — Đạt chuẩn Civic Tech.
