@@ -1,19 +1,29 @@
-## 🚀 THỰC THI DI CHUYỂN TOÀN BỘ UI THEO SSOT — PHASE 1: STAFF HUB & GLOBAL SHELL (COMPLETED & VERIFIED)
+## 🚀 THỰC THI DI CHUYỂN TOÀN BỘ UI THEO SSOT — PHASE 3: EXECUTIVE OPERATIONAL COMMAND & CONTROL (COMPLETED & VERIFIED)
 - **Tóm tắt Công việc & Kết Quả Đạt Được**:
-  1. **SSOT Architecture Audit**: Ban hành trọn bộ 9 tài liệu SSOT tại `docs/architecture/` (Route registry, Component SSOT, D1 ERD, API matrix, Permissions, Design system, Consistency matrix).
-  2. **Canonical Components Integration**:
-     - `BrandLogo` SSOT: Tích hợp vào `AppSidebar.tsx`, `AppHeader.tsx`, `CommunityNavigation.jsx`, `ContractorLayout.jsx`.
-     - `PageHeader` SSOT: Tích hợp đồng bộ trên `StaffDashboard.jsx`, `StaffCases.jsx`, `StaffSites.jsx`, `StaffComplaints.jsx`, `StaffInspections.jsx`, `DocumentsListPage.jsx`, `UnifiedOperationsCenter.jsx`.
-     - `DataTable` SSOT, `Modal` SSOT, `Tabs` SSOT, `navigationRegistry`: Sẵn sàng cho toàn bộ portals.
-  3. **Visual & Layout Defensiveness**:
-     - Đảm bảo 100% Zero-Glassmorphism, nền sáng chữ đậm (#FDFBF7), tương phản cao.
-     - Touch targets đạt chuẩn $\ge 44\text{px}$ trên tất cả buttons/links trên mobile.
-     - Phân định rõ ràng Responsive: Desktop Table $\ge 768\text{px}$ và Mobile Card List View $< 768\text{px}$, không truncate rớt chữ.
-  4. **Verification Loop**: `npm --prefix app run verify:quick` đạt 100% PASS (237 unit tests + 42 UI smoke tests).
+  1. **UserDropdown Clean Up (Mục 1)**: Loại bỏ hoàn toàn role switcher / menu chuyển không gian demo. Giữ nguyên thông tin cá nhân, chức vụ, đơn vị và phân quyền thực tế.
+  2. **Executive Directive & Assignment Workflow D1 (Mục 2 & 6)**:
+     - Tạo `ExecutiveDirectiveModal.jsx` hỗ trợ chọn cán bộ thực tế, mức ưu tiên P1/P2/P3, hạn SLA 2h-48h và yêu cầu báo cáo.
+     - Backend Service D1 `ExecutiveService.issueDirective` & API `POST /api/executive/cases/:id/directive` ghi nhận phân công, cập nhật trạng thái case và ghi audit log `EXECUTIVE_DIRECTIVE`.
+  3. **Executive Dashboard & 4 KPI Cốt Lõi (Mục 3 & 4)**:
+     - Khu vực A: Tình hình hôm nay (tóm tắt bằng ngôn ngữ tự nhiên từ DB thật).
+     - 4 Thẻ KPI điều hành: Cần xử lý, Quá hạn SLA, Rủi ro cao, Chờ tôi duyệt.
+  4. **Actionable Work Queue 5 Tabs & Case Drawer (Mục 5, 11)**:
+     - Work Queue 5 tabs: Cần xử lý ngay, Quá hạn SLA, Nguy cơ cao, Đang xử lý, Đã kết luận.
+     - 6 Thông số chuẩn hóa: Chuyện gì -> Ở đâu -> Nghiêm trọng thế nào -> Ai phụ trách -> Chờ bao lâu -> Hành động gợi ý.
+     - Drawer chi tiết `ExecutiveCaseDrawer.jsx` tích hợp Telemetry, đối chứng Before/After, mã băm SHA-256 và các nút hành động (Chỉ đạo, Phê duyệt, Yêu cầu làm lại, Đóng hồ sơ).
+  5. **Hệ thống Routing & Navigation Khép Kín (Mục 7 & 8)**:
+     - Tinh gọn Sidebar Executive thành 3 nhóm: ĐIỀU HÀNH, GIÁM SÁT, QUẢN TRỊ QUYẾT ĐỊNH.
+     - Tạo các trang `/executive/cases` (`ExecutiveCases.jsx`), `/executive/approvals` (`ExecutiveApprovals.jsx`), khép kín routing trong portal mà không đẩy sang workspace khác.
+  6. **Bản đồ GIS & Trạng thái Hệ thống (Mục 9 & 10)**:
+     - Tách biệt sự cố môi trường và sức khỏe thiết bị phần cứng.
+     - Bản đồ GIS liên kết xem chi tiết và xuất phiếu chỉ đạo hỏa tốc.
+  7. **Kiểm thử Toàn diện & OpenAPI Sync (Mục 14, 15, 16)**:
+     - Bộ test `app/tests/executive-operational-suite.test.js` PASS 6/6 (100%).
+     - Đồng bộ OpenAPI spec 3.0.3, `npm --prefix app run verify:quick` PASS 100% (237 unit tests + 42 UI smoke tests).
 
 ## Nhiệm vụ hiện tại
-- **Mục tiêu**: Hoàn tất Phase 1 Staff Hub Migration & chuẩn bị tiếp nối Phase 2 (Community/Citizen) và Phase 3 (Contractor/Executive).
-- **Trạng thái**: ✅ **PHASE 1 STAFF HUB HOÀN TẤT 100% — VERIFIED & COMMITTED**
+- **Mục tiêu**: Executive Portal đã hoàn tất refactor 16/16 mục trở thành hệ thống điều hành thực tế.
+- **Trạng thái**: ✅ **EXECUTIVE REAL-WORLD OPERATIONAL SYSTEM HOÀN TẤT 100% — VERIFIED**
 
 ## Danh mục trang đã nghiệm thu trực quan và auto-fix:
 1. `/` (`LandingPage.jsx`) — Đạt chuẩn Civic Tech.
