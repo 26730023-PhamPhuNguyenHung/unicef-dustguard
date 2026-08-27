@@ -255,4 +255,21 @@
 - **Nguyên nhân**: Một số route trong Hono Edge Worker trả về trực tiếp `{ code: '...', error: '...' }` thay vì gọi `formatRfc7807Error`, gây lệch chuẩn với OpenAPI 3.0.3 spec và phá vỡ cấu trúc xử lý lỗi thống nhất của frontend clients.
 - **Giải pháp**: Luôn gọi `formatRfc7807Error(status, code, title, detail, instance)` từ `auth/human/clerk.middleware.js` cho mọi mã lỗi HTTP 4xx và 5xx. Điều này đảm bảo payload luôn chứa đủ `{ status: 'error', statusCode, code, type, title, detail, instance, timestamp }` và tương thích 100% với RFC-7807.
 
+---
+
+## 📑 10. Document Studio, LegalTech & Digital Signature Traps
+
+### 🚨 Trap 10.1: Bẫy Rò Rỉ `undefined` / `[object Object]` Trong Văn Bản Hành Chính (Zero Undefined Guarantee)
+- **Nguyên nhân**: Khi các trường dữ liệu hiện trường (`site`, `inspection`, `telemetry`, `legal`) chưa được thu thập đầy đủ hoặc có tên khác nhau (`contractor` vs `contractorName`, `address` vs `location`), việc nối chuỗi hoặc duyệt AST mặc định sẽ in ra `undefined` hoặc `null` trực tiếp vào biên bản pháp lý.
+- **Giải pháp**: 
+  1. Trong `document-template-engine.js`, triển khai fallback map `VARIABLE_ALIASES` và `DEFAULT_VARIABLE_PLACEHOLDERS`.
+  2. Bất kỳ biến thiếu nào đều được thay thế bằng nhãn giữ chỗ có nghĩa (ví dụ: `[Chưa xác định]`, `[Chưa có dữ liệu đo kiểm]`), tuyệt đối không bao giờ để lọt chuỗi `"undefined"`, `"null"`, `"NaN"` hay `"[object Object]"`.
+
+### 🚨 Trap 10.2: Bẫy Can Thiệp Sau Khi Ký Số (Digital Signature Tampering Trap)
+- **Nguyên nhân**: Văn bản sau khi được Lãnh đạo duyệt ký số CA nếu không được bảo vệ bằng chữ ký số băm toàn vẹn (HMAC-SHA256 trên nội dung và thông tin người ký), người dùng có thể chỉnh sửa nội dung bản nháp trong CSDL mà hệ thống vẫn báo "Đã ký".
+- **Giải pháp**: 
+  1. Khi phê duyệt (`approveDraftDocument`), hệ thống tính toán SHA-256 trên toàn bộ nội dung và tạo HMAC signature digest với secret máy chủ lưu vào `draft.hash`.
+  2. Tại endpoint `/api/documents/drafts/:id/verify-signature`, hệ thống tái tính toán chữ ký từ nội dung hiện tại và so sánh thời gian thực bằng `crypto.timingSafeEqual`. Nếu nội dung bị thay đổi dù chỉ 1 ký tự, `verified: false` ngay lập tức.
+
+
 

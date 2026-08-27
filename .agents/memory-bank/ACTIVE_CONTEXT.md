@@ -1,3 +1,27 @@
+## 🚀 HOÀN THÀNH TOÀN DIỆN AGENT 8 — DOCUMENT STUDIO & LEGALTECH AUDITOR
+- **Phạm vi rà soát**: Rà soát 100% toàn bộ hệ thống Document Studio trong `app/src/modules/documents/` (`DocumentsListPage.jsx`, `DocumentEditorPage.jsx`, `DocumentPreviewPage.jsx`, `TemplatesGalleryPage.jsx`), `app/src/legal-document-engine/` (`index.js`, `ast/builders.js`, `registry/`, `renderers/`, `styles/`, `validators/`, `naturalIntentResolver.js`, `A4InteractiveEditor.jsx`), và backend routes `/api/documents/`.
+- **Kết quả triển khai & Khắc phục**:
+  - **Mở Rộng Thư Viện 12 Template Mẫu Văn Bản Hành Chính SSoT (`OFFICIAL_TEMPLATES`)**: Hoàn thiện trọn bộ 12 mẫu văn bản hành chính theo chuẩn Nghị định 30/2020/NĐ-CP & Nghị định 118/2021/NĐ-CP (`ND30-BBKT`, `ND118-MBBR01`, `ND118-MQD02`, `ND30-BCKP`, `ND30-QDKT`, `ND30-BBXM`, `ND30-TBKP`, `ND30-PCHS`, `ND118-BBTDC`, `ND118-BBBG`, `ND30-BBNT`, `ND30-TTR`).
+  - **Tiptap AST Engine & Visual Merge Field Resolver (Zero Undefined Guarantee)**: Khóa cơ chế khử 100% rò rỉ `undefined`/`null`/`NaN` khi nội suy biến `{{variable}}`, hỗ trợ Variable Registry SSOT 6 nhóm (`site`, `inspection`, `telemetry`, `legal`, `doc`, `signer`).
+  - **Nâng Cấp Xuất Bản DOCX Chuẩn A4**: Parser `convertContentToDocxBuffer` biên dịch HTML/Markdown thành file Word .docx nguyên bản chuẩn thể thức căn lề NĐ 30 (trái 30mm, phải 15mm, trên/dưới 20mm), bảng biểu tính dxa chuẩn xác.
+  - **Xác Thực Chữ Ký Số & Khóa Toàn Vẹn**: Khép kín lifecycle ký số HMAC-SHA256 và endpoint xác thực chữ ký `/api/documents/drafts/:id/verify-signature` cùng alias `/api/documents/:id/verify-signature`, phát hiện tức thì nếu nội dung bị can thiệp sau khi ký.
+  - **Chuẩn Hóa Barrel Exports & Data Unwrapping**: Tạo `app/src/lib/documents/index.js`, chuẩn hóa unwrap dữ liệu `data?.data?.drafts || data?.data?.items` trong `DocumentsListPage.jsx` và `DocumentPreviewPage.jsx`, bổ sung bộ lọc danh mục và tìm kiếm thông minh trong `TemplatesGalleryPage.jsx`.
+  - **Kiểm Thử Xác Thực**: 8/8 test suites văn bản PASS 100% (39/39 tests đơn vị) & `npm --prefix app run verify:quick` đạt **279/279 tests PASS 100%** (237 in-memory unit + 42 UI smoke tests).
+
+## 🚀 HOÀN THÀNH TOÀN DIỆN AGENT 3 — D1 PERSISTENCE & ARCHITECTURE SPECIALIST (LMS-SAOSANG REFERENCE)
+- **Phạm vi khảo sát & áp dụng**: Khảo sát kiến trúc D1 SQLite tại `D:\02-Agency-Freelance\clients\lms-saosang` (`ensureSchema(db)`, `db.batch()` atomic transactions, `system_audit_logs`, múi giờ GMT+7 Asia/Ho_Chi_Minh, safe parsing & parameter binding).
+- **Kết quả triển khai trên DustGuard VN**:
+  - **Tạo Cấu Trúc `app/server/db/` Hoàn Chỉnh**:
+    - `schema-healer.js`: Cơ chế `ensureSchema(env.DB)` với auto-healing columns, tự động kiểm tra `PRAGMA table_info` và phát sinh `ALTER TABLE ADD COLUMN` an toàn kèm Single-Flight Promise Caching chống 100% crash `no such column`.
+    - `batching.js`: Utility thực thi `db.batch()` theo chunking (< 20ms), `buildInsertStatements`, `buildUpsertStatements`, `runTransaction` cho các thao tác ghi nguyên tử (Atomic Multi-table Transactions).
+    - `audit.js`: Bảng `system_audit_logs` ghi vết mọi thao tác thay đổi dữ liệu (CREATE, UPDATE, DELETE, VERIFY, HANDOFF), hỗ trợ ghi đơn lẻ và ghi batch nguyên tử, truy vấn phân trang linh hoạt.
+    - `timezone.js`: Chuẩn hóa 100% thời gian sang Múi giờ Việt Nam GMT+7 (`Asia/Ho_Chi_Minh`) cho cả Edge Runtime và Node.js (`getVNNowStr`, `getVNTodayStr`, `getVietnamDateTimeString`, `getVietnamISOString`).
+    - `guard.js`: Xác thực danh tính CSDL `verifyDatabaseIdentity(db, 'DUSTGUARD_VN')`, safe JSON parsing & stringifying, safe parameter sanitization.
+    - `index.js`: Central D1 persistence export SSOT.
+  - **Tích hợp Worker Middleware**: Tự động kích hoạt `ensureSchema(db)` trên mọi request của Worker Hono thông qua middleware single-flight promise.
+  - **Khắc phục Bug Trap Trọng Yếu**: Khắc phục lỗi in-place mutation của `db.prepare().bind()` trong SQLite wrapper, và loại bỏ non-constant defaults khi chạy `ALTER TABLE` trong SQLite.
+  - **Kiểm Thử Xác Thực**: 7/7 D1 architecture tests PASS 100% (0.5s) & `npm --prefix app run verify:quick` đạt **279/279 tests PASS 100%** (237 in-memory unit + 42 UI smoke tests).
+
 ## 🚀 HOÀN THÀNH TOÀN DIỆN AGENT 2 — SPATIAL & MAP ARCHITECTURE SPECIALIST
 - **Phạm vi kiểm toán**: Rà soát 100% toàn bộ hệ thống Map trong `app/src/components/map/` (`SpatialMap.jsx`, `SpatialMapCanvas.jsx`, `SpatialMapWorkspace.jsx`, `GeoLocationPicker.jsx`, `index.js`, `MapToolbar.jsx`, `MapLegend.jsx`, `SpatialEntityDrawer.jsx`, `MapTimePlayback.jsx`, `MapStates.jsx`) và toàn bộ các trang tiêu thụ Map (`CitizenMap.jsx`, `CitizenNearby.jsx`, `CitizenReport.jsx`, `StaffMap.jsx`, `StaffMonitoring.jsx`, `StaffDashboard.jsx`, `StaffComplaints.jsx`, `ExecutiveRiskMap.jsx`, `ExecutiveHeatmap.jsx`, `MapView.jsx`, `RiskLeafletMap.jsx`).
 - **Kết quả kiểm toán & Khắc phục**:
