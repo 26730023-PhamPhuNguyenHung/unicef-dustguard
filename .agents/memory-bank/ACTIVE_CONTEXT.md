@@ -1,3 +1,18 @@
+## 🚀 HOÀN TẤT 100%: FINAL ARCHITECTURE CONSOLIDATION & INTERACTIVE DEMO HUB (/demo)
+- **Mục tiêu hoàn thành**: Audit toàn bộ codebase, chốt mô hình sản phẩm thống nhất, giải quyết toàn bộ các điểm mâu thuẫn kiến trúc; Chuyển nút CTA "Xem demo" trên Landing Page trỏ về Trung tâm Demo (`/demo`) thay vì `/login`; Phân định rõ 5 Actors (`CITIZEN`, `COMMUNITY`, `GOVERNMENT_STAFF`, `CONTRACTOR`, `ADMIN`) và 1 Chủ thể Thiết bị (`IoT Node Device`); Xây dựng Golden Demo Scenario xuyên suốt 60 giây và trực quan hóa Trạm đo IoT (`/demo/iot`).
+- **Chi tiết triển khai kỹ thuật**:
+  1. **SSOT Document**: Tạo [`docs/final-product-architecture.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/docs/final-product-architecture.md) định hình rõ ràng 5 Actors, 1 Device, Ma trận phân quyền, Data Provenance (`IOT`, `CITIZEN`, `COMMUNITY`, `INSPECTOR`, `CONTRACTOR`, `SYSTEM`), Case DAG và Terminology SSOT tiếng Việt.
+  2. **Role Normalization & Demo Auth**: Cập nhật `rbac-rules.js`, `roles.js`, `clerk.adapter.js`, `Login.jsx` hỗ trợ role `community` độc lập và đăng nhập nhanh bằng tài khoản thật trong D1 CSDL.
+  3. **D1 Database Auto-Healer & Golden Seed**: Bổ sung bảng `sensors`, `sensor_readings`, `alerts` vào `REQUIRED_TABLE_COLUMNS` trong `schema-healer.js`. Nạp Golden Scenario (Công trình KĐT An Phú, Trạm đo `DG-HCM-001`, Hồ sơ `CASE-2026-001`, Phản ánh `COMP-2026-001`, Lệnh khắc phục `ACT-2026-001`).
+  4. **Trung Tâm Trải Nghiệm Demo Hub (`/demo`)**: Xây dựng `DemoHub.jsx` với 5 Thẻ vai trò 1-click đăng nhập thật, Stepper 6 bước Golden Story và liên kết Bản đồ mở.
+  5. **Trực Quan Hóa Trạm Đo IoT (`/demo/iot`)**: Xây dựng `IoTDemo.jsx` hiển thị thông số Node `DG-HCM-001` (PM2.5, PM10, Nhiệt độ, Độ ẩm, HMAC SHA-256, Live telemetry stream) và sơ đồ 8 bước thiết lập trạm đo.
+  6. **Landing Page CTA Update**: Cập nhật `LandingNav.jsx`, `HeroSection.jsx`, `LandingModals.jsx` trỏ trực tiếp sang `/demo`.
+  7. **Kiểm Thử & Release Gate**:
+     - `verify:quick`: 28 test files (279 tests) PASS 100%.
+     - `npm --prefix app run build`: Vite build PASS 100% trong 3.18s.
+     - `node scripts/verify-full.js`: 74/74 test files (575 tests) PASS 100%.
+     - Nghiệm thu trực quan Chrome DevTools: 0 console errors, Zero Glassmorphism.
+
 ## 🚀 HOÀN TẤT 100%: BACKOFFICE QUẢN LÝ NHIỆM VỤ & THỰC ĐỊA (TASK MANAGEMENT & COMMUNITY ACTIONS LIFECYCLE)
 - **Mục tiêu hoàn thành**: Audit và hoàn thiện trọn vẹn Backoffice cho feature "Nhiệm vụ" của DustGuard VN; Xóa bỏ 100% hardcode mock ở public `/community/actions`; Quản lý toàn bộ vòng đời phân công, nhận việc, nộp minh chứng băm SHA-256 và duyệt nghiệm thu cộng điểm tình nguyện / giờ rèn luyện thật vào D1 SSOT.
 - **Chi tiết triển khai kỹ thuật**:

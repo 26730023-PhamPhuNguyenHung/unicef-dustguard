@@ -28,6 +28,10 @@
   1. Kiểm soát số lượng người tham gia chặt chẽ tại `joinTask`: `SELECT COUNT(id) FROM task_participants WHERE task_id = ?` và chặn nếu `>= max_participants`.
   2. Điểm và giờ rèn luyện (`youth_activities`, `impact_events`) chỉ được ghi nhận vào DB SSOT khi và chỉ khi Cán bộ thực hiện `approveSubmission`. Khi `requestRevision`, bắt buộc nhập `review_note` và không cộng điểm.
 
+### 🚨 Trap 1.13: Sử dụng `backdrop-blur` (Glassmorphism) vi phạm nguyên tắc Civic Tech High-Contrast
+- **Nguyên nhân**: Dùng class Tailwind `backdrop-blur-xs` hoặc `backdrop-blur` trên sticky headers hoặc modals làm mờ nền, vi phạm quy tắc cấm tuyệt đối glassmorphism và bị bộ kiểm thử Visual Regression Audit đánh rớt.
+- **Giải pháp**: Luôn dùng màu nền đặc vững chắc (`bg-[#FDFBF7]` hoặc `bg-white`) kèm border tương phản cao (`border-ink-900/10`) cho toàn bộ thanh điều hướng, modals và thẻ hiển thị.
+
 ### 🚨 Trap 1.1: Tọa độ GIS Map / Contractor Workspace bị `undefined`
 - **Nguyên nhân**: Repository chỉ trả về chuỗi `coordinates: "21.028,105.854"` hoặc tên cột lẻ `latitude`, trong khi frontend UI đọc `lat` / `lng`.
 - **Giải pháp**: Luôn bọc entity qua `app/server/domain/spatial/spatial-adapter.js` bằng hàm `normalizeEntityCoordinates(entity)`. Hàm này sẽ tự động gắn kết đồng thời cả 5 thuộc tính: `{ latitude, longitude, lat, lng, coordinates }`.
