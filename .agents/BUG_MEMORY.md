@@ -226,3 +226,12 @@
   2. Tại route `/contractor/access/:token` (`ContractorPortal.jsx`), xác thực token ngay lập tức; nếu hết hạn thì báo lỗi rõ ràng và khóa quyền thao tác.
   3. Mọi yêu cầu nộp minh chứng nhanh (`POST /api/contractor/quick-submit`) đều tính toán khoảng cách Haversine so với tọa độ công trình và lưu mã băm SHA-256 đối chứng vào D1 SSOT.
 
+---
+
+## 📜 9. API Contract, OpenAPI & RFC-7807 Traps
+
+### 🚨 Trap 9.1: Trả về lỗi không đồng nhất cấu trúc RFC-7807 Problem Details
+- **Nguyên nhân**: Một số route trong Hono Edge Worker trả về trực tiếp `{ code: '...', error: '...' }` thay vì gọi `formatRfc7807Error`, gây lệch chuẩn với OpenAPI 3.0.3 spec và phá vỡ cấu trúc xử lý lỗi thống nhất của frontend clients.
+- **Giải pháp**: Luôn gọi `formatRfc7807Error(status, code, title, detail, instance)` từ `auth/human/clerk.middleware.js` cho mọi mã lỗi HTTP 4xx và 5xx. Điều này đảm bảo payload luôn chứa đủ `{ status: 'error', statusCode, code, type, title, detail, instance, timestamp }` và tương thích 100% với RFC-7807.
+
+
