@@ -30,7 +30,15 @@
 
 ### 🚨 Trap 1.5: Thiếu cột trong D1 SQLite gây crash ngầm trong Background Automation (no such column: priority)
 - **Nguyên nhân**: Code backend `worker.js` hoặc service đọc/ghi các trường (`priority`, `assignedTo`, `category`, `feedbackNote`) nhưng câu lệnh migration SQL ban đầu chưa bổ sung các cột này vào bảng `cases` hoặc `complaints`, dẫn đến lỗi `"CaseAttentionError: no such column: priority"` trong cron automation logs.
-- **Giải pháp**: Áp dụng migration bổ sung additive (`0008_comprehensive_schema_unification.sql`) và đồng bộ `prisma/schema.prisma`. Trước khi đọc/ghi thuộc tính mới, luôn kiểm tra schema D1 và khai báo default value an toàn.
+- **Giải pháp**: Áp dụng cơ chế `ensureSchema(env.DB)` với auto-healing columns tự động kiểm tra `PRAGMA table_info` và chạy `ALTER TABLE` an toàn khi Worker boot.
+
+### 🚨 Trap 1.6: Lỗi `Cannot add a column with non-constant default` khi chạy `ALTER TABLE ADD COLUMN` trong SQLite
+- **Nguyên nhân**: Cú pháp SQLite không cho phép thêm cột mới kèm default động như `DEFAULT CURRENT_TIMESTAMP` hoặc `NOT NULL` (nếu không có constant default) khi dùng `ALTER TABLE ADD COLUMN`.
+- **Giải pháp**: Trong bộ tự sửa schema `schema-healer.js`, luôn khử bỏ `DEFAULT CURRENT_TIMESTAMP`, `NOT NULL`, `PRIMARY KEY`, `AUTOINCREMENT` trước khi phát sinh câu lệnh `ALTER TABLE ADD COLUMN`.
+
+### 🚨 Trap 1.7: In-place Mutation của `db.prepare().bind()` làm hỏng toàn bộ Batch Transaction (`db.batch()`)
+- **Nguyên nhân**: Khi dùng `stmt = db.prepare(sql); records.map(r => stmt.bind(...))`, nếu hàm `bind()` làm thay đổi thuộc tính `this._args` và trả về `this`, mảng batch sẽ chứa n tham chiếu trùng tới cùng 1 đối tượng duy nhất mang giá trị của phần tử cuối cùng ➔ Gây lỗi `SQLITE_CONSTRAINT_UNIQUE` khi thực thi batch.
+- **Giải pháp**: Luôn thiết kế `db.prepare().bind()` theo dạng immutable (trả về closure copy mới) và trong `buildInsertStatements` / `buildUpsertStatements` luôn gọi `db.prepare(sql).bind(...)` độc lập cho từng bản ghi.
 
 ---
 
@@ -58,6 +66,12 @@
 - **Nguyên nhân**: Trong module export shared UI (`app/src/components/shared/index.jsx`), dòng gán alias `export const PriorityBadge = RiskBadge;` được đặt ở đầu file TRƯỚC dòng định nghĩa `export const RiskBadge = React.memo(...)`. Do `const` không được hoisting như `function` mà rơi vào Temporal Dead Zone (TDZ), khiến toàn bộ bundle crash ngay khi load.
 - **Giải pháp**: Luôn đặt các dòng gán alias hoặc re-export phụ thuộc **NẰM SAU** định nghĩa của component gốc `RiskBadge`.
 
+### 🚨 Trap 2.5: Lỗi không đồng bộ tên trường API Directive (`content` vs `directive`) và ReferenceError `SpatialMap`
+- **Nguyên nhân**: Frontend Modal (`ExecutiveDirectiveModal.jsx`) gửi `{ content: "..." }` trong khi backend router chỉ đọc `const { directive } = req.body`, dẫn đến lỗi `400: Nội dung chỉ đạo không được để trống`. Đồng thời khi tách subcomponent map, các file cấp module bị thiếu re-export `SpatialMap` dẫn đến `ReferenceError`.
+- **Giải pháp**: 
+  1. Backend `ExecutiveService.issueDirective` và route controller luôn hỗ trợ dual parameters: `const directiveText = (content || directive || '').trim();` và `const effectivePriority = priorityLevel || priority || 'P1';`.
+  2. Tạo module-level alias `app/src/modules/executive/ExecutiveRiskMap.jsx` re-export cả `default` và named export `{ SpatialMap, executivePolicy }`.
+
 ### 🚨 Trap 2.5: Thiếu Granular Section Error Boundary làm chết toàn trang
 - **Nguyên nhân**: Toàn bộ dashboard chỉ có duy nhất 1 Page-level ErrorBoundary. Khi 1 widget phụ (như bản đồ hay panel) gặp lỗi runtime, toàn bộ dashboard biến mất và thay bằng thông báo lỗi chung.
 - **Giải pháp**: Sử dụng `SectionErrorBoundary` bao bọc từng widget/section độc lập. Khi một khu vực gặp lỗi, chỉ khu vực đó hiển thị thông báo "Không thể tải nội dung" kèm nút [Thử lại], các khu vực khác vẫn hoạt động bình thường. Phân tách rõ DEV (hiện technical details) và PROD (hiện thông báo hành chính dân sinh, không lộ raw stack).
@@ -73,6 +87,13 @@
 ### 🚨 Trap 2.8: Sai đuôi mở rộng khi import (`.jsx` thay vì `.tsx`)
 - **Nguyên nhân**: Viết trực tiếp đuôi `.jsx` trong câu lệnh import (ví dụ `import PageBreadcrumb from '../../components/common/PageBreadCrumb.jsx'`) trong khi file thực tế là `.tsx`, khiến bundler/resolver không phân giải được.
 - **Giải pháp**: Luôn import không cần ghi đuôi mở rộng (`import PageBreadcrumb from '../../components/common/PageBreadCrumb'`) hoặc ghi đúng định dạng file.
+
+### 🚨 Trap 2.9: Xung đột tên SpatialMap và thiếu Named/Default Dual Export trong Map Components
+- **Nguyên nhân**: Định nghĩa trùng tên `export function SpatialMap` bên trong module trang (`ExecutiveRiskMap.jsx`), hoặc component chỉ export default mà không export named `{ ComponentName }` (hoặc ngược lại), dẫn đến lỗi `ReferenceError` hoặc import nhầm component khi chuyển đổi giữa các module Citizen / Staff / Executive.
+- **Giải pháp**:
+  1. Duy nhất `app/src/components/map/SpatialMap.jsx` là SSOT định nghĩa component `SpatialMap`.
+  2. Mọi component Map và trang sử dụng Map đều xuất khẩu cả named export `export { Component }` lẫn default export `export default Component;`, an toàn tuyệt đối khi import theo bất kỳ cú pháp nào.
+  3. `SpatialMap` và `SpatialMapCanvas` hỗ trợ đầy đủ các prop aliases: `sites`, `sensors`, `reports`, `center`/`mapCenter`/`initialCenter`, `zoom`/`initialZoom`, `radius`, `pickedLocation`/`pickerLocation`, `onSelectLocation`/`onLocationPick`, tự động bỏ qua fetch D1 thừa khi mảng thực thể đã được truyền trực tiếp từ cha.
 
 ---
 
