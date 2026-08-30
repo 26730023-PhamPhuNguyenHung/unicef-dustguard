@@ -42,6 +42,10 @@
 - **Nguyên nhân**: Trong `SpatialMap.jsx`, prop `selectedEntity` được destructure thành `explicitSelectedEntity`, state nội bộ là `internalSelectedEntity`, computed value là `effectiveSelectedEntity` và handler là `handleSelectEntity(entity)`. Nhưng khi render JSX của `SpatialEntityDrawer`, code gọi nhầm biến không tồn tại `selectedEntity` và hàm `setSelectedEntity`, gây crash Virtual DOM.
 - **Giải pháp**: Luôn truyền đúng computed SSOT `selectedEntity={effectiveSelectedEntity}` và handler `onClose={() => handleSelectEntity(null)}`. Đồng thời dọn dẹp sạch toàn bộ các file legacy và proxy barrels không còn consumer (`MapView.jsx`, `RiskLeafletMap.jsx`, `MapDynamicLegend.jsx`).
 
+### 🚨 Trap 1.16: Lệch giá trị Enum giữa Schema-Healer, Test Fixtures và Audit Database SSOT
+- **Nguyên nhân**: `schema-healer.js` và test suite `d1-architecture-healer.test.js` định nghĩa default `category = 'DUST_CONSTRUCTION'` và `status = 'NEW'` cho bảng `observations`, trong khi Business Rules SSOT quy định `category = 'CONSTRUCTION_DUST'` và `status = 'RECORDED'`. Khi test chạy chèn bản ghi mẫu vào DB làm `audit:db` fail enum constraint. Đồng thời vi phạm claim linter do hardcode `(20h = 4.0 tín chỉ)`.
+- **Giải pháp**: Chuẩn hóa 100% enum defaults trong `schema-healer.js`, test suites và migrations về enum SSOT (`CONSTRUCTION_DUST`, `RECORDED`). Đổi chuỗi claim sang "Tín chỉ ngoại khóa đề xuất" tuân thủ Claim Integrity Policy SSOT.
+
 ### 🚨 Trap 1.1: Tọa độ GIS Map / Contractor Workspace bị `undefined`
 - **Nguyên nhân**: Repository chỉ trả về chuỗi `coordinates: "21.028,105.854"` hoặc tên cột lẻ `latitude`, trong khi frontend UI đọc `lat` / `lng`.
 - **Giải pháp**: Luôn bọc entity qua `app/server/domain/spatial/spatial-adapter.js` bằng hàm `normalizeEntityCoordinates(entity)`. Hàm này sẽ tự động gắn kết đồng thời cả 5 thuộc tính: `{ latitude, longitude, lat, lng, coordinates }`.

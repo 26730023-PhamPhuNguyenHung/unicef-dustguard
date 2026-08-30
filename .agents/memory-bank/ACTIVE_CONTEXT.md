@@ -1,24 +1,25 @@
 # ACTIVE CONTEXT — DUSTGUARD VN
 
 ## 1. Focus Hiện Tại
-- **HOÀN TẤT 100% ĐỢT AUDIT & CLEANUP TRIỆT ĐỂ BẢN ĐỒ / LEGACY MODULES**:
-  - Khắc phục triệt để lỗi runtime `ReferenceError: selectedEntity is not defined` và `setSelectedEntity is not defined` trong `SpatialMap.jsx`.
-  - Chuẩn hóa `ErrorBoundary.jsx` phân định Dev vs Production (ẩn raw error ra UI).
-  - Loại bỏ hoàn toàn các file legacy, proxy barrels và dead components: `MapView.jsx`, `RiskLeafletMap.jsx`, `MapDynamicLegend.jsx`, `modules/executive/ExecutiveRiskMap.jsx`.
-  - Dọn sạch 40+ dead imports, unused states và redundant distance helpers trong `CitizenReport.jsx`, `CitizenNearby.jsx`, `StaffDashboard.jsx`, `StaffComplaints.jsx`, `ExecutiveRiskMap.jsx`, `ExecutiveHeatmap.jsx`, `MapToolbar.jsx`, `SpatialEntityDrawer.jsx`, `MapStates.jsx`.
-  - Cập nhật test suites và ban hành tài liệu SSOT [`docs/map-architecture.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/docs/map-architecture.md).
-  - Toàn bộ verification pipelines (Targeted tests, `verify:quick`, `verify:changed`, Vite production build) PASS 100%.
+- **HOÀN TẤT 100% ĐỢT KIỂM TOÁN TOÀN DIỆN CODEBASE & HỆ THỐNG (FULL SYSTEM & CODEBASE AUDIT)**:
+  - **Claim Integrity Policy Audit (`audit:claims`)**: Khắc phục dứt điểm cảnh báo linter trong `YouthCredits.jsx`, đổi câu từ hardcode `(20h = 4.0 tín chỉ)` sang `Tín chỉ ngoại khóa đề xuất` trung thực, tuân thủ 100% Claim Integrity Policy.
+  - **D1 SQLite Database SSOT Audit (`audit:db`)**: Chuẩn hóa toàn bộ enum `observations.category` (`CONSTRUCTION_DUST`) và `observations.status` (`RECORDED`) trong `schema-healer.js`, `d1-architecture-healer.test.js`, migration `0004_d1_remote_sync.sql` và CSDL `dev.db`, đạt **55/55 checks PASS, 0 warnings, 0 errors**.
+  - **Vite Bundle Cleanliness**: Thêm `/* @vite-ignore */` cho dynamic fallback `node:crypto` trong `image-integrity.js`, loại bỏ hoàn toàn cảnh báo externalized khi build client SPA.
+  - **Toàn bộ Verification Pipelines**:
+    - `audit:claims`: PASS 100% (0 overclaims).
+    - `audit:db`: PASS 100% (55 checks, 0 errors).
+    - `npm --prefix app run build`: Vite build PASS 100% trong ~4.3s (0 errors/warnings).
+    - `verify:quick`: 28 test files (279 unit + UI smoke tests) PASS 100%.
+    - `verify:full`: 74 test files (586 tests + D1 sequential state tests) PASS 100%.
 
 ## 2. Các Mốc Vừa Hoàn Thành
-- [x] Khởi chạy 10 Subagents audit song song toàn diện hệ thống Bản đồ.
-- [x] Lập báo cáo tổng hợp Root Cause, Legacy Remaining, Active Arch, Action Plan.
-- [x] Vá lỗi biến phạm vi `effectiveSelectedEntity` và `handleSelectEntity(null)` trong `SpatialMap.jsx`.
-- [x] Cải tiến `ErrorBoundary.jsx` bảo vệ an toàn thông tin lỗi cho người dùng cuối.
-- [x] Xóa sạch các file mồ côi và barrel trùng lặp (`MapView.jsx`, `RiskLeafletMap.jsx`, `MapDynamicLegend.jsx`, `ExecutiveRiskMap.jsx`).
-- [x] Dọn sạch dead imports và helpers thừa trong 9 components/modules.
-- [x] Cập nhật assertions trong `spatial-intelligence-map.test.js` & `mobile-layout-audit.test.js`.
-- [x] Viết tài liệu chuẩn kiến trúc bản đồ [`docs/map-architecture.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/docs/map-architecture.md).
-- [x] Kiểm thử toàn bộ hệ thống (`verify:quick`, `verify:changed`, build) PASS 100%.
+- [x] Khởi chạy kiểm toán toàn diện codebase và hệ sinh thái test.
+- [x] Sửa lỗi Claim Integrity trong `YouthCredits.jsx`.
+- [x] Đồng bộ enum category/status của observations trong schema-healer và dev.db.
+- [x] Khử warning bundler Vite trong `image-integrity.js`.
+- [x] Lưu bài học Trap 1.16 vào `.agents/BUG_MEMORY.md`.
+- [x] Cập nhật SSOT Timeline & Active Context.
+- [x] Chạy full suite kiểm thử đạt 100% PASS.
 
 ## 🚀 HOÀN TẤT 100%: COMPREHENSIVE MAP AUDIT & LEGACY MODULES CLEANUP
 - **Mục tiêu hoàn thành**: Audit và dọn dẹp triệt để toàn bộ hệ thống Bản đồ Không gian của DustGuard VN; giải quyết dứt điểm lỗi `ReferenceError: selectedEntity is not defined` từ nguyên nhân gốc rễ; loại bỏ toàn bộ rác dead code, legacy components và proxy barrels thừa; đảm bảo kiến trúc One Map SSOT tinh gọn, ổn định, responsive, không rò rỉ lỗi kỹ thuật ra giao diện production.
