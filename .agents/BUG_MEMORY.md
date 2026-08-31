@@ -32,10 +32,19 @@
   1. Bọc `try { await clerk.client.signIn.create(...) } catch` trong `AuthContext.jsx` để fallback mượt sang local D1 auth `signInWithEmail(email, password)`.
   2. Mở rộng regex/alias trong `auth-client.js` cho tất cả 5 persona demo (`demo-inspector`, `demo-staff`, `demo-admin`, `demo-community`, `demo-contractor`, `demo-citizen`) và ghi nhận đầy đủ `dustguard_user`, `dustguard_role`, `dustguard_token` vào `localStorage`.
 
-### 🚨 Trap 0.6: Crash Virtual DOM trên StaffDashboard do thiếu import `resolveMapCapabilities` và `SpatialMap`
-- **Nguyên nhân**: Trong `StaffDashboard.jsx`, component gọi hàm `resolveMapCapabilities(effectiveUser)` và render `<SpatialMap />` ở GIS Section nhưng file quên import từ `components/map/`. Khi Cán bộ vào dashboard, React ném `ReferenceError` làm kích hoạt ErrorBoundary.
-- **Giải pháp**: Luôn kiểm tra đầy đủ import `import { resolveMapCapabilities } from '../../components/map/mapCapabilities';` và `import SpatialMap from '../../components/map/SpatialMap';` trước khi render.
+### 🚨 Trap 0.7: Phô diễn kỹ thuật (Technical jargon) trên giao diện công cộng & làm rối mắt bằng chuỗi hash thô
+- **Nguyên nhân**: Đưa trực tiếp các thuật ngữ kỹ thuật chuyên sâu (như `telemetry`, `DAG 7 bước`, `SLA 24h`, `HMAC-SHA256`, `Device Entity`, chuỗi hash 64 ký tự `7f83b1...`) lên giao diện trang chủ hoặc thẻ demo công cộng. Điều này làm người dân và người dùng phổ thông cảm thấy phức tạp, khó hiểu và giảm khả năng tiếp cận nền tảng Civic Tech.
+- **Giải pháp**:
+  1. Áp dụng Rule 3: Chuyển toàn bộ thuật ngữ sang ngôn từ tự nhiên, dễ hiểu (`telemetry` $\to$ `chỉ số bụi / dữ liệu trạm đo`, `SLA` $\to$ `thời hạn xử lý`, `Device Entity` $\to$ `Thiết bị trạm đo`, `DAG` $\to$ `quy trình`).
+  2. Áp dụng Rule 5: Thẻ demo hiển thị thông tin trọng tâm để người xem nắm bắt trong 3 giây (Hồ sơ, Địa điểm, Trạng thái, Mức ưu tiên, Bụi PM2.5, Phụ trách, Tiếp nhận); đưa mã xác thực kỹ thuật SHA-256 vào khối collapsible toggle "Xem mã xác thực kỹ thuật" để người dùng mở ra khi cần kiểm tra đối chứng.
 
+### 🚨 Trap 0.8: Generic Empty States ("Không có dữ liệu"), Raw Error Messages & Overclaim Phrasing
+- **Nguyên nhân**: Dùng câu chữ rỗng chung chung ("Không có dữ liệu", "Không tìm thấy..."), lộ chuỗi lỗi kỹ thuật (`HTTP ${res.status}`, `Failed to fetch`, `err.message` thô), hoặc dùng từ ngữ tự nhận quá mức ("tuyệt đối", "bắt buộc", "xử phạt", "phán quyết"). Điều này làm trải nghiệm người dùng bị thô cứng, thiếu tính hướng dẫn và vi phạm nguyên tắc pháp lý trung tính của Civic Tech.
+- **Giải pháp**:
+  1. Áp dụng Rule 21: Thay "Không có dữ liệu" bằng thông báo có ngữ cảnh cụ thể ("Chưa có dữ liệu hiển thị.", "Chưa có hồ sơ cần xử lý.", "Chưa có công trình nào phù hợp.", "Chưa có nhiệm vụ phù hợp.").
+  2. Áp dụng Rule 22: Chuyển toàn bộ lỗi kỹ thuật thô sang tiếng Việt thân thiện ("Không tải được dữ liệu. Thử lại.", "Không lưu được thay đổi.").
+  3. Áp dụng Rule 23: Rút gọn tiêu đề và nội dung modal confirmation theo mẫu `[Hành động + Thực thể?]` ("Lưu trữ hồ sơ?", "Xóa tài khoản?").
+  4. Áp dụng Rule 16: Loại bỏ sạch các từ tự nhận "tuyệt đối", "bắt buộc", chuyển sang văn phong trung tính hỗ trợ theo dõi, ghi nhận và kết nối tiếp nhận.
 
 ---
 
@@ -58,6 +67,15 @@
 ### 🚨 Trap 1.13: Sử dụng `backdrop-blur` (Glassmorphism) vi phạm nguyên tắc Civic Tech High-Contrast
 - **Nguyên nhân**: Dùng class Tailwind `backdrop-blur-xs` hoặc `backdrop-blur` trên sticky headers hoặc modals làm mờ nền, vi phạm quy tắc cấm tuyệt đối glassmorphism và bị bộ kiểm thử Visual Regression Audit đánh rớt.
 - **Giải pháp**: Luôn dùng màu nền đặc vững chắc (`bg-[#FDFBF7]` hoặc `bg-white`) kèm border tương phản cao (`border-ink-900/10`) cho toàn bộ thanh điều hướng, modals và thẻ hiển thị.
+
+### 🚨 Trap 1.14: Header Navigation và Nút bấm bị Wrap thành 2-3 dòng trên Laptop 14-inch (1366x768 & 1440x900)
+- **Nguyên nhân**:
+  1. Header navigation links và Action buttons không được khóa `whitespace-nowrap shrink-0 flex-nowrap`, dẫn đến khi màn hình thu hẹp về 1366px (hoặc zoom 125%), các menu con hoặc chữ trong nút ("Tín chỉ Xanh", "Gửi phản ánh", "Đăng nhập") bị rớt dòng thành 2 hàng phá vỡ layout.
+  2. Bảng dữ liệu (`<table`) không có wrapper `overflow-x-auto` làm bảng tràn viền ngang hoặc bị container cha dùng `overflow-x: hidden` giả tạo cắt cụt dữ liệu.
+- **Giải pháp**:
+  1. Luôn thêm `whitespace-nowrap shrink-0` vào `baseClasses` của Button primitives (`Button.jsx`, `Button.tsx`, `DustGuardBrandButton.jsx`).
+  2. Container desktop navigation luôn khai báo `flex-nowrap shrink-0` kết hợp `gap: clamp(...)` linh hoạt.
+  3. Mọi thẻ `<table>` bắt buộc bọc trong `<div className="overflow-x-auto">`, loại bỏ hoàn toàn `overflow-x-hidden` giả tạo.
 
 ### 🚨 Trap 1.14: Onboarding Trạm đo IoT bị lỗi 404 hoặc dùng fake timer thay vì SSOT telemetry
 - **Nguyên nhân**: Backend telemetry endpoint chỉ tìm sensor đã tạo sẵn bằng tay, gây lỗi 404 khi thiết bị gửi tín hiệu đầu tiên; hoặc frontend dùng timer giả đếm ngược để chuyển trạng thái "Đã kết nối".

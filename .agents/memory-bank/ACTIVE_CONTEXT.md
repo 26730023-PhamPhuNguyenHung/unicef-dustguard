@@ -1,13 +1,24 @@
 # ACTIVE CONTEXT — DUSTGUARD VN
 
-- **🛡️ HOÀN TẤT: FIX HEADER TEXT WRAP & RESPONSIVE SSOT (RULE 10)**:
-  1. **Khắc phục triệt để lỗi rớt chữ Navbar**:
-     - Thêm `white-space: nowrap; flex-shrink: 0;` cho `.brand`, `.brand-text-wrap`, `.brand-tag`, `.nav-links a`, `.nav-actions-desktop .btn`.
-     - Tăng breakpoint Mobile Menu từ `860px` lên `1100px` để tránh bị chật layout trên laptop/màn hình thu nhỏ (viewport 860px - 1100px).
-     - Bổ sung media query tinh chỉnh gap/padding cho dải màn hình laptop 1101px - 1280px.
-     - Tăng chiều cao `max-height: 520px` với `overflow-y: auto` cho mobile drawer panel.
-  2. **Xác thực**:
-     - `verify:quick` pass 100% (237/237 domain tests + 42/42 UI smoke tests).
+- **🚀 HOÀN THÀNH 100%: FULL UI COPY & CONTENT AUDIT (27 RULES) — 10 SUBAGENTS CONCURRENT**:
+  - **SSOT Rules & Core Codification**:
+    + Đã cập nhật [**`AGENTS.md`**](file:///d:/07-Competitions-Hackathons/unicef-dustguard/AGENTS.md) và [**`.agents/INDEX.md`**](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/INDEX.md) với quy tắc chủ động kiểm tra bằng Chrome DevTools MCP & PowerShell CLI, cấm thuật ngữ kỹ thuật thừa, và bảo đảm responsive 14-inch (1366x768 & 1440x900).
+    + Đã thiết lập Từ điển Thuật ngữ Chuẩn SSOT tại [**`app/src/constants/uiCopy.js`**](file:///d:/07-Competitions-Hackathons/unicef-dustguard/app/src/constants/uiCopy.js).
+  - **10 Subagents chuyên trách đồng loạt hoàn thành và xác thực**:
+    1. **Subagent 1 (Landing Page & Hero Copy)**: Eyebrow "GIÁM SÁT BỤI ĐÔ THỊ", Headline "Phát hiện bụi. Theo dõi đến khi được xử lý.", 3 CTAs ("Gửi phản ánh", "Xem cách hoạt động", "Xem bản demo"), Card Demo 3 giây với mã xác thực collapsible.
+    2. **Subagent 2 (Citizen & Public Flow)**: Câu < 12 từ, nút 2-4 từ, gỡ sạch `EXIF APP1`, `SHA-256`, `D1 SSOT`, `Payload`, thay bằng "Mã xác thực", "Vị trí ảnh", empty states thân thiện.
+    3. **Subagent 3 (Staff Dashboard & Priority Queue)**: Đổi "DAG WORKFLOW" -> "Tiến độ xử lý", "P1/P2" -> "Khẩn cấp / Ưu tiên", "SLA" -> "Thời hạn", rút gọn chip lọc và nút tác nghiệp.
+    4. **Subagent 4 (Staff Case Hub & 7-Step Stepper)**: Chuẩn hóa 7 bước cực ngắn (1. Tiếp nhận, 2. Xác minh, 3. Thông báo, 4. Khảo sát, 5. Đề xuất, 6. Thẩm định, 7. Hoàn tất), nút CTA "Sang bước tiếp theo: [Tên bước]", 6 Tabs ngắn ("Thông tin", "Hình ảnh", "Theo dõi", "Khảo sát", "Khắc phục", "Hồ sơ"), cấm HIGH/MED/LOW -> Cao/Trung bình/Thấp.
+    5. **Subagent 5 (Field Inspection, Tasks & Contractor)**: "Geofence < 50m" -> "Vị trí tại công trình", "SHA-256" -> "Mã xác thực", "Nộp minh chứng" -> "Gửi bằng chứng khắc phục", văn phong đốc công thực tế.
+    6. **Subagent 6 (Executive Hub & Admin Backoffice)**: Động từ trực tiếp ("Chuyển", "Xác minh", "Cập nhật", "Phê duyệt"), gỡ rò rỉ mã JS trên nút in ấn/CSR/ký số, quản lý người dùng không dùng CRUD.
+    7. **Subagent 7 (Navigation, Sidebar & Breadcrumbs)**: Chuẩn hóa 10 mục Sidebar phẳng ngắn rõ (Tổng quan, Giám sát, Hồ sơ, Nhiệm vụ, Cảnh báo, Phản ánh, Hiện trường, Thời hạn, Công trình, Báo cáo), rút gọn Breadcrumbs và Topbar.
+    8. **Subagent 8 (Terminology & Banned Acronyms Sweeper)**: Quét sạch `DAG`, `SLA`, `SHA-256`, `HMAC`, `telemetry`, `liveness`, `flatline` trên toàn bộ text hiển thị UI, giữ nguyên biến logic nội bộ.
+    9. **Subagent 9 (Desktop 14-Inch Responsive & Width)**: `white-space: nowrap; flex-shrink: 0;` cho mọi nút bấm và nav link, `overflow-x-auto` cho bảng dữ liệu, chống rớt chữ trên 1366x768 & 1440x900.
+    10. **Subagent 10 (Empty States, Toast Errors & Anti-Overclaim)**: Actionable Empty States có ngữ cảnh, toast lỗi tiếng Việt không expose HTTP code, xóa sạch claim "tuyệt đối" / "xử phạt" về văn phong trung tính.
+  - **Kết quả Kiểm định Hệ thống**:
+    + `npm --prefix app run verify:quick`: **279/279 tests PASS 100%** (237 unit/domain tests + 42 UI smoke tests, 4.0s).
+    + `npm --prefix app run build`: **Vite production bundle build PASS 100%**.
+    + Submodule `app` committed: commit `4c523c4`.
   1. **Áp Dụng Rule 21 (Actionable Civic Empty States)**:
      - Thay thế toàn bộ text rỗng chung chung ("Không có dữ liệu", "Không tìm thấy...") sang các thông báo có ngữ cảnh cụ thể:
        + `EmptyState.jsx`: default `title = 'Chưa có dữ liệu hiển thị'`, `description = 'Chưa có bản ghi nào phù hợp với điều kiện tìm kiếm hoặc bộ lọc.'`

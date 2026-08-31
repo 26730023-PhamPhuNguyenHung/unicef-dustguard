@@ -12,6 +12,9 @@
 5. **AI is Assistant, Not Judge**: AI hỗ trợ tóm tắt, chuẩn hóa và kiểm tra ảnh; con người quyết định và hành động khắc phục.
 6. **Light Mode High-Contrast Civic Tech**: Tuyệt đối **KHÔNG Glassmorphism** (`backdrop-blur-*`). Màu chủ đạo: `#FDFBF7` cream, `#231b14` ink, `#0d6f64` teal, `#9f241f` seal red. Nền sáng chữ đậm, nền đậm chữ sáng. Touch target tối thiểu **44px x 44px**.
 7. **Windows PowerShell CLI**: Chạy lệnh trực tiếp qua CLI, không bảo user làm. Không dùng Unix pipe (`| grep`, `export`), dùng `Select-String`, `$env:`.
+8. **Proactive DevTools & Live Inspection**: Tự động kết nối Chrome DevTools MCP duyệt trang thật, kiểm tra DOM/Network/Console và auto-fix runtime bugs ngay lập tức.
+9. **Natural Civic Copy & Zero Jargon**: Ngắn — Rõ — Dễ hiểu — Không nhồi nhét thuật ngữ (DAG, SHA-256, HMAC, SLA, IoT Node...). UI phục vụ người dân và cán bộ thực tế.
+10. **Responsive 14-Inch Desktop & Mobile**: Bắt buộc tương thích hoàn hảo tại 1366x768, 1440x900, 1536x864, 1920x1080 và Mobile 360-430px (zero header menu wrap, zero button wrap, zero horizontal scroll vô lý).
 
 ---
 

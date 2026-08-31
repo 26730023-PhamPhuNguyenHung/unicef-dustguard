@@ -13,7 +13,9 @@ You are maintaining **DustGuard VN** — A CivicTech platform empowering Youth C
 5. **No Glassmorphism**: Light mode high-contrast civic tech (`#FDFBF7` cream, `#231b14` ink, `#0d6f64` teal, `#9f241f` seal red). Dark text on light bg, light text on dark bg. Touch targets >= 44px.
 6. **Zero Mock in Core Paths**: Real D1 SQLite queries and API endpoints, never mock fake entities in catch blocks.
 7. **Fast Inner Loop**: Run targeted test (`node --test app/tests/<file>.test.js`) in < 0.5s before committing.
-8. **Proactive PowerShell CLI**: Run commands directly via CLI, do not ask user to copy-paste.
+8. **Proactive PowerShell CLI & Live DevTools**: Tự động chạy lệnh CLI trực tiếp và kết nối Chrome DevTools MCP duyệt trang thật, bắt lỗi runtime và sửa code ngay lập tức (không thụ động chờ user nhắc).
+9. **Natural Civic Copy & Zero Jargon**: Ngôn từ Ngắn — Rõ — Dễ hành động — Phù hợp thực tế. Cấm thuật ngữ kỹ thuật (DAG, SHA-256, HMAC, SLA, telemetry...) trên UI người dùng phổ thông.
+10. **Responsive 14-Inch Desktop & Mobile SSOT**: Bắt buộc tương thích hoàn hảo tại 1366x768, 1440x900, 1536x864, 1920x1080 và Mobile 360-430px (zero header menu wrap, zero button wrap, zero horizontal scroll vô lý).
 
 ---
 
