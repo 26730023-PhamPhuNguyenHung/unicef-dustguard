@@ -6,15 +6,15 @@
 
 ## 🎯 1. Trọng Tâm Hoạt Động Hiện Tại (Active Operational State)
 - **Hệ thống**: Toàn bộ kiến trúc Cloudflare D1 + Worker Edge Router + Vite React Client đã hoàn tất kiểm toán 100%.
-- **Hoàn thiện Flow Thêm Công Trình Mới (Staff Sites Modal)**:
-  - Loại bỏ hoàn toàn trường Quận/Huyện, chuẩn hóa luồng Tỉnh/Thành phố → Phường/Xã trực tiếp.
-  - Sửa dứt điểm Dropdown Tỉnh/Thành phố & Phường/Xã kết nối backend D1 + Fallback SSOT.
-  - Tích hợp Parser thông minh dán link Google Maps, tự động bóc tách tọa độ `lat, lng` trực quan không cần nhập số thủ công.
-  - Loại bỏ trường điểm ưu tiên 0-100 và tối ưu form còn 3 section tinh gọn.
+- **Tách Bạch Phân Quyền Vụ Việc (Case Role Separation of Duties)**:
+  - Phân định rõ: **Staff (Người thực thi)** vs **Coordinator (Người phân việc)** vs **Admin (Quản trị hệ thống)**.
+  - Staff tạo case: Tự động gán cho bản thân (`assignedTo = user.id`) hoặc chuyển vào hàng đợi điều phối, backend tự động tính SLA deadline theo mức ưu tiên (`4h / 24h / 72h / 168h`), không cho Staff gõ giờ tùy ý.
+  - Phân công cán bộ (`POST /api/cases/:id/assign`): Bắt buộc kiểm tra quyền Coordinator / Team Lead / Admin, chặn Staff thường đổi người phụ trách (403 Forbidden).
+  - Tối ưu giao diện `/staff/cases`: Thêm các tab công việc `Vụ việc của tôi`, `Chờ phân công`, `Đang xử lý`, `Quá hạn`, `Tất cả` và loại bỏ 100% emoji.
 - **Sức khỏe Mã nguồn**:
-  - `npm --prefix app run verify:quick`: **279/279 tests PASS 100%** (28 test files + 42 UI smoke tests, ~3.5s).
-  - `node --test app/tests/site-location-maps-audit.test.js`: **7/7 tests PASS 100%**.
-  - `npm --prefix app run build`: **Vite production bundle PASS 100%** (0 errors, 1.96s).
+  - `npm --prefix app run verify:quick`: **279/279 tests PASS 100%** (28 test files + 42 UI smoke tests, ~3.7s).
+  - `node --test app/tests/case-role-permission-audit.test.js`: **5/5 tests PASS 100%**.
+  - `npm --prefix app run build`: **Vite production bundle PASS 100%** (0 errors, 5.5s).
 - **Quy tắc Vận hành**: 
   - Tuân thủ nghiêm ngặt 10 Core Invariants trong [`AGENTS.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/AGENTS.md).
   - Sử dụng Fast Verification Pipeline: Chỉ chạy Level 0 (`node --test app/tests/<file>.test.js`) khi đang code, chạy Level 3 trước khi hoàn tất.
