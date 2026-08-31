@@ -38,13 +38,11 @@
   1. Áp dụng Rule 3: Chuyển toàn bộ thuật ngữ sang ngôn từ tự nhiên, dễ hiểu (`telemetry` $\to$ `chỉ số bụi / dữ liệu trạm đo`, `SLA` $\to$ `thời hạn xử lý`, `Device Entity` $\to$ `Thiết bị trạm đo`, `DAG` $\to$ `quy trình`).
   2. Áp dụng Rule 5: Thẻ demo hiển thị thông tin trọng tâm để người xem nắm bắt trong 3 giây (Hồ sơ, Địa điểm, Trạng thái, Mức ưu tiên, Bụi PM2.5, Phụ trách, Tiếp nhận); đưa mã xác thực kỹ thuật SHA-256 vào khối collapsible toggle "Xem mã xác thực kỹ thuật" để người dùng mở ra khi cần kiểm tra đối chứng.
 
-### 🚨 Trap 0.8: Generic Empty States ("Không có dữ liệu"), Raw Error Messages & Overclaim Phrasing
-- **Nguyên nhân**: Dùng câu chữ rỗng chung chung ("Không có dữ liệu", "Không tìm thấy..."), lộ chuỗi lỗi kỹ thuật (`HTTP ${res.status}`, `Failed to fetch`, `err.message` thô), hoặc dùng từ ngữ tự nhận quá mức ("tuyệt đối", "bắt buộc", "xử phạt", "phán quyết"). Điều này làm trải nghiệm người dùng bị thô cứng, thiếu tính hướng dẫn và vi phạm nguyên tắc pháp lý trung tính của Civic Tech.
+### 🚨 Trap 0.9: Nút bấm (Button, CTA, Tab) bị xuống dòng / rớt chữ đơn lẻ (Orphan Word Drop) trên Mobile
+- **Nguyên nhân**: Button dùng nhãn ngắn (ví dụ "Khám phá Demo →", "Tạo phản ánh", "Đang theo dõi 0") nhưng không có `white-space: nowrap` hoặc đặt trong flex container có `shrink` tự do, dẫn đến bị ép hẹp trên mobile viewport (360px - 390px) và bẻ đôi chữ thành 2-3 dòng, hoặc làm rớt 1 chữ đơn độc/icon xuống dòng mới.
 - **Giải pháp**:
-  1. Áp dụng Rule 21: Thay "Không có dữ liệu" bằng thông báo có ngữ cảnh cụ thể ("Chưa có dữ liệu hiển thị.", "Chưa có hồ sơ cần xử lý.", "Chưa có công trình nào phù hợp.", "Chưa có nhiệm vụ phù hợp.").
-  2. Áp dụng Rule 22: Chuyển toàn bộ lỗi kỹ thuật thô sang tiếng Việt thân thiện ("Không tải được dữ liệu. Thử lại.", "Không lưu được thay đổi.").
-  3. Áp dụng Rule 23: Rút gọn tiêu đề và nội dung modal confirmation theo mẫu `[Hành động + Thực thể?]` ("Lưu trữ hồ sơ?", "Xóa tài khoản?").
-  4. Áp dụng Rule 16: Loại bỏ sạch các từ tự nhận "tuyệt đối", "bắt buộc", chuyển sang văn phong trung tính hỗ trợ theo dõi, ghi nhận và kết nối tiếp nhận.
+  1. Quy chuẩn toàn bộ `.btn`, `.tab-btn`, `.badge`, `.chip` có `white-space: nowrap; shrink-0`.
+  2. Bổ sung script tự động kiểm tra `npm run audit:buttons` để quét qua 7 viewports và toàn bộ routes, đo `getClientRects()` từng dòng text của nút để bắt lỗi và hiển thị log sửa tức thì.
 
 ---
 
@@ -150,6 +148,13 @@
 ### 🚨 Trap 2.19: Chuỗi định danh dài (Case ID / SHA-256 Hash / API Spec) làm phình rộng container trên màn hình nhỏ 360px
 - **Nguyên nhân**: Không có class `break-all` hoặc `break-words` trên chuỗi mã băm hoặc ID dài như `COMP-2026-089-XXXX`, khiến flex items hoặc grid cell bị ép mở rộng vượt quá chiều rộng màn hình, gây tràn ngang.
 - **Giải pháp**: Luôn áp dụng `break-all` hoặc `break-words` cho mọi thẻ `span`/`code`/`b` hiển thị mã băm, URL endpoint hoặc Case ID.
+
+### 🚨 Trap 1.25: Ép buộc bản đồ GIS tương tác nặng nề mọi nơi gây quá tải trải nghiệm người dùng (Heavy GIS Map Cognitive Overload Trap)
+- **Nguyên nhân**: Bắt buộc người dùng và cán bộ phải tải và thao tác trên khung bản đồ Leaflet nặng nề trên mọi màn hình khi chỉ cần tra cứu nhanh địa chỉ, chỉ số PM2.5 hoặc điều hướng. Điều này làm tăng thời gian thao tác và gây khó khăn trên di động khi mạng yếu hoặc cần nộp phản ánh nhanh.
+- **Giải pháp**: Áp dụng triết lý **Address-First / Table & Card First**:
+  1. Mặc định hiển thị danh sách dạng Bảng/Thẻ trực quan với Địa chỉ hành chính rõ ràng (Phường/Xã/Quận), bộ lọc địa bàn và chỉ số rủi ro màu sắc (Đỏ/Cam/Xanh).
+  2. Bổ sung nút **"📍 Mở Google Maps"** (`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address || lat + ',' + lng)}`) trên từng thẻ/dòng bảng để người dùng và cán bộ có thể mở chỉ đường trực tiếp tức thì trên điện thoại/máy tính mà không tốn tài nguyên tải map nhúng.
+  3. Bản đồ GIS nhúng đóng vai trò chế độ xem bổ trợ (Toggle view) cho ai có nhu cầu quan sát tổng thể không gian.
 
 ### 🚨 Trap 2.19: Regex Overclaim Catch-All Bắt Nhầm Câu Phủ Định Rào Trước (Intervening Words in Negation Pattern)
 - **Nguyên nhân**: Khi viết regex quét các từ khóa cấm overclaim (`thay thế thanh tra`, `kết luận vi phạm`, `tự động xử phạt`), nếu mẫu phủ định (`allowed_negations`) chỉ match dạng nối liền `không thay thế` thì các phát biểu rào trước mang tính bảo vệ như *"AI không phán quyết hay thay thế thanh tra"* hoặc *"không tự ra quyết định xử phạt"* sẽ bị bắt nhầm thành lỗi vi phạm do có từ chèn giữa (`phán quyết hay`, `tự ra quyết định`).
