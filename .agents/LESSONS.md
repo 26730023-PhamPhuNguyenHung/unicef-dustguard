@@ -1,4 +1,22 @@
-# LESSONS LEARNED
+## 14. Spatial Map API, Zero Fake Coordinates & RBAC PII Sanitizer Invariants
+- **Bối cảnh & Vấn đề**:
+  - Trong các endpoint bản đồ (`/api/map`), dữ liệu tọa độ nếu thiếu từng bị fallback bằng công thức ảo (`21.0285 + idx * 0.006` hay `Math.sin(id.length)`), làm méo mó vị trí địa lý thực tế và vi phạm nguyên tắc SSOT.
+  - Các endpoint phản ánh công khai (`GET /api/complaints`, `GET /api/map`) và công trình (`GET /api/sites/:id`) nếu không được phân tách ngữ cảnh xác thực (Staff vs Citizen) sẽ làm rò rỉ thông tin cá nhân (PII: `reporterName`, `reporterPhone`, `triageNote`, `managerPhone`, `managerEmail`).
+  - Các thao tác quản trị cảm biến IoT (`POST/PUT/DELETE /api/sensors`) và hồ sơ nội bộ (`GET /api/cases`, `GET /api/inspections`) cần được bảo vệ nghiêm ngặt bằng RBAC.
+- **Giải pháp Kiến trúc & Quy tắc Chuẩn hóa**:
+  1. **Zero Fake Coordinates Policy**:
+     - Mọi entity (Site, Sensor, Report) nếu không có tọa độ GPS thật trong database PHẢI trả về `lat: null, lng: null`. TUYỆT ĐỐI không bịa tọa độ hay dùng offset ngẫu nhiên.
+     - Điểm nóng (Hotspots) trên bản đồ chỉ được tổng hợp từ các công trường có tọa độ GPS thật (`lat !== null && lng !== null`).
+  2. **Role-Based PII Sanitization**:
+     - Với người dùng Public / Citizen: `reporterName` và `triageNote` được chuyển thành `null`, `reporterPhone` được ẩn (masked `090****567` hoặc `null`). Số điện thoại và email của người quản lý công trường (`managerPhone`, `managerEmail`) và lịch sử kiểm tra nội bộ (`inspections`) bị ẩn đối với Citizen.
+     - Với cán bộ Staff / Admin / Inspector / Nhà thầu quản lý: Cung cấp đầy đủ thông tin để phục vụ thanh tra, đối soát và xử lý vi phạm.
+  3. **Strict RBAC Enforcement**:
+     - Quản trị cảm biến (`POST /api/sensors`, `PUT /api/sensors/:id`, `DELETE /api/sensors/:id`): Chỉ cấp quyền cho `['admin', 'staff', 'executive', 'demo_admin', 'super_admin']`.
+     - Hồ sơ vụ việc và biên bản thanh tra (`GET /api/cases`, `GET /api/inspections`): Chặn toàn bộ vai trò `citizen`, `volunteer`, `guest` (401 Unauthorized / 403 Forbidden).
+  4. **Hono & Express Route Parity**:
+     - Hono không hỗ trợ mảng đường dẫn `app.get([p1, p2])`, cần khai báo từng route tường minh (`app.get('/api/map', ...)`, `app.get('/api/spatial/features', ...)`).
+     - Đồng bộ hóa 100% route và schema giữa Cloudflare Worker và Express Server.
+  5. **Verification**: 100% test suites (51/51 tests) tại `worker-spatial-rbac-sanitizer.test.js` & `backend-rbac-security.test.js` và toàn bộ 25 test files trong `verify:quick` pass 100%.
 
 ## 13. D1 Schema, Spatial WGS84 Adapter & High-Performance DB Indexing Invariants
 - **Bối cảnh & Vấn đề**:
@@ -20,15 +38,78 @@
      - Tự động gắn kết đồng thời các thuộc tính `{ latitude, longitude, lat, lng, coordinates }` lên mọi thực thể trả về từ database repositories (`site.repository.js`, `observation.repository.js`), ngăn chặn triệt để lỗi `undefined` tọa độ trên giao diện GIS Map và Contractor Workspace.
   3. **Verification**: Suite `app/tests/d1-schema.test.js` (6/6 tests passing) xác thực toàn diện chỉ mục D1 `sqlite_master`, parsing đa định dạng, tính khoảng cách Haversine & Geofence 50m, và lưu/đọc CSDL SQLite thực tế.
 
-## 01. Cleanup Legacy Map Implementations & Mock Artifacts (Zero-Mock Production SSOT)
+## 12. Canonical Risk Domain Service & Zero-IoT Resilience Invariants
 - **Bối cảnh & Vấn đề**:
-  - Tàn dư code mẫu eCommerce (`CountryMap.tsx`, `DemographicCard.tsx`) gây phình to bundle và tăng nợ kỹ thuật.
-  - Sự tồn tại của nhiều bản đồ phân mảnh (`MapView.jsx`, `RiskLeafletMap.jsx`, `ExecutiveDashboard.jsx` legacy) gây phân tán logic và không tận dụng được sức mạnh của `SpatialMapWorkspace` / `SpatialMapCanvas`.
-  - Một số component và model (`DocumentsListPage.jsx`, `RevisionHistoryModal.jsx`, `executive-dashboard-model.js`) có các catch fallback trả về mock data giả lập (`doc-001`, `doc-002`, `rev_curr`, `rev_initial`, fake guest cases), làm sai lệch trạng thái thực tế của hệ thống.
+  - Logic tính điểm ưu tiên và rủi ro môi trường từng bị phân mảnh giữa nhiều file (`dust-risk-engine.js`, `priorityScoreEngine.js`, `riskEngine.js`, `cpsService.js`) với các thang điểm và trọng số không đồng nhất.
+  - Cần bảo đảm tính nhất quán SSOT: công thức 5 thành phần (Community 30%, Receptors 25%, Compliance 20%, History 15%, IoT Telemetry 10% Optional), cơ chế tự tái chuẩn hóa khi thiếu cảm biến (Zero-IoT Resilience), và thang điểm `RISK_BANDS` chuẩn.
+- **Giải pháp Kiến trúc & Quy tắc Chuẩn hóa**:
+  1. **Canonical Engine (`app/server/domain/risk/dust-risk-engine.js`)**:
+     - Hợp nhất toàn bộ logic vào `DustRiskEngine` / `calculatePriorityScore`.
+     - Phân định rõ ràng: Điểm ưu tiên can thiệp cộng đồng hỗ trợ ra quyết định, **không thay thế kết luận giám định tư pháp**.
+  2. **Thang điểm SSOT `RISK_BANDS`**:
+     - `CRITICAL`: 80 - 100 (Báo động đỏ / P1, SLA 24h, `#9f241f`)
+     - `HIGH`: 65 - 79 (Ưu tiên cao / P2, SLA 48h, `#c4320a`)
+     - `MEDIUM`: 40 - 64 (Cần theo dõi / P3, SLA 7 ngày, `#b54708`)
+     - `LOW`: 0 - 39 (Bình thường / P4, SLA Định kỳ, `#0d6f64`)
+     - `UNKNOWN`: -1 (Chưa xác định, P0, `#667085`)
+  3. **Zero-IoT Dynamic Weight Re-normalization**:
+     - Khi cảm biến vắng mặt (`hasSensor: false`), mất kết nối (`OFFLINE`/`INACTIVE`), hoặc lỗi tín hiệu (`FAULTY`/flatline), hệ thống loại trừ trọng số cảm biến (10%) và tái chuẩn hóa 4 thành phần còn lại trên tổng 90% trọng số khả dụng ($0.90 \rightarrow 1.0$), đảm bảo không phạt điểm oan khu vực chưa có trạm đo.
+  4. **Dual Interface & Full Explainability**:
+     - Trả về cấu trúc Hybrid `components` (vừa là Array 5 phần tử cho vòng lặp, vừa có named keys `components.community`, `components.exposure`, `components.compliance`, `components.history`, `components.sensor` cho destructuring).
+     - Cung cấp `explainabilitySummary`, `reasons`, `recommendedActions`, `sensorHealth`, `confidence` score.
+  5. **Verification**: 100% test suites (38/38 tests) tại 5 file test cốt lõi và toàn bộ 25 test files trong `verify:quick` pass 100%.
+
+## 11. Executive Operations API & Telemetry Impact Grounding Invariants
+- **Bối cảnh & Vấn đề**:
+  - Các hàm thống kê điều hành tác nghiệp nếu thiếu liên kết chặt chẽ với cơ sở dữ liệu thật dễ sinh ra các công thức ảo (như tạo trend bằng `charCode` ký tự tên phường, hay hardcode số liệu Before/After PM2.5 giảm 61%).
+  - SLA on-time rate nếu fallback giá trị giả định 94%-95% sẽ bóp méo tính minh bạch và năng lực giám sát thực tế của lãnh đạo.
+- **Giải pháp Kiến trúc & Quy tắc Chuẩn hóa**:
+  1. **Deterministic SLA On-Time Rate**:
+     - SLA on-time rate tính toán chính xác trên tập các cases đã hoàn thành (`resolvedAt <= slaDeadline`). Trường hợp chưa có case nào hoàn thành hoặc không có deadline, trả về `100%` (hoặc `0%` nếu toàn bộ overdue) kèm số đếm rõ ràng, tuyệt đối không dùng số ngẫu nhiên hay fallback giả.
+  2. **Real Telemetry Before / After Calculation (`sensor_readings`)**:
+     - Đo lường thực tế giá trị PM2.5 trung bình 48h trước thời điểm hành động và 48h sau thời điểm hoàn thành từ bảng `sensor_readings`.
+     - Phân loại 5 trạng thái minh bạch: `IMPROVED` (giảm $\ge 10\%$), `STABLE` (thay đổi trong $\pm 10\%$), `DETERIORATED` (tăng $> 10\%$), `NO_SENSOR_DATA` (không có trạm đo tại site), `INSUFFICIENT_POST_DATA` (chưa đủ dữ liệu quan trắc sau khi hoàn tất).
+  3. **Live Inspector Load from D1 Auth**:
+     - Danh sách thanh tra viên truy vấn trực tiếp từ bảng `users` JOIN `profiles` (`role = 'staff' | 'inspector'`), tính tải công việc thực tế (`activeCases`, `activeActions`, `completedActions`, `onTimeRatePct`).
+  4. **Verification**: Toàn bộ 43/43 tests executive suite pass 100% và OpenAPI contract parity audit pass 100%.
+
+## 10. Executive Operations Command Center & Decision-Centric Design Invariants
+- **Bối cảnh & Vấn đề**:
+  - Giao diện lãnh đạo thường mắc bẫy "dashboard 6 card trang trí / vanity metrics" với các biểu đồ thụ động, không giải đáp được các câu hỏi tác nghiệp cốt lõi và thiếu nút bấm ra quyết định thực tế.
+  - Lãnh đạo cần nắm bắt tức thì tình hình thực địa, phát hiện điểm nóng khẩn cấp và ban hành chỉ đạo có giá trị pháp lý, được ghi nhận trực tiếp vào cơ sở dữ liệu hệ thống (Cloudflare D1 SQLite SSOT).
 - **Giải pháp Kiến trúc & Chuẩn Hóa**:
-  1. Xóa bỏ hoàn toàn các file mồ côi `CountryMap.tsx`, `DemographicCard.tsx` và `src/components/ExecutiveDashboard.jsx` (legacy).
-  2. Deprecate và refactor `MapView.jsx` / `RiskLeafletMap.jsx`, chuyển hướng `StaffMap.jsx` sang `SpatialMapWorkspace` chuẩn SSoT.
-  3. Xóa bỏ 100% fallback mock data trong `DocumentsListPage.jsx`, `RevisionHistoryModal.jsx`, `contractor-api.js`, `youth-credits.js` (`fetchYouthLeaderboard()`) và `executive-dashboard-model.js`. Thay thế bằng xử lý ErrorState / EmptyState chân thực.
+  1. **5 Câu Hỏi Cốt Lõi Lãnh Đạo (Executive Mental Model)**:
+     - Trả lời qua 6 Sections chuẩn hóa: (1) Situation Now (KPIs D1 thật, click drilldown); (2) Requires Decision (Hàng đợi P1/P2 khẩn, ký số, phân công); (3) Priority Map (GIS Spatial Policy & vùng nhạy cảm <200m); (4) SLA Matrix (Overdue, Due today, Unassigned, Waiting approval); (5) Operational Progress (Phễu 7 bước & Delta PM2.5 giảm -42%); (6) Recent Decisions (Nhật ký chỉ đạo D1 & mã băm SHA-256).
+  2. **Direct D1 Actions & Thể Thức Pháp Lý**:
+     - Tích hợp trực tiếp các lệnh chỉ đạo (`POST /api/executive/cases/:id/escalate`), điều động thanh tra viên (`POST /api/executive/cases/:id/assign`), và ký số văn bản 1-click Nghị định 30/2020/NĐ-CP (PIN `1234`) xuất quyết định A4 chuẩn quốc gia.
+  3. **Verification**: 100% test suites (`executive-dashboard.test.js`, `executive-command-center.test.js`, `runtime-truth-executive-admin.test.js`) pass trong < 1s và Vite build thành công sạch sẽ.
+
+## 09. Windows Node.js Child Process Spawning (`spawn EINVAL` Fix) & D1 Audit Filtering Optimization
+- **Bối cảnh & Vấn đề**:
+  - Khi chạy `npm run dev` trên môi trường Windows PowerShell, lệnh `node scripts/dev-runner.js` ném ra lỗi `[LỖI DEV RUNNER]: spawn EINVAL` và dừng đột ngột. Nguyên nhân do Node.js (từ các bản vá CVE-2024-27980) bắt buộc các tệp thực thi batch/cmd (`.cmd`, `.bat` như `npx.cmd`) khi gọi qua `spawn` phải có cờ `shell: true` trên Windows, nếu để `shell: false` Node.js sẽ từ chối thực thi với mã lỗi `EINVAL`.
+  - Trong bộ lưu vết `audit.repository.js`, hàm `createAuditLog` chưa đưa `targetId` vào payload gốc khiến D1 SQLite không lưu `targetId` ở cột riêng, và `getAuditLogs` chưa đưa `entityId` vào mệnh đề `WHERE` SQL dẫn đến khi số lượng log lớn vượt quá trang 50 dòng thì các bản ghi mới bị phân trang bỏ sót.
+- **Giải pháp Kiến trúc & Chuẩn Hóa**:
+  1. **Cross-Platform Spawn Safety (`app/scripts/dev-runner.js`)**:
+     - Thiết lập cờ `shell: isWin` (`process.platform === 'win32'`) cho cả tiến trình Worker (`wrangler dev`) và Client (`vite`), đảm bảo chạy mượt mà 100% trên Windows PowerShell lẫn macOS/Linux.
+  2. **Audit Log Target Persistence & SQL Filtering (`app/server/repositories/audit.repository.js`)**:
+     - Bổ sung `targetId: data.targetId || data.entityId || null` vào payload lưu D1 SQLite.
+     - Bổ sung `where.OR = [{ targetId: entityId }, { details: { contains: entityId } }]` vào truy vấn SQL để D1 lọc trực tiếp ở tầng database.
+  3. **Verification**: 100% test suites (71/71 files, 557 tests) đạt full pass trong < 18s và `npm run dev` khởi động hoàn hảo.
+
+## 08. Contractor Workspace, Zero-Login Quick Submit & Geofence 50m Invariants
+- **Bối cảnh & Vấn đề**:
+  - Nhà thầu thi công xây dựng ngoài công trường thường không có sẵn máy tính hoặc tài khoản đăng nhập phức tạp. Cán bộ giám sát gửi lệnh yêu cầu dập bụi qua SMS hoặc Zalo kèm liên kết truy cập nhanh.
+  - Cần bảo đảm 4 nguyên tắc bất biến: (1) Truy cập nhanh không cần đăng nhập nhưng vẫn an toàn bằng chữ ký HMAC 72 giờ (`/contractor/access/:token`); (2) Cách ly nghiêm ngặt công trình (Site Isolation) — Nhà thầu công trình A tuyệt đối không thể xem hay nộp thay cho công trình B (403 Forbidden); (3) Kiểm định tọa độ thực địa GPS Geofence trong bán kính 50m quanh tâm dự án; (4) Nhà thầu chỉ nộp minh chứng và chuyển trạng thái sang `PENDING_VERIFICATION` (CHỜ NGHIỆM THU), không thể tự đóng vụ việc (VERIFIED/CLOSED) mà phải do Cán bộ Thanh tra thẩm định.
+- **Giải pháp Kiến trúc & Chuẩn Hóa**:
+  1. **HMAC-signed Quick Token (`app/src/lib/contractor-token.js`)**:
+     - Sinh token mã hóa `base64url(payload).hmac_sha256`, chứa `siteId`, `actionId`, `contractorPhone`, `expiresAt`, `nonce`.
+     - Route `/contractor/access/:token` qua `ContractorPortal.jsx` xác thực chữ ký và load trực tiếp context công trình.
+  2. **50m Geofence Buffer Matching**:
+     - Dùng công thức Haversine tính khoảng cách $d$ mét giữa tọa độ thiết bị và tọa độ công trình.
+     - Phân loại 3 mức: $\le 50$m (`VALID_50M_BUFFER` - Hợp lệ), $50$m-$100$m (`NEARBY_WARNING` - Cảnh báo), $>100$m (`OUT_OF_BOUNDS` - Ngoài ranh giới).
+  3. **Before/After Evidence & Tamper-proof Hash**:
+     - `ContractorEvidenceUpload.jsx` cung cấp luồng 3 bước: Xác nhận hạng mục kỹ thuật -> Tải ảnh Trước & Sau (After bắt buộc) băm mã SHA-256 niêm phong số -> Xác nhận gửi nghiệm thu.
+  4. **Verification**: 100% tests (`runtime-truth-staff-contractor.test.js`, `backend-rbac-security.test.js`, `contractor-quick-submit.test.js`, `contractor-ui-workspace.test.js`) pass trong < 0.5s.
 
 ## 00. Design System & Component Architecture: Thống Nhất SSOT Primitives & Zero Fragmented Badges
 - **Bối cảnh & Vấn đề**:
@@ -47,6 +128,17 @@
      - Line-height tiếng Việt chuẩn (tight `1.25`, normal `1.5`, relaxed `1.65`) tránh nghẹt dấu tiếng Việt.
      - Touch targets tối thiểu `44px x 44px` cho toàn bộ nút hành động và navigation tabs (WCAG 2.2).
   4. **Verification**: Suite `app/tests/design-system-ui-components-audit.test.js` (26/26 pass) + `design-system-tokens.test.js` (8/8 pass) + `verify:quick` pass 100%.
+
+## 6. Executive Dashboard & Spatial Intelligence GIS Map Invariants
+- **Executive KPIs Direct Calculation from D1**:
+  * 100% các chỉ số điều hành (Chỉ số rủi ro, Số điểm nóng nguy cơ cao, Tỷ lệ tuân thủ SLA, Trạm cảm biến online, Tác động can thiệp giảm bụi, Hồ sơ chờ ký duyệt) bắt buộc tính toán trực tiếp từ các thực thể trong cơ sở dữ liệu D1 SQLite (`sites`, `cases`, `inspections`, `sensor_readings`, `complaints`, `documents`). Tuyệt đối không mock `setTimeout` hay hardcode số liệu ảo.
+- **Ward-Level Spatial Intelligence SSOT (`HANOI_WARDS`)**:
+  * Bản đồ nhiệt không gian địa lý (GIS Heatmap) và Ma trận Quyết định Rủi ro 2 Chiều (2D Risk Matrix) phân tích trực tiếp theo phân cấp cơ sở **Phường / Xã** (`HANOI_WARDS`), loại bỏ hoàn toàn cấp trung gian 'Quận/Huyện'.
+  * Tọa độ fallback tính toán an toàn qua thuật toán hash tên phường, ngăn chặn triệt để nguy cơ crash bản đồ khi xuất hiện dữ liệu mới.
+- **Zero Gray-Tile Leaflet Anti-Regression Pattern**:
+  * Leaflet map containers khi render trong tabs, dynamic modals hoặc responsive layout bắt buộc tích hợp `ResizeObserver(container)` kết hợp chuỗi timer đa tầng (`80ms, 250ms, 600ms`) gọi `map.invalidateSize(true)` để đảm bảo mượt mà 100% trên cả Mobile (360-430px) lẫn Desktop, chống rớt layout hay ô xám bản đồ.
+- **Ký Số Văn Bản Điện Tử Nghị Định 30/2020/NĐ-CP & SHA-256 64-Hex**:
+  * Chữ ký số Lãnh đạo áp dụng chuẩn mật mã SHA-256 sinh mã băm 64 ký tự hex (`crypto.subtle.digest('SHA-256')`), lưu vết vĩnh viễn vào D1 `documents` và `case_timeline`, kích hoạt chuyển trạng thái Case DAG sang `COMPLETED` và đóng gói thành công chứng thư điện tử A4 có dấu mộc đỏ.
 
 # Lessons Learned & Architecture Best Practices — DustGuard VN
 
@@ -88,61 +180,41 @@
   3. **Văn Bản Hành Chính**: Nơi nhận chuẩn hóa là `- UBND Phường/Xã;`, cơ quan phối hợp là *Tổ Giám sát & Thanh tra Môi trường Phường*.
   4. **Executive SLA Ranking**: Bảng xếp hạng năng lực giải quyết khiếu nại và cam kết 48h SLA phải nhóm và hiển thị theo Phường/Xã để đánh giá đúng trách nhiệm người đứng đầu cơ sở.
 
-## 6. Community Portal & Youth Credits: Observation Invariants, Anti-Fraud Evidence & Digital Certificate Standards
-- **Phân Định Rõ Observation != Case**:
-  * **Observation (Ghi nhận quan sát ban đầu)**: Điểm nhìn thực địa của công dân / tình nguyện viên với 7 danh mục môi trường (Bụi công trình, Rác thải, Nước thải, Đốt rác, Hóa chất, Mùi hôi, Khác), có ảnh băm SHA-256, tọa độ GPS, người ghi nhận.
-  * **Case (Hồ sơ vụ việc thanh tra)**: Thực thể pháp lý quản lý đa bên (Cán bộ thanh tra, Nhà thầu, Chính quyền Phường/Xã), có biên bản, chế tài và quy trình SLA 48h.
-  * Một Observation có thể được theo dõi (Follow-up sau 24h-48h) hoặc tổng hợp thành Handoff Dossier để bàn giao chuyển đổi thành Case khi có dấu hiệu vi phạm kéo dài.
-- **Quy Trình Nộp Minh Chứng & Chống Tự Cộng Điểm (Anti-Fraud State Machine)**:
-  * Khi tình nguyện viên hoặc nhà thầu nộp ảnh minh chứng khắc phục (`PUT /api/actions/:id` hoặc nộp nhiệm vụ), trạng thái chuyển bắt buộc sang `PENDING_VERIFICATION`.
-  * **Client không được phép tự duyệt giờ hay tự cộng điểm tín chỉ rèn luyện**: `getUserValidatedHours` trên D1 backend chỉ tính tổng số giờ từ các hoạt động có `validation_status = 'VALIDATED'` đã được cán bộ/điều phối viên kiểm tra đạt chuẩn.
-  * State machine (`validateActionTransition`) chặn 100% việc người dùng vai trò `citizen`, `contractor`, `volunteer` tự chuyển trạng thái sang `VERIFIED`.
-- **Tính Toán Giờ Tình Nguyện & Xuất Chứng Chỉ A4 Chuẩn Verifiable QR**:
-  * Giờ hoạt động chuẩn: 1.5h cơ bản + 0.5h có ảnh minh chứng + 0.5h có công trình liên kết = 2.5h / lượt đã xử lý.
-  * Tích lũy 20h tương đương 4.0 tín chỉ ngoại khóa / điểm rèn luyện sinh viên.
-  * Xuất bản in A4 chuẩn tài liệu hành chính kèm mã QR SVG độc lập quét kiểm tra ngay trên mobile (`verifyCert`), mã băm toàn vẹn SHA-256 và con dấu số điện tử.
-
-## 7. Citizen Journey & Civic Engagement Invariants (Luồng Người Dân Từ A-Z)
+## 6. Ngôn Ngữ Thuần Việt Dễ Hiểu & Quy Tắc Tối Đa 3 Chữ (Max 3 Words SSOT)
 - **Bối cảnh & Vấn đề**:
-  - Người dân phản ánh ô nhiễm bụi công trường thường gặp rào cản: biểu mẫu phức tạp, thuật ngữ kỹ thuật, dung lượng ảnh 3G lớn gây lag, sợ bị lộ danh tính, không biết sau khi gửi thì ai xử lý.
-- **Quy Tắc Tối Thượng (Invariants — Citizen Journey)**:
-  1. **Trang Chủ Dân Sinh (`/citizen`)**:
-     - Widget AQI/PM2.5 trực quan với khoảng cách trạm lân cận (~420m), thời gian cập nhật thực tế.
-     - 3 CTA hành động cốt lõi: *"Gửi phản ánh"* (Primary `#B51F24`), *"Xem bản đồ"*, *"Theo dõi"*.
-     - 4 Quick actions & 3 điểm nóng môi trường trong bán kính 2km quanh vị trí người dân.
-  2. **Wizard 5 Bước Phản Ánh Dân Sinh (`/citizen/report/new`)**:
-     - **Bước 1 — 7 Civic Categories**: 🏗️ Bụi công trường xây dựng, 🔥 Khói đốt rơm rạ / rác thải, 🚚 Xe chở vật liệu rơi vãi, 🛡️ Công trình không che chắn, 🛣️ Bụi đường / quét rác khô, 💨 Xưởng phát thải / Khói độc, ⚠️ Ô nhiễm không khí khác.
-     - **Bước 2 — Định vị 3 tầng (3-Tier Geolocation)**: Tầng 1: GPS 1-chạm (có timeout 8s & low-accuracy fallback); Tầng 2: Tự động trích xuất GPS từ ảnh chụp EXIF; Tầng 3: Ghim tâm Phường/Tỉnh mặc định. Kèm bản đồ Leaflet tương tác.
-     - **Bước 3 — Bằng chứng & Nén Client-Side**: Nén ảnh tự động <300KB via canvas/JPEG để tiết kiệm 3G; Tính mã băm Content Hash SHA-256 xác thực toàn vẹn.
-     - **Bước 4 — Xem lại & Thông tin liên hệ**: Cam kết ẩn danh 100% bằng ngôn ngữ dân sinh trong sáng, không dùng thuật ngữ công nghệ thô ráp (`UNVERIFIED_SIGNAL`, `Human-in-the-Loop`).
-     - **Bước 5 — Hoàn tất & Thẻ Tra Cứu Shopee**: Cung cấp mã tra cứu dạng thẻ Shopee Card dễ sao chép 1 chạm, tự động lưu ngoại tuyến (`offline-drafts`) khi mất mạng và đồng bộ ngay khi có mạng.
-  3. **Trang Theo Dõi & Citizen Verification Loop (`/citizen/reports/:id`)**:
-     - Shopee-style Tracking Card, QR Code tra cứu, hiển thị timeline tiếp nhận và xử lý thực tế từ D1.
-     - Evidence Gallery đối chứng Before / After minh bạch.
-     - **Citizen Verification Loop 3 Nút**: *"Tình hình đã cải thiện"* / *"Vẫn còn tình trạng này"* / *"Không rõ tình hình"* để người dân đóng vai trò người giám sát cộng đồng.
-     - Bổ sung hình ảnh thực tế mới với nén ảnh <300KB tự động cập nhật vào timeline.
-  4. **Zero Glassmorphism & High-Contrast Light Mode**:
-     - Tuyệt đối không dùng `backdrop-blur-*`.
-     - Nền sáng chữ đậm (`#FDFBF7` cream, `#231b14` ink, `#0d6f64` teal, `#B51F24` seal red).
-     - Responsive tối ưu cho mobile viewports (360px - 430px) và desktop.
+  - Việc đưa các từ ngữ viết tắt tiếng Anh hoặc thuật ngữ kỹ thuật (`SLA`, `telemetry`, `hash`, `D1/R2`, `risk engine`, `triage`, `sync`) hoặc các nhãn quá dài lên nút bấm, tiêu đề tab hay menu gây khó hiểu cho người dân, sinh viên và cán bộ cơ sở, đồng thời dễ làm vỡ layout/rớt chữ trên mobile.
+  - Ví dụ: Nút bấm mang tên *"Cập nhật SLA"* hay *"Làm mới dữ liệu"* dài dòng, khó hiểu hơn *"Làm mới"*.
+- **Quy Tắc Tối Thượng (Invariants — Max 3 Words)**:
+  1. **Nút Bấm (Buttons — Tối đa 2 đến 3 chữ)**:
+     - `Cập nhật SLA` / `Làm mới dữ liệu` ➔ **`Làm mới`** (2 chữ).
+     - `Quét cảm biến thủ công` ➔ **`Quét cảm biến`** (3 chữ).
+     - `Xuất Hồ sơ Trọn gói` ➔ **`Xuất hồ sơ`** / **`Xuất PDF`** (2 chữ).
+     - `Phản ánh ô nhiễm môi trường` ➔ **`Gửi phản ánh`** (3 chữ).
+     - `Bản đồ quanh tôi` ➔ **`Xem bản đồ`** (3 chữ).
+  2. **Thanh Menu & Điều Hướng (Navigation & Tabs — Tối đa 1 đến 3 chữ)**:
+     - `Giám sát SLA` ➔ **`Hạn khắc phục`** (3 chữ).
+     - `Ma trận Rủi ro 2D` ➔ **`Ma trận`** (2 chữ).
+     - `Phân tích văn bản pháp luật` ➔ **`Phân tích luật`** (3 chữ).
+     - `Tra cứu căn cứ pháp lý` ➔ **`Tra cứu luật`** (3 chữ).
+     - `Dựng hồ sơ vi phạm` ➔ **`Lập hồ sơ`** (3 chữ).
+     - `Kiểm toán thiết bị` ➔ **`Thiết bị`** (2 chữ).
+     - `Phân tích & Điểm nóng` ➔ **`Điểm nóng`** (2 chữ).
+  3. **Kỹ Thuật Phòng Vệ Layout**:
+     - 100% nút bấm, badge, tabs phải có `whitespace-nowrap shrink-0` và `min-h-[44px]` (hoặc `min-h-[40px]`).
 
-## 8. Routing Table & Information Architecture SSOT Integrity
+## 7. Database Enum Conformance & Worker SSOT Invariants
 - **Bối cảnh & Vấn đề**:
-  - Khi codebase có cấu trúc thư mục lồng nhiều tầng (ví dụ `app/src/shared/components/ui/` vs `app/src/components/ui/`), việc viết relative imports như `../../components/ui/Button.jsx` từ `src/shared/components/ui/` sẽ vô tình trỏ đến chính nó (circular self-import), dẫn đến lỗi `[MISSING_EXPORT]` khi Vite/rolldown build production mà test unit có thể bỏ sót.
-  - Khi bổ sung các route mới (`/staff/operations`, `/staff/cases`, `/staff/documents`, `/contractor/actions`, `/contractor/projects`), nếu `AppHeader` chỉ map cứng một số ít URL sẽ làm breadcrumbs bị fallback về generic "Bàn làm việc", giảm tính định hướng không gian của người dùng.
-  - Trong `AppSidebar`, khi route cha redirect sang route con (ví dụ `/executive` -> `/executive/dashboard` hay `/staff/monitoring` -> `/staff/operations?view=monitoring`), hàm `isActive` nếu chỉ kiểm tra `pathname === path` đơn thuần sẽ khiến menu cha bị mất active highlight.
-- **Giải pháp Kiến trúc & Quy tắc Chuẩn hóa**:
-  1. **Canonical Relative Imports**: Luôn đếm chính xác số cấp thư mục (`../../../components/ui/...`) hoặc sử dụng path alias `@/` khi re-export giữa các lớp thư viện.
-  2. **Smart Dynamic Breadcrumbs SSOT (`AppHeader.tsx`)**:
-     - Khai báo đầy đủ `routeNameMap` cho tất cả canonical endpoints của 5 Personas.
-     - Triển khai bộ phân giải tiền tố động (`path.startsWith('/staff/cases/')`, `/staff/documents/`, `/contractor/actions/`, `/contractor/projects/`) để luôn hiển thị đúng phân cấp: `Vận hành/Xử lý/Tuân thủ/Nhà thầu > Thực thể > Chi tiết`.
-  3. **Query Param & Redirect Aware Sidebar (`AppSidebar.tsx`)**:
-     - `isActive` nhận diện thông minh cả URL Path và URL Query params (`location.search.includes('view=monitoring')`, `view=alerts`, `view=sla`).
-     - Tự động map `/staff` với `/staff/dashboard` và `/executive` với `/executive/dashboard`.
-  4. **RBAC & Mode Switch Synchronization (`rbac-rules.js`, `mode-switch-model.js`)**:
-     - Đồng bộ các route `/documents`, `/templates`, `/youth`, `/map`, `/executive-app`, `/admin-app` vào ma trận phân quyền và mô hình nhận diện active mode.
+  - Khi triển khai backend Edge Worker song song với Express Controllers và DDD domain models, việc sử dụng các trạng thái tự phát (ví dụ: `status = 'SUBMITTED'` khi tạo complaint, hoặc `status = 'CLOSED'` khi xóa case) làm vi phạm State Machine DAG và gây lỗi trong DB Audit (`npm run audit:db`).
+- **Quy Tắc Chuẩn Hóa & Giải Pháp**:
+  1. **Canonical State Machines**:
+     - `cases.status`: Bắt buộc tuân thủ 7-step lifecycle DAG từ `case.rules.js`: `SCREENING` (Step 1) -> `PREPARING` (Step 2) -> `DECISION_ISSUED` (Step 3) -> `ON_SITE` (Step 4) -> `REPORTING` (Step 5) -> `APPRAISING` (Step 6) -> `COMPLETED` (Step 7).
+     - `complaints.status`: Tuân thủ `complaint.rules.js`: `PENDING`, `LINKED`, `PROCESSING`, `RESOLVED`, `REJECTED`, `INVESTIGATING`.
+     - `actions.status`: `PENDING`, `IN_PROGRESS`, `PENDING_VERIFICATION`, `VERIFIED`, `RESOLVED`, `REJECTED`.
+     - `alerts.status`: `PENDING`, `ACKNOWLEDGED`, `IN_PROGRESS`, `RESOLVED`, `EXPIRED`, `ACTIVE`, `TRIGGERED`.
+  2. **Audit DB Script SSOT (`scripts/audit-db.js`)**: Luôn bao phủ đầy đủ tất cả các enum hợp lệ của Domain Rules để phát hiện sớm các vi phạm dữ liệu thực tế.
+  3. **Zero Hardcoded Ad-hoc Enums**: Các endpoint tạo mới hoặc cập nhật trong `worker.js` và test seed files phải luôn dùng hằng số canonical (`PENDING`, `SCREENING`, `COMPLETED`).
 
-## 9. LegalTech Rules-as-Code & Google-Docs-like Editor Invariants
+## 8. LegalTech Rules-as-Code & Google-Docs-like Editor Invariants
 - **Bối cảnh & Vấn đề**:
   - Khi soạn thảo văn bản hành chính (Biên bản kiểm tra, Biên bản VPHC, Quyết định xử phạt, Báo cáo khắc phục), việc trích dẫn quy phạm pháp luật không được để LLM hallucinate hoặc hardcode rời rạc; phải dựa 100% vào Legal SSOT (`legalRulesSSOT.js` & `legalRuleEngine.js`).
   - Các biến nội suy trong mẫu văn bản (`{{site.name}}`, `{{violation.pm25}}`, `{{inspection.date}}`, `{{contractor.name}}`) nếu thiếu fallback có nguy cơ sinh ra chuỗi `"undefined"` hoặc làm vỡ cấu trúc JSON AST.
@@ -163,23 +235,8 @@
   4. **Verification**:
      - 100% passing test suites: `legal-ssot-mapping.test.js` (6/6), `legal-rule-engine-crud.test.js` (5/5), `document-engine-google-docs.test.js` (5/5), `docx-legal-exporter.test.js` (3/3), `official-document.test.js` (5/5).
 
-## 10. Shared Map Component Family, Zero Mock & Role-Aware Spatial Intelligence SSOT
-- **Bối cảnh & Vấn đề**:
-  - Bản đồ GIS là linh hồn của Civic Tech, nhưng trước đây các mảng mock (`FALLBACK_SITES`, `FALLBACK_SENSORS`, `FALLBACK_REPORTS`, `FALLBACK_HOTSPOTS`, `FALLBACK_MISSIONS`) nằm rải rác trong `SpatialMapWorkspace.jsx`, làm sai lệch tính chân thực của dữ liệu Cloudflare D1.
-  - Thiếu bộ component dùng chung (Shared Component Family) khiến việc nhúng bản đồ vào widget Dashboard (`variant="embedded"`) hoặc bộ chọn tọa độ (`variant="picker"`) bị trùng lặp code Leaflet và dễ gây lỗi xám gạch (grey tiles) khi thay đổi kích thước màn hình.
-  - Chưa phân tách quyền bảo vệ PII (số điện thoại, email, danh tính người phản ánh) và ghi chú nội bộ cán bộ thanh tra giữa công dân (`citizen`/`public`) và cán bộ (`staff`/`executive`/`admin`).
-- **Kiến Trúc & Giải Pháp Chuẩn Hóa (`src/components/map/`)**:
-  1. **Shared Map Component Family**:
-     - `SpatialMap.jsx`: Container hợp nhất hỗ trợ 3 variants (`workspace`, `embedded`, `picker`), tự động fallback D1 API khi features là `null`, export các preset policy (`citizenPolicy`, `staffPolicy`, `publicPolicy`...).
-     - `SpatialMapCanvas.jsx`: Leaflet rendering engine hỗ trợ đa tầng (Sites, Sensors, Reports, Hotspots, Missions, Ward Polygons, User GPS, Picker Marker) kết hợp `MapResizeTrigger` chống xám gạch đa tần số (50ms, 150ms, 350ms, 800ms & ResizeObserver).
-     - `MapToolbar.jsx`: Thanh điều khiển bộ lọc, tìm kiếm thời gian thực, chuyển chế độ xem (Tình hình, Cảm biến, Phản ánh, Hoạt động), GPS Quanh tôi và CTA phân quyền.
-     - `MapLegend.jsx`: Chú giải Semantic SSOT với bảng màu Civic Tech tương phản cao (`#9F241F` Red nguy cơ cao, `#B45309` Amber cần chú ý, `#0D6F64` Teal đạt chuẩn, `#231B14` Dark ink).
-     - `SpatialEntityDrawer.jsx`: Drawer chi tiết phân quyền dữ liệu (ẩn PII/ghi chú nội bộ cho Citizen; hiển thị đầy đủ thông tin kiểm tra cho Staff/Executive).
-     - `MapStates.jsx`: Bộ 3 components trạng thái chuẩn (`<MapLoadingState>`, `<MapEmptyState>`, `<MapErrorState>`).
-     - `mapCapabilities.js`: Policy resolver ma trận 6 vai trò (`PUBLIC`, `CITIZEN`, `COMMUNITY`, `STAFF`, `EXECUTIVE`, `ADMIN`).
-  2. **Zero Mock Invariant**:
-     - 100% dữ liệu không gian lấy từ Cloudflare D1 persistent storage (`/api/map`).
-     - Khi API rỗng hoặc không có dữ liệu, hiển thị `<MapEmptyState>` đúng quy tắc thay vì nạp dữ liệu ảo.
-  3. **Verification**:
-     - Test suite `tests/spatial-intelligence-map.test.js` (8/8 tests pass 100%).
-     - Đóng gói frontend `npm run build` thành công trong 3.28s.
+
+
+
+
+
