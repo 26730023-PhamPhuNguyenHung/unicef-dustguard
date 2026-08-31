@@ -1,5 +1,5 @@
 segment: 6
-title: "Bài học sau tập huấn"
+title: "Bài học sau tập huấn 11/6: Từ chấm điểm sang workflow"
 timecode:
   start: 98.856
   end: 120.072
@@ -8,19 +8,21 @@ voice:
   file: 04_audio/voice_final/06.wav
   duration_seconds: 21.216
 shots:
-  - clip_id: V008
+  - source_id: V008
+    type: video
     in_point: 0.000
-    out_point: 10.000
-    duration: 10.000
+    out_point: 8.000
+    duration: 8.000
     timeline_start: 98.856
-    timeline_end: 108.856
+    timeline_end: 106.856
     motion: "static_reflect"
-    on_screen_text: "Hạn chế của biện pháp thủ công"
-  - clip_id: I006
+    on_screen_text: "Tưới nước thủ công: Minh chứng giải pháp hình thức"
+  - source_id: S003
+    type: slide
     in_point: 0.000
-    out_point: 11.220
-    duration: 11.220
-    timeline_start: 108.856
-    timeline_end: 120.076
-    motion: "subtle_push"
-    on_screen_text: "Hệ thống giúp con người có đủ thông tin"
+    out_point: 13.216
+    duration: 13.216
+    timeline_start: 106.856
+    timeline_end: 120.072
+    motion: "zoom_before_after_table"
+    on_screen_text: "Sau 11/6: Chuyển từ chấm điểm sang workflow có trách nhiệm"

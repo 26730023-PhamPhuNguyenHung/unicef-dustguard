@@ -1,5 +1,5 @@
 segment: 11
-title: "Tầm nhìn 1 lõi đa bài toán môi trường"
+title: "Tầm nhìn mở rộng 4 giai đoạn đa bài toán môi trường"
 timecode:
   start: 212.664
   end: 234.312
@@ -8,27 +8,21 @@ voice:
   file: 04_audio/voice_final/11.wav
   duration_seconds: 21.648
 shots:
-  - clip_id: I009
+  - source_id: S009
+    type: slide
     in_point: 0.000
-    out_point: 7.000
-    duration: 7.000
+    out_point: 11.000
+    duration: 11.000
     timeline_start: 212.664
-    timeline_end: 219.664
-    motion: "grid_4_topics"
-    on_screen_text: "Bụi ➔ Nước thải ➔ Rơm rạ ➔ Tiếng ồn"
-  - clip_id: V011
-    in_point: 8.000
-    out_point: 15.000
-    duration: 7.000
-    timeline_start: 219.664
-    timeline_end: 226.664
-    motion: "national_bus"
-    on_screen_text: "Một lõi quản trị tín hiệu mở rộng"
-  - clip_id: I007
+    timeline_end: 223.664
+    motion: "zoom_4_stages_expansion"
+    on_screen_text: "1 LÕI QUẢN TRỊ ➔ NƯỚC THẢI, RƠM RẠ, TIẾNG ỒN"
+  - source_id: V011
+    type: video
     in_point: 0.000
-    out_point: 7.650
-    duration: 7.650
-    timeline_start: 226.664
-    timeline_end: 234.314
-    motion: "future_city"
-    on_screen_text: "Đúng người dùng — Đúng quy trình"
+    out_point: 10.648
+    duration: 10.648
+    timeline_start: 223.664
+    timeline_end: 234.312
+    motion: "green_transport_flow"
+    on_screen_text: "Mở rộng hệ sinh thái số vì môi trường Việt Nam"

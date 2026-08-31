@@ -1,5 +1,5 @@
 segment: 5
-title: "1 Tín hiệu ➔ 1 Hồ sơ có theo dõi"
+title: "1 Tín hiệu ➔ 1 Hồ sơ có vòng đời theo dõi"
 timecode:
   start: 75.480
   end: 98.856
@@ -8,19 +8,21 @@ voice:
   file: 04_audio/voice_final/05.wav
   duration_seconds: 23.376
 shots:
-  - clip_id: I004
+  - source_id: S004
+    type: slide
     in_point: 0.000
-    out_point: 11.500
-    duration: 11.500
+    out_point: 12.000
+    duration: 12.000
     timeline_start: 75.480
-    timeline_end: 86.980
-    motion: "evidence_hash_zoom"
-    on_screen_text: "1 Tín hiệu ➔ 1 Hồ sơ có bằng chứng"
-  - clip_id: I003
+    timeline_end: 87.480
+    motion: "zoom_3_layers"
+    on_screen_text: "1 Tín hiệu ➔ 1 Hồ sơ có vòng đời theo dõi"
+  - source_id: V009
+    type: video
     in_point: 0.000
-    out_point: 11.880
-    duration: 11.880
-    timeline_start: 86.980
-    timeline_end: 98.860
-    motion: "pan_lifecycle"
-    on_screen_text: "Biết rõ tiến độ đang xử lý tới đâu"
+    out_point: 11.376
+    duration: 11.376
+    timeline_start: 87.480
+    timeline_end: 98.856
+    motion: "audit_walkthrough"
+    on_screen_text: "Biết rõ vụ việc đang được xử lý tới đâu"

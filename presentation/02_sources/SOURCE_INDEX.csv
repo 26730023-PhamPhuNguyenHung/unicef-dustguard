@@ -1,26 +1,24 @@
 id,type,file,duration,tags,quality,segment_priority
-V001,video,02_sources/real_video/flycam/clip_hn_01_city_haze.mp4,18.000,"flycam,hà nội,sương bụi,thành phố",A,01;02
-V002,video,02_sources/real_video/construction/clip_hcm_01_construction_overview.mp4,20.000,"công trường,tphcm,cần cẩu,máy xúc",A,01;04
-V003,video,02_sources/real_video/dust/clip_hue_01_giant_dust_clouds.mp4,25.000,"đám mây bụi,huế,17ha,xe ben,bụi cuốn",A,01;02
-V004,video,02_sources/real_video/dust/clip_hcm_02_uncovered_truck_road_dust.mp4,25.000,"xe tải,bụi đường,tphcm,không phủ bạt",A,02;03
-V005,video,02_sources/real_video/people/clip_hn_02_citizen_elderly_concern.mp4,20.000,"người dân,hà nội,người già,lo lắng",A,02;03
-V006,video,02_sources/real_video/people/clip_hue_03_children_respiratory_concern.mp4,20.000,"trẻ em,hô hấp,huế,nhà dân bụi",A,03;04
-V007,video,02_sources/real_video/people/clip_hcm_03_resident_frustration.mp4,25.000,"bức xúc,đóng cửa nhà,lau dọn bụi",A,02;03
-V008,video,02_sources/real_video/construction/clip_hue_04_ineffective_manual_watering.mp4,15.000,"tưới nước thủ công,bất lực,bụi mù",A,06
-V009,video,02_sources/real_video/construction/clip_hcm_04_barrier_water_spraying_audit.mp4,25.000,"kiểm tra rào chắn,phun sương,thực địa",A,07
-V010,video,02_sources/real_video/people/clip_hn_04_youth_action.mp4,14.000,"thanh niên,hành động,khẩu trang,môi trường",A,08;10
-V011,video,02_sources/real_video/vietnam/clip_hn2_04_green_transport_electric_bus.mp4,22.000,"xe buýt điện,giao thông xanh,hà nội",B,08;11
-V012,video,02_sources/real_video/project_demo/clip_hn2_01_emission_sources_graphic.mp4,20.000,"nguồn phát thải,đồ họa,phân tích",B,02;11
-V013,video,02_sources/real_video/vietnam/clip_hn2_02_directive19_halt_construction.mp4,22.000,"chỉ thị 19,thanh tra,đình chỉ công trình",B,06;07
-V014,video,02_sources/real_video/construction/clip_hn2_03_mist_cannon_truck_and_ai_camera.mp4,20.000,"vòi rồng phun sương,ai camera,giám sát",B,07
-V015,video,02_sources/real_video/dust/clip_hue_02_dust_on_trees_and_houses.mp4,20.000,"bụi bám cây cối,nhà cửa,huế",A,03
-I001,image,"02_sources/real_images/project/ChatGPT Image 09_56_46 31 thg 8, 2026 (1).png",,"tình nguyện viên,khảo sát hiện trường,bản đồ",A,08;10
-I002,image,"02_sources/real_images/project/ChatGPT Image 09_56_47 31 thg 8, 2026 (2).png",,"phân tích dữ liệu,dashboard,thanh niên",A,04;09
-I003,image,"02_sources/real_images/environment/ChatGPT Image 09_56_48 31 thg 8, 2026 (3).png",,"môi trường đô thị,giám sát bụi",A,01;05
-I004,image,"02_sources/real_images/project/ChatGPT Image 09_56_49 31 thg 8, 2026 (4).png",,"quy trình hồ sơ,bằng chứng số",A,05;07
-I005,image,"02_sources/real_images/environment/ChatGPT Image 09_56_50 31 thg 8, 2026 (5).png",,"bảo vệ sức khỏe cộng đồng,trẻ em",A,03;10
-I006,image,"02_sources/real_images/construction/ChatGPT Image 09_56_50 31 thg 8, 2026 (6).png",,"công trường xây dựng,biện pháp che chắn",A,06;07
-I007,image,"02_sources/real_images/vietnam/ChatGPT Image 09_56_50 31 thg 8, 2026 (7).png",,"thành phố xanh,hành động tương lai",A,11;12
-I008,image,"02_sources/real_images/project/ChatGPT Image 09_56_51 31 thg 8, 2026 (8).png",,"mô hình pilot,trường học,clb",A,08;09
-I009,image,"02_sources/real_images/environment/ChatGPT Image 09_56_51 31 thg 8, 2026 (9).png",,"đa bài toán môi trường,nước thải,khói",A,11
-I010,image,"02_sources/real_images/project/ChatGPT Image 09_56_51 31 thg 8, 2026 (10).png",,"logo dustguard,kết thúc,tầm nhìn",A,04;12
+V001,video,02_sources/real_video/flycam/clip_hn_01_city_haze.mp4,18.000,"flycam,hà nội,sương bụi,toàn cảnh thành phố",A,01;12
+V002,video,02_sources/real_video/construction/clip_hcm_01_construction_overview.mp4,20.000,"công trường tphcm,cần cẩu,máy xúc,bụi",A,01;04
+V003,video,02_sources/real_video/dust/clip_hue_01_giant_dust_clouds.mp4,25.000,"đám mây bụi,huế 17ha,xe ben,bụi cuốn mù mịt",A,01
+V004,video,02_sources/real_video/dust/clip_hcm_02_uncovered_truck_road_dust.mp4,25.000,"xe tải không phủ bạt,bụi đường phố,tphcm",A,02
+V005,video,02_sources/real_video/people/clip_hn_02_citizen_elderly_concern.mp4,20.000,"người cao tuổi,hà nội,lo lắng sức khỏe,ngột ngạt",A,02
+V006,video,02_sources/real_video/people/clip_hue_03_children_respiratory_concern.mp4,20.000,"trẻ em,viêm hô hấp,nhà dân bám bụi,huế",A,03
+V007,video,02_sources/real_video/people/clip_hcm_03_resident_frustration.mp4,25.000,"người dân đóng kín cửa,bức xúc lau dọn bụi",A,03
+V008,video,02_sources/real_video/construction/clip_hue_04_ineffective_manual_watering.mp4,15.000,"tưới nước thủ công bất lực,bụi vẫn mù trời",A,06
+V009,video,02_sources/real_video/construction/clip_hcm_04_barrier_water_spraying_audit.mp4,25.000,"kiểm tra rào chắn,phun sương dập bụi,thực địa",A,05;07
+V010,video,02_sources/real_video/people/clip_hn_04_youth_action.mp4,14.000,"thanh niên hành động,khẩu trang chống bụi,môi trường",A,08;10
+V011,video,02_sources/real_video/vietnam/clip_hn2_04_green_transport_electric_bus.mp4,22.000,"xe buýt điện vinbus,giao thông xanh tương lai",A,11
+V014,video,02_sources/real_video/construction/clip_hn2_03_mist_cannon_truck_and_ai_camera.mp4,20.000,"xe vòi rồng phun sương,ai camera giám sát",A,07
+V015,video,02_sources/real_video/dust/clip_hue_02_dust_on_trees_and_houses.mp4,20.000,"bụi phủ trắng xóa cây cối,nhà cửa dân cư",A,03
+S001,slide,02_sources/slides/png/slide_01_van_de_giai_quyet.png,,"slide 1: vấn đề dustguard giải quyết,bảng ưu tiên kiểm tra",A,02;04
+S002,slide,02_sources/slides/png/slide_02_nguoi_huong_loi.png,,"slide 2: ai là người hưởng lợi,chuỗi 4 bên phối hợp",A,04;10
+S003,slide,02_sources/slides/png/slide_03_thay_doi_sau_tap_huan.png,,"slide 3: thay đổi sau tập huấn 11/6,từ chấm điểm sang workflow",A,06
+S004,slide,02_sources/slides/png/slide_04_tinh_moi_sang_tao.png,,"slide 4: tính mới sáng tạo,vòng đời xử lý theo dõi",A,05
+S005,slide,02_sources/slides/png/slide_05_kha_thi_viet_nam_pilot.png,,"slide 5: tính khả thi việt nam,mô hình pilot 4-8 tuần,kpi",A,08;09
+S006,slide,02_sources/slides/png/slide_06_hieu_qua_ky_thuat_chi_phi.png,,"slide 6: hiệu quả kỹ thuật,cloudflare d1 r2,chi phí thấp",A,08
+S007,slide,02_sources/slides/png/slide_07_mo_hinh_van_hanh_duy_tri.png,,"slide 7: mô hình vận hành,4 nguồn doanh thu duy trì",A,09
+S008,slide,02_sources/slides/png/slide_08_kiem_chung_phap_ly_ai.png,,"slide 8: kiểm chứng quy trình pháp lý,vai trò responsible ai",A,07
+S009,slide,02_sources/slides/png/slide_09_tam_nhin_mo_rong.png,,"slide 9: tầm nhìn mở rộng 4 giai đoạn,đa bài toán môi trường",A,11
+S010,slide,02_sources/slides/png/slide_10_tong_ket_loi_cam_on.png,,"slide 10: tổng kết,pilot chứng minh giá trị,lời cảm ơn",A,12

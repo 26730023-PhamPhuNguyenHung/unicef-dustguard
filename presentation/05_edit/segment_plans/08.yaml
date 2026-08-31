@@ -1,5 +1,5 @@
 segment: 8
-title: "Lean Pilot 4-8 tuần"
+title: "Lean Pilot 4-8 tuần & Kiến trúc kỹ thuật nhẹ"
 timecode:
   start: 146.328
   end: 173.112
@@ -8,27 +8,21 @@ voice:
   file: 04_audio/voice_final/08.wav
   duration_seconds: 26.784
 shots:
-  - clip_id: V010
+  - source_id: S005
+    type: slide
     in_point: 0.000
-    out_point: 8.000
-    duration: 8.000
+    out_point: 13.000
+    duration: 13.000
     timeline_start: 146.328
-    timeline_end: 154.328
-    motion: "youth_action_flow"
-    on_screen_text: "LEAN PILOT 4-8 TUẦN"
-  - clip_id: I008
+    timeline_end: 159.328
+    motion: "zoom_pilot_roadmap"
+    on_screen_text: "LEAN PILOT 4-8 TUẦN TẠI TRƯỜNG HỌC & CLB"
+  - source_id: S006
+    type: slide
     in_point: 0.000
-    out_point: 10.000
-    duration: 10.000
-    timeline_start: 154.328
-    timeline_end: 164.328
-    motion: "roadmap_pan"
-    on_screen_text: "20 - 30 Người dùng thật tại Trường học / CLB"
-  - clip_id: V011
-    in_point: 0.000
-    out_point: 8.780
-    duration: 8.780
-    timeline_start: 164.328
-    timeline_end: 173.108
-    motion: "green_city_flow"
-    on_screen_text: "Kiểm thử mô hình thực tế"
+    out_point: 13.784
+    duration: 13.784
+    timeline_start: 159.328
+    timeline_end: 173.112
+    motion: "zoom_cloudflare_stack"
+    on_screen_text: "Kiến trúc Serverless nhẹ (D1 + R2), chi phí tối thiểu"

@@ -1,5 +1,5 @@
 segment: 7
-title: "Responsible AI: Triage & Checklist"
+title: "Responsible AI: Kiểm chứng quy trình & Vai trò hỗ trợ"
 timecode:
   start: 120.072
   end: 146.328
@@ -8,19 +8,21 @@ voice:
   file: 04_audio/voice_final/07.wav
   duration_seconds: 26.256
 shots:
-  - clip_id: V009
+  - source_id: S008
+    type: slide
     in_point: 0.000
     out_point: 13.000
     duration: 13.000
     timeline_start: 120.072
     timeline_end: 133.072
-    motion: "field_audit_zoom"
-    on_screen_text: "AI Checklist & Risk Score Triage"
-  - clip_id: V014
+    motion: "zoom_responsible_ai_box"
+    on_screen_text: "AI gợi ý checklist & tóm tắt — Con người quyết định"
+  - source_id: V014
+    type: video
     in_point: 0.000
-    out_point: 13.260
-    duration: 13.260
+    out_point: 13.256
+    duration: 13.256
     timeline_start: 133.072
-    timeline_end: 146.332
-    motion: "tech_scan"
-    on_screen_text: "AI gợi ý — Con người quyết định"
+    timeline_end: 146.328
+    motion: "tech_mist_cannon"
+    on_screen_text: "AI hỗ trợ kiểm tra thực địa — Không thay thế thanh tra"

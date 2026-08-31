@@ -1,5 +1,5 @@
 segment: 2
-title: "Nút thắt dữ liệu phân tán"
+title: "Nút thắt dữ liệu phân tán & Vấn đề giải quyết"
 timecode:
   start: 16.968
   end: 45.360
@@ -8,27 +8,30 @@ voice:
   file: 04_audio/voice_final/02.wav
   duration_seconds: 28.392
 shots:
-  - clip_id: V004
+  - source_id: V004
+    type: video
     in_point: 0.000
-    out_point: 8.500
-    duration: 8.500
+    out_point: 8.000
+    duration: 8.000
     timeline_start: 16.968
-    timeline_end: 25.468
+    timeline_end: 24.968
     motion: "tracking_truck"
-    on_screen_text: "Có dữ liệu phản ánh"
-  - clip_id: V005
-    in_point: 1.000
-    out_point: 10.000
-    duration: 9.000
-    timeline_start: 25.468
-    timeline_end: 34.468
-    motion: "static_focus"
-    on_screen_text: "Người dân có lo lắng"
-  - clip_id: V007
+    on_screen_text: "Xe tải không bạt che — Bụi mù mịt đường phố"
+  - source_id: V005
+    type: video
     in_point: 0.000
-    out_point: 11.890
-    duration: 11.890
-    timeline_start: 34.468
-    timeline_end: 46.358
-    motion: "split_screens"
-    on_screen_text: "Nhưng dữ liệu bị phân tán"
+    out_point: 8.000
+    duration: 8.000
+    timeline_start: 24.968
+    timeline_end: 32.968
+    motion: "static_focus"
+    on_screen_text: "Người dân có phản ánh — Dữ liệu nằm ở nhiều nơi"
+  - source_id: S001
+    type: slide
+    in_point: 0.000
+    out_point: 12.392
+    duration: 12.392
+    timeline_start: 32.968
+    timeline_end: 45.360
+    motion: "ken_burns_zoom_dossier"
+    on_screen_text: "Từ dữ liệu rời rạc đến hành động có ưu tiên"

@@ -1,5 +1,5 @@
 segment: 10
-title: "Cộng đồng & Sức mạnh thanh niên"
+title: "Sức mạnh thanh niên & Cộng đồng hành động"
 timecode:
   start: 192.576
   end: 212.664
@@ -8,27 +8,21 @@ voice:
   file: 04_audio/voice_final/10.wav
   duration_seconds: 20.088
 shots:
-  - clip_id: V010
-    in_point: 8.000
-    out_point: 14.000
-    duration: 6.000
+  - source_id: V010
+    type: video
+    in_point: 0.000
+    out_point: 10.000
+    duration: 10.000
     timeline_start: 192.576
-    timeline_end: 198.576
+    timeline_end: 202.576
     motion: "youth_smile_focus"
-    on_screen_text: "SỨC MẠNH THANH NIÊN"
-  - clip_id: I001
+    on_screen_text: "SỨC MẠNH THANH NIÊN & CỘNG ĐỒNG"
+  - source_id: S002
+    type: slide
     in_point: 0.000
-    out_point: 7.500
-    duration: 7.500
-    timeline_start: 198.576
-    timeline_end: 206.076
-    motion: "volunteer_map"
-    on_screen_text: "Ghi nhận đóng góp cộng đồng"
-  - clip_id: I005
-    in_point: 0.000
-    out_point: 6.590
-    duration: 6.590
-    timeline_start: 206.076
-    timeline_end: 212.666
-    motion: "warm_protection"
-    on_screen_text: "Không để vấn đề bị bỏ quên"
+    out_point: 10.088
+    duration: 10.088
+    timeline_start: 202.576
+    timeline_end: 212.664
+    motion: "zoom_clb_box"
+    on_screen_text: "Biến sự quan tâm thành hành động có dữ liệu và có theo dõi"

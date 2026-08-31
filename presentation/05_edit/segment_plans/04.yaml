@@ -1,5 +1,5 @@
 segment: 4
-title: "DustGuard xuất hiện (Beat Drop 0:55)"
+title: "DustGuard xuất hiện & Chuỗi 4 bên phối hợp"
 timecode:
   start: 61.200
   end: 75.480
@@ -8,27 +8,21 @@ voice:
   file: 04_audio/voice_final/04.wav
   duration_seconds: 14.280
 shots:
-  - clip_id: I010
+  - source_id: S001
+    type: slide
     in_point: 0.000
-    out_point: 5.000
-    duration: 5.000
+    out_point: 6.000
+    duration: 6.000
     timeline_start: 61.200
-    timeline_end: 66.200
-    motion: "logo_reveal_pop"
-    on_screen_text: "DUSTGUARD VN"
-  - clip_id: I002
+    timeline_end: 67.200
+    motion: "logo_pop_reveal"
+    on_screen_text: "DUSTGUARD VN — NỀN TẢNG QUẢN TRỊ TÍN HIỆU"
+  - source_id: S002
+    type: slide
     in_point: 0.000
-    out_point: 5.000
-    duration: 5.000
-    timeline_start: 66.200
-    timeline_end: 71.200
-    motion: "zoom_dossier"
-    on_screen_text: "Từ tín hiệu môi trường đến hồ sơ theo dõi"
-  - clip_id: V002
-    in_point: 10.000
-    out_point: 14.280
-    duration: 4.280
-    timeline_start: 71.200
+    out_point: 8.280
+    duration: 8.280
+    timeline_start: 67.200
     timeline_end: 75.480
-    motion: "pan_ui"
-    on_screen_text: "Quy trình hành động có thứ tự ưu tiên"
+    motion: "pan_stakeholders"
+    on_screen_text: "Kết nối tín hiệu ➔ bằng chứng ➔ phối hợp ➔ theo dõi"

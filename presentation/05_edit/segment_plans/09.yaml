@@ -1,5 +1,5 @@
 segment: 9
-title: "Đo lường giá trị thật (Metrics)"
+title: "Đo lường giá trị thật & Mô hình vận hành bền vững"
 timecode:
   start: 173.112
   end: 192.576
@@ -8,19 +8,21 @@ voice:
   file: 04_audio/voice_final/09.wav
   duration_seconds: 19.464
 shots:
-  - clip_id: I002
+  - source_id: S007
+    type: slide
     in_point: 0.000
     out_point: 9.500
     duration: 9.500
     timeline_start: 173.112
     timeline_end: 182.612
-    motion: "counter_animation"
-    on_screen_text: "Bao nhiêu vụ đủ bằng chứng?"
-  - clip_id: I008
+    motion: "zoom_revenue_model"
+    on_screen_text: "Mô hình vận hành bền vững cho cộng đồng"
+  - source_id: S005
+    type: slide
     in_point: 0.000
-    out_point: 9.960
-    duration: 9.960
+    out_point: 9.964
+    duration: 9.964
     timeline_start: 182.612
-    timeline_end: 192.572
-    motion: "metrics_highlight"
-    on_screen_text: "Đo khả năng biến tín hiệu thành hành động"
+    timeline_end: 192.576
+    motion: "zoom_kpi_metrics"
+    on_screen_text: "Đo bằng chỉ số thật: Tỷ lệ bằng chứng & Thời gian xử lý"

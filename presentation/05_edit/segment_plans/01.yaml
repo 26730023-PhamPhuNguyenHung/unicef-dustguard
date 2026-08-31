@@ -8,27 +8,30 @@ voice:
   file: 04_audio/voice_final/01.wav
   duration_seconds: 16.968
 shots:
-  - clip_id: V001
+  - source_id: V001
+    type: video
     in_point: 0.000
-    out_point: 6.000
-    duration: 6.000
+    out_point: 5.500
+    duration: 5.500
     timeline_start: 0.000
-    timeline_end: 6.000
+    timeline_end: 5.500
     motion: "slow_zoom_in"
-    on_screen_text: "Mỗi ngày, thành phố vẫn tiếp tục xây dựng"
-  - clip_id: V002
+    on_screen_text: "Mỗi ngày, thành phố vẫn tiếp tục xây dựng."
+  - source_id: V002
+    type: video
     in_point: 2.000
-    out_point: 9.500
-    duration: 7.500
-    timeline_start: 6.000
-    timeline_end: 13.500
+    out_point: 7.500
+    duration: 5.500
+    timeline_start: 5.500
+    timeline_end: 11.000
     motion: "pan_right"
-    on_screen_text: "Công trường mới đồng nghĩa với cơ hội mới"
-  - clip_id: V003
+    on_screen_text: "Những công trường mới... những cơ hội mới."
+  - source_id: V003
+    type: video
     in_point: 3.000
-    out_point: 10.470
-    duration: 7.470
-    timeline_start: 13.500
-    timeline_end: 20.970
+    out_point: 8.968
+    duration: 5.968
+    timeline_start: 11.000
+    timeline_end: 16.968
     motion: "shake_impact"
     on_screen_text: "BỤI CÔNG TRÌNH"

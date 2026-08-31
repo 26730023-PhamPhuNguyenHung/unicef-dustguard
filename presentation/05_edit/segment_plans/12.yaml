@@ -1,5 +1,5 @@
 segment: 12
-title: "Tuyên ngôn kết thúc & Sứ mệnh"
+title: "Tuyên ngôn kết thúc, sứ mệnh & Lời cảm ơn"
 timecode:
   start: 234.312
   end: 258.864
@@ -8,27 +8,21 @@ voice:
   file: 04_audio/voice_final/12.wav
   duration_seconds: 24.552
 shots:
-  - clip_id: I010
+  - source_id: S010
+    type: slide
     in_point: 0.000
-    out_point: 7.500
-    duration: 7.500
+    out_point: 12.000
+    duration: 12.000
     timeline_start: 234.312
-    timeline_end: 241.812
-    motion: "finale_dossier"
-    on_screen_text: "CÓ ƯU TIÊN — CÓ BẰNG CHỨNG — CÓ THEO DÕI"
-  - clip_id: I007
+    timeline_end: 246.312
+    motion: "zoom_closing_thanks"
+    on_screen_text: "DUSTGUARD VN — CÓ ƯU TIÊN, CÓ BẰNG CHỨNG, CÓ THEO DÕI"
+  - source_id: V001
+    type: video
     in_point: 0.000
-    out_point: 8.500
-    duration: 8.500
-    timeline_start: 241.812
-    timeline_end: 250.312
-    motion: "city_sunrise"
+    out_point: 12.552
+    duration: 12.552
+    timeline_start: 246.312
+    timeline_end: 258.864
+    motion: "sunrise_pan_out"
     on_screen_text: "Để dữ liệu không dừng lại ở một phản ánh"
-  - clip_id: V001
-    in_point: 10.000
-    out_point: 18.550
-    duration: 8.550
-    timeline_start: 250.312
-    timeline_end: 258.862
-    motion: "grand_zoom_out"
-    on_screen_text: "DUSTGUARD VN"

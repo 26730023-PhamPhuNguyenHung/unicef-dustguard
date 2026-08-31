@@ -1,5 +1,5 @@
 segment: 3
-title: "5 Câu hỏi trung tâm"
+title: "5 Câu hỏi trung tâm đặt ra cho hệ thống"
 timecode:
   start: 45.360
   end: 61.200
@@ -8,19 +8,21 @@ voice:
   file: 04_audio/voice_final/03.wav
   duration_seconds: 15.840
 shots:
-  - clip_id: V006
+  - source_id: V006
+    type: video
     in_point: 0.000
     out_point: 7.500
     duration: 7.500
     timeline_start: 45.360
     timeline_end: 52.860
     motion: "slow_zoom"
-    on_screen_text: "Xem trường hợp nào trước?"
-  - clip_id: V015
-    in_point: 2.000
-    out_point: 10.340
+    on_screen_text: "Xem trường hợp nào trước? Hồ sơ còn thiếu gì?"
+  - source_id: V007
+    type: video
+    in_point: 0.000
+    out_point: 8.340
     duration: 8.340
     timeline_start: 52.860
     timeline_end: 61.200
     motion: "tilt_down"
-    on_screen_text: "Hồ sơ còn thiếu gì? Ai phụ trách?"
+    on_screen_text: "Ai đang phụ trách? Đã thực sự đi đến đâu?"

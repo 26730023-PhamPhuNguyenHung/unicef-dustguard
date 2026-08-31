@@ -1,6 +1,6 @@
 # 🛡️ DUSTGUARD VN — AUTOMATED VIDEO QUALITY CONTROL (QC) REPORT
-**Thời gian kiểm định**: 2026-08-31 11:34:48  
-**Target Video**: `DustGuardVN_FINAL_1080p.mp4` (184291753 bytes)
+**Thời gian kiểm định**: 2026-08-31 11:44:39  
+**Target Video**: `DustGuardVN_FINAL_1080p.mp4` (121610534 bytes)
 
 ---
 
