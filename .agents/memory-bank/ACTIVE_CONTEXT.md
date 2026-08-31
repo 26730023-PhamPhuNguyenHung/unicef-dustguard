@@ -11,12 +11,13 @@
   - Phân định rõ ràng: Brand Red cho thương hiệu/nav/primary CTAs, Alert Red (`#DC2626`) chỉ dùng cho lỗi/quá hạn; Giữ vững Semantic Colors (Success green `#15803D`, Warning orange `#C2410C`, Info blue `#0369A1`).
   - Chuẩn hóa toàn bộ Layouts và Pages: `/staff` (Dashboard, Cases, CaseDetail, Sites, SiteDetail, Tasks, Alerts, Settings, Profile), `/citizen` (Home, Reports, ReportNew, Profile), `/contractor` (Layout, Dashboard, Tasks, Cases, Reports), `/admin` (Layout, UsersManagement, Settings), Auth Pages (Login, LoginForm, DemoAccessModal).
   - Nền sáng sạch `#FAFAF9`, thẻ trắng `#FFFFFF`, chữ đậm `#1C1917`, touch targets $\ge 44\text{px}$, zero glassmorphism.
-- **Tái Cấu Trúc Cloudflare Worker Modular Monolith (Hoàn tất)**:
+- **Tái Cấu Trúc Cloudflare Worker Modular Monolith (Hoàn tất 100%)**:
   - Rút gọn `server/worker.js` từ God File 7.721 dòng xuống **43 dòng (Thin Entrypoint)** chỉ làm 2 việc: điều hướng `ASSETS` vs `app.fetch` và kích hoạt `scheduled()` cron sweep.
-  - Tạo `server/app.js` làm **Composition Root** duy nhất cho Hono application.
+  - Rút gọn `server/app.js` từ 7.707 dòng xuống **115 dòng (Thin Composition Root)**.
+  - Tách thành 17 Domain Routers độc lập, đóng gói rõ ràng tại `server/routes/worker/*.routes.js` (`health`, `storage`, `auth`, `public`, `sites`, `complaints`, `cases`, `inspections`, `actions`, `sensors`, `documents`, `csr`, `contractor`, `community`, `tasks`, `executive`, `ai`, `admin`).
   - Tối ưu `ensureSchema()` thành **Lazy Isolate Initializer**.
 - **Sức khỏe Mã nguồn**:
-  - `npm --prefix app run verify:quick`: **279/279 tests PASS 100%** (28 test files + 42 UI smoke tests, ~2.2s).
+  - `npm --prefix app run verify:quick`: **279/279 tests PASS 100%** (28 test files + 42 UI smoke tests, ~2.0s).
   - `npm --prefix app run build`: **Vite production bundle PASS 100%** (0 errors, 2.3s).
 - **Quy tắc Vận hành**: 
   - Tuân thủ nghiêm ngặt 10 Core Invariants trong [`AGENTS.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/AGENTS.md).
