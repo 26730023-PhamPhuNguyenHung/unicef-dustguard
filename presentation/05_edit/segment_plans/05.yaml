@@ -1,28 +1,37 @@
-segment: 5
-title: "1 Tín hiệu ➔ 1 Hồ sơ có vòng đời theo dõi"
-timecode:
-  start: 75.480
-  end: 98.856
-  duration: 23.376
-voice:
-  file: 04_audio/voice_final/05.wav
-  duration_seconds: 23.376
+segment_id: '05'
+title: Tính mới — 1 Tín hiệu 1 Hồ sơ
+start_time: 69.768
+end_time: 91.368
+duration: 21.6
+energy_level: 8
+overlay: null
+voice_text: 'Điểm mới của DustGuard không nằm ở việc tạo thêm một nơi để gửi phản
+  ánh. Điều chúng tôi muốn giải quyết là khoảng trống sau khi phản ánh đã được gửi.
+  Một tín hiệu ban đầu phải có cơ hội trở thành một hồ sơ. Một hồ sơ phải có bằng
+  chứng. Một trường hợp phải có mức độ ưu tiên. Và quan trọng nhất: phải có thể biết
+  nó đang được xử lý tới đâu.'
 shots:
-  - source_id: S004
-    type: slide
-    in_point: 0.000
-    out_point: 12.000
-    duration: 12.000
-    timeline_start: 75.480
-    timeline_end: 87.480
-    motion: "zoom_3_layers"
-    on_screen_text: "1 Tín hiệu ➔ 1 Hồ sơ có vòng đời theo dõi"
-  - source_id: V009
-    type: video
-    in_point: 0.000
-    out_point: 11.376
-    duration: 11.376
-    timeline_start: 87.480
-    timeline_end: 98.856
-    motion: "audit_walkthrough"
-    on_screen_text: "Biết rõ vụ việc đang được xử lý tới đâu"
+- shot_index: 1
+  source_id: I004
+  source_type: image
+  file: 02_sources/real_images/project/ChatGPT Image 09_56_49 31 thg 8, 2026 (4).png
+  start_time: 69.768
+  duration: 7.2
+  transition: cut
+  ken_burns: true
+- shot_index: 2
+  source_id: I003
+  source_type: image
+  file: 02_sources/real_images/environment/ChatGPT Image 09_56_48 31 thg 8, 2026 (3).png
+  start_time: 76.968
+  duration: 7.2
+  transition: fade
+  ken_burns: true
+- shot_index: 3
+  source_id: V009
+  source_type: video
+  file: 02_sources/real_video/construction/clip_hcm_04_barrier_water_spraying_audit.mp4
+  start_time: 84.168
+  duration: 7.2
+  transition: fade
+  ken_burns: false

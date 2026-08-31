@@ -1,28 +1,38 @@
-segment: 6
-title: "Bài học sau tập huấn 11/6: Từ chấm điểm sang workflow"
-timecode:
-  start: 98.856
-  end: 120.072
-  duration: 21.216
-voice:
-  file: 04_audio/voice_final/06.wav
-  duration_seconds: 21.216
+segment_id: '06'
+title: Bài học sau tập huấn
+start_time: 91.368
+end_time: 110.976
+duration: 19.608
+energy_level: 6
+overlay: null
+voice_text: Nhưng DustGuard hôm nay không còn giống phiên bản ban đầu. Sau vòng tập
+  huấn, chúng tôi nhận ra rằng một hệ thống thông minh không nên cố gắng đưa ra nhiều
+  quyết định hơn con người. Nó phải giúp con người có đủ thông tin để đưa ra quyết
+  định tốt hơn. Vì vậy, chúng tôi thay đổi cách nhìn về AI, về điểm rủi ro và cả vai
+  trò của IoT.
 shots:
-  - source_id: V008
-    type: video
-    in_point: 0.000
-    out_point: 8.000
-    duration: 8.000
-    timeline_start: 98.856
-    timeline_end: 106.856
-    motion: "static_reflect"
-    on_screen_text: "Tưới nước thủ công: Minh chứng giải pháp hình thức"
-  - source_id: S003
-    type: slide
-    in_point: 0.000
-    out_point: 13.216
-    duration: 13.216
-    timeline_start: 106.856
-    timeline_end: 120.072
-    motion: "zoom_before_after_table"
-    on_screen_text: "Sau 11/6: Chuyển từ chấm điểm sang workflow có trách nhiệm"
+- shot_index: 1
+  source_id: V008
+  source_type: video
+  file: 02_sources/real_video/construction/clip_hue_04_ineffective_manual_watering.mp4
+  start_time: 91.368
+  duration: 6.536
+  transition: cut
+  ken_burns: false
+- shot_index: 2
+  source_id: I006
+  source_type: image
+  file: 02_sources/real_images/construction/ChatGPT Image 09_56_50 31 thg 8, 2026
+    (6).png
+  start_time: 97.904
+  duration: 6.536
+  transition: fade
+  ken_burns: true
+- shot_index: 3
+  source_id: V017
+  source_type: video
+  file: 02_sources/real_video/vietnam/clip_hn2_02_directive19_halt_construction.mp4
+  start_time: 104.44
+  duration: 6.536
+  transition: fade
+  ken_burns: false

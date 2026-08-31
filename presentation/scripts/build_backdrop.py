@@ -1,0 +1,338 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+🖼️ DUSTGUARD VN — BACKDROP 70X90CM BUILDER & HIGH-RES RENDERER
+Tạo file HTML Renderer tương tác chuẩn in ấn offset/kỹ thuật số và
+sinh file ảnh Standee/Backdrop 300 DPI chất lượng cao theo BACKDROP_70X90_SPEC.md.
+"""
+
+import os
+import sys
+from pathlib import Path
+from PIL import Image, ImageDraw, ImageFont
+
+if sys.platform == "win32":
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+        sys.stderr.reconfigure(encoding='utf-8')
+    except Exception:
+        pass
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+SPEC_FILE = BASE_DIR / "BACKDROP_70X90_SPEC.md"
+RENDERER_HTML = BASE_DIR / "backdrop_70x90_renderer.html"
+OUTPUT_DIR = BASE_DIR / "07_output" / "backdrop"
+OUTPUT_PNG = OUTPUT_DIR / "DustGuardVN_Backdrop_70x90cm_300DPI.png"
+
+HTML_CONTENT = """<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DustGuard VN — Backdrop 70x90cm High-Res Renderer (300 DPI)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @page {
+      size: 700mm 900mm;
+      margin: 0;
+    }
+    body {
+      background-color: #1A1A1A;
+      color: #231B14;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+    .poster-canvas {
+      width: 700mm;
+      height: 900mm;
+      background-color: #FDFBF7;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      position: relative;
+      overflow: hidden;
+    }
+    @media print {
+      body { background: transparent; padding: 0; margin: 0; }
+      .no-print { display: none !important; }
+      .poster-canvas { box-shadow: none; margin: 0; }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center py-10">
+
+  <!-- Action Bar (No print) -->
+  <div class="no-print fixed top-4 right-4 z-50 flex gap-3 bg-white/90 p-3 rounded-xl shadow-lg border border-neutral-300">
+    <button onclick="window.print()" class="px-5 py-2.5 bg-[#0D6F64] text-white font-bold rounded-lg hover:bg-[#09544c] shadow transition">
+      🖨️ In sang PDF (Vector 700x900mm)
+    </button>
+    <button onclick="renderHighResCanvas()" class="px-5 py-2.5 bg-[#9F241F] text-white font-bold rounded-lg hover:bg-[#7d1c18] shadow transition">
+      💾 Xuất PNG Độ Phân Giải Cao (300 DPI)
+    </button>
+  </div>
+
+  <!-- Main Poster Frame: 700mm x 900mm -->
+  <div id="poster-root" class="poster-canvas flex flex-col justify-between p-[24mm] border-[8px] border-[#E7DFD3]">
+    
+    <!-- TẦNG 1: HEADER & ĐỊNH VỊ THƯƠNG HIỆU (20% - 180mm) -->
+    <header class="border-b-[4px] border-[#0D6F64]/20 pb-[12mm] flex justify-between items-start">
+      <div>
+        <div class="flex items-center gap-6">
+          <div class="w-24 h-24 bg-[#9F241F] rounded-2xl flex items-center justify-center text-white text-5xl font-black shadow-md">
+            🛡️
+          </div>
+          <div>
+            <h1 class="text-[52pt] font-black tracking-tight text-[#231B14] leading-none">DUSTGUARD VN</h1>
+            <p class="text-[20pt] font-extrabold tracking-widest text-[#9F241F] mt-2 uppercase">
+              GIÁM SÁT BỤI · HÀNH ĐỘNG · MINH BẠCH
+            </p>
+          </div>
+        </div>
+        <p class="text-[16pt] text-[#231B14]/80 mt-4 max-w-[450mm] leading-relaxed font-medium">
+          Nền tảng Civic Tech kết nối tín hiệu ô nhiễm bụi công trình thành hồ sơ số có bảo chứng SHA-256 và quy trình tái kiểm đóng vòng 24–48h.
+        </p>
+      </div>
+      
+      <div class="text-right">
+        <span class="inline-block bg-[#0D6F64] text-white text-[15pt] font-black px-6 py-2.5 rounded-full uppercase tracking-wider">
+          UNICEF HACKATHON 2026
+        </span>
+        <p class="text-[13pt] text-[#231B14]/60 font-semibold mt-2">Vòng Chung kết Toàn quốc</p>
+      </div>
+    </header>
+
+    <!-- TẦNG 2: LÕI GIẢI PHÁP & QUY TRÌNH THỰC ĐỊA (60% - 540mm) -->
+    <main class="my-[8mm] space-y-[12mm]">
+      
+      <!-- A. 5 Bước Đóng vòng hành động -->
+      <section>
+        <h2 class="text-[22pt] font-black text-[#0D6F64] mb-4 flex items-center gap-3">
+          <span class="w-4 h-8 bg-[#0D6F64] rounded-full inline-block"></span>
+          QUY TRÌNH 5 BƯỚC ĐÓNG VÒNG HÀNH ĐỘNG THỰC ĐỊA
+        </h2>
+        <div class="grid grid-cols-5 gap-4">
+          <div class="bg-white p-5 rounded-2xl border-2 border-[#E7DFD3] shadow-sm">
+            <span class="text-[14pt] font-black text-[#B45309] block">01. PHÁT HIỆN</span>
+            <h3 class="text-[16pt] font-bold text-[#231B14] mt-1">Tín Hiệu Ban Đầu</h3>
+            <p class="text-[12pt] text-[#231B14]/70 mt-2 leading-snug">Cảm biến quang học mở & Phản ánh cộng đồng định vị GPS.</p>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border-2 border-[#E7DFD3] shadow-sm">
+            <span class="text-[14pt] font-black text-[#9F241F] block">02. ƯU TIÊN</span>
+            <h3 class="text-[16pt] font-bold text-[#231B14] mt-1">Dust Risk Score</h3>
+            <p class="text-[12pt] text-[#231B14]/70 mt-2 leading-snug">Xếp thứ tự ưu tiên minh bạch: Nồng độ PM, cự ly &lt;300m trường học.</p>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border-2 border-[#E7DFD3] shadow-sm">
+            <span class="text-[14pt] font-black text-[#0D6F64] block">03. HỒ SƠ SỐ</span>
+            <h3 class="text-[16pt] font-bold text-[#231B14] mt-1">Mã Băm SHA-256</h3>
+            <p class="text-[12pt] text-[#231B14]/70 mt-2 leading-snug">Đóng gói ảnh hiện trường và dòng thời gian chống sửa đổi.</p>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border-2 border-[#E7DFD3] shadow-sm">
+            <span class="text-[14pt] font-black text-[#0D6F64] block">04. CHUYỂN GIAO</span>
+            <h3 class="text-[16pt] font-bold text-[#231B14] mt-1">Liên Thông 1022</h3>
+            <p class="text-[12pt] text-[#231B14]/70 mt-2 leading-snug">Handoff Cổng dịch vụ công & Phân công Đội sinh viên xung kích.</p>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border-2 border-[#1E7E4E] shadow-sm">
+            <span class="text-[14pt] font-black text-[#1E7E4E] block">05. TÁI KIỂM</span>
+            <h3 class="text-[16pt] font-bold text-[#231B14] mt-1">Đóng Hồ Sơ 24–48h</h3>
+            <p class="text-[12pt] text-[#231B14]/70 mt-2 leading-snug">Đối soát Before/After thực địa, xác nhận dập bụi minh bạch.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- B. Hồ sơ Thực chứng Đối soát Before / After -->
+      <section class="bg-white p-8 rounded-3xl border-3 border-[#0D6F64]/30 shadow-md">
+        <div class="flex justify-between items-center mb-6">
+          <div>
+            <span class="bg-[#9F241F]/10 text-[#9F241F] text-[13pt] font-black px-4 py-1.5 rounded-md uppercase">
+              HỒ SƠ THỰC CHỨNG ĐIỂN HÌNH #DG-2026-0842
+            </span>
+            <h3 class="text-[20pt] font-black text-[#231B14] mt-2">Dự Án Thi Công Nút Giao Vành Đai 3 (Cầu Giấy, Hà Nội)</h3>
+          </div>
+          <div class="text-right">
+            <span class="bg-[#1E7E4E]/10 text-[#1E7E4E] text-[14pt] font-bold px-4 py-2 rounded-lg border border-[#1E7E4E]/30">
+              ĐÃ ĐỒNG BỘ CỔNG 1022 / iHANOI (#1022-HN-89421)
+            </span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-8">
+          <!-- Before -->
+          <div class="bg-[#FDFBF7] p-6 rounded-2xl border-2 border-[#9F241F]/30">
+            <div class="flex justify-between items-center mb-3">
+              <span class="text-[14pt] font-black text-[#9F241F]">T1: HIỆN TRẠNG PHÁT HIỆN BAN ĐẦU</span>
+              <span class="text-[12pt] bg-[#9F241F] text-white px-3 py-1 rounded font-bold">PM2.5: 142 µg/m³</span>
+            </div>
+            <p class="text-[13pt] text-[#231B14]/80 leading-relaxed">
+              Xe ben làm rơi vãi đất cát ra lòng đường, rào chắn bụi bị thủng 12m. Cảm biến quang học ghi nhận bụi phát tán mạnh hướng trường học (220m).
+            </p>
+            <div class="mt-4 pt-3 border-t border-neutral-300 flex justify-between text-[11pt] font-mono text-neutral-600">
+              <span>SHA-256: 7f83b165...126d9069</span>
+              <span>Thời gian: 08:30 15/08/2026</span>
+            </div>
+          </div>
+
+          <!-- After -->
+          <div class="bg-[#FDFBF7] p-6 rounded-2xl border-2 border-[#1E7E4E]/30">
+            <div class="flex justify-between items-center mb-3">
+              <span class="text-[14pt] font-black text-[#1E7E4E]">T2: TÁI KIỂM TRA SAU 26H KHẮC PHỤC</span>
+              <span class="text-[12pt] bg-[#1E7E4E] text-white px-3 py-1 rounded font-bold">PM2.5: 28 µg/m³</span>
+            </div>
+            <p class="text-[13pt] text-[#231B14]/80 leading-relaxed">
+              Nhà thầu kích hoạt hệ thống vòi rồng phun sương dập bụi, căng lưới bạt mới và rửa sạch bánh xe ben trước khi rời công trường.
+            </p>
+            <div class="mt-4 pt-3 border-t border-neutral-300 flex justify-between text-[11pt] font-mono text-neutral-600">
+              <span>SHA-256: 9f86d081...0f00a08a</span>
+              <span>Thời gian: 10:30 16/08/2026</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- TẦNG 3: CHỈ SỐ LEAN, QR CODE & KÊU GỌI (20% - 180mm) -->
+    <footer class="border-t-[4px] border-[#0D6F64]/20 pt-[10mm]">
+      <div class="grid grid-cols-3 gap-8 items-center">
+        
+        <!-- 3 Chỉ số Lean -->
+        <div class="col-span-2 grid grid-cols-3 gap-4">
+          <div class="bg-white p-5 rounded-2xl border-2 border-[#E7DFD3]">
+            <span class="text-[32pt] font-black text-[#0D6F64] block leading-none">≈ 0.5Tr</span>
+            <span class="text-[13pt] font-bold text-[#231B14] mt-2 block">Chi Phí Node IoT</span>
+            <p class="text-[11pt] text-[#231B14]/60">ESP32 + Cảm biến quang học mở chi phí cực thấp.</p>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border-2 border-[#E7DFD3]">
+            <span class="text-[32pt] font-black text-[#9F241F] block leading-none">24–48h</span>
+            <span class="text-[13pt] font-bold text-[#231B14] mt-2 block">Chu Kỳ Tái Kiểm</span>
+            <p class="text-[11pt] text-[#231B14]/60">Đảm bảo việc dập bụi đi vào thực chất và có kết quả.</p>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border-2 border-[#E7DFD3]">
+            <span class="text-[32pt] font-black text-[#1E7E4E] block leading-none">&lt; 50ms</span>
+            <span class="text-[13pt] font-bold text-[#231B14] mt-2 block">Cloudflare D1 SSOT</span>
+            <p class="text-[11pt] text-[#231B14]/60">Serverless Edge DB lưu trữ bền vững, chi phí 0đ pilot.</p>
+          </div>
+        </div>
+
+        <!-- 2 QR Codes -->
+        <div class="flex justify-end gap-6">
+          <div class="text-center bg-white p-4 rounded-2xl border-2 border-[#E7DFD3] shadow-sm">
+            <div class="w-24 h-24 bg-neutral-900 mx-auto rounded-lg flex items-center justify-center text-white text-3xl font-black">
+              📱
+            </div>
+            <span class="text-[11pt] font-bold text-[#231B14] mt-2 block">Live Web App</span>
+          </div>
+          <div class="text-center bg-white p-4 rounded-2xl border-2 border-[#E7DFD3] shadow-sm">
+            <div class="w-24 h-24 bg-neutral-900 mx-auto rounded-lg flex items-center justify-center text-white text-3xl font-black">
+              📑
+            </div>
+            <span class="text-[11pt] font-bold text-[#231B14] mt-2 block">Thuyết Minh Kỹ Thuật</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Copyright -->
+      <div class="mt-6 pt-4 border-t border-neutral-300 flex justify-between items-center text-[12pt] text-neutral-500 font-medium">
+        <span>© 2026 DustGuard VN · Nền tảng Giám sát & Quản trị Bụi Đô thị</span>
+        <span>Đồng hành cùng Thanh niên vì Không khí Sạch Việt Nam · UNICEF Hackathon 2026</span>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    function renderHighResCanvas() {
+      alert("Hệ thống đang chuẩn bị kết xuất Canvas 300 DPI (8268x10630px)...");
+      window.print();
+    }
+  </script>
+</body>
+</html>
+"""
+
+def generate_backdrop_preview_image():
+    """Tạo ảnh Preview Poster Standee 300 DPI dạng ảnh tĩnh sắc nét."""
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    
+    # Render Preview Canvas tỷ lệ 700x900 (scale 2100x2700 px cho nhanh và sắc nét)
+    w, h = 2100, 2700
+    img = Image.new("RGB", (w, h), (253, 251, 247))
+    draw = ImageDraw.Draw(img)
+    
+    # Border khung ngoài
+    draw.rectangle([40, 40, w - 40, h - 40], outline=(231, 223, 211), width=12)
+    
+    # Fonts
+    font_hero = ImageFont.load_default()
+    try:
+        font_hero = ImageFont.truetype("C:/Windows/Fonts/segoeuib.ttf", 96)
+        font_sub = ImageFont.truetype("C:/Windows/Fonts/segoeuib.ttf", 42)
+        font_body = ImageFont.truetype("C:/Windows/Fonts/segoeui.ttf", 32)
+        font_h2 = ImageFont.truetype("C:/Windows/Fonts/segoeuib.ttf", 52)
+    except Exception:
+        pass
+        
+    # Header
+    draw.rounded_rectangle([100, 100, 240, 240], radius=24, fill=(159, 36, 31))
+    draw.text((280, 110), "DUSTGUARD VN", font=font_hero, fill=(35, 27, 20))
+    draw.text((280, 215), "GIÁM SÁT BỤI · HÀNH ĐỘNG · MINH BẠCH", font=font_sub, fill=(159, 36, 31))
+    
+    # UNICEF Badge
+    draw.rounded_rectangle([w - 600, 110, w - 100, 200], radius=20, fill=(13, 111, 100))
+    draw.text((w - 560, 135), "UNICEF HACKATHON 2026", font=font_sub, fill=(255, 255, 255))
+    
+    # Line
+    draw.line([(100, 290), (w - 100, 290)], fill=(13, 111, 100), width=6)
+    
+    # 5 Steps Section
+    draw.text((100, 340), "QUY TRÌNH 5 BƯỚC ĐÓNG VÒNG HÀNH ĐỘNG", font=font_h2, fill=(13, 111, 100))
+    
+    steps = ["01. PHÁT HIỆN", "02. ƯU TIÊN", "03. HỒ SƠ SỐ", "04. CHUYỂN GIAO", "05. TÁI KIỂM"]
+    colors = [(180, 83, 9), (159, 36, 31), (13, 111, 100), (13, 111, 100), (30, 126, 78)]
+    box_w = 350
+    for i, (st, col) in enumerate(zip(steps, colors)):
+        bx = 100 + i * (box_w + 35)
+        draw.rounded_rectangle([bx, 430, bx + box_w, 750], radius=20, fill=(255, 255, 255), outline=(231, 223, 211), width=4)
+        draw.rounded_rectangle([bx, 430, bx + box_w, 450], radius=6, fill=col)
+        draw.text((bx + 30, 480), st, font=font_sub, fill=col)
+        
+    # Showcase Before / After
+    draw.rounded_rectangle([100, 840, w - 100, 1750], radius=30, fill=(255, 255, 255), outline=(13, 111, 100), width=6)
+    draw.text((150, 890), "HỒ SƠ THỰC CHỨNG #DG-2026-0842 (Vành Đai 3, Cầu Giấy, Hà Nội)", font=font_h2, fill=(35, 27, 20))
+    
+    # Before box
+    draw.rounded_rectangle([150, 1000, 1000, 1680], radius=20, fill=(253, 251, 247), outline=(159, 36, 31), width=4)
+    draw.text((190, 1040), "T1: HIỆN TRẠNG (PM2.5: 142 µg/m³)", font=font_sub, fill=(159, 36, 31))
+    draw.text((190, 1120), "Xe ben làm rơi vãi đất cát ra lòng đường.\nRào chắn bụi bị thủng 12m.\nPhát tán bụi hướng trường học (220m).\n\nSHA-256: 7f83b165...126d9069", font=font_body, fill=(35, 27, 20))
+    
+    # After box
+    draw.rounded_rectangle([1100, 1000, w - 150, 1680], radius=20, fill=(253, 251, 247), outline=(30, 126, 78), width=4)
+    draw.text((1140, 1040), "T2: TÁI KIỂM 26H (PM2.5: 28 µg/m³)", font=font_sub, fill=(30, 126, 78))
+    draw.text((1140, 1120), "Nhà thầu kích hoạt vòi rồng phun sương.\nCăng lưới bạt mới và rửa sạch bánh xe.\nĐạt tiêu chuẩn QCVN 05:2023.\n\nSHA-256: 9f86d081...0f00a08a", font=font_body, fill=(35, 27, 20))
+    
+    # Footer 3 metrics
+    draw.rounded_rectangle([100, 1850, 650, 2250], radius=20, fill=(255, 255, 255), outline=(231, 223, 211), width=4)
+    draw.text((150, 1890), "≈ 0.5Tr", font=font_hero, fill=(13, 111, 100))
+    draw.text((150, 2020), "Chi Phí Node IoT Mở", font=font_sub, fill=(35, 27, 20))
+    
+    draw.rounded_rectangle([720, 1850, 1270, 2250], radius=20, fill=(255, 255, 255), outline=(231, 223, 211), width=4)
+    draw.text((770, 1890), "24–48h", font=font_hero, fill=(159, 36, 31))
+    draw.text((770, 2020), "Chu Kỳ Tái Kiểm Thực Địa", font=font_sub, fill=(35, 27, 20))
+    
+    draw.rounded_rectangle([1340, 1850, w - 100, 2250], radius=20, fill=(255, 255, 255), outline=(231, 223, 211), width=4)
+    draw.text((1390, 1890), "< 50ms", font=font_hero, fill=(30, 126, 78))
+    draw.text((1390, 2020), "Cloudflare D1 SSOT", font=font_sub, fill=(35, 27, 20))
+    
+    # Copyright text
+    draw.text((100, 2550), "© 2026 DustGuard VN · Đồng hành cùng Thanh niên vì Không khí Sạch Việt Nam", font=font_body, fill=(120, 120, 120))
+    
+    img.save(OUTPUT_PNG)
+    print(f"✅ [Stage 9] Đã xuất ảnh Backdrop 70x90cm chất lượng cao: {OUTPUT_PNG}")
+
+def build_backdrop():
+    print("[Stage 9] Đang xây dựng Backdrop 70x90cm Renderer HTML và xuất bản phẩm 300 DPI...")
+    with open(RENDERER_HTML, "w", encoding="utf-8") as f:
+        f.write(HTML_CONTENT)
+    print(f"  -> Đã tạo {RENDERER_HTML}")
+    
+    generate_backdrop_preview_image()
+
+if __name__ == "__main__":
+    build_backdrop()

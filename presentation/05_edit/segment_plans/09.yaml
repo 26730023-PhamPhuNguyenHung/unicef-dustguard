@@ -1,28 +1,36 @@
-segment: 9
-title: "Đo lường giá trị thật & Mô hình vận hành bền vững"
-timecode:
-  start: 173.112
-  end: 192.576
-  duration: 19.464
-voice:
-  file: 04_audio/voice_final/09.wav
-  duration_seconds: 19.464
+segment_id: 09
+title: Đo lường giá trị thật
+start_time: 160.008
+end_time: 177.984
+duration: 17.976
+energy_level: 8
+overlay: null
+voice_text: Bao nhiêu trường hợp có đủ bằng chứng? Thời gian từ phát hiện đến hành
+  động là bao lâu? Bao nhiêu trường hợp thực sự có bước xử lý tiếp theo? Bao nhiêu
+  vụ việc có thể được theo dõi từ lúc xuất hiện tín hiệu đến khi có kết quả? Đó mới
+  là những con số chúng tôi muốn dùng để chứng minh DustGuard có giá trị.
 shots:
-  - source_id: S007
-    type: slide
-    in_point: 0.000
-    out_point: 9.500
-    duration: 9.500
-    timeline_start: 173.112
-    timeline_end: 182.612
-    motion: "zoom_revenue_model"
-    on_screen_text: "Mô hình vận hành bền vững cho cộng đồng"
-  - source_id: S005
-    type: slide
-    in_point: 0.000
-    out_point: 9.964
-    duration: 9.964
-    timeline_start: 182.612
-    timeline_end: 192.576
-    motion: "zoom_kpi_metrics"
-    on_screen_text: "Đo bằng chỉ số thật: Tỷ lệ bằng chứng & Thời gian xử lý"
+- shot_index: 1
+  source_id: I002
+  source_type: image
+  file: 02_sources/real_images/project/ChatGPT Image 09_56_47 31 thg 8, 2026 (2).png
+  start_time: 160.008
+  duration: 5.992
+  transition: cut
+  ken_burns: true
+- shot_index: 2
+  source_id: I008
+  source_type: image
+  file: 02_sources/real_images/project/ChatGPT Image 09_56_51 31 thg 8, 2026 (8).png
+  start_time: 166.0
+  duration: 5.992
+  transition: fade
+  ken_burns: true
+- shot_index: 3
+  source_id: S005
+  source_type: slide
+  file: 02_sources/slides/png/slide_05_kha_thi_viet_nam_pilot.png
+  start_time: 171.992
+  duration: 5.992
+  transition: fade
+  ken_burns: true

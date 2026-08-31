@@ -1,28 +1,35 @@
-segment: 3
-title: "5 Câu hỏi trung tâm đặt ra cho hệ thống"
-timecode:
-  start: 45.360
-  end: 61.200
-  duration: 15.840
-voice:
-  file: 04_audio/voice_final/03.wav
-  duration_seconds: 15.840
+segment_id: '03'
+title: 5 Câu hỏi trung tâm
+start_time: 41.928
+end_time: 56.568
+duration: 14.64
+energy_level: 4
+overlay: overlay_03_questions.png
+voice_text: Nếu cùng lúc có mười phản ánh, chúng ta nên nhìn vào trường hợp nào trước?
+  Vì sao trường hợp đó đáng chú ý? Hồ sơ còn thiếu gì? Ai đang phụ trách? Và sau khi
+  một phản ánh được gửi đi... nó đã thực sự đi đến đâu?
 shots:
-  - source_id: V006
-    type: video
-    in_point: 0.000
-    out_point: 7.500
-    duration: 7.500
-    timeline_start: 45.360
-    timeline_end: 52.860
-    motion: "slow_zoom"
-    on_screen_text: "Xem trường hợp nào trước? Hồ sơ còn thiếu gì?"
-  - source_id: V007
-    type: video
-    in_point: 0.000
-    out_point: 8.340
-    duration: 8.340
-    timeline_start: 52.860
-    timeline_end: 61.200
-    motion: "tilt_down"
-    on_screen_text: "Ai đang phụ trách? Đã thực sự đi đến đâu?"
+- shot_index: 1
+  source_id: V006
+  source_type: video
+  file: 02_sources/real_video/people/clip_hue_03_children_respiratory_concern.mp4
+  start_time: 41.928
+  duration: 4.88
+  transition: cut
+  ken_burns: false
+- shot_index: 2
+  source_id: V015
+  source_type: video
+  file: 02_sources/real_video/dust/clip_hue_02_dust_on_trees_and_houses.mp4
+  start_time: 46.808
+  duration: 4.88
+  transition: fade
+  ken_burns: false
+- shot_index: 3
+  source_id: V007
+  source_type: video
+  file: 02_sources/real_video/people/clip_hcm_03_resident_frustration.mp4
+  start_time: 51.688
+  duration: 4.88
+  transition: fade
+  ken_burns: false

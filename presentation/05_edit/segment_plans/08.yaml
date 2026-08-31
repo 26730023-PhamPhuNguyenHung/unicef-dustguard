@@ -1,28 +1,37 @@
-segment: 8
-title: "Lean Pilot 4-8 tuần & Kiến trúc kỹ thuật nhẹ"
-timecode:
-  start: 146.328
-  end: 173.112
-  duration: 26.784
-voice:
-  file: 04_audio/voice_final/08.wav
-  duration_seconds: 26.784
+segment_id: 08
+title: Mô hình Lean Pilot
+start_time: 135.24
+end_time: 160.008
+duration: 24.768
+energy_level: 7
+overlay: overlay_08_pilot.png
+voice_text: 'Chúng tôi cũng học được rằng một giải pháp môi trường không nên bắt đầu
+  bằng một hạ tầng thật lớn. DustGuard có thể bắt đầu chỉ với dữ liệu đang có: phản
+  ánh, hình ảnh, vị trí, checklist và hồ sơ. Một pilot có thể triển khai trong một
+  cộng đồng nhỏ, một trường học hoặc một câu lạc bộ môi trường. Trong bốn đến tám
+  tuần. Với hai mươi đến ba mươi người dùng thật. Và những chỉ số có thể đo được.'
 shots:
-  - source_id: S005
-    type: slide
-    in_point: 0.000
-    out_point: 13.000
-    duration: 13.000
-    timeline_start: 146.328
-    timeline_end: 159.328
-    motion: "zoom_pilot_roadmap"
-    on_screen_text: "LEAN PILOT 4-8 TUẦN TẠI TRƯỜNG HỌC & CLB"
-  - source_id: S006
-    type: slide
-    in_point: 0.000
-    out_point: 13.784
-    duration: 13.784
-    timeline_start: 159.328
-    timeline_end: 173.112
-    motion: "zoom_cloudflare_stack"
-    on_screen_text: "Kiến trúc Serverless nhẹ (D1 + R2), chi phí tối thiểu"
+- shot_index: 1
+  source_id: V010
+  source_type: video
+  file: 02_sources/real_video/people/clip_hn_04_youth_action.mp4
+  start_time: 135.24
+  duration: 8.256
+  transition: cut
+  ken_burns: false
+- shot_index: 2
+  source_id: I008
+  source_type: image
+  file: 02_sources/real_images/project/ChatGPT Image 09_56_51 31 thg 8, 2026 (8).png
+  start_time: 143.496
+  duration: 8.256
+  transition: fade
+  ken_burns: true
+- shot_index: 3
+  source_id: V011
+  source_type: video
+  file: 02_sources/real_video/vietnam/clip_hn2_04_green_transport_electric_bus.mp4
+  start_time: 151.752
+  duration: 8.256
+  transition: fade
+  ken_burns: false

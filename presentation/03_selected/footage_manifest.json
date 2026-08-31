@@ -1,0 +1,1620 @@
+{
+  "project": "DustGuard VN — Final Presentation Video (UNICEF Hackathon 2026)",
+  "generator": "Subagent 3: Video Footage Indexer & Scene Matcher",
+  "spec_reference": "presentation/DIRECTOR_TREATMENT_EDITING_SPEC.md",
+  "created_at": "2026-08-31 12:29:25",
+  "standards": {
+    "resolution": "1920x1080 Full HD (16:9)",
+    "framerate": "25.0 fps (Progressive)",
+    "video_codec": "H.264 / libx264 (High Profile, CRF 18)",
+    "pixel_format": "yuv420p",
+    "audio_policy": "Muted (-an) — 100% tiếng ồn gốc & phóng viên được loại bỏ, sẵn sàng cho Master Audio Mixing",
+    "enhancement_filters": "Lanczos Upscale + Unsharp Detail Filter"
+  },
+  "summary": {
+    "total_source_videos": 20,
+    "total_golden_cuts": 29,
+    "total_golden_duration_sec": 193.32,
+    "total_golden_size_mb": 110.28,
+    "total_story_segments": 12,
+    "regions_covered": [
+      "Hà Nội",
+      "TP. Hồ Chí Minh",
+      "Huế"
+    ]
+  },
+  "segments_mapping": {
+    "01_hook": {
+      "title": "Mở vấn đề: Bụi công trình đang ở ngoài đường",
+      "timecode": "0:00 - 0:18",
+      "target_duration_sec": 18.0,
+      "voice_summary": "Những công trường mới... nhưng có tác động rất dễ bị xem là nhỏ: Bụi công trình.",
+      "visual_goal": "Thiết lập bối cảnh đô thị đang phát triển, flycam bụi mờ và sự bùng nổ của bụi công trường trên khắp 3 miền (Hà Nội, TPHCM, Huế).",
+      "total_cuts": 4,
+      "cuts": [
+        {
+          "cut_id": "cut_01_hn_city_haze_pan",
+          "file_name": "cut_01_hn_city_haze_pan.mp4",
+          "rel_path": "03_selected/footage/cut_01_hn_city_haze_pan.mp4",
+          "source_id": "V001",
+          "duration_sec": 5.52,
+          "location": "Hà Nội",
+          "role": "Flycam panorama thành phố chìm trong lớp bụi mịn đô thị mở đầu phim"
+        },
+        {
+          "cut_id": "cut_02_hcm_construction_cranes",
+          "file_name": "cut_02_hcm_construction_cranes.mp4",
+          "rel_path": "03_selected/footage/cut_02_hcm_construction_cranes.mp4",
+          "source_id": "V002",
+          "duration_sec": 7.0,
+          "location": "TP. Hồ Chí Minh",
+          "role": "Cần cẩu tháp xoay chuyển giữa đại công trường nhộn nhịp"
+        },
+        {
+          "cut_id": "cut_03_hue_giant_dust_plume",
+          "file_name": "cut_03_hue_giant_dust_plume.mp4",
+          "rel_path": "03_selected/footage/cut_03_hue_giant_dust_plume.mp4",
+          "source_id": "V003",
+          "duration_sec": 7.0,
+          "location": "Huế",
+          "role": "Xe ben chạy qua tạo luồng bụi cuộn mù mịt che khuất tầm nhìn"
+        },
+        {
+          "cut_id": "cut_02_hcm_excavator_digging",
+          "file_name": "cut_02_hcm_excavator_digging.mp4",
+          "rel_path": "03_selected/footage/cut_02_hcm_excavator_digging.mp4",
+          "source_id": "V002",
+          "duration_sec": 6.52,
+          "location": "TP. Hồ Chí Minh",
+          "role": "Máy xúc đào đất và đất đá công trường phát sinh bụi"
+        }
+      ]
+    },
+    "02_problem": {
+      "title": "Nút thắt: Dữ liệu phân tán, thiếu thứ tự ưu tiên",
+      "timecode": "0:18 - 0:38",
+      "target_duration_sec": 20.0,
+      "voice_summary": "Vấn đề không phải không có dữ liệu... mà khi phân tán, khó biến thành hành động có ưu tiên.",
+      "visual_goal": "Khắc họa nỗi trăn trở của người dân khi hít thở khói bụi, xe tải vương vãi đất cát và sự rời rạc của các luồng thông tin.",
+      "total_cuts": 5,
+      "cuts": [
+        {
+          "cut_id": "cut_05_hn_elderly_concern",
+          "file_name": "cut_05_hn_elderly_concern.mp4",
+          "rel_path": "03_selected/footage/cut_05_hn_elderly_concern.mp4",
+          "source_id": "V005",
+          "duration_sec": 6.52,
+          "location": "Hà Nội",
+          "role": "Người cao tuổi ngước nhìn bầu trời mờ đục với nét mặt lo âu sức khỏe"
+        },
+        {
+          "cut_id": "cut_04_hcm_uncovered_truck",
+          "file_name": "cut_04_hcm_uncovered_truck.mp4",
+          "rel_path": "03_selected/footage/cut_04_hcm_uncovered_truck.mp4",
+          "source_id": "V004",
+          "duration_sec": 6.52,
+          "location": "TP. Hồ Chí Minh",
+          "role": "Xe tải chở vật liệu không che bạt làm rơi vãi và bụi cuốn theo sau đuôi xe"
+        },
+        {
+          "cut_id": "cut_16_hn_traffic_dust_jam",
+          "file_name": "cut_16_hn_traffic_dust_jam.mp4",
+          "rel_path": "03_selected/footage/cut_16_hn_traffic_dust_jam.mp4",
+          "source_id": "V016",
+          "duration_sec": 7.0,
+          "location": "Hà Nội",
+          "role": "Đoàn xe máy chìm trong khói bụi và ùn tắc giao thông giờ cao điểm"
+        },
+        {
+          "cut_id": "cut_05_hn_citizen_walking_mask",
+          "file_name": "cut_05_hn_citizen_walking_mask.mp4",
+          "rel_path": "03_selected/footage/cut_05_hn_citizen_walking_mask.mp4",
+          "source_id": "V005",
+          "duration_sec": 6.52,
+          "location": "Hà Nội",
+          "role": "Người dân đeo khẩu trang đi lại giữa không gian mờ mịt bụi"
+        },
+        {
+          "cut_id": "cut_18_emission_sources_chart",
+          "file_name": "cut_18_emission_sources_chart.mp4",
+          "rel_path": "03_selected/footage/cut_18_emission_sources_chart.mp4",
+          "source_id": "V018",
+          "duration_sec": 7.0,
+          "location": "Toàn quốc",
+          "role": "Đồ họa phân tích cơ cấu các nguồn phát thải bụi mịn đô thị"
+        }
+      ]
+    },
+    "03_context": {
+      "title": "5 Câu hỏi trung tâm: Tín hiệu đi đến đâu?",
+      "timecode": "0:38 - 0:55",
+      "target_duration_sec": 17.0,
+      "voice_summary": "Nếu cùng lúc có 10 phản ánh: nhìn vào đâu trước? Ai phụ trách? Đã đi đến đâu?",
+      "visual_goal": "Điểm rơi cảm xúc về sức khỏe trẻ em và sự bất tiện đóng kín cửa của người dân, tạo khoảng trống cấp thiết trước khi DustGuard xuất hiện.",
+      "total_cuts": 5,
+      "cuts": [
+        {
+          "cut_id": "cut_06_hue_children_home_dust",
+          "file_name": "cut_06_hue_children_home_dust.mp4",
+          "rel_path": "03_selected/footage/cut_06_hue_children_home_dust.mp4",
+          "source_id": "V006",
+          "duration_sec": 6.52,
+          "location": "Huế",
+          "role": "Trẻ nhỏ và người nhà bên khung cửa bám bụi dày đặc gần công trường"
+        },
+        {
+          "cut_id": "cut_07_hcm_wiping_thick_dust",
+          "file_name": "cut_07_hcm_wiping_thick_dust.mp4",
+          "rel_path": "03_selected/footage/cut_07_hcm_wiping_thick_dust.mp4",
+          "source_id": "V007",
+          "duration_sec": 7.0,
+          "location": "TP. Hồ Chí Minh",
+          "role": "Cận cảnh bàn tay quẹt một vệt dài lớp bụi bám dày đặc trên đồ dùng trong nhà"
+        },
+        {
+          "cut_id": "cut_15_hue_dust_covered_trees",
+          "file_name": "cut_15_hue_dust_covered_trees.mp4",
+          "rel_path": "03_selected/footage/cut_15_hue_dust_covered_trees.mp4",
+          "source_id": "V015",
+          "duration_sec": 6.52,
+          "location": "Huế",
+          "role": "Cây cối ven đường trắng xóa xơ xác vì bụi công trường kéo dài"
+        },
+        {
+          "cut_id": "cut_07_hcm_closed_doors",
+          "file_name": "cut_07_hcm_closed_doors.mp4",
+          "rel_path": "03_selected/footage/cut_07_hcm_closed_doors.mp4",
+          "source_id": "V007",
+          "duration_sec": 6.52,
+          "location": "TP. Hồ Chí Minh",
+          "role": "Cửa nhà đóng kín mít then cài để ngăn khói bụi từ công trình"
+        },
+        {
+          "cut_id": "cut_06_hue_dust_residential",
+          "file_name": "cut_06_hue_dust_residential.mp4",
+          "rel_path": "03_selected/footage/cut_06_hue_dust_residential.mp4",
+          "source_id": "V006",
+          "duration_sec": 6.52,
+          "location": "Huế",
+          "role": "Cảnh sinh hoạt gia đình và khu dân cư chịu ảnh hưởng trực tiếp từ bụi"
+        }
+      ]
+    },
+    "04_solution": {
+      "title": "DustGuard xuất hiện: Từ tín hiệu đến hồ sơ theo dõi",
+      "timecode": "0:55 - 1:10",
+      "target_duration_sec": 15.0,
+      "voice_summary": "DustGuard được xây dựng để kết nối tín hiệu, bằng chứng, ưu tiên và theo dõi tiến trình.",
+      "visual_goal": "Beat drop bùng nổ, logo DustGuard VN xuất hiện, chuyển dịch từ hiện trường thực tế sang bản đồ số tương tác.",
+      "total_cuts": 1,
+      "cuts": [
+        {
+          "cut_id": "cut_02_hcm_construction_cranes",
+          "file_name": "cut_02_hcm_construction_cranes.mp4",
+          "rel_path": "03_selected/footage/cut_02_hcm_construction_cranes.mp4",
+          "source_id": "V002",
+          "duration_sec": 7.0,
+          "location": "TP. Hồ Chí Minh",
+          "role": "Cần cẩu tháp xoay chuyển giữa đại công trường nhộn nhịp"
+        }
+      ]
+    },
+    "05_core_logic": {
+      "title": "Tính mới: 1 Tín hiệu ➔ 1 Hồ sơ có bằng chứng & theo dõi",
+      "timecode": "1:10 - 1:30",
+      "target_duration_sec": 20.0,
+      "voice_summary": "1 tín hiệu ban đầu thành 1 hồ sơ có bằng chứng, có mức độ ưu tiên và biết đang xử lý tới đâu.",
+      "visual_goal": "Thao tác trên UI Web App: Chuyển đổi Observation thành Case, chuỗi ảnh đối chứng Before/After và mã băm SHA-256.",
+      "total_cuts": 2,
+      "cuts": [
+        {
+          "cut_id": "cut_04_hcm_roadside_dust",
+          "file_name": "cut_04_hcm_roadside_dust.mp4",
+          "rel_path": "03_selected/footage/cut_04_hcm_roadside_dust.mp4",
+          "source_id": "V004",
+          "duration_sec": 6.52,
+          "location": "TP. Hồ Chí Minh",
+          "role": "Bụi đường do xe tải cuốn lên che khuất người tham gia giao thông"
+        },
+        {
+          "cut_id": "cut_03_hue_giant_dust_plume",
+          "file_name": "cut_03_hue_giant_dust_plume.mp4",
+          "rel_path": "03_selected/footage/cut_03_hue_giant_dust_plume.mp4",
+          "source_id": "V003",
+          "duration_sec": 7.0,
+          "location": "Huế",
+          "role": "Xe ben chạy qua tạo luồng bụi cuộn mù mịt che khuất tầm nhìn"
+        }
+      ]
+    },
+    "06_workshop_lesson": {
+      "title": "Bài học sau tập huấn: Hỗ trợ thông tin, không phán xét",
+      "timecode": "1:30 - 1:49",
+      "target_duration_sec": 19.0,
+      "voice_summary": "Hệ thống thông minh không cố đưa ra quyết định thay con người, mà giúp con người quyết định tốt hơn.",
+      "visual_goal": "Hình ảnh tưới nước thủ công bất lực phản ánh các cách làm chắp vá cũ, đối chiếu với sự chuẩn hóa sau tập huấn.",
+      "total_cuts": 3,
+      "cuts": [
+        {
+          "cut_id": "cut_08_hue_ineffective_manual_watering",
+          "file_name": "cut_08_hue_ineffective_manual_watering.mp4",
+          "rel_path": "03_selected/footage/cut_08_hue_ineffective_manual_watering.mp4",
+          "source_id": "V008",
+          "duration_sec": 6.52,
+          "location": "Huế",
+          "role": "Công nhân cầm vòi nước tưới thủ công nhỏ bé bất lực trước bãi đất mênh mông"
+        },
+        {
+          "cut_id": "cut_08_hue_dust_vs_water_contrast",
+          "file_name": "cut_08_hue_dust_vs_water_contrast.mp4",
+          "rel_path": "03_selected/footage/cut_08_hue_dust_vs_water_contrast.mp4",
+          "source_id": "V008",
+          "duration_sec": 6.52,
+          "location": "Huế",
+          "role": "Tương phản giữa vòi xịt nước yếu ớt và cuộn bụi khổng lồ phía xa"
+        },
+        {
+          "cut_id": "cut_17_directive19_regulatory_action",
+          "file_name": "cut_17_directive19_regulatory_action.mp4",
+          "rel_path": "03_selected/footage/cut_17_directive19_regulatory_action.mp4",
+          "source_id": "V017",
+          "duration_sec": 7.0,
+          "location": "Hà Nội",
+          "role": "Văn bản chỉ đạo quản lý môi trường và xử lý vi phạm công trường"
+        }
+      ]
+    },
+    "07_responsible_ai": {
+      "title": "Responsible AI: Ưu tiên (Triage) ≠ Kết luận vi phạm",
+      "timecode": "1:49 - 2:08",
+      "target_duration_sec": 19.0,
+      "voice_summary": "AI tóm tắt, tìm thông tin thiếu, hỗ trợ checklist. Không tự xử phạt, không thay thế cơ quan quản lý.",
+      "visual_goal": "Cận cảnh UI AI Checklist Assistant kết hợp thực địa kiểm tra rào chắn, hệ thống phun sương dập bụi tự động chuẩn quy chuẩn.",
+      "total_cuts": 4,
+      "cuts": [
+        {
+          "cut_id": "cut_09_hcm_barrier_audit_fieldwork",
+          "file_name": "cut_09_hcm_barrier_audit_fieldwork.mp4",
+          "rel_path": "03_selected/footage/cut_09_hcm_barrier_audit_fieldwork.mp4",
+          "source_id": "V009",
+          "duration_sec": 7.0,
+          "location": "TP. Hồ Chí Minh",
+          "role": "Đoàn kiểm tra thực địa đo đạc, kiểm tra rào chắn và quy chuẩn môi trường"
+        },
+        {
+          "cut_id": "cut_09_hcm_automated_mist_spraying",
+          "file_name": "cut_09_hcm_automated_mist_spraying.mp4",
+          "rel_path": "03_selected/footage/cut_09_hcm_automated_mist_spraying.mp4",
+          "source_id": "V009",
+          "duration_sec": 7.0,
+          "location": "TP. Hồ Chí Minh",
+          "role": "Hệ thống vòi phun sương tự động trên đỉnh rào chắn dập bụi hiệu quả"
+        },
+        {
+          "cut_id": "cut_14_hn_mist_cannon_truck",
+          "file_name": "cut_14_hn_mist_cannon_truck.mp4",
+          "rel_path": "03_selected/footage/cut_14_hn_mist_cannon_truck.mp4",
+          "source_id": "V014",
+          "duration_sec": 7.0,
+          "location": "Hà Nội",
+          "role": "Xe vòi rồng chuyên dụng phun sương dập bụi công suất cao tại công trình lớn"
+        },
+        {
+          "cut_id": "cut_14_hn_ai_camera_monitoring",
+          "file_name": "cut_14_hn_ai_camera_monitoring.mp4",
+          "rel_path": "03_selected/footage/cut_14_hn_ai_camera_monitoring.mp4",
+          "source_id": "V014",
+          "duration_sec": 7.0,
+          "location": "Hà Nội",
+          "role": "Camera AI giám sát công trường hỗ trợ thu thập dữ liệu khách quan"
+        }
+      ]
+    },
+    "08_lean_pilot": {
+      "title": "Thử nhỏ, đo thật: Mô hình Lean Pilot 4-8 tuần",
+      "timecode": "2:08 - 2:28",
+      "target_duration_sec": 20.0,
+      "voice_summary": "Không bắt đầu bằng hạ tầng thật lớn. 1 pilot 4-8 tuần, 20-30 người dùng thật tại trường học/CLB.",
+      "visual_goal": "Thanh niên sử dụng Mobile App ngoài thực địa, kết nối không khí giao thông xanh tươi sáng khi chuyển sang BGM 2.",
+      "total_cuts": 2,
+      "cuts": [
+        {
+          "cut_id": "cut_10_hn_youth_field_action",
+          "file_name": "cut_10_hn_youth_field_action.mp4",
+          "rel_path": "03_selected/footage/cut_10_hn_youth_field_action.mp4",
+          "source_id": "V010",
+          "duration_sec": 6.0,
+          "location": "Hà Nội",
+          "role": "Thanh niên trẻ năng động trao đổi, khảo sát và ghi nhận thực địa"
+        },
+        {
+          "cut_id": "cut_11_hn_green_bus_cruising",
+          "file_name": "cut_11_hn_green_bus_cruising.mp4",
+          "rel_path": "03_selected/footage/cut_11_hn_green_bus_cruising.mp4",
+          "source_id": "V011",
+          "duration_sec": 7.0,
+          "location": "Hà Nội",
+          "role": "Xe buýt điện VinBus lăn bánh êm ái trên đường phố hiện đại, giảm phát thải"
+        }
+      ]
+    },
+    "09_metrics": {
+      "title": "Đo lường giá trị thật: 4 Chỉ số hành động",
+      "timecode": "2:28 - 2:45",
+      "target_duration_sec": 17.0,
+      "voice_summary": "Bao nhiêu vụ việc đủ bằng chứng? Thời gian phản hồi bao lâu? Bao nhiêu vụ việc có kết quả?",
+      "visual_goal": "Dashboard UI 4 chỉ số đo lường thực nghiệm (kèm nhãn 'Mục tiêu Pilot / Demo Model').",
+      "total_cuts": 1,
+      "cuts": [
+        {
+          "cut_id": "cut_09_hcm_automated_mist_spraying",
+          "file_name": "cut_09_hcm_automated_mist_spraying.mp4",
+          "rel_path": "03_selected/footage/cut_09_hcm_automated_mist_spraying.mp4",
+          "source_id": "V009",
+          "duration_sec": 7.0,
+          "location": "TP. Hồ Chí Minh",
+          "role": "Hệ thống vòi phun sương tự động trên đỉnh rào chắn dập bụi hiệu quả"
+        }
+      ]
+    },
+    "10_community": {
+      "title": "Cộng đồng là mắt xích: Sức mạnh Thanh niên & CLB",
+      "timecode": "2:45 - 3:00",
+      "target_duration_sec": 15.0,
+      "voice_summary": "Bắt đầu từ những cộng đồng có động lực: trường học, CLB môi trường, người trẻ... ghi nhận tốt hơn, theo dõi lâu hơn.",
+      "visual_goal": "Hình ảnh thanh niên xung kích vì môi trường kết hợp UI Nhật ký đóng góp cộng đồng (Youth Activity Log).",
+      "total_cuts": 2,
+      "cuts": [
+        {
+          "cut_id": "cut_10_hn_youth_community_team",
+          "file_name": "cut_10_hn_youth_community_team.mp4",
+          "rel_path": "03_selected/footage/cut_10_hn_youth_community_team.mp4",
+          "source_id": "V010",
+          "duration_sec": 6.52,
+          "location": "Hà Nội",
+          "role": "Nhóm thanh niên tình nguyện viên đồng hành vì thành phố xanh sạch đẹp"
+        },
+        {
+          "cut_id": "cut_10_hn_youth_field_action",
+          "file_name": "cut_10_hn_youth_field_action.mp4",
+          "rel_path": "03_selected/footage/cut_10_hn_youth_field_action.mp4",
+          "source_id": "V010",
+          "duration_sec": 6.0,
+          "location": "Hà Nội",
+          "role": "Thanh niên trẻ năng động trao đổi, khảo sát và ghi nhận thực địa"
+        }
+      ]
+    },
+    "11_expansion": {
+      "title": "Một lõi quản trị tín hiệu — Mở rộng đa bài toán",
+      "timecode": "3:00 - 3:17",
+      "target_duration_sec": 17.0,
+      "voice_summary": "Cùng một lõi phát triển cho: Nước thải, Đốt rơm rạ, Thuốc bảo vệ thực vật, Tiếng ồn...",
+      "visual_goal": "Graphic trung tâm mở rộng 4 bài toán môi trường kết hợp cảnh quan đô thị sinh thái hiện đại.",
+      "total_cuts": 3,
+      "cuts": [
+        {
+          "cut_id": "cut_11_hn_clean_city_mobility",
+          "file_name": "cut_11_hn_clean_city_mobility.mp4",
+          "rel_path": "03_selected/footage/cut_11_hn_clean_city_mobility.mp4",
+          "source_id": "V011",
+          "duration_sec": 7.0,
+          "location": "Hà Nội",
+          "role": "Toàn cảnh phương tiện giao thông xanh sạch, hướng tới đô thị bền vững"
+        },
+        {
+          "cut_id": "cut_11_hn_green_bus_cruising",
+          "file_name": "cut_11_hn_green_bus_cruising.mp4",
+          "rel_path": "03_selected/footage/cut_11_hn_green_bus_cruising.mp4",
+          "source_id": "V011",
+          "duration_sec": 7.0,
+          "location": "Hà Nội",
+          "role": "Xe buýt điện VinBus lăn bánh êm ái trên đường phố hiện đại, giảm phát thải"
+        },
+        {
+          "cut_id": "cut_18_emission_sources_chart",
+          "file_name": "cut_18_emission_sources_chart.mp4",
+          "rel_path": "03_selected/footage/cut_18_emission_sources_chart.mp4",
+          "source_id": "V018",
+          "duration_sec": 7.0,
+          "location": "Toàn quốc",
+          "role": "Đồ họa phân tích cơ cấu các nguồn phát thải bụi mịn đô thị"
+        }
+      ]
+    },
+    "12_closing": {
+      "title": "Finale & Sứ mệnh: Có ưu tiên, Có bằng chứng, Có theo dõi",
+      "timecode": "3:17 - 3:30",
+      "target_duration_sec": 13.0,
+      "voice_summary": "DustGuard — Biến dữ liệu thành hành động quản lý có ưu tiên, có bằng chứng và có theo dõi.",
+      "visual_goal": "Montage 3 nhịp dồn dập: Thực địa ➔ Nền tảng ➔ Hành động con người, kết thúc bằng Logo DustGuard VN kiêu hãnh.",
+      "total_cuts": 2,
+      "cuts": [
+        {
+          "cut_id": "cut_01_hn_city_haze_wide",
+          "file_name": "cut_01_hn_city_haze_wide.mp4",
+          "rel_path": "03_selected/footage/cut_01_hn_city_haze_wide.mp4",
+          "source_id": "V001",
+          "duration_sec": 6.52,
+          "location": "Hà Nội",
+          "role": "Toàn cảnh góc rộng thành phố với tầng khói bụi lơ lửng cho đoạn kết montage"
+        },
+        {
+          "cut_id": "cut_09_hcm_barrier_audit_fieldwork",
+          "file_name": "cut_09_hcm_barrier_audit_fieldwork.mp4",
+          "rel_path": "03_selected/footage/cut_09_hcm_barrier_audit_fieldwork.mp4",
+          "source_id": "V009",
+          "duration_sec": 7.0,
+          "location": "TP. Hồ Chí Minh",
+          "role": "Đoàn kiểm tra thực địa đo đạc, kiểm tra rào chắn và quy chuẩn môi trường"
+        }
+      ]
+    }
+  },
+  "golden_cuts": [
+    {
+      "cut_id": "cut_01_hn_city_haze_pan",
+      "file_name": "cut_01_hn_city_haze_pan.mp4",
+      "rel_path": "03_selected/footage/cut_01_hn_city_haze_pan.mp4",
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/03_selected/footage/cut_01_hn_city_haze_pan.mp4",
+      "source_id": "V001",
+      "source_file": "flycam/clip_hn_01_city_haze.mp4",
+      "source_location": "Hà Nội",
+      "in_point_sec": 0.0,
+      "out_point_sec": 5.5,
+      "duration_sec": 5.52,
+      "width": 1920,
+      "height": 1080,
+      "fps": 25.0,
+      "bitrate_kbps": 1764.8,
+      "size_mb": 1.16,
+      "primary_segment": "01_hook",
+      "secondary_segments": [
+        "12_closing"
+      ],
+      "role": "Flycam panorama thành phố chìm trong lớp bụi mịn đô thị mở đầu phim",
+      "tags": [
+        "flycam",
+        "hà nội",
+        "sương bụi",
+        "toàn cảnh",
+        "panorama",
+        "đô thị"
+      ]
+    },
+    {
+      "cut_id": "cut_01_hn_city_haze_wide",
+      "file_name": "cut_01_hn_city_haze_wide.mp4",
+      "rel_path": "03_selected/footage/cut_01_hn_city_haze_wide.mp4",
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/03_selected/footage/cut_01_hn_city_haze_wide.mp4",
+      "source_id": "V001",
+      "source_file": "flycam/clip_hn_01_city_haze.mp4",
+      "source_location": "Hà Nội",
+      "in_point_sec": 5.0,
+      "out_point_sec": 11.5,
+      "duration_sec": 6.52,
+      "width": 1920,
+      "height": 1080,
+      "fps": 25.0,
+      "bitrate_kbps": 713.6,
+      "size_mb": 0.55,
+      "primary_segment": "12_closing",
+      "secondary_segments": [
+        "01_hook"
+      ],
+      "role": "Toàn cảnh góc rộng thành phố với tầng khói bụi lơ lửng cho đoạn kết montage",
+      "tags": [
+        "flycam",
+        "hà nội",
+        "toàn cảnh",
+        "bầu trời bụi",
+        "finale"
+      ]
+    },
+    {
+      "cut_id": "cut_02_hcm_construction_cranes",
+      "file_name": "cut_02_hcm_construction_cranes.mp4",
+      "rel_path": "03_selected/footage/cut_02_hcm_construction_cranes.mp4",
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/03_selected/footage/cut_02_hcm_construction_cranes.mp4",
+      "source_id": "V002",
+      "source_file": "construction/clip_hcm_01_construction_overview.mp4",
+      "source_location": "TP. Hồ Chí Minh",
+      "in_point_sec": 1.5,
+      "out_point_sec": 8.5,
+      "duration_sec": 7.0,
+      "width": 1920,
+      "height": 1080,
+      "fps": 25.0,
+      "bitrate_kbps": 1985.2,
+      "size_mb": 1.66,
+      "primary_segment": "01_hook",
+      "secondary_segments": [
+        "04_solution"
+      ],
+      "role": "Cần cẩu tháp xoay chuyển giữa đại công trường nhộn nhịp",
+      "tags": [
+        "công trường",
+        "cần cẩu tháp",
+        "tphcm",
+        "xây dựng",
+        "quy mô lớn"
+      ]
+    },
+    {
+      "cut_id": "cut_02_hcm_excavator_digging",
+      "file_name": "cut_02_hcm_excavator_digging.mp4",
+      "rel_path": "03_selected/footage/cut_02_hcm_excavator_digging.mp4",
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/03_selected/footage/cut_02_hcm_excavator_digging.mp4",
+      "source_id": "V002",
+      "source_file": "construction/clip_hcm_01_construction_overview.mp4",
+      "source_location": "TP. Hồ Chí Minh",
+      "in_point_sec": 9.5,
+      "out_point_sec": 16.0,
+      "duration_sec": 6.52,
+      "width": 1920,
+      "height": 1080,
+      "fps": 25.0,
+      "bitrate_kbps": 1950.3,
+      "size_mb": 1.52,
+      "primary_segment": "01_hook",
+      "secondary_segments": [
+        "04_solution"
+      ],
+      "role": "Máy xúc đào đất và đất đá công trường phát sinh bụi",
+      "tags": [
+        "máy xúc",
+        "đào đất",
+        "công trường",
+        "bụi đất",
+        "tphcm"
+      ]
+    },
+    {
+      "cut_id": "cut_03_hue_giant_dust_plume",
+      "file_name": "cut_03_hue_giant_dust_plume.mp4",
+      "rel_path": "03_selected/footage/cut_03_hue_giant_dust_plume.mp4",
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/03_selected/footage/cut_03_hue_giant_dust_plume.mp4",
+      "source_id": "V003",
+      "source_file": "dust/clip_hue_01_giant_dust_clouds.mp4",
+      "source_location": "Huế",
+      "in_point_sec": 2.5,
+      "out_point_sec": 9.5,
+      "duration_sec": 7.0,
+      "width": 1920,
+      "height": 1080,
+      "fps": 25.0,
+      "bitrate_kbps": 6004.6,
+      "size_mb": 5.01,
+      "primary_segment": "01_hook",
+      "secondary_segments": [
+        "05_core_logic"
+      ],
+      "role": "Xe ben chạy qua tạo luồng bụi cuộn mù mịt che khuất tầm nhìn",
+      "tags": [
+        "đám mây bụi",
+        "xe ben",
+        "huế 17ha",
+        "bụi mù mịt",
+        "ô nhiễm nặng"
+      ]
+    },
+    {
+      "cut_id": "cut_03_hue_dust_storm_close",
+      "file_name": "cut_03_hue_dust_storm_close.mp4",
+      "rel_path": "03_selected/footage/cut_03_hue_dust_storm_close.mp4",
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/03_selected/footage/cut_03_hue_dust_storm_close.mp4",
+      "source_id": "V003",
+      "source_file": "dust/clip_hue_01_giant_dust_clouds.mp4",
+      "source_location": "Huế",
+      "in_point_sec": 11.5,
+      "out_point_sec": 18.0,
+      "duration_sec": 6.52,
+      "width": 1920,
+      "height": 1080,
+      "fps": 25.0,
+      "bitrate_kbps": 8188.2,
+      "size_mb": 6.36,
+      "primary_segment": "01_hook",
+      "secondary_segments": [
+        "03_context"
+      ],
+      "role": "Cận cảnh đám bụi khổng lồ bao trùm cả con đường dân sinh",
+      "tags": [
+        "cận cảnh",
+        "bão bụi",
+        "che khuất",
+        "bụi công trình",
+        "thực địa"
+      ]
+    },
+    {
+      "cut_id": "cut_04_hcm_uncovered_truck",
+      "file_name": "cut_04_hcm_uncovered_truck.mp4",
+      "rel_path": "03_selected/footage/cut_04_hcm_uncovered_truck.mp4",
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/03_selected/footage/cut_04_hcm_uncovered_truck.mp4",
+      "source_id": "V004",
+      "source_file": "dust/clip_hcm_02_uncovered_truck_road_dust.mp4",
+      "source_location": "TP. Hồ Chí Minh",
+      "in_point_sec": 2.0,
+      "out_point_sec": 8.5,
+      "duration_sec": 6.52,
+      "width": 1920,
+      "height": 1080,
+      "fps": 25.0,
+      "bitrate_kbps": 1974.0,
+      "size_mb": 1.53,
+      "primary_segment": "02_problem",
+      "secondary_segments": [
+        "05_core_logic"
+      ],
+      "role": "Xe tải chở vật liệu không che bạt làm rơi vãi và bụi cuốn theo sau đuôi xe",
+      "tags": [
+        "xe tải không phủ bạt",
+        "rơi vãi",
+        "bụi đường phố",
+        "tphcm",
+        "vi phạm"
+      ]
+    },
+    {
+      "cut_id": "cut_04_hcm_roadside_dust",
+      "file_name": "cut_04_hcm_roadside_dust.mp4",
+      "rel_path": "03_selected/footage/cut_04_hcm_roadside_dust.mp4",
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/03_selected/footage/cut_04_hcm_roadside_dust.mp4",
+      "source_id": "V004",
+      "source_file": "dust/clip_hcm_02_uncovered_truck_road_dust.mp4",
+      "source_location": "TP. Hồ Chí Minh",
+      "in_point_sec": 10.0,
+      "out_point_sec": 16.5,
+      "duration_sec": 6.52,
+      "width": 1920,
+      "height": 1080,
+      "fps": 25.0,
+      "bitrate_kbps": 1698.8,
+      "size_mb": 1.32,
+      "primary_segment": "02_problem",
+      "secondary_segments": [
+        "05_core_logic"
+      ],
+      "role": "Bụi đường do xe tải cuốn lên che khuất người tham gia giao thông",
+      "tags": [
+        "bụi đường",
+        "người đi đường",
+        "tphcm",
+        "tầm nhìn",
+        "giao thông"
+      ]
+    },
+    {
+      "cut_id": "cut_05_hn_elderly_concern",
+      "file_name": "cut_05_hn_elderly_concern.mp4",
+      "rel_path": "03_selected/footage/cut_05_hn_elderly_concern.mp4",
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/03_selected/footage/cut_05_hn_elderly_concern.mp4",
+      "source_id": "V005",
+      "source_file": "people/clip_hn_02_citizen_elderly_concern.mp4",
+      "source_location": "Hà Nội",
+      "in_point_sec": 1.5,
+      "out_point_sec": 8.0,
+      "duration_sec": 6.52,
+      "width": 1920,
+      "height": 1080,
+      "fps": 25.0,
+      "bitrate_kbps": 3766.9,
+      "size_mb": 2.93,
+      "primary_segment": "02_problem",
+      "secondary_segments": [
+        "03_context"
+      ],
+      "role": "Người cao tuổi ngước nhìn bầu trời mờ đục với nét mặt lo âu sức khỏe",
+      "tags": [
+        "người cao tuổi",
+        "hà nội",
+        "lo lắng",
+        "sức khỏe",
+        "ngột ngạt",
+        "khẩu trang"
+      ]
+    },
+    {
+      "cut_id": "cut_05_hn_citizen_walking_mask",
+      "file_name": "cut_05_hn_citizen_walking_mask.mp4",
+      "rel_path": "03_selected/footage/cut_05_hn_citizen_walking_mask.mp4",
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/03_selected/footage/cut_05_hn_citizen_walking_mask.mp4",
+      "source_id": "V005",
+      "source_file": "people/clip_hn_02_citizen_elderly_concern.mp4",
+      "source_location": "Hà Nội",
+      "in_point_sec": 9.0,
+      "out_point_sec": 15.5,
+      "duration_sec": 6.52,
+      "width": 1920,
+      "height": 1080,
+      "fps": 25.0,
+      "bitrate_kbps": 4431.2,
+      "size_mb": 3.44,
+      "primary_segment": "02_problem",
+      "secondary_segments": [
+        "03_context"
+      ],
+      "role": "Người dân đeo khẩu trang đi lại giữa không gian mờ mịt bụi",
+      "tags": [
+        "người dân",
+        "khẩu trang",
+        "phố phường",
+        "hà nội",
+        "sinh hoạt"
+      ]
+    },
+    {
+      "cut_id": "cut_06_hue_children_home_dust",
+      "file_name": "cut_06_hue_children_home_dust.mp4",
+      "rel_path": "03_selected/footage/cut_06_hue_children_home_dust.mp4",
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/03_selected/footage/cut_06_hue_children_home_dust.mp4",
+      "source_id": "V006",
+      "source_file": "people/clip_hue_03_children_respiratory_concern.mp4",
+      "source_location": "Huế",
+      "in_point_sec": 2.0,
+      "out_point_sec": 8.5,
+      "duration_sec": 6.52,
+      "width": 1920,
+      "height": 1080,
+      "fps": 25.0,
+      "bitrate_kbps": 5258.0,
+      "size_mb": 4.09,
+      "primary_segment": "03_context",
+      "secondary_segments": [
+        "02_problem"
+      ],
+      "role": "Trẻ nhỏ và người nhà bên khung cửa bám bụi dày đặc gần công trường",
+      "tags": [
+        "trẻ em",
+        "viêm hô hấp",
+        "nhà dân",
+        "huế",
+        "ảnh hưởng sức khỏe"
+      ]
+    },
+    {
+      "cut_id": "cut_06_hue_dust_residential",
+      "file_name": "cut_06_hue_dust_residential.mp4",
+      "rel_path": "03_selected/footage/cut_06_hue_dust_residential.mp4",
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/03_selected/footage/cut_06_hue_dust_residential.mp4",
+      "source_id": "V006",
+      "source_file": "people/clip_hue_03_children_respiratory_concern.mp4",
+      "source_location": "Huế",
+      "in_point_sec": 9.5,
+      "out_point_sec": 16.0,
+      "duration_sec": 6.52,
+      "width": 1920,
+      "height": 1080,
+      "fps": 25.0,
+      "bitrate_kbps": 5636.0,
+      "size_mb": 4.38,
+      "primary_segment": "03_context",
+      "secondary_segments": [
+        "02_problem"
+      ],
+      "role": "Cảnh sinh hoạt gia đình và khu dân cư chịu ảnh hưởng trực tiếp từ bụi",
+      "tags": [
+        "khu dân cư",
+        "nhà cửa",
+        "bụi bám",
+        "sinh hoạt",
+        "huế"
+      ]
+    },
+    {
+      "cut_id": "cut_07_hcm_wiping_thick_dust",
+      "file_name": "cut_07_hcm_wiping_thick_dust.mp4",
+      "rel_path": "03_selected/footage/cut_07_hcm_wiping_thick_dust.mp4",
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/03_selected/footage/cut_07_hcm_wiping_thick_dust.mp4",
+      "source_id": "V007",
+      "source_file": "people/clip_hcm_03_resident_frustration.mp4",
+      "source_location": "TP. Hồ Chí Minh",
+      "in_point_sec": 2.0,
+      "out_point_sec": 9.0,
+      "duration_sec": 7.0,
+      "width": 1920,
+      "height": 1080,
+      "fps": 25.0,
+      "bitrate_kbps": 5458.5,
+      "size_mb": 4.55,
+      "primary_segment": "03_context",
+      "secondary_segments": [
+        "02_problem"
+      ],
+      "role": "Cận cảnh bàn tay quẹt một vệt dài lớp bụi bám dày đặc trên đồ dùng trong nhà",
+      "tags": [
+        "lau chùi",
+        "bụi bám dày",
+        "bức xúc",
+        "người dân",
+        "tphcm"
+      ]
+    },
+    {
+      "cut_id": "cut_07_hcm_closed_doors",
+      "file_name": "cut_07_hcm_closed_doors.mp4",
+      "rel_path": "03_selected/footage/cut_07_hcm_closed_doors.mp4",
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/03_selected/footage/cut_07_hcm_closed_doors.mp4",
+      "source_id": "V007",
+      "source_file": "people/clip_hcm_03_resident_frustration.mp4",
+      "source_location": "TP. Hồ Chí Minh",
+      "in_point_sec": 10.0,
+      "out_point_sec": 16.5,
+      "duration_sec": 6.52,
+      "width": 1920,
+      "height": 1080,
+      "fps": 25.0,
+      "bitrate_kbps": 6648.9,
+      "size_mb": 5.17,
+      "primary_segment": "03_context",
+      "secondary_segments": [
+        "02_problem"
+      ],
+      "role": "Cửa nhà đóng kín mít then cài để ngăn khói bụi từ công trình",
+      "tags": [
+        "đóng cửa kín",
+        "ngăn bụi",
+        "tphcm",
+        "bất tiện",
+        "đời sống"
+      ]
+    },
+    {
+      "cut_id": "cut_08_hue_ineffective_manual_watering",
+      "file_name": "cut_08_hue_ineffective_manual_watering.mp4",
+      "rel_path": "03_selected/footage/cut_08_hue_ineffective_manual_watering.mp4",
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/03_selected/footage/cut_08_hue_ineffective_manual_watering.mp4",
+      "source_id": "V008",
+      "source_file": "construction/clip_hue_04_ineffective_manual_watering.mp4",
+      "source_location": "Huế",
+      "in_point_sec": 1.5,
+      "out_point_sec": 8.0,
+      "duration_sec": 6.52,
+      "width": 1920,
+      "height": 1080,
+      "fps": 25.0,
+      "bitrate_kbps": 6888.8,
+      "size_mb": 5.35,
+      "primary_segment": "06_workshop_lesson",
+      "secondary_segments": [
+        "01_hook"
+      ],
+      "role": "Công nhân cầm vòi nước tưới thủ công nhỏ bé bất lực trước bãi đất mênh mông",
+      "tags": [
+        "tưới nước thủ công",
+        "bất lực",
+        "bụi vẫn mù trời",
+        "đối phó",
+        "huế"
+      ]
+    },
+    {
+      "cut_id": "cut_08_hue_dust_vs_water_contrast",
+      "file_name": "cut_08_hue_dust_vs_water_contrast.mp4",
+      "rel_path": "03_selected/footage/cut_08_hue_dust_vs_water_contrast.mp4",
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/03_selected/footage/cut_08_hue_dust_vs_water_contrast.mp4",
+      "source_id": "V008",
+      "source_file": "construction/clip_hue_04_ineffective_manual_watering.mp4",
+      "source_location": "Huế",
+      "in_point_sec": 8.0,
+      "out_point_sec": 14.5,
+      "duration_sec": 6.52,
+      "width": 1920,
+      "height": 1080,
+      "fps": 25.0,
+      "bitrate_kbps": 4207.7,
+      "size_mb": 3.27,
+      "primary_segment": "06_workshop_lesson",
+      "secondary_segments": [
+        "07_responsible_ai"
+      ],
+      "role": "Tương phản giữa vòi xịt nước yếu ớt và cuộn bụi khổng lồ phía xa",
+      "tags": [
+        "tương phản",
+        "vòi nước",
+        "bụi cuộn",
+        "thiếu giải pháp",
+        "huế"
+      ]
+    },
+    {
+      "cut_id": "cut_09_hcm_barrier_audit_fieldwork",
+      "file_name": "cut_09_hcm_barrier_audit_fieldwork.mp4",
+      "rel_path": "03_selected/footage/cut_09_hcm_barrier_audit_fieldwork.mp4",
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/03_selected/footage/cut_09_hcm_barrier_audit_fieldwork.mp4",
+      "source_id": "V009",
+      "source_file": "construction/clip_hcm_04_barrier_water_spraying_audit.mp4",
+      "source_location": "TP. Hồ Chí Minh",
+      "in_point_sec": 1.5,
+      "out_point_sec": 8.5,
+      "duration_sec": 7.0,
+      "width": 1920,
+      "height": 1080,
+      "fps": 25.0,
+      "bitrate_kbps": 7018.6,
+      "size_mb": 5.86,
+      "primary_segment": "07_responsible_ai",
+      "secondary_segments": [
+        "12_closing",
+        "05_core_logic"
+      ],
+      "role": "Đoàn kiểm tra thực địa đo đạc, kiểm tra rào chắn và quy chuẩn môi trường",
+      "tags": [
+        "kiểm tra thực địa",
+        "đoàn kiểm tra",
+        "rào chắn",
+        "tphcm",
+        "thanh tra"
+      ]
+    },
+    {
+      "cut_id": "cut_09_hcm_automated_mist_spraying",
+      "file_name": "cut_09_hcm_automated_mist_spraying.mp4",
+      "rel_path": "03_selected/footage/cut_09_hcm_automated_mist_spraying.mp4",
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/03_selected/footage/cut_09_hcm_automated_mist_spraying.mp4",
+      "source_id": "V009",
+      "source_file": "construction/clip_hcm_04_barrier_water_spraying_audit.mp4",
+      "source_location": "TP. Hồ Chí Minh",
+      "in_point_sec": 9.5,
+      "out_point_sec": 16.5,
+      "duration_sec": 7.0,
+      "width": 1920,
+      "height": 1080,
+      "fps": 25.0,
+      "bitrate_kbps": 7482.4,
+      "size_mb": 6.24,
+      "primary_segment": "07_responsible_ai",
+      "secondary_segments": [
+        "09_metrics",
+        "12_closing"
+      ],
+      "role": "Hệ thống vòi phun sương tự động trên đỉnh rào chắn dập bụi hiệu quả",
+      "tags": [
+        "phun sương tự động",
+        "dập bụi",
+        "rào chắn",
+        "tphcm",
+        "biện pháp chuẩn"
+      ]
+    },
+    {
+      "cut_id": "cut_10_hn_youth_field_action",
+      "file_name": "cut_10_hn_youth_field_action.mp4",
+      "rel_path": "03_selected/footage/cut_10_hn_youth_field_action.mp4",
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/03_selected/footage/cut_10_hn_youth_field_action.mp4",
+      "source_id": "V010",
+      "source_file": "people/clip_hn_04_youth_action.mp4",
+      "source_location": "Hà Nội",
+      "in_point_sec": 1.0,
+      "out_point_sec": 7.0,
+      "duration_sec": 6.0,
+      "width": 1920,
+      "height": 1080,
+      "fps": 25.0,
+      "bitrate_kbps": 3362.0,
+      "size_mb": 2.4,
+      "primary_segment": "08_lean_pilot",
+      "secondary_segments": [
+        "10_community"
+      ],
+      "role": "Thanh niên trẻ năng động trao đổi, khảo sát và ghi nhận thực địa",
+      "tags": [
+        "thanh niên",
+        "hành động",
+        "khảo sát thực địa",
+        "môi trường",
+        "tuổi trẻ"
+      ]
+    },
+    {
+      "cut_id": "cut_10_hn_youth_community_team",
+      "file_name": "cut_10_hn_youth_community_team.mp4",
+      "rel_path": "03_selected/footage/cut_10_hn_youth_community_team.mp4",
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/03_selected/footage/cut_10_hn_youth_community_team.mp4",
+      "source_id": "V010",
+      "source_file": "people/clip_hn_04_youth_action.mp4",
+      "source_location": "Hà Nội",
+      "in_point_sec": 7.0,
+      "out_point_sec": 13.5,
+      "duration_sec": 6.52,
+      "width": 1920,
+      "height": 1080,
+      "fps": 25.0,
+      "bitrate_kbps": 2952.2,
+      "size_mb": 2.29,
+      "primary_segment": "10_community",
+      "secondary_segments": [
+        "08_lean_pilot"
+      ],
+      "role": "Nhóm thanh niên tình nguyện viên đồng hành vì thành phố xanh sạch đẹp",
+      "tags": [
+        "tình nguyện",
+        "nhóm thanh niên",
+        "cộng đồng",
+        "đóng góp",
+        "hà nội"
+      ]
+    },
+    {
+      "cut_id": "cut_11_hn_green_bus_cruising",
+      "file_name": "cut_11_hn_green_bus_cruising.mp4",
+      "rel_path": "03_selected/footage/cut_11_hn_green_bus_cruising.mp4",
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/03_selected/footage/cut_11_hn_green_bus_cruising.mp4",
+      "source_id": "V011",
+      "source_file": "vietnam/clip_hn2_04_green_transport_electric_bus.mp4",
+      "source_location": "Hà Nội",
+      "in_point_sec": 2.0,
+      "out_point_sec": 9.0,
+      "duration_sec": 7.0,
+      "width": 1920,
+      "height": 1080,
+      "fps": 25.0,
+      "bitrate_kbps": 8594.1,
+      "size_mb": 7.17,
+      "primary_segment": "08_lean_pilot",
+      "secondary_segments": [
+        "11_expansion"
+      ],
+      "role": "Xe buýt điện VinBus lăn bánh êm ái trên đường phố hiện đại, giảm phát thải",
+      "tags": [
+        "xe buýt điện",
+        "vinbus",
+        "giao thông xanh",
+        "hà nội",
+        "không phát thải"
+      ]
+    },
+    {
+      "cut_id": "cut_11_hn_clean_city_mobility",
+      "file_name": "cut_11_hn_clean_city_mobility.mp4",
+      "rel_path": "03_selected/footage/cut_11_hn_clean_city_mobility.mp4",
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/03_selected/footage/cut_11_hn_clean_city_mobility.mp4",
+      "source_id": "V011",
+      "source_file": "vietnam/clip_hn2_04_green_transport_electric_bus.mp4",
+      "source_location": "Hà Nội",
+      "in_point_sec": 10.5,
+      "out_point_sec": 17.5,
+      "duration_sec": 7.0,
+      "width": 1920,
+      "height": 1080,
+      "fps": 25.0,
+      "bitrate_kbps": 5788.3,
+      "size_mb": 4.83,
+      "primary_segment": "11_expansion",
+      "secondary_segments": [
+        "08_lean_pilot"
+      ],
+      "role": "Toàn cảnh phương tiện giao thông xanh sạch, hướng tới đô thị bền vững",
+      "tags": [
+        "đô thị xanh",
+        "giao thông sạch",
+        "tương lai bền vững",
+        "hà nội"
+      ]
+    },
+    {
+      "cut_id": "cut_14_hn_mist_cannon_truck",
+      "file_name": "cut_14_hn_mist_cannon_truck.mp4",
+      "rel_path": "03_selected/footage/cut_14_hn_mist_cannon_truck.mp4",
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/03_selected/footage/cut_14_hn_mist_cannon_truck.mp4",
+      "source_id": "V014",
+      "source_file": "construction/clip_hn2_03_mist_cannon_truck_and_ai_camera.mp4",
+      "source_location": "Hà Nội",
+      "in_point_sec": 1.5,
+      "out_point_sec": 8.5,
+      "duration_sec": 7.0,
+      "width": 1920,
+      "height": 1080,
+      "fps": 25.0,
+      "bitrate_kbps": 2923.5,
+      "size_mb": 2.44,
+      "primary_segment": "07_responsible_ai",
+      "secondary_segments": [
+        "06_workshop_lesson"
+      ],
+      "role": "Xe vòi rồng chuyên dụng phun sương dập bụi công suất cao tại công trình lớn",
+      "tags": [
+        "xe vòi rồng",
+        "phun sương",
+        "dập bụi công suất lớn",
+        "hà nội",
+        "hiện đại"
+      ]
+    },
+    {
+      "cut_id": "cut_14_hn_ai_camera_monitoring",
+      "file_name": "cut_14_hn_ai_camera_monitoring.mp4",
+      "rel_path": "03_selected/footage/cut_14_hn_ai_camera_monitoring.mp4",
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/03_selected/footage/cut_14_hn_ai_camera_monitoring.mp4",
+      "source_id": "V014",
+      "source_file": "construction/clip_hn2_03_mist_cannon_truck_and_ai_camera.mp4",
+      "source_location": "Hà Nội",
+      "in_point_sec": 9.5,
+      "out_point_sec": 16.5,
+      "duration_sec": 7.0,
+      "width": 1920,
+      "height": 1080,
+      "fps": 25.0,
+      "bitrate_kbps": 4569.7,
+      "size_mb": 3.81,
+      "primary_segment": "07_responsible_ai",
+      "secondary_segments": [
+        "05_core_logic"
+      ],
+      "role": "Camera AI giám sát công trường hỗ trợ thu thập dữ liệu khách quan",
+      "tags": [
+        "camera ai",
+        "giám sát công trường",
+        "hà nội",
+        "công nghệ hỗ trợ"
+      ]
+    },
+    {
+      "cut_id": "cut_15_hue_dust_covered_trees",
+      "file_name": "cut_15_hue_dust_covered_trees.mp4",
+      "rel_path": "03_selected/footage/cut_15_hue_dust_covered_trees.mp4",
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/03_selected/footage/cut_15_hue_dust_covered_trees.mp4",
+      "source_id": "V015",
+      "source_file": "dust/clip_hue_02_dust_on_trees_and_houses.mp4",
+      "source_location": "Huế",
+      "in_point_sec": 2.0,
+      "out_point_sec": 8.5,
+      "duration_sec": 6.52,
+      "width": 1920,
+      "height": 1080,
+      "fps": 25.0,
+      "bitrate_kbps": 6055.7,
+      "size_mb": 4.71,
+      "primary_segment": "03_context",
+      "secondary_segments": [
+        "02_problem"
+      ],
+      "role": "Cây cối ven đường trắng xóa xơ xác vì bụi công trường kéo dài",
+      "tags": [
+        "cây cối bám bụi",
+        "trắng xóa",
+        "môi trường suy giảm",
+        "huế"
+      ]
+    },
+    {
+      "cut_id": "cut_15_hue_dust_covered_rooftops",
+      "file_name": "cut_15_hue_dust_covered_rooftops.mp4",
+      "rel_path": "03_selected/footage/cut_15_hue_dust_covered_rooftops.mp4",
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/03_selected/footage/cut_15_hue_dust_covered_rooftops.mp4",
+      "source_id": "V015",
+      "source_file": "dust/clip_hue_02_dust_on_trees_and_houses.mp4",
+      "source_location": "Huế",
+      "in_point_sec": 9.5,
+      "out_point_sec": 16.0,
+      "duration_sec": 6.52,
+      "width": 1920,
+      "height": 1080,
+      "fps": 25.0,
+      "bitrate_kbps": 5329.1,
+      "size_mb": 4.14,
+      "primary_segment": "03_context",
+      "secondary_segments": [
+        "01_hook"
+      ],
+      "role": "Mái tôn và hiên nhà dân cư phủ đầy lớp bụi đỏ dày đặc",
+      "tags": [
+        "mái nhà",
+        "bụi đỏ",
+        "nhà dân",
+        "huế",
+        "hậu quả thực tế"
+      ]
+    },
+    {
+      "cut_id": "cut_16_hn_traffic_dust_jam",
+      "file_name": "cut_16_hn_traffic_dust_jam.mp4",
+      "rel_path": "03_selected/footage/cut_16_hn_traffic_dust_jam.mp4",
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/03_selected/footage/cut_16_hn_traffic_dust_jam.mp4",
+      "source_id": "V016",
+      "source_file": "vietnam/clip_hn_03_traffic_dust_congestion.mp4",
+      "source_location": "Hà Nội",
+      "in_point_sec": 2.0,
+      "out_point_sec": 9.0,
+      "duration_sec": 7.0,
+      "width": 1920,
+      "height": 1080,
+      "fps": 25.0,
+      "bitrate_kbps": 9924.5,
+      "size_mb": 8.28,
+      "primary_segment": "02_problem",
+      "secondary_segments": [
+        "01_hook"
+      ],
+      "role": "Đoàn xe máy chìm trong khói bụi và ùn tắc giao thông giờ cao điểm",
+      "tags": [
+        "ùn tắc giao thông",
+        "khói bụi",
+        "xe máy",
+        "hà nội",
+        "giờ cao điểm"
+      ]
+    },
+    {
+      "cut_id": "cut_17_directive19_regulatory_action",
+      "file_name": "cut_17_directive19_regulatory_action.mp4",
+      "rel_path": "03_selected/footage/cut_17_directive19_regulatory_action.mp4",
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/03_selected/footage/cut_17_directive19_regulatory_action.mp4",
+      "source_id": "V017",
+      "source_file": "vietnam/clip_hn2_02_directive19_halt_construction.mp4",
+      "source_location": "Hà Nội",
+      "in_point_sec": 2.0,
+      "out_point_sec": 9.0,
+      "duration_sec": 7.0,
+      "width": 1920,
+      "height": 1080,
+      "fps": 25.0,
+      "bitrate_kbps": 2598.3,
+      "size_mb": 2.17,
+      "primary_segment": "06_workshop_lesson",
+      "secondary_segments": [
+        "07_responsible_ai"
+      ],
+      "role": "Văn bản chỉ đạo quản lý môi trường và xử lý vi phạm công trường",
+      "tags": [
+        "chỉ thị 19",
+        "pháp lý",
+        "quản lý môi trường",
+        "đình chỉ thi công",
+        "hà nội"
+      ]
+    },
+    {
+      "cut_id": "cut_18_emission_sources_chart",
+      "file_name": "cut_18_emission_sources_chart.mp4",
+      "rel_path": "03_selected/footage/cut_18_emission_sources_chart.mp4",
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/03_selected/footage/cut_18_emission_sources_chart.mp4",
+      "source_id": "V018",
+      "source_file": "project_demo/clip_hn2_01_emission_sources_graphic.mp4",
+      "source_location": "Toàn quốc",
+      "in_point_sec": 1.5,
+      "out_point_sec": 8.5,
+      "duration_sec": 7.0,
+      "width": 1920,
+      "height": 1080,
+      "fps": 25.0,
+      "bitrate_kbps": 4370.6,
+      "size_mb": 3.65,
+      "primary_segment": "02_problem",
+      "secondary_segments": [
+        "11_expansion"
+      ],
+      "role": "Đồ họa phân tích cơ cấu các nguồn phát thải bụi mịn đô thị",
+      "tags": [
+        "đồ họa",
+        "nguồn phát thải",
+        "phân tích",
+        "dữ liệu bụi",
+        "đô thị"
+      ]
+    }
+  ],
+  "source_inventory": {
+    "construction/clip_hcm_01_construction_overview.mp4": {
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/02_sources/real_video/construction/clip_hcm_01_construction_overview.mp4",
+      "rel_path": "construction/clip_hcm_01_construction_overview.mp4",
+      "filename": "clip_hcm_01_construction_overview.mp4",
+      "folder": "construction",
+      "width": 640,
+      "height": 360,
+      "aspect_ratio": "640:360",
+      "fps": 25.0,
+      "codec": "h264",
+      "pix_fmt": "yuv420p",
+      "duration_sec": 20.0,
+      "bitrate_kbps": 482.7,
+      "size_mb": 1.15,
+      "size_bytes": 1206861
+    },
+    "construction/clip_hcm_04_barrier_water_spraying_audit.mp4": {
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/02_sources/real_video/construction/clip_hcm_04_barrier_water_spraying_audit.mp4",
+      "rel_path": "construction/clip_hcm_04_barrier_water_spraying_audit.mp4",
+      "filename": "clip_hcm_04_barrier_water_spraying_audit.mp4",
+      "folder": "construction",
+      "width": 640,
+      "height": 360,
+      "aspect_ratio": "640:360",
+      "fps": 25.0,
+      "codec": "h264",
+      "pix_fmt": "yuv420p",
+      "duration_sec": 25.0,
+      "bitrate_kbps": 1296.4,
+      "size_mb": 3.86,
+      "size_bytes": 4051405
+    },
+    "construction/clip_hn2_03_mist_cannon_truck_and_ai_camera.mp4": {
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/02_sources/real_video/construction/clip_hn2_03_mist_cannon_truck_and_ai_camera.mp4",
+      "rel_path": "construction/clip_hn2_03_mist_cannon_truck_and_ai_camera.mp4",
+      "filename": "clip_hn2_03_mist_cannon_truck_and_ai_camera.mp4",
+      "folder": "construction",
+      "width": 640,
+      "height": 360,
+      "aspect_ratio": "640:360",
+      "fps": 25.0,
+      "codec": "h264",
+      "pix_fmt": "yuv420p",
+      "duration_sec": 20.0,
+      "bitrate_kbps": 782.3,
+      "size_mb": 1.87,
+      "size_bytes": 1955794
+    },
+    "construction/clip_hue_04_ineffective_manual_watering.mp4": {
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/02_sources/real_video/construction/clip_hue_04_ineffective_manual_watering.mp4",
+      "rel_path": "construction/clip_hue_04_ineffective_manual_watering.mp4",
+      "filename": "clip_hue_04_ineffective_manual_watering.mp4",
+      "folder": "construction",
+      "width": 640,
+      "height": 360,
+      "aspect_ratio": "640:360",
+      "fps": 25.0,
+      "codec": "h264",
+      "pix_fmt": "yuv420p",
+      "duration_sec": 15.0,
+      "bitrate_kbps": 1092.9,
+      "size_mb": 1.95,
+      "size_bytes": 2049191
+    },
+    "dust/clip_hcm_02_uncovered_truck_road_dust.mp4": {
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/02_sources/real_video/dust/clip_hcm_02_uncovered_truck_road_dust.mp4",
+      "rel_path": "dust/clip_hcm_02_uncovered_truck_road_dust.mp4",
+      "filename": "clip_hcm_02_uncovered_truck_road_dust.mp4",
+      "folder": "dust",
+      "width": 640,
+      "height": 360,
+      "aspect_ratio": "640:360",
+      "fps": 25.0,
+      "codec": "h264",
+      "pix_fmt": "yuv420p",
+      "duration_sec": 25.0,
+      "bitrate_kbps": 681.7,
+      "size_mb": 2.03,
+      "size_bytes": 2130266
+    },
+    "dust/clip_hue_01_giant_dust_clouds.mp4": {
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/02_sources/real_video/dust/clip_hue_01_giant_dust_clouds.mp4",
+      "rel_path": "dust/clip_hue_01_giant_dust_clouds.mp4",
+      "filename": "clip_hue_01_giant_dust_clouds.mp4",
+      "folder": "dust",
+      "width": 640,
+      "height": 360,
+      "aspect_ratio": "640:360",
+      "fps": 25.0,
+      "codec": "h264",
+      "pix_fmt": "yuv420p",
+      "duration_sec": 25.0,
+      "bitrate_kbps": 1175.1,
+      "size_mb": 3.5,
+      "size_bytes": 3672330
+    },
+    "dust/clip_hue_02_dust_on_trees_and_houses.mp4": {
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/02_sources/real_video/dust/clip_hue_02_dust_on_trees_and_houses.mp4",
+      "rel_path": "dust/clip_hue_02_dust_on_trees_and_houses.mp4",
+      "filename": "clip_hue_02_dust_on_trees_and_houses.mp4",
+      "folder": "dust",
+      "width": 640,
+      "height": 360,
+      "aspect_ratio": "640:360",
+      "fps": 25.0,
+      "codec": "h264",
+      "pix_fmt": "yuv420p",
+      "duration_sec": 20.0,
+      "bitrate_kbps": 1146.5,
+      "size_mb": 2.73,
+      "size_bytes": 2866238
+    },
+    "flycam/clip_01_city_haze.mp4": {
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/02_sources/real_video/flycam/clip_01_city_haze.mp4",
+      "rel_path": "flycam/clip_01_city_haze.mp4",
+      "filename": "clip_01_city_haze.mp4",
+      "folder": "flycam",
+      "width": 640,
+      "height": 360,
+      "aspect_ratio": "640:360",
+      "fps": 25.0,
+      "codec": "h264",
+      "pix_fmt": "yuv420p",
+      "duration_sec": 18.0,
+      "bitrate_kbps": 373.3,
+      "size_mb": 0.8,
+      "size_bytes": 839819
+    },
+    "flycam/clip_hn_01_city_haze.mp4": {
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/02_sources/real_video/flycam/clip_hn_01_city_haze.mp4",
+      "rel_path": "flycam/clip_hn_01_city_haze.mp4",
+      "filename": "clip_hn_01_city_haze.mp4",
+      "folder": "flycam",
+      "width": 640,
+      "height": 360,
+      "aspect_ratio": "640:360",
+      "fps": 25.0,
+      "codec": "h264",
+      "pix_fmt": "yuv420p",
+      "duration_sec": 18.0,
+      "bitrate_kbps": 373.3,
+      "size_mb": 0.8,
+      "size_bytes": 839819
+    },
+    "people/clip_hcm_03_resident_frustration.mp4": {
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/02_sources/real_video/people/clip_hcm_03_resident_frustration.mp4",
+      "rel_path": "people/clip_hcm_03_resident_frustration.mp4",
+      "filename": "clip_hcm_03_resident_frustration.mp4",
+      "folder": "people",
+      "width": 640,
+      "height": 360,
+      "aspect_ratio": "640:360",
+      "fps": 25.0,
+      "codec": "h264",
+      "pix_fmt": "yuv420p",
+      "duration_sec": 25.0,
+      "bitrate_kbps": 1141.1,
+      "size_mb": 3.4,
+      "size_bytes": 3565987
+    },
+    "people/clip_hn_02_citizen_elderly_concern.mp4": {
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/02_sources/real_video/people/clip_hn_02_citizen_elderly_concern.mp4",
+      "rel_path": "people/clip_hn_02_citizen_elderly_concern.mp4",
+      "filename": "clip_hn_02_citizen_elderly_concern.mp4",
+      "folder": "people",
+      "width": 640,
+      "height": 360,
+      "aspect_ratio": "640:360",
+      "fps": 25.0,
+      "codec": "h264",
+      "pix_fmt": "yuv420p",
+      "duration_sec": 20.0,
+      "bitrate_kbps": 883.2,
+      "size_mb": 2.11,
+      "size_bytes": 2207927
+    },
+    "people/clip_hn_04_youth_action.mp4": {
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/02_sources/real_video/people/clip_hn_04_youth_action.mp4",
+      "rel_path": "people/clip_hn_04_youth_action.mp4",
+      "filename": "clip_hn_04_youth_action.mp4",
+      "folder": "people",
+      "width": 640,
+      "height": 360,
+      "aspect_ratio": "640:360",
+      "fps": 25.0,
+      "codec": "h264",
+      "pix_fmt": "yuv420p",
+      "duration_sec": 14.0,
+      "bitrate_kbps": 730.1,
+      "size_mb": 1.22,
+      "size_bytes": 1277636
+    },
+    "people/clip_hue_03_children_respiratory_concern.mp4": {
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/02_sources/real_video/people/clip_hue_03_children_respiratory_concern.mp4",
+      "rel_path": "people/clip_hue_03_children_respiratory_concern.mp4",
+      "filename": "clip_hue_03_children_respiratory_concern.mp4",
+      "folder": "people",
+      "width": 640,
+      "height": 360,
+      "aspect_ratio": "640:360",
+      "fps": 25.0,
+      "codec": "h264",
+      "pix_fmt": "yuv420p",
+      "duration_sec": 20.0,
+      "bitrate_kbps": 976.8,
+      "size_mb": 2.33,
+      "size_bytes": 2442055
+    },
+    "project_demo/clip_hn2_01_emission_sources_graphic.mp4": {
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/02_sources/real_video/project_demo/clip_hn2_01_emission_sources_graphic.mp4",
+      "rel_path": "project_demo/clip_hn2_01_emission_sources_graphic.mp4",
+      "filename": "clip_hn2_01_emission_sources_graphic.mp4",
+      "folder": "project_demo",
+      "width": 640,
+      "height": 360,
+      "aspect_ratio": "640:360",
+      "fps": 25.0,
+      "codec": "h264",
+      "pix_fmt": "yuv420p",
+      "duration_sec": 20.0,
+      "bitrate_kbps": 644.2,
+      "size_mb": 1.54,
+      "size_bytes": 1610410
+    },
+    "vietnam/clip_02_citizen_elderly_concern.mp4": {
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/02_sources/real_video/vietnam/clip_02_citizen_elderly_concern.mp4",
+      "rel_path": "vietnam/clip_02_citizen_elderly_concern.mp4",
+      "filename": "clip_02_citizen_elderly_concern.mp4",
+      "folder": "vietnam",
+      "width": 640,
+      "height": 360,
+      "aspect_ratio": "640:360",
+      "fps": 25.0,
+      "codec": "h264",
+      "pix_fmt": "yuv420p",
+      "duration_sec": 20.0,
+      "bitrate_kbps": 883.2,
+      "size_mb": 2.11,
+      "size_bytes": 2207927
+    },
+    "vietnam/clip_03_traffic_dust_congestion.mp4": {
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/02_sources/real_video/vietnam/clip_03_traffic_dust_congestion.mp4",
+      "rel_path": "vietnam/clip_03_traffic_dust_congestion.mp4",
+      "filename": "clip_03_traffic_dust_congestion.mp4",
+      "folder": "vietnam",
+      "width": 640,
+      "height": 360,
+      "aspect_ratio": "640:360",
+      "fps": 25.0,
+      "codec": "h264",
+      "pix_fmt": "yuv420p",
+      "duration_sec": 25.0,
+      "bitrate_kbps": 1638.8,
+      "size_mb": 4.88,
+      "size_bytes": 5121403
+    },
+    "vietnam/clip_04_youth_action.mp4": {
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/02_sources/real_video/vietnam/clip_04_youth_action.mp4",
+      "rel_path": "vietnam/clip_04_youth_action.mp4",
+      "filename": "clip_04_youth_action.mp4",
+      "folder": "vietnam",
+      "width": 640,
+      "height": 360,
+      "aspect_ratio": "640:360",
+      "fps": 25.0,
+      "codec": "h264",
+      "pix_fmt": "yuv420p",
+      "duration_sec": 14.0,
+      "bitrate_kbps": 730.1,
+      "size_mb": 1.22,
+      "size_bytes": 1277636
+    },
+    "vietnam/clip_hn2_02_directive19_halt_construction.mp4": {
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/02_sources/real_video/vietnam/clip_hn2_02_directive19_halt_construction.mp4",
+      "rel_path": "vietnam/clip_hn2_02_directive19_halt_construction.mp4",
+      "filename": "clip_hn2_02_directive19_halt_construction.mp4",
+      "folder": "vietnam",
+      "width": 640,
+      "height": 360,
+      "aspect_ratio": "640:360",
+      "fps": 25.0,
+      "codec": "h264",
+      "pix_fmt": "yuv420p",
+      "duration_sec": 22.0,
+      "bitrate_kbps": 1017.4,
+      "size_mb": 2.67,
+      "size_bytes": 2797975
+    },
+    "vietnam/clip_hn2_04_green_transport_electric_bus.mp4": {
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/02_sources/real_video/vietnam/clip_hn2_04_green_transport_electric_bus.mp4",
+      "rel_path": "vietnam/clip_hn2_04_green_transport_electric_bus.mp4",
+      "filename": "clip_hn2_04_green_transport_electric_bus.mp4",
+      "folder": "vietnam",
+      "width": 640,
+      "height": 360,
+      "aspect_ratio": "640:360",
+      "fps": 25.0,
+      "codec": "h264",
+      "pix_fmt": "yuv420p",
+      "duration_sec": 22.0,
+      "bitrate_kbps": 1320.3,
+      "size_mb": 3.46,
+      "size_bytes": 3630812
+    },
+    "vietnam/clip_hn_03_traffic_dust_congestion.mp4": {
+      "abs_path": "D:/07-Competitions-Hackathons/unicef-dustguard/presentation/02_sources/real_video/vietnam/clip_hn_03_traffic_dust_congestion.mp4",
+      "rel_path": "vietnam/clip_hn_03_traffic_dust_congestion.mp4",
+      "filename": "clip_hn_03_traffic_dust_congestion.mp4",
+      "folder": "vietnam",
+      "width": 640,
+      "height": 360,
+      "aspect_ratio": "640:360",
+      "fps": 25.0,
+      "codec": "h264",
+      "pix_fmt": "yuv420p",
+      "duration_sec": 25.0,
+      "bitrate_kbps": 1638.8,
+      "size_mb": 4.88,
+      "size_bytes": 5121403
+    }
+  }
+}

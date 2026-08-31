@@ -1,449 +1,499 @@
 {
   "project": "DustGuard VN",
-  "director_vision": "Documentary Tech & Presentation Master Hybrid",
-  "total_duration_seconds": 258.864,
-  "timecode_precision": "0.001s (millisecond)",
-  "segments_count": 12,
+  "total_duration_seconds": 239.256,
+  "total_segments": 12,
   "segments": [
     {
-      "segment": 1,
-      "title": "Vấn đề bụi công trình ngoài đường",
-      "start_time_seconds": 0.0,
-      "end_time_seconds": 16.968,
-      "duration_seconds": 16.968,
-      "voiceover": {
-        "file": "04_audio/voice_final/01.wav",
-        "duration_seconds": 16.968
-      },
+      "segment_id": "01",
+      "title": "Mở vấn đề — Bụi công trình",
+      "start_time": 0.0,
+      "end_time": 15.696,
+      "duration": 15.696,
+      "energy_level": 2,
+      "overlay": "overlay_01_hook.png",
+      "voice_text": "Ở một thành phố đang phát triển, những công trường mới đồng nghĩa với những con đường mới, những ngôi nhà mới và những cơ hội mới. Nhưng cùng với sự phát triển đó, có một tác động rất dễ bị xem là nhỏ... cho đến khi nó trở thành vấn đề của cả một cộng đồng. Đó là bụi công trình.",
       "shots": [
         {
+          "shot_index": 1,
           "source_id": "V001",
           "source_type": "video",
-          "in_point": 0.0,
-          "out_point": 5.5,
-          "duration": 5.5,
-          "timeline_start": 0.0,
-          "timeline_end": 5.5,
-          "motion": "slow_zoom_in",
-          "on_screen_text": "Mỗi ngày, thành phố vẫn tiếp tục xây dựng."
+          "file": "02_sources/real_video/flycam/clip_hn_01_city_haze.mp4",
+          "start_time": 0.0,
+          "duration": 5.232,
+          "transition": "cut",
+          "ken_burns": false
         },
         {
+          "shot_index": 2,
           "source_id": "V002",
           "source_type": "video",
-          "in_point": 2.0,
-          "out_point": 7.5,
-          "duration": 5.5,
-          "timeline_start": 5.5,
-          "timeline_end": 11.0,
-          "motion": "pan_right",
-          "on_screen_text": "Những công trường mới... những cơ hội mới."
+          "file": "02_sources/real_video/construction/clip_hcm_01_construction_overview.mp4",
+          "start_time": 5.232,
+          "duration": 5.232,
+          "transition": "fade",
+          "ken_burns": false
         },
         {
+          "shot_index": 3,
           "source_id": "V003",
           "source_type": "video",
-          "in_point": 3.0,
-          "out_point": 8.968,
-          "duration": 5.968,
-          "timeline_start": 11.0,
-          "timeline_end": 16.968,
-          "motion": "shake_impact",
-          "on_screen_text": "BỤI CÔNG TRÌNH"
+          "file": "02_sources/real_video/dust/clip_hue_01_giant_dust_clouds.mp4",
+          "start_time": 10.464,
+          "duration": 5.232,
+          "transition": "fade",
+          "ken_burns": false
         }
       ]
     },
     {
-      "segment": 2,
-      "title": "Nút thắt dữ liệu phân tán & Vấn đề giải quyết",
-      "start_time_seconds": 16.968,
-      "end_time_seconds": 45.36,
-      "duration_seconds": 28.392,
-      "voiceover": {
-        "file": "04_audio/voice_final/02.wav",
-        "duration_seconds": 28.392
-      },
+      "segment_id": "02",
+      "title": "Nút thắt dữ liệu phân tán",
+      "start_time": 15.696,
+      "end_time": 41.928,
+      "duration": 26.232,
+      "energy_level": 4,
+      "overlay": null,
+      "voice_text": "Điều chúng tôi nhận ra là: vấn đề không phải chúng ta hoàn toàn không có dữ liệu. Người dân có phản ánh. Có hình ảnh. Có vị trí. Có thông tin công trình. Có hồ sơ kiểm tra. Và trong tương lai còn có thể có dữ liệu từ cảm biến. Nhưng những thông tin đó thường nằm ở nhiều nơi khác nhau. Và khi dữ liệu bị phân tán, điều khó nhất là biến nó thành một hành động có thứ tự ưu tiên.",
       "shots": [
         {
+          "shot_index": 1,
           "source_id": "V004",
           "source_type": "video",
-          "in_point": 0.0,
-          "out_point": 8.0,
-          "duration": 8.0,
-          "timeline_start": 16.968,
-          "timeline_end": 24.968,
-          "motion": "tracking_truck",
-          "on_screen_text": "Xe tải không bạt che — Bụi mù mịt đường phố"
+          "file": "02_sources/real_video/dust/clip_hcm_02_uncovered_truck_road_dust.mp4",
+          "start_time": 15.696,
+          "duration": 8.744,
+          "transition": "cut",
+          "ken_burns": false
         },
         {
+          "shot_index": 2,
           "source_id": "V005",
           "source_type": "video",
-          "in_point": 0.0,
-          "out_point": 8.0,
-          "duration": 8.0,
-          "timeline_start": 24.968,
-          "timeline_end": 32.968,
-          "motion": "static_focus",
-          "on_screen_text": "Người dân có phản ánh — Dữ liệu nằm ở nhiều nơi"
+          "file": "02_sources/real_video/people/clip_hn_02_citizen_elderly_concern.mp4",
+          "start_time": 24.44,
+          "duration": 8.744,
+          "transition": "fade",
+          "ken_burns": false
         },
         {
-          "source_id": "S001",
-          "source_type": "slide",
-          "in_point": 0.0,
-          "out_point": 12.392,
-          "duration": 12.392,
-          "timeline_start": 32.968,
-          "timeline_end": 45.36,
-          "motion": "ken_burns_zoom_dossier",
-          "on_screen_text": "Từ dữ liệu rời rạc đến hành động có ưu tiên"
+          "shot_index": 3,
+          "source_id": "V016",
+          "source_type": "video",
+          "file": "02_sources/real_video/project_demo/clip_hn2_01_emission_sources_graphic.mp4",
+          "start_time": 33.184,
+          "duration": 8.744,
+          "transition": "fade",
+          "ken_burns": false
         }
       ]
     },
     {
-      "segment": 3,
-      "title": "5 Câu hỏi trung tâm đặt ra cho hệ thống",
-      "start_time_seconds": 45.36,
-      "end_time_seconds": 61.2,
-      "duration_seconds": 15.84,
-      "voiceover": {
-        "file": "04_audio/voice_final/03.wav",
-        "duration_seconds": 15.84
-      },
+      "segment_id": "03",
+      "title": "5 Câu hỏi trung tâm",
+      "start_time": 41.928,
+      "end_time": 56.568,
+      "duration": 14.64,
+      "energy_level": 4,
+      "overlay": "overlay_03_questions.png",
+      "voice_text": "Nếu cùng lúc có mười phản ánh, chúng ta nên nhìn vào trường hợp nào trước? Vì sao trường hợp đó đáng chú ý? Hồ sơ còn thiếu gì? Ai đang phụ trách? Và sau khi một phản ánh được gửi đi... nó đã thực sự đi đến đâu?",
       "shots": [
         {
+          "shot_index": 1,
           "source_id": "V006",
           "source_type": "video",
-          "in_point": 0.0,
-          "out_point": 7.5,
-          "duration": 7.5,
-          "timeline_start": 45.36,
-          "timeline_end": 52.86,
-          "motion": "slow_zoom",
-          "on_screen_text": "Xem trường hợp nào trước? Hồ sơ còn thiếu gì?"
+          "file": "02_sources/real_video/people/clip_hue_03_children_respiratory_concern.mp4",
+          "start_time": 41.928,
+          "duration": 4.88,
+          "transition": "cut",
+          "ken_burns": false
         },
         {
+          "shot_index": 2,
+          "source_id": "V015",
+          "source_type": "video",
+          "file": "02_sources/real_video/dust/clip_hue_02_dust_on_trees_and_houses.mp4",
+          "start_time": 46.808,
+          "duration": 4.88,
+          "transition": "fade",
+          "ken_burns": false
+        },
+        {
+          "shot_index": 3,
           "source_id": "V007",
           "source_type": "video",
-          "in_point": 0.0,
-          "out_point": 8.34,
-          "duration": 8.34,
-          "timeline_start": 52.86,
-          "timeline_end": 61.2,
-          "motion": "tilt_down",
-          "on_screen_text": "Ai đang phụ trách? Đã thực sự đi đến đâu?"
+          "file": "02_sources/real_video/people/clip_hcm_03_resident_frustration.mp4",
+          "start_time": 51.688,
+          "duration": 4.88,
+          "transition": "fade",
+          "ken_burns": false
         }
       ]
     },
     {
-      "segment": 4,
-      "title": "DustGuard xuất hiện & Chuỗi 4 bên phối hợp",
-      "start_time_seconds": 61.2,
-      "end_time_seconds": 75.48,
-      "duration_seconds": 14.28,
-      "voiceover": {
-        "file": "04_audio/voice_final/04.wav",
-        "duration_seconds": 14.28
-      },
+      "segment_id": "04",
+      "title": "DustGuard xuất hiện (Beat Drop)",
+      "start_time": 56.568,
+      "end_time": 69.768,
+      "duration": 13.2,
+      "energy_level": 7,
+      "overlay": "overlay_04_flow.png",
+      "voice_text": "DustGuard được xây dựng để trả lời những câu hỏi đó. Không phải bằng cách thay thế người ra quyết định. Mà bằng cách kết nối tín hiệu, bằng chứng, mức độ ưu tiên và quá trình xử lý thành một hồ sơ có thể theo dõi.",
       "shots": [
         {
-          "source_id": "S001",
-          "source_type": "slide",
-          "in_point": 0.0,
-          "out_point": 6.0,
-          "duration": 6.0,
-          "timeline_start": 61.2,
-          "timeline_end": 67.2,
-          "motion": "logo_pop_reveal",
-          "on_screen_text": "DUSTGUARD VN — NỀN TẢNG QUẢN TRỊ TÍN HIỆU"
+          "shot_index": 1,
+          "source_id": "I010",
+          "source_type": "image",
+          "file": "02_sources/real_images/project/ChatGPT Image 09_56_51 31 thg 8, 2026 (10).png",
+          "start_time": 56.568,
+          "duration": 4.4,
+          "transition": "cut",
+          "ken_burns": true
         },
         {
-          "source_id": "S002",
-          "source_type": "slide",
-          "in_point": 0.0,
-          "out_point": 8.28,
-          "duration": 8.28,
-          "timeline_start": 67.2,
-          "timeline_end": 75.48,
-          "motion": "pan_stakeholders",
-          "on_screen_text": "Kết nối tín hiệu ➔ bằng chứng ➔ phối hợp ➔ theo dõi"
+          "shot_index": 2,
+          "source_id": "I001",
+          "source_type": "image",
+          "file": "02_sources/real_images/project/ChatGPT Image 09_56_46 31 thg 8, 2026 (1).png",
+          "start_time": 60.968,
+          "duration": 4.4,
+          "transition": "fade",
+          "ken_burns": true
+        },
+        {
+          "shot_index": 3,
+          "source_id": "I002",
+          "source_type": "image",
+          "file": "02_sources/real_images/project/ChatGPT Image 09_56_47 31 thg 8, 2026 (2).png",
+          "start_time": 65.368,
+          "duration": 4.4,
+          "transition": "fade",
+          "ken_burns": true
         }
       ]
     },
     {
-      "segment": 5,
-      "title": "1 Tín hiệu ➔ 1 Hồ sơ có vòng đời theo dõi",
-      "start_time_seconds": 75.48,
-      "end_time_seconds": 98.856,
-      "duration_seconds": 23.376,
-      "voiceover": {
-        "file": "04_audio/voice_final/05.wav",
-        "duration_seconds": 23.376
-      },
+      "segment_id": "05",
+      "title": "Tính mới — 1 Tín hiệu 1 Hồ sơ",
+      "start_time": 69.768,
+      "end_time": 91.368,
+      "duration": 21.6,
+      "energy_level": 8,
+      "overlay": null,
+      "voice_text": "Điểm mới của DustGuard không nằm ở việc tạo thêm một nơi để gửi phản ánh. Điều chúng tôi muốn giải quyết là khoảng trống sau khi phản ánh đã được gửi. Một tín hiệu ban đầu phải có cơ hội trở thành một hồ sơ. Một hồ sơ phải có bằng chứng. Một trường hợp phải có mức độ ưu tiên. Và quan trọng nhất: phải có thể biết nó đang được xử lý tới đâu.",
       "shots": [
         {
-          "source_id": "S004",
-          "source_type": "slide",
-          "in_point": 0.0,
-          "out_point": 12.0,
-          "duration": 12.0,
-          "timeline_start": 75.48,
-          "timeline_end": 87.48,
-          "motion": "zoom_3_layers",
-          "on_screen_text": "1 Tín hiệu ➔ 1 Hồ sơ có vòng đời theo dõi"
+          "shot_index": 1,
+          "source_id": "I004",
+          "source_type": "image",
+          "file": "02_sources/real_images/project/ChatGPT Image 09_56_49 31 thg 8, 2026 (4).png",
+          "start_time": 69.768,
+          "duration": 7.2,
+          "transition": "cut",
+          "ken_burns": true
         },
         {
+          "shot_index": 2,
+          "source_id": "I003",
+          "source_type": "image",
+          "file": "02_sources/real_images/environment/ChatGPT Image 09_56_48 31 thg 8, 2026 (3).png",
+          "start_time": 76.968,
+          "duration": 7.2,
+          "transition": "fade",
+          "ken_burns": true
+        },
+        {
+          "shot_index": 3,
           "source_id": "V009",
           "source_type": "video",
-          "in_point": 0.0,
-          "out_point": 11.376,
-          "duration": 11.376,
-          "timeline_start": 87.48,
-          "timeline_end": 98.856,
-          "motion": "audit_walkthrough",
-          "on_screen_text": "Biết rõ vụ việc đang được xử lý tới đâu"
+          "file": "02_sources/real_video/construction/clip_hcm_04_barrier_water_spraying_audit.mp4",
+          "start_time": 84.168,
+          "duration": 7.2,
+          "transition": "fade",
+          "ken_burns": false
         }
       ]
     },
     {
-      "segment": 6,
-      "title": "Bài học sau tập huấn 11/6: Từ chấm điểm sang workflow",
-      "start_time_seconds": 98.856,
-      "end_time_seconds": 120.072,
-      "duration_seconds": 21.216,
-      "voiceover": {
-        "file": "04_audio/voice_final/06.wav",
-        "duration_seconds": 21.216
-      },
+      "segment_id": "06",
+      "title": "Bài học sau tập huấn",
+      "start_time": 91.368,
+      "end_time": 110.976,
+      "duration": 19.608,
+      "energy_level": 6,
+      "overlay": null,
+      "voice_text": "Nhưng DustGuard hôm nay không còn giống phiên bản ban đầu. Sau vòng tập huấn, chúng tôi nhận ra rằng một hệ thống thông minh không nên cố gắng đưa ra nhiều quyết định hơn con người. Nó phải giúp con người có đủ thông tin để đưa ra quyết định tốt hơn. Vì vậy, chúng tôi thay đổi cách nhìn về AI, về điểm rủi ro và cả vai trò của IoT.",
       "shots": [
         {
+          "shot_index": 1,
           "source_id": "V008",
           "source_type": "video",
-          "in_point": 0.0,
-          "out_point": 8.0,
-          "duration": 8.0,
-          "timeline_start": 98.856,
-          "timeline_end": 106.856,
-          "motion": "static_reflect",
-          "on_screen_text": "Tưới nước thủ công: Minh chứng giải pháp hình thức"
+          "file": "02_sources/real_video/construction/clip_hue_04_ineffective_manual_watering.mp4",
+          "start_time": 91.368,
+          "duration": 6.536,
+          "transition": "cut",
+          "ken_burns": false
         },
         {
-          "source_id": "S003",
-          "source_type": "slide",
-          "in_point": 0.0,
-          "out_point": 13.216,
-          "duration": 13.216,
-          "timeline_start": 106.856,
-          "timeline_end": 120.072,
-          "motion": "zoom_before_after_table",
-          "on_screen_text": "Sau 11/6: Chuyển từ chấm điểm sang workflow có trách nhiệm"
+          "shot_index": 2,
+          "source_id": "I006",
+          "source_type": "image",
+          "file": "02_sources/real_images/construction/ChatGPT Image 09_56_50 31 thg 8, 2026 (6).png",
+          "start_time": 97.904,
+          "duration": 6.536,
+          "transition": "fade",
+          "ken_burns": true
+        },
+        {
+          "shot_index": 3,
+          "source_id": "V017",
+          "source_type": "video",
+          "file": "02_sources/real_video/vietnam/clip_hn2_02_directive19_halt_construction.mp4",
+          "start_time": 104.44,
+          "duration": 6.536,
+          "transition": "fade",
+          "ken_burns": false
         }
       ]
     },
     {
-      "segment": 7,
-      "title": "Responsible AI: Kiểm chứng quy trình & Vai trò hỗ trợ",
-      "start_time_seconds": 120.072,
-      "end_time_seconds": 146.328,
-      "duration_seconds": 26.256,
-      "voiceover": {
-        "file": "04_audio/voice_final/07.wav",
-        "duration_seconds": 26.256
-      },
+      "segment_id": "07",
+      "title": "Responsible AI Assistant",
+      "start_time": 110.976,
+      "end_time": 135.24,
+      "duration": 24.264,
+      "energy_level": 8,
+      "overlay": "overlay_07_responsible_ai.png",
+      "voice_text": "Dust Risk Score không trả lời rằng một công trình có vi phạm hay không. Nó chỉ hỗ trợ một câu hỏi thực tế hơn: trong nhiều trường hợp đang tồn tại, trường hợp nào nên được xem xét trước, và vì sao? AI có thể phân loại, tóm tắt, tìm thông tin còn thiếu và hỗ trợ checklist. Nhưng AI không tự kết luận vi phạm. Không tự quyết định xử phạt. Và không thay thế cơ quan có thẩm quyền.",
       "shots": [
         {
-          "source_id": "S008",
-          "source_type": "slide",
-          "in_point": 0.0,
-          "out_point": 13.0,
-          "duration": 13.0,
-          "timeline_start": 120.072,
-          "timeline_end": 133.072,
-          "motion": "zoom_responsible_ai_box",
-          "on_screen_text": "AI gợi ý checklist & tóm tắt — Con người quyết định"
+          "shot_index": 1,
+          "source_id": "V009",
+          "source_type": "video",
+          "file": "02_sources/real_video/construction/clip_hcm_04_barrier_water_spraying_audit.mp4",
+          "start_time": 110.976,
+          "duration": 12.132,
+          "transition": "cut",
+          "ken_burns": false
         },
         {
+          "shot_index": 2,
           "source_id": "V014",
           "source_type": "video",
-          "in_point": 0.0,
-          "out_point": 13.256,
-          "duration": 13.256,
-          "timeline_start": 133.072,
-          "timeline_end": 146.328,
-          "motion": "tech_mist_cannon",
-          "on_screen_text": "AI hỗ trợ kiểm tra thực địa — Không thay thế thanh tra"
+          "file": "02_sources/real_video/construction/clip_hn2_03_mist_cannon_truck_and_ai_camera.mp4",
+          "start_time": 123.108,
+          "duration": 12.132,
+          "transition": "fade",
+          "ken_burns": false
         }
       ]
     },
     {
-      "segment": 8,
-      "title": "Lean Pilot 4-8 tuần & Kiến trúc kỹ thuật nhẹ",
-      "start_time_seconds": 146.328,
-      "end_time_seconds": 173.112,
-      "duration_seconds": 26.784,
-      "voiceover": {
-        "file": "04_audio/voice_final/08.wav",
-        "duration_seconds": 26.784
-      },
+      "segment_id": "08",
+      "title": "Mô hình Lean Pilot",
+      "start_time": 135.24,
+      "end_time": 160.008,
+      "duration": 24.768,
+      "energy_level": 7,
+      "overlay": "overlay_08_pilot.png",
+      "voice_text": "Chúng tôi cũng học được rằng một giải pháp môi trường không nên bắt đầu bằng một hạ tầng thật lớn. DustGuard có thể bắt đầu chỉ với dữ liệu đang có: phản ánh, hình ảnh, vị trí, checklist và hồ sơ. Một pilot có thể triển khai trong một cộng đồng nhỏ, một trường học hoặc một câu lạc bộ môi trường. Trong bốn đến tám tuần. Với hai mươi đến ba mươi người dùng thật. Và những chỉ số có thể đo được.",
       "shots": [
         {
-          "source_id": "S005",
-          "source_type": "slide",
-          "in_point": 0.0,
-          "out_point": 13.0,
-          "duration": 13.0,
-          "timeline_start": 146.328,
-          "timeline_end": 159.328,
-          "motion": "zoom_pilot_roadmap",
-          "on_screen_text": "LEAN PILOT 4-8 TUẦN TẠI TRƯỜNG HỌC & CLB"
-        },
-        {
-          "source_id": "S006",
-          "source_type": "slide",
-          "in_point": 0.0,
-          "out_point": 13.784,
-          "duration": 13.784,
-          "timeline_start": 159.328,
-          "timeline_end": 173.112,
-          "motion": "zoom_cloudflare_stack",
-          "on_screen_text": "Kiến trúc Serverless nhẹ (D1 + R2), chi phí tối thiểu"
-        }
-      ]
-    },
-    {
-      "segment": 9,
-      "title": "Đo lường giá trị thật & Mô hình vận hành bền vững",
-      "start_time_seconds": 173.112,
-      "end_time_seconds": 192.576,
-      "duration_seconds": 19.464,
-      "voiceover": {
-        "file": "04_audio/voice_final/09.wav",
-        "duration_seconds": 19.464
-      },
-      "shots": [
-        {
-          "source_id": "S007",
-          "source_type": "slide",
-          "in_point": 0.0,
-          "out_point": 9.5,
-          "duration": 9.5,
-          "timeline_start": 173.112,
-          "timeline_end": 182.612,
-          "motion": "zoom_revenue_model",
-          "on_screen_text": "Mô hình vận hành bền vững cho cộng đồng"
-        },
-        {
-          "source_id": "S005",
-          "source_type": "slide",
-          "in_point": 0.0,
-          "out_point": 9.964,
-          "duration": 9.964,
-          "timeline_start": 182.612,
-          "timeline_end": 192.576,
-          "motion": "zoom_kpi_metrics",
-          "on_screen_text": "Đo bằng chỉ số thật: Tỷ lệ bằng chứng & Thời gian xử lý"
-        }
-      ]
-    },
-    {
-      "segment": 10,
-      "title": "Sức mạnh thanh niên & Cộng đồng hành động",
-      "start_time_seconds": 192.576,
-      "end_time_seconds": 212.664,
-      "duration_seconds": 20.088,
-      "voiceover": {
-        "file": "04_audio/voice_final/10.wav",
-        "duration_seconds": 20.088
-      },
-      "shots": [
-        {
+          "shot_index": 1,
           "source_id": "V010",
           "source_type": "video",
-          "in_point": 0.0,
-          "out_point": 10.0,
-          "duration": 10.0,
-          "timeline_start": 192.576,
-          "timeline_end": 202.576,
-          "motion": "youth_smile_focus",
-          "on_screen_text": "SỨC MẠNH THANH NIÊN & CỘNG ĐỒNG"
+          "file": "02_sources/real_video/people/clip_hn_04_youth_action.mp4",
+          "start_time": 135.24,
+          "duration": 8.256,
+          "transition": "cut",
+          "ken_burns": false
         },
         {
-          "source_id": "S002",
-          "source_type": "slide",
-          "in_point": 0.0,
-          "out_point": 10.088,
-          "duration": 10.088,
-          "timeline_start": 202.576,
-          "timeline_end": 212.664,
-          "motion": "zoom_clb_box",
-          "on_screen_text": "Biến sự quan tâm thành hành động có dữ liệu và có theo dõi"
-        }
-      ]
-    },
-    {
-      "segment": 11,
-      "title": "Tầm nhìn mở rộng 4 giai đoạn đa bài toán môi trường",
-      "start_time_seconds": 212.664,
-      "end_time_seconds": 234.312,
-      "duration_seconds": 21.648,
-      "voiceover": {
-        "file": "04_audio/voice_final/11.wav",
-        "duration_seconds": 21.648
-      },
-      "shots": [
-        {
-          "source_id": "S009",
-          "source_type": "slide",
-          "in_point": 0.0,
-          "out_point": 11.0,
-          "duration": 11.0,
-          "timeline_start": 212.664,
-          "timeline_end": 223.664,
-          "motion": "zoom_4_stages_expansion",
-          "on_screen_text": "1 LÕI QUẢN TRỊ ➔ NƯỚC THẢI, RƠM RẠ, TIẾNG ỒN"
+          "shot_index": 2,
+          "source_id": "I008",
+          "source_type": "image",
+          "file": "02_sources/real_images/project/ChatGPT Image 09_56_51 31 thg 8, 2026 (8).png",
+          "start_time": 143.496,
+          "duration": 8.256,
+          "transition": "fade",
+          "ken_burns": true
         },
         {
+          "shot_index": 3,
           "source_id": "V011",
           "source_type": "video",
-          "in_point": 0.0,
-          "out_point": 10.648,
-          "duration": 10.648,
-          "timeline_start": 223.664,
-          "timeline_end": 234.312,
-          "motion": "green_transport_flow",
-          "on_screen_text": "Mở rộng hệ sinh thái số vì môi trường Việt Nam"
+          "file": "02_sources/real_video/vietnam/clip_hn2_04_green_transport_electric_bus.mp4",
+          "start_time": 151.752,
+          "duration": 8.256,
+          "transition": "fade",
+          "ken_burns": false
         }
       ]
     },
     {
-      "segment": 12,
-      "title": "Tuyên ngôn kết thúc, sứ mệnh & Lời cảm ơn",
-      "start_time_seconds": 234.312,
-      "end_time_seconds": 258.864,
-      "duration_seconds": 24.552,
-      "voiceover": {
-        "file": "04_audio/voice_final/12.wav",
-        "duration_seconds": 24.552
-      },
+      "segment_id": "09",
+      "title": "Đo lường giá trị thật",
+      "start_time": 160.008,
+      "end_time": 177.984,
+      "duration": 17.976,
+      "energy_level": 8,
+      "overlay": null,
+      "voice_text": "Bao nhiêu trường hợp có đủ bằng chứng? Thời gian từ phát hiện đến hành động là bao lâu? Bao nhiêu trường hợp thực sự có bước xử lý tiếp theo? Bao nhiêu vụ việc có thể được theo dõi từ lúc xuất hiện tín hiệu đến khi có kết quả? Đó mới là những con số chúng tôi muốn dùng để chứng minh DustGuard có giá trị.",
       "shots": [
         {
-          "source_id": "S010",
-          "source_type": "slide",
-          "in_point": 0.0,
-          "out_point": 12.0,
-          "duration": 12.0,
-          "timeline_start": 234.312,
-          "timeline_end": 246.312,
-          "motion": "zoom_closing_thanks",
-          "on_screen_text": "DUSTGUARD VN — CÓ ƯU TIÊN, CÓ BẰNG CHỨNG, CÓ THEO DÕI"
+          "shot_index": 1,
+          "source_id": "I002",
+          "source_type": "image",
+          "file": "02_sources/real_images/project/ChatGPT Image 09_56_47 31 thg 8, 2026 (2).png",
+          "start_time": 160.008,
+          "duration": 5.992,
+          "transition": "cut",
+          "ken_burns": true
         },
         {
+          "shot_index": 2,
+          "source_id": "I008",
+          "source_type": "image",
+          "file": "02_sources/real_images/project/ChatGPT Image 09_56_51 31 thg 8, 2026 (8).png",
+          "start_time": 166.0,
+          "duration": 5.992,
+          "transition": "fade",
+          "ken_burns": true
+        },
+        {
+          "shot_index": 3,
+          "source_id": "S005",
+          "source_type": "slide",
+          "file": "02_sources/slides/png/slide_05_kha_thi_viet_nam_pilot.png",
+          "start_time": 171.992,
+          "duration": 5.992,
+          "transition": "fade",
+          "ken_burns": true
+        }
+      ]
+    },
+    {
+      "segment_id": "10",
+      "title": "Vai trò xung kích Thanh niên",
+      "start_time": 177.984,
+      "end_time": 196.56,
+      "duration": 18.576,
+      "energy_level": 8,
+      "overlay": null,
+      "voice_text": "Và DustGuard không chỉ dành cho cơ quan quản lý. Chúng tôi muốn bắt đầu từ những cộng đồng đã có động lực hành động: trường học, câu lạc bộ môi trường, tổ chức thanh niên và những người trẻ. Để họ không chỉ nhìn thấy một vấn đề. Mà biết cách ghi nhận nó tốt hơn, theo dõi nó lâu hơn và giúp nó không bị bỏ quên.",
+      "shots": [
+        {
+          "shot_index": 1,
+          "source_id": "V010",
+          "source_type": "video",
+          "file": "02_sources/real_video/people/clip_hn_04_youth_action.mp4",
+          "start_time": 177.984,
+          "duration": 6.192,
+          "transition": "cut",
+          "ken_burns": false
+        },
+        {
+          "shot_index": 2,
+          "source_id": "I005",
+          "source_type": "image",
+          "file": "02_sources/real_images/environment/ChatGPT Image 09_56_50 31 thg 8, 2026 (5).png",
+          "start_time": 184.176,
+          "duration": 6.192,
+          "transition": "fade",
+          "ken_burns": true
+        },
+        {
+          "shot_index": 3,
+          "source_id": "I001",
+          "source_type": "image",
+          "file": "02_sources/real_images/project/ChatGPT Image 09_56_46 31 thg 8, 2026 (1).png",
+          "start_time": 190.368,
+          "duration": 6.192,
+          "transition": "fade",
+          "ken_burns": true
+        }
+      ]
+    },
+    {
+      "segment_id": "11",
+      "title": "Tầm nhìn mở rộng đa lĩnh vực",
+      "start_time": 196.56,
+      "end_time": 216.576,
+      "duration": 20.016,
+      "energy_level": 9,
+      "overlay": null,
+      "voice_text": "Nếu cách tiếp cận này được kiểm chứng với bụi công trình, chúng tôi tin rằng cùng một lõi có thể tiếp tục được phát triển cho những vấn đề môi trường khác. Nước thải. Đốt rơm rạ. Thuốc bảo vệ thực vật. Tiếng ồn. Nhưng mỗi bước mở rộng đều phải bắt đầu lại bằng việc hiểu đúng người dùng, đúng dữ liệu và đúng quy trình thực tế.",
+      "shots": [
+        {
+          "shot_index": 1,
+          "source_id": "I009",
+          "source_type": "image",
+          "file": "02_sources/real_images/environment/ChatGPT Image 09_56_51 31 thg 8, 2026 (9).png",
+          "start_time": 196.56,
+          "duration": 6.672,
+          "transition": "cut",
+          "ken_burns": true
+        },
+        {
+          "shot_index": 2,
+          "source_id": "V011",
+          "source_type": "video",
+          "file": "02_sources/real_video/vietnam/clip_hn2_04_green_transport_electric_bus.mp4",
+          "start_time": 203.232,
+          "duration": 6.672,
+          "transition": "fade",
+          "ken_burns": false
+        },
+        {
+          "shot_index": 3,
+          "source_id": "I007",
+          "source_type": "image",
+          "file": "02_sources/real_images/vietnam/ChatGPT Image 09_56_50 31 thg 8, 2026 (7).png",
+          "start_time": 209.904,
+          "duration": 6.672,
+          "transition": "fade",
+          "ken_burns": true
+        }
+      ]
+    },
+    {
+      "segment_id": "12",
+      "title": "Finale & Slogan DustGuard",
+      "start_time": 216.576,
+      "end_time": 239.256,
+      "duration": 22.68,
+      "energy_level": 10,
+      "overlay": "overlay_12_outro.png",
+      "voice_text": "DustGuard không đặt mục tiêu trở thành một hệ thống quyết định thay con người. Chúng tôi muốn nó trở thành một công cụ giúp một vấn đề được nhìn thấy rõ hơn. Được ghi nhận đầy đủ hơn. Được theo dõi lâu hơn. Và có nhiều cơ hội hơn để đi từ một tín hiệu... đến một hành động thực sự. DustGuard — biến dữ liệu thành hành động quản lý có ưu tiên, có bằng chứng và có theo dõi.",
+      "shots": [
+        {
+          "shot_index": 1,
+          "source_id": "I010",
+          "source_type": "image",
+          "file": "02_sources/real_images/project/ChatGPT Image 09_56_51 31 thg 8, 2026 (10).png",
+          "start_time": 216.576,
+          "duration": 7.56,
+          "transition": "cut",
+          "ken_burns": true
+        },
+        {
+          "shot_index": 2,
+          "source_id": "I007",
+          "source_type": "image",
+          "file": "02_sources/real_images/vietnam/ChatGPT Image 09_56_50 31 thg 8, 2026 (7).png",
+          "start_time": 224.136,
+          "duration": 7.56,
+          "transition": "fade",
+          "ken_burns": true
+        },
+        {
+          "shot_index": 3,
           "source_id": "V001",
           "source_type": "video",
-          "in_point": 0.0,
-          "out_point": 12.552,
-          "duration": 12.552,
-          "timeline_start": 246.312,
-          "timeline_end": 258.864,
-          "motion": "sunrise_pan_out",
-          "on_screen_text": "Để dữ liệu không dừng lại ở một phản ánh"
+          "file": "02_sources/real_video/flycam/clip_hn_01_city_haze.mp4",
+          "start_time": 231.696,
+          "duration": 7.56,
+          "transition": "fade",
+          "ken_burns": false
         }
       ]
     }

@@ -1,28 +1,37 @@
-segment: 12
-title: "Tuyên ngôn kết thúc, sứ mệnh & Lời cảm ơn"
-timecode:
-  start: 234.312
-  end: 258.864
-  duration: 24.552
-voice:
-  file: 04_audio/voice_final/12.wav
-  duration_seconds: 24.552
+segment_id: '12'
+title: Finale & Slogan DustGuard
+start_time: 216.576
+end_time: 239.256
+duration: 22.68
+energy_level: 10
+overlay: overlay_12_outro.png
+voice_text: DustGuard không đặt mục tiêu trở thành một hệ thống quyết định thay con
+  người. Chúng tôi muốn nó trở thành một công cụ giúp một vấn đề được nhìn thấy rõ
+  hơn. Được ghi nhận đầy đủ hơn. Được theo dõi lâu hơn. Và có nhiều cơ hội hơn để
+  đi từ một tín hiệu... đến một hành động thực sự. DustGuard — biến dữ liệu thành
+  hành động quản lý có ưu tiên, có bằng chứng và có theo dõi.
 shots:
-  - source_id: S010
-    type: slide
-    in_point: 0.000
-    out_point: 12.000
-    duration: 12.000
-    timeline_start: 234.312
-    timeline_end: 246.312
-    motion: "zoom_closing_thanks"
-    on_screen_text: "DUSTGUARD VN — CÓ ƯU TIÊN, CÓ BẰNG CHỨNG, CÓ THEO DÕI"
-  - source_id: V001
-    type: video
-    in_point: 0.000
-    out_point: 12.552
-    duration: 12.552
-    timeline_start: 246.312
-    timeline_end: 258.864
-    motion: "sunrise_pan_out"
-    on_screen_text: "Để dữ liệu không dừng lại ở một phản ánh"
+- shot_index: 1
+  source_id: I010
+  source_type: image
+  file: 02_sources/real_images/project/ChatGPT Image 09_56_51 31 thg 8, 2026 (10).png
+  start_time: 216.576
+  duration: 7.56
+  transition: cut
+  ken_burns: true
+- shot_index: 2
+  source_id: I007
+  source_type: image
+  file: 02_sources/real_images/vietnam/ChatGPT Image 09_56_50 31 thg 8, 2026 (7).png
+  start_time: 224.136
+  duration: 7.56
+  transition: fade
+  ken_burns: true
+- shot_index: 3
+  source_id: V001
+  source_type: video
+  file: 02_sources/real_video/flycam/clip_hn_01_city_haze.mp4
+  start_time: 231.696
+  duration: 7.56
+  transition: fade
+  ken_burns: false

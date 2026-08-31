@@ -1,0 +1,913 @@
+{
+  "project": "DustGuard VN",
+  "title": "Pitch Presentation Subtitles",
+  "total_duration_sec": 210.0,
+  "total_cues": 44,
+  "styles": {
+    "font_family": "Inter, Roboto, Arial, sans-serif",
+    "font_size_px": 44,
+    "color": "#FFFFFF",
+    "outline_color": "#231B14",
+    "outline_width_px": 3.2,
+    "margin_bottom_px": 80,
+    "highlight_color": "#0d6f64",
+    "max_chars_per_line": 38,
+    "max_lines": 2
+  },
+  "cues": [
+    {
+      "index": 1,
+      "segment_id": "01_hook",
+      "start_sec": 0.5,
+      "end_sec": 5.2,
+      "duration_sec": 4.7,
+      "start_time_srt": "00:00:00,500",
+      "end_time_srt": "00:00:05,200",
+      "lines": [
+        "Ở một thành phố đang phát triển,",
+        "những công trường mới đồng nghĩa"
+      ],
+      "full_text": "Ở một thành phố đang phát triển, những công trường mới đồng nghĩa",
+      "char_count": 65,
+      "cps": 13.83,
+      "keywords": [
+        "thành phố đang phát triển",
+        "công trường mới"
+      ]
+    },
+    {
+      "index": 2,
+      "segment_id": "01_hook",
+      "start_sec": 5.2,
+      "end_sec": 9.5,
+      "duration_sec": 4.3,
+      "start_time_srt": "00:00:05,200",
+      "end_time_srt": "00:00:09,500",
+      "lines": [
+        "với những con đường mới,",
+        "những ngôi nhà mới và cơ hội mới."
+      ],
+      "full_text": "với những con đường mới, những ngôi nhà mới và cơ hội mới.",
+      "char_count": 58,
+      "cps": 13.49,
+      "keywords": [
+        "con đường mới",
+        "ngôi nhà mới",
+        "cơ hội mới"
+      ]
+    },
+    {
+      "index": 3,
+      "segment_id": "01_hook",
+      "start_sec": 9.8,
+      "end_sec": 14.2,
+      "duration_sec": 4.4,
+      "start_time_srt": "00:00:09,800",
+      "end_time_srt": "00:00:14,200",
+      "lines": [
+        "Nhưng cùng với sự phát triển đó,",
+        "có tác động rất dễ bị xem là nhỏ..."
+      ],
+      "full_text": "Nhưng cùng với sự phát triển đó, có tác động rất dễ bị xem là nhỏ...",
+      "char_count": 68,
+      "cps": 15.45,
+      "keywords": [
+        "sự phát triển",
+        "tác động"
+      ]
+    },
+    {
+      "index": 4,
+      "segment_id": "01_hook",
+      "start_sec": 14.3,
+      "end_sec": 18.0,
+      "duration_sec": 3.7,
+      "start_time_srt": "00:00:14,300",
+      "end_time_srt": "00:00:18,000",
+      "lines": [
+        "cho đến khi nó trở thành vấn đề",
+        "của cả cộng đồng: BỤI CÔNG TRÌNH."
+      ],
+      "full_text": "cho đến khi nó trở thành vấn đề của cả cộng đồng: BỤI CÔNG TRÌNH.",
+      "char_count": 65,
+      "cps": 17.57,
+      "keywords": [
+        "cả cộng đồng",
+        "BỤI CÔNG TRÌNH"
+      ]
+    },
+    {
+      "index": 5,
+      "segment_id": "02_problem",
+      "start_sec": 18.3,
+      "end_sec": 23.0,
+      "duration_sec": 4.7,
+      "start_time_srt": "00:00:18,300",
+      "end_time_srt": "00:00:23,000",
+      "lines": [
+        "Điều chúng tôi nhận ra là:",
+        "vấn đề không phải ta thiếu dữ liệu."
+      ],
+      "full_text": "Điều chúng tôi nhận ra là: vấn đề không phải ta thiếu dữ liệu.",
+      "char_count": 62,
+      "cps": 13.19,
+      "keywords": [
+        "không phải ta thiếu dữ liệu"
+      ]
+    },
+    {
+      "index": 6,
+      "segment_id": "02_problem",
+      "start_sec": 23.2,
+      "end_sec": 28.0,
+      "duration_sec": 4.8,
+      "start_time_srt": "00:00:23,200",
+      "end_time_srt": "00:00:28,000",
+      "lines": [
+        "Người dân có phản ánh. Có hình ảnh.",
+        "Có vị trí. Có thông tin công trình."
+      ],
+      "full_text": "Người dân có phản ánh. Có hình ảnh. Có vị trí. Có thông tin công trình.",
+      "char_count": 71,
+      "cps": 14.79,
+      "keywords": [
+        "phản ánh",
+        "hình ảnh",
+        "vị trí",
+        "thông tin công trình"
+      ]
+    },
+    {
+      "index": 7,
+      "segment_id": "02_problem",
+      "start_sec": 28.2,
+      "end_sec": 32.8,
+      "duration_sec": 4.6,
+      "start_time_srt": "00:00:28,200",
+      "end_time_srt": "00:00:32,800",
+      "lines": [
+        "Có hồ sơ kiểm tra. Và tương lai",
+        "còn có dữ liệu từ cảm biến."
+      ],
+      "full_text": "Có hồ sơ kiểm tra. Và tương lai còn có dữ liệu từ cảm biến.",
+      "char_count": 59,
+      "cps": 12.83,
+      "keywords": [
+        "hồ sơ kiểm tra",
+        "dữ liệu từ cảm biến"
+      ]
+    },
+    {
+      "index": 8,
+      "segment_id": "02_problem",
+      "start_sec": 33.0,
+      "end_sec": 37.8,
+      "duration_sec": 4.8,
+      "start_time_srt": "00:00:33,000",
+      "end_time_srt": "00:00:37,800",
+      "lines": [
+        "Nhưng thông tin nằm ở nhiều nơi,",
+        "khiến việc ưu tiên hành động rất khó."
+      ],
+      "full_text": "Nhưng thông tin nằm ở nhiều nơi, khiến việc ưu tiên hành động rất khó.",
+      "char_count": 70,
+      "cps": 14.58,
+      "keywords": [
+        "thông tin nằm ở nhiều nơi",
+        "ưu tiên hành động"
+      ]
+    },
+    {
+      "index": 9,
+      "segment_id": "03_context",
+      "start_sec": 38.2,
+      "end_sec": 42.5,
+      "duration_sec": 4.3,
+      "start_time_srt": "00:00:38,200",
+      "end_time_srt": "00:00:42,500",
+      "lines": [
+        "Nếu cùng lúc có mười phản ánh,",
+        "ta nên nhìn trường hợp nào trước?"
+      ],
+      "full_text": "Nếu cùng lúc có mười phản ánh, ta nên nhìn trường hợp nào trước?",
+      "char_count": 64,
+      "cps": 14.88,
+      "keywords": [
+        "mười phản ánh",
+        "trường hợp nào trước"
+      ]
+    },
+    {
+      "index": 10,
+      "segment_id": "03_context",
+      "start_sec": 42.6,
+      "end_sec": 46.5,
+      "duration_sec": 3.9,
+      "start_time_srt": "00:00:42,600",
+      "end_time_srt": "00:00:46,500",
+      "lines": [
+        "Vì sao trường hợp đó đáng chú ý?",
+        "Hồ sơ còn đang thiếu những gì?"
+      ],
+      "full_text": "Vì sao trường hợp đó đáng chú ý? Hồ sơ còn đang thiếu những gì?",
+      "char_count": 63,
+      "cps": 16.15,
+      "keywords": [
+        "đáng chú ý",
+        "Hồ sơ còn thiếu gì"
+      ]
+    },
+    {
+      "index": 11,
+      "segment_id": "03_context",
+      "start_sec": 46.7,
+      "end_sec": 50.5,
+      "duration_sec": 3.8,
+      "start_time_srt": "00:00:46,700",
+      "end_time_srt": "00:00:50,500",
+      "lines": [
+        "Ai là người đang phụ trách?",
+        "Và sau khi một phản ánh gửi đi..."
+      ],
+      "full_text": "Ai là người đang phụ trách? Và sau khi một phản ánh gửi đi...",
+      "char_count": 61,
+      "cps": 16.05,
+      "keywords": [
+        "Ai đang phụ trách",
+        "phản ánh gửi đi"
+      ]
+    },
+    {
+      "index": 12,
+      "segment_id": "03_context",
+      "start_sec": 50.6,
+      "end_sec": 54.8,
+      "duration_sec": 4.2,
+      "start_time_srt": "00:00:50,600",
+      "end_time_srt": "00:00:54,800",
+      "lines": [
+        "...nó đã thực sự đi đến đâu?",
+        "Đó là khoảng trống cần giải quyết."
+      ],
+      "full_text": "...nó đã thực sự đi đến đâu? Đó là khoảng trống cần giải quyết.",
+      "char_count": 63,
+      "cps": 15.0,
+      "keywords": [
+        "thực sự đi đến đâu",
+        "khoảng trống"
+      ]
+    },
+    {
+      "index": 13,
+      "segment_id": "04_solution",
+      "start_sec": 55.2,
+      "end_sec": 59.5,
+      "duration_sec": 4.3,
+      "start_time_srt": "00:00:55,200",
+      "end_time_srt": "00:00:59,500",
+      "lines": [
+        "DUSTGUARD VN được xây dựng",
+        "để trả lời những câu hỏi đó."
+      ],
+      "full_text": "DUSTGUARD VN được xây dựng để trả lời những câu hỏi đó.",
+      "char_count": 55,
+      "cps": 12.79,
+      "keywords": [
+        "DUSTGUARD VN",
+        "trả lời những câu hỏi"
+      ]
+    },
+    {
+      "index": 14,
+      "segment_id": "04_solution",
+      "start_sec": 59.7,
+      "end_sec": 64.0,
+      "duration_sec": 4.3,
+      "start_time_srt": "00:00:59,700",
+      "end_time_srt": "00:01:04,000",
+      "lines": [
+        "Không phải bằng cách",
+        "thay thế người ra quyết định."
+      ],
+      "full_text": "Không phải bằng cách thay thế người ra quyết định.",
+      "char_count": 50,
+      "cps": 11.63,
+      "keywords": [
+        "Không thay thế người ra quyết định"
+      ]
+    },
+    {
+      "index": 15,
+      "segment_id": "04_solution",
+      "start_sec": 64.2,
+      "end_sec": 69.8,
+      "duration_sec": 5.6,
+      "start_time_srt": "00:01:04,200",
+      "end_time_srt": "00:01:09,800",
+      "lines": [
+        "Mà bằng cách kết nối TÍN HIỆU,",
+        "BẰNG CHỨNG, ƯU TIÊN và THEO DÕI."
+      ],
+      "full_text": "Mà bằng cách kết nối TÍN HIỆU, BẰNG CHỨNG, ƯU TIÊN và THEO DÕI.",
+      "char_count": 63,
+      "cps": 11.25,
+      "keywords": [
+        "TÍN HIỆU",
+        "BẰNG CHỨNG",
+        "ƯU TIÊN",
+        "THEO DÕI"
+      ]
+    },
+    {
+      "index": 16,
+      "segment_id": "05_core_logic",
+      "start_sec": 70.3,
+      "end_sec": 74.8,
+      "duration_sec": 4.5,
+      "start_time_srt": "00:01:10,300",
+      "end_time_srt": "00:01:14,800",
+      "lines": [
+        "Điểm mới của DUSTGUARD không phải",
+        "tạo thêm một nơi để gửi phản ánh."
+      ],
+      "full_text": "Điểm mới của DUSTGUARD không phải tạo thêm một nơi để gửi phản ánh.",
+      "char_count": 67,
+      "cps": 14.89,
+      "keywords": [
+        "DUSTGUARD",
+        "gửi phản ánh"
+      ]
+    },
+    {
+      "index": 17,
+      "segment_id": "05_core_logic",
+      "start_sec": 75.0,
+      "end_sec": 79.5,
+      "duration_sec": 4.5,
+      "start_time_srt": "00:01:15,000",
+      "end_time_srt": "00:01:19,500",
+      "lines": [
+        "Chúng tôi giải quyết khoảng trống",
+        "sau khi phản ánh đã được gửi."
+      ],
+      "full_text": "Chúng tôi giải quyết khoảng trống sau khi phản ánh đã được gửi.",
+      "char_count": 63,
+      "cps": 14.0,
+      "keywords": [
+        "khoảng trống sau khi gửi"
+      ]
+    },
+    {
+      "index": 18,
+      "segment_id": "05_core_logic",
+      "start_sec": 79.7,
+      "end_sec": 84.5,
+      "duration_sec": 4.8,
+      "start_time_srt": "00:01:19,700",
+      "end_time_srt": "00:01:24,500",
+      "lines": [
+        "Một tín hiệu phải thành HỒ SƠ.",
+        "Một hồ sơ phải có BẰNG CHỨNG."
+      ],
+      "full_text": "Một tín hiệu phải thành HỒ SƠ. Một hồ sơ phải có BẰNG CHỨNG.",
+      "char_count": 60,
+      "cps": 12.5,
+      "keywords": [
+        "HỒ SƠ",
+        "BẰNG CHỨNG"
+      ]
+    },
+    {
+      "index": 19,
+      "segment_id": "05_core_logic",
+      "start_sec": 84.7,
+      "end_sec": 89.8,
+      "duration_sec": 5.1,
+      "start_time_srt": "00:01:24,700",
+      "end_time_srt": "00:01:29,800",
+      "lines": [
+        "Một trường hợp phải có MỨC ƯU TIÊN.",
+        "Và phải biết nó đang xử lý tới đâu."
+      ],
+      "full_text": "Một trường hợp phải có MỨC ƯU TIÊN. Và phải biết nó đang xử lý tới đâu.",
+      "char_count": 71,
+      "cps": 13.92,
+      "keywords": [
+        "MỨC ƯU TIÊN",
+        "xử lý tới đâu"
+      ]
+    },
+    {
+      "index": 20,
+      "segment_id": "06_workshop_lesson",
+      "start_sec": 90.3,
+      "end_sec": 94.8,
+      "duration_sec": 4.5,
+      "start_time_srt": "00:01:30,300",
+      "end_time_srt": "00:01:34,800",
+      "lines": [
+        "Nhưng DUSTGUARD hôm nay",
+        "không còn giống phiên bản ban đầu."
+      ],
+      "full_text": "Nhưng DUSTGUARD hôm nay không còn giống phiên bản ban đầu.",
+      "char_count": 58,
+      "cps": 12.89,
+      "keywords": [
+        "DUSTGUARD hôm nay",
+        "phiên bản ban đầu"
+      ]
+    },
+    {
+      "index": 21,
+      "segment_id": "06_workshop_lesson",
+      "start_sec": 95.0,
+      "end_sec": 99.8,
+      "duration_sec": 4.8,
+      "start_time_srt": "00:01:35,000",
+      "end_time_srt": "00:01:39,800",
+      "lines": [
+        "Hệ thống thông minh không nên cố",
+        "ra nhiều quyết định hơn con người."
+      ],
+      "full_text": "Hệ thống thông minh không nên cố ra nhiều quyết định hơn con người.",
+      "char_count": 67,
+      "cps": 13.96,
+      "keywords": [
+        "hệ thống thông minh",
+        "con người"
+      ]
+    },
+    {
+      "index": 22,
+      "segment_id": "06_workshop_lesson",
+      "start_sec": 100.0,
+      "end_sec": 104.5,
+      "duration_sec": 4.5,
+      "start_time_srt": "00:01:40,000",
+      "end_time_srt": "00:01:44,500",
+      "lines": [
+        "Nó phải giúp con người có đủ thông tin",
+        "để đưa ra quyết định tốt hơn."
+      ],
+      "full_text": "Nó phải giúp con người có đủ thông tin để đưa ra quyết định tốt hơn.",
+      "char_count": 68,
+      "cps": 15.11,
+      "keywords": [
+        "đủ thông tin",
+        "quyết định tốt hơn"
+      ]
+    },
+    {
+      "index": 23,
+      "segment_id": "06_workshop_lesson",
+      "start_sec": 104.7,
+      "end_sec": 108.8,
+      "duration_sec": 4.1,
+      "start_time_srt": "00:01:44,700",
+      "end_time_srt": "00:01:48,800",
+      "lines": [
+        "Chúng tôi thay đổi cách nhìn về AI,",
+        "về điểm rủi ro và cả vai trò IoT."
+      ],
+      "full_text": "Chúng tôi thay đổi cách nhìn về AI, về điểm rủi ro và cả vai trò IoT.",
+      "char_count": 69,
+      "cps": 16.83,
+      "keywords": [
+        "cách nhìn về AI",
+        "điểm rủi ro",
+        "vai trò IoT"
+      ]
+    },
+    {
+      "index": 24,
+      "segment_id": "07_responsible_ai",
+      "start_sec": 109.3,
+      "end_sec": 113.8,
+      "duration_sec": 4.5,
+      "start_time_srt": "00:01:49,300",
+      "end_time_srt": "00:01:53,800",
+      "lines": [
+        "DUST RISK SCORE không trả lời rằng",
+        "một công trình có vi phạm hay không."
+      ],
+      "full_text": "DUST RISK SCORE không trả lời rằng một công trình có vi phạm hay không.",
+      "char_count": 71,
+      "cps": 15.78,
+      "keywords": [
+        "DUST RISK SCORE",
+        "không kết luận vi phạm"
+      ]
+    },
+    {
+      "index": 25,
+      "segment_id": "07_responsible_ai",
+      "start_sec": 114.0,
+      "end_sec": 118.8,
+      "duration_sec": 4.8,
+      "start_time_srt": "00:01:54,000",
+      "end_time_srt": "00:01:58,800",
+      "lines": [
+        "Nó chỉ hỗ trợ: trường hợp nào",
+        "nên được xem xét trước, và vì sao?"
+      ],
+      "full_text": "Nó chỉ hỗ trợ: trường hợp nào nên được xem xét trước, và vì sao?",
+      "char_count": 64,
+      "cps": 13.33,
+      "keywords": [
+        "xem xét trước",
+        "vì sao"
+      ]
+    },
+    {
+      "index": 26,
+      "segment_id": "07_responsible_ai",
+      "start_sec": 119.0,
+      "end_sec": 123.5,
+      "duration_sec": 4.5,
+      "start_time_srt": "00:01:59,000",
+      "end_time_srt": "00:02:03,500",
+      "lines": [
+        "AI HỖ TRỢ phân loại, tóm tắt,",
+        "tìm thiếu sót và gợi ý checklist."
+      ],
+      "full_text": "AI HỖ TRỢ phân loại, tóm tắt, tìm thiếu sót và gợi ý checklist.",
+      "char_count": 63,
+      "cps": 14.0,
+      "keywords": [
+        "AI HỖ TRỢ",
+        "phân loại",
+        "tóm tắt",
+        "checklist"
+      ]
+    },
+    {
+      "index": 27,
+      "segment_id": "07_responsible_ai",
+      "start_sec": 123.7,
+      "end_sec": 127.8,
+      "duration_sec": 4.1,
+      "start_time_srt": "00:02:03,700",
+      "end_time_srt": "00:02:07,800",
+      "lines": [
+        "AI không tự phạt, không kết luận,",
+        "không thay thế cơ quan thẩm quyền."
+      ],
+      "full_text": "AI không tự phạt, không kết luận, không thay thế cơ quan thẩm quyền.",
+      "char_count": 68,
+      "cps": 16.59,
+      "keywords": [
+        "không tự phạt",
+        "không thay thế"
+      ]
+    },
+    {
+      "index": 28,
+      "segment_id": "08_lean_pilot",
+      "start_sec": 128.3,
+      "end_sec": 133.0,
+      "duration_sec": 4.7,
+      "start_time_srt": "00:02:08,300",
+      "end_time_srt": "00:02:13,000",
+      "lines": [
+        "Giải pháp môi trường không nên",
+        "bắt đầu bằng hạ tầng quá cồng kềnh."
+      ],
+      "full_text": "Giải pháp môi trường không nên bắt đầu bằng hạ tầng quá cồng kềnh.",
+      "char_count": 66,
+      "cps": 14.04,
+      "keywords": [
+        "Giải pháp môi trường",
+        "hạ tầng"
+      ]
+    },
+    {
+      "index": 29,
+      "segment_id": "08_lean_pilot",
+      "start_sec": 133.2,
+      "end_sec": 138.0,
+      "duration_sec": 4.8,
+      "start_time_srt": "00:02:13,200",
+      "end_time_srt": "00:02:18,000",
+      "lines": [
+        "DUSTGUARD bắt đầu với dữ liệu sẵn có:",
+        "phản ánh, hình ảnh, vị trí, hồ sơ."
+      ],
+      "full_text": "DUSTGUARD bắt đầu với dữ liệu sẵn có: phản ánh, hình ảnh, vị trí, hồ sơ.",
+      "char_count": 72,
+      "cps": 15.0,
+      "keywords": [
+        "DUSTGUARD",
+        "dữ liệu sẵn có",
+        "hồ sơ"
+      ]
+    },
+    {
+      "index": 30,
+      "segment_id": "08_lean_pilot",
+      "start_sec": 138.2,
+      "end_sec": 142.8,
+      "duration_sec": 4.6,
+      "start_time_srt": "00:02:18,200",
+      "end_time_srt": "00:02:22,800",
+      "lines": [
+        "Mô hình PILOT 4-8 TUẦN triển khai",
+        "tại trường học, CLB môi trường."
+      ],
+      "full_text": "Mô hình PILOT 4-8 TUẦN triển khai tại trường học, CLB môi trường.",
+      "char_count": 65,
+      "cps": 14.13,
+      "keywords": [
+        "PILOT 4-8 TUẦN",
+        "CLB môi trường"
+      ]
+    },
+    {
+      "index": 31,
+      "segment_id": "08_lean_pilot",
+      "start_sec": 143.0,
+      "end_sec": 147.8,
+      "duration_sec": 4.8,
+      "start_time_srt": "00:02:23,000",
+      "end_time_srt": "00:02:27,800",
+      "lines": [
+        "Với 20 đến 30 người dùng thật,",
+        "cùng những chỉ số có thể đo lường."
+      ],
+      "full_text": "Với 20 đến 30 người dùng thật, cùng những chỉ số có thể đo lường.",
+      "char_count": 65,
+      "cps": 13.54,
+      "keywords": [
+        "20 đến 30 người dùng thật",
+        "đo lường"
+      ]
+    },
+    {
+      "index": 32,
+      "segment_id": "09_metrics",
+      "start_sec": 148.3,
+      "end_sec": 152.2,
+      "duration_sec": 3.9,
+      "start_time_srt": "00:02:28,300",
+      "end_time_srt": "00:02:32,200",
+      "lines": [
+        "Bao nhiêu ca có đủ BẰNG CHỨNG?",
+        "Thời gian từ phát hiện đến xử lý?"
+      ],
+      "full_text": "Bao nhiêu ca có đủ BẰNG CHỨNG? Thời gian từ phát hiện đến xử lý?",
+      "char_count": 64,
+      "cps": 16.41,
+      "keywords": [
+        "BẰNG CHỨNG",
+        "phát hiện đến xử lý"
+      ]
+    },
+    {
+      "index": 33,
+      "segment_id": "09_metrics",
+      "start_sec": 152.4,
+      "end_sec": 156.5,
+      "duration_sec": 4.1,
+      "start_time_srt": "00:02:32,400",
+      "end_time_srt": "00:02:36,500",
+      "lines": [
+        "Bao nhiêu trường hợp thực sự",
+        "có bước hành động tiếp theo?"
+      ],
+      "full_text": "Bao nhiêu trường hợp thực sự có bước hành động tiếp theo?",
+      "char_count": 57,
+      "cps": 13.9,
+      "keywords": [
+        "hành động tiếp theo"
+      ]
+    },
+    {
+      "index": 34,
+      "segment_id": "09_metrics",
+      "start_sec": 156.7,
+      "end_sec": 161.0,
+      "duration_sec": 4.3,
+      "start_time_srt": "00:02:36,700",
+      "end_time_srt": "00:02:41,000",
+      "lines": [
+        "Bao nhiêu vụ việc được THEO DÕI",
+        "từ lúc xuất hiện đến khi có kết quả?"
+      ],
+      "full_text": "Bao nhiêu vụ việc được THEO DÕI từ lúc xuất hiện đến khi có kết quả?",
+      "char_count": 68,
+      "cps": 15.81,
+      "keywords": [
+        "THEO DÕI",
+        "có kết quả"
+      ]
+    },
+    {
+      "index": 35,
+      "segment_id": "09_metrics",
+      "start_sec": 161.2,
+      "end_sec": 164.8,
+      "duration_sec": 3.6,
+      "start_time_srt": "00:02:41,200",
+      "end_time_srt": "00:02:44,800",
+      "lines": [
+        "Đó là những con số thực tế",
+        "chứng minh giá trị của DUSTGUARD."
+      ],
+      "full_text": "Đó là những con số thực tế chứng minh giá trị của DUSTGUARD.",
+      "char_count": 60,
+      "cps": 16.67,
+      "keywords": [
+        "con số thực tế",
+        "DUSTGUARD"
+      ]
+    },
+    {
+      "index": 36,
+      "segment_id": "10_community",
+      "start_sec": 165.3,
+      "end_sec": 169.8,
+      "duration_sec": 4.5,
+      "start_time_srt": "00:02:45,300",
+      "end_time_srt": "00:02:49,800",
+      "lines": [
+        "DUSTGUARD không chỉ dành cho quản lý,",
+        "mà bắt đầu từ cộng đồng có động lực:"
+      ],
+      "full_text": "DUSTGUARD không chỉ dành cho quản lý, mà bắt đầu từ cộng đồng có động lực:",
+      "char_count": 74,
+      "cps": 16.44,
+      "keywords": [
+        "DUSTGUARD",
+        "cộng đồng có động lực"
+      ]
+    },
+    {
+      "index": 37,
+      "segment_id": "10_community",
+      "start_sec": 170.0,
+      "end_sec": 174.5,
+      "duration_sec": 4.5,
+      "start_time_srt": "00:02:50,000",
+      "end_time_srt": "00:02:54,500",
+      "lines": [
+        "trường học, câu lạc bộ môi trường,",
+        "tổ chức thanh niên và người trẻ."
+      ],
+      "full_text": "trường học, câu lạc bộ môi trường, tổ chức thanh niên và người trẻ.",
+      "char_count": 67,
+      "cps": 14.89,
+      "keywords": [
+        "trường học",
+        "câu lạc bộ môi trường",
+        "thanh niên",
+        "người trẻ"
+      ]
+    },
+    {
+      "index": 38,
+      "segment_id": "10_community",
+      "start_sec": 174.7,
+      "end_sec": 179.8,
+      "duration_sec": 5.1,
+      "start_time_srt": "00:02:54,700",
+      "end_time_srt": "00:02:59,800",
+      "lines": [
+        "Để họ ghi nhận tốt hơn, THEO DÕI",
+        "lâu hơn và không để vấn đề bị bỏ quên."
+      ],
+      "full_text": "Để họ ghi nhận tốt hơn, THEO DÕI lâu hơn và không để vấn đề bị bỏ quên.",
+      "char_count": 71,
+      "cps": 13.92,
+      "keywords": [
+        "ghi nhận tốt hơn",
+        "THEO DÕI",
+        "không bị bỏ quên"
+      ]
+    },
+    {
+      "index": 39,
+      "segment_id": "11_expansion",
+      "start_sec": 180.3,
+      "end_sec": 185.0,
+      "duration_sec": 4.7,
+      "start_time_srt": "00:03:00,300",
+      "end_time_srt": "00:03:05,000",
+      "lines": [
+        "Cùng một lõi hệ thống có thể mở rộng",
+        "cho nhiều vấn đề môi trường khác:"
+      ],
+      "full_text": "Cùng một lõi hệ thống có thể mở rộng cho nhiều vấn đề môi trường khác:",
+      "char_count": 70,
+      "cps": 14.89,
+      "keywords": [
+        "lõi hệ thống",
+        "mở rộng"
+      ]
+    },
+    {
+      "index": 40,
+      "segment_id": "11_expansion",
+      "start_sec": 185.2,
+      "end_sec": 189.5,
+      "duration_sec": 4.3,
+      "start_time_srt": "00:03:05,200",
+      "end_time_srt": "00:03:09,500",
+      "lines": [
+        "Nước thải. Đốt rơm rạ.",
+        "Thuốc bảo vệ thực vật. Tiếng ồn."
+      ],
+      "full_text": "Nước thải. Đốt rơm rạ. Thuốc bảo vệ thực vật. Tiếng ồn.",
+      "char_count": 55,
+      "cps": 12.79,
+      "keywords": [
+        "Nước thải",
+        "Đốt rơm rạ",
+        "Thuốc bảo vệ thực vật",
+        "Tiếng ồn"
+      ]
+    },
+    {
+      "index": 41,
+      "segment_id": "11_expansion",
+      "start_sec": 189.7,
+      "end_sec": 196.8,
+      "duration_sec": 7.1,
+      "start_time_srt": "00:03:09,700",
+      "end_time_srt": "00:03:16,800",
+      "lines": [
+        "Mỗi bước mở rộng đều bắt đầu từ việc",
+        "hiểu đúng người dùng và quy trình."
+      ],
+      "full_text": "Mỗi bước mở rộng đều bắt đầu từ việc hiểu đúng người dùng và quy trình.",
+      "char_count": 71,
+      "cps": 10.0,
+      "keywords": [
+        "hiểu đúng người dùng",
+        "quy trình"
+      ]
+    },
+    {
+      "index": 42,
+      "segment_id": "12_closing",
+      "start_sec": 197.3,
+      "end_sec": 201.2,
+      "duration_sec": 3.9,
+      "start_time_srt": "00:03:17,300",
+      "end_time_srt": "00:03:21,200",
+      "lines": [
+        "DUSTGUARD không thay thế con người,",
+        "mà giúp vấn đề nhìn thấy rõ hơn."
+      ],
+      "full_text": "DUSTGUARD không thay thế con người, mà giúp vấn đề nhìn thấy rõ hơn.",
+      "char_count": 68,
+      "cps": 17.44,
+      "keywords": [
+        "DUSTGUARD",
+        "không thay thế con người",
+        "nhìn thấy rõ hơn"
+      ]
+    },
+    {
+      "index": 43,
+      "segment_id": "12_closing",
+      "start_sec": 201.4,
+      "end_sec": 205.5,
+      "duration_sec": 4.1,
+      "start_time_srt": "00:03:21,400",
+      "end_time_srt": "00:03:25,500",
+      "lines": [
+        "Ghi nhận đầy đủ, THEO DÕI lâu hơn,",
+        "từ tín hiệu đến HÀNH ĐỘNG THỰC SỰ."
+      ],
+      "full_text": "Ghi nhận đầy đủ, THEO DÕI lâu hơn, từ tín hiệu đến HÀNH ĐỘNG THỰC SỰ.",
+      "char_count": 69,
+      "cps": 16.83,
+      "keywords": [
+        "Ghi nhận đầy đủ",
+        "THEO DÕI lâu hơn",
+        "HÀNH ĐỘNG THỰC SỰ"
+      ]
+    },
+    {
+      "index": 44,
+      "segment_id": "12_closing",
+      "start_sec": 205.7,
+      "end_sec": 210.0,
+      "duration_sec": 4.3,
+      "start_time_srt": "00:03:25,700",
+      "end_time_srt": "00:03:30,000",
+      "lines": [
+        "DUSTGUARD VN — CÓ ƯU TIÊN,",
+        "CÓ BẰNG CHỨNG VÀ CÓ THEO DÕI."
+      ],
+      "full_text": "DUSTGUARD VN — CÓ ƯU TIÊN, CÓ BẰNG CHỨNG VÀ CÓ THEO DÕI.",
+      "char_count": 56,
+      "cps": 13.02,
+      "keywords": [
+        "DUSTGUARD VN",
+        "CÓ ƯU TIÊN",
+        "CÓ BẰNG CHỨNG",
+        "CÓ THEO DÕI"
+      ]
+    }
+  ]
+}

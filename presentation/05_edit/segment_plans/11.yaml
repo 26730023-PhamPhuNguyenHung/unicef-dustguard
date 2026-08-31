@@ -1,28 +1,37 @@
-segment: 11
-title: "Tầm nhìn mở rộng 4 giai đoạn đa bài toán môi trường"
-timecode:
-  start: 212.664
-  end: 234.312
-  duration: 21.648
-voice:
-  file: 04_audio/voice_final/11.wav
-  duration_seconds: 21.648
+segment_id: '11'
+title: Tầm nhìn mở rộng đa lĩnh vực
+start_time: 196.56
+end_time: 216.576
+duration: 20.016
+energy_level: 9
+overlay: null
+voice_text: Nếu cách tiếp cận này được kiểm chứng với bụi công trình, chúng tôi tin
+  rằng cùng một lõi có thể tiếp tục được phát triển cho những vấn đề môi trường khác.
+  Nước thải. Đốt rơm rạ. Thuốc bảo vệ thực vật. Tiếng ồn. Nhưng mỗi bước mở rộng đều
+  phải bắt đầu lại bằng việc hiểu đúng người dùng, đúng dữ liệu và đúng quy trình
+  thực tế.
 shots:
-  - source_id: S009
-    type: slide
-    in_point: 0.000
-    out_point: 11.000
-    duration: 11.000
-    timeline_start: 212.664
-    timeline_end: 223.664
-    motion: "zoom_4_stages_expansion"
-    on_screen_text: "1 LÕI QUẢN TRỊ ➔ NƯỚC THẢI, RƠM RẠ, TIẾNG ỒN"
-  - source_id: V011
-    type: video
-    in_point: 0.000
-    out_point: 10.648
-    duration: 10.648
-    timeline_start: 223.664
-    timeline_end: 234.312
-    motion: "green_transport_flow"
-    on_screen_text: "Mở rộng hệ sinh thái số vì môi trường Việt Nam"
+- shot_index: 1
+  source_id: I009
+  source_type: image
+  file: 02_sources/real_images/environment/ChatGPT Image 09_56_51 31 thg 8, 2026 (9).png
+  start_time: 196.56
+  duration: 6.672
+  transition: cut
+  ken_burns: true
+- shot_index: 2
+  source_id: V011
+  source_type: video
+  file: 02_sources/real_video/vietnam/clip_hn2_04_green_transport_electric_bus.mp4
+  start_time: 203.232
+  duration: 6.672
+  transition: fade
+  ken_burns: false
+- shot_index: 3
+  source_id: I007
+  source_type: image
+  file: 02_sources/real_images/vietnam/ChatGPT Image 09_56_50 31 thg 8, 2026 (7).png
+  start_time: 209.904
+  duration: 6.672
+  transition: fade
+  ken_burns: true

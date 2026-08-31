@@ -1,239 +1,455 @@
 1
-00:00:00,500 --> 00:00:06,200
-Ở một thành phố đang phát triển, những công trường mới đồng nghĩa với những con đường mới,
+00:00:00,000 --> 00:00:01,772
+Ở một thành phố đang phát triển,
 
 2
-00:00:06,200 --> 00:00:10,000
-những ngôi nhà mới và những cơ hội mới.
+00:00:01,772 --> 00:00:04,557
+những công trường mới đồng nghĩa với những con đường mới,
 
 3
-00:00:10,000 --> 00:00:14,500
-Nhưng cùng với sự phát triển đó, có một tác động rất dễ bị xem là nhỏ...
+00:00:04,557 --> 00:00:06,835
+những ngôi nhà mới và những cơ hội mới.
 
 4
-00:00:14,500 --> 00:00:18,500
-cho đến khi nó trở thành vấn đề của cả một cộng đồng: Bụi công trình.
+00:00:06,835 --> 00:00:08,607
+Nhưng cùng với sự phát triển đó,
 
 5
-00:00:18,800 --> 00:00:23,800
-Điều chúng tôi nhận ra là: vấn đề không phải chúng ta hoàn toàn không có dữ liệu.
+00:00:08,607 --> 00:00:11,139
+có một tác động rất dễ bị xem là nhỏ...
 
 6
-00:00:24,000 --> 00:00:28,800
-Người dân có phản ánh. Có hình ảnh. Có vị trí. Có thông tin công trình.
+00:00:11,139 --> 00:00:14,177
+cho đến khi nó trở thành vấn đề của cả một cộng
 
 7
-00:00:29,000 --> 00:00:33,000
-Có hồ sơ kiểm tra. Và trong tương lai còn có thể có dữ liệu từ cảm biến.
+00:00:14,177 --> 00:00:14,430
+đồng.
 
 8
-00:00:33,200 --> 00:00:37,500
-Nhưng những thông tin đó thường nằm ở nhiều nơi khác nhau.
+00:00:14,430 --> 00:00:15,696
+Đó là bụi công trình.
 
 9
-00:00:37,500 --> 00:00:44,000
-Và khi dữ liệu bị phân tán, điều khó nhất là biến nó thành một hành động có thứ tự ưu tiên.
+00:00:15,696 --> 00:00:17,526
+Điều chúng tôi nhận ra là:
 
 10
-00:00:44,200 --> 00:00:48,000
-Nếu cùng lúc có mười phản ánh, chúng ta nên nhìn vào trường hợp nào trước?
+00:00:17,526 --> 00:00:21,186
+vấn đề không phải chúng ta hoàn toàn không có dữ liệu.
 
 11
-00:00:48,000 --> 00:00:50,800
-Vì sao trường hợp đó đáng chú ý?
+00:00:21,186 --> 00:00:22,712
+Người dân có phản ánh.
 
 12
-00:00:50,800 --> 00:00:53,200
-Hồ sơ còn thiếu gì?
+00:00:22,712 --> 00:00:23,627
+Có hình ảnh.
 
 13
-00:00:53,200 --> 00:00:55,500
-Ai đang phụ trách?
+00:00:23,627 --> 00:00:24,542
+Có vị trí.
 
 14
-00:00:55,500 --> 00:01:00,000
-Và sau khi một phản ánh được gửi đi… nó đã thực sự đi đến đâu?
+00:00:24,542 --> 00:00:26,067
+Có thông tin công trình.
 
 15
-00:01:00,200 --> 00:01:04,500
-DustGuard được xây dựng để trả lời những câu hỏi đó.
+00:00:26,067 --> 00:00:27,592
+Có hồ sơ kiểm tra.
 
 16
-00:01:04,500 --> 00:01:07,800
-Không phải bằng cách thay thế người ra quyết định.
+00:00:27,592 --> 00:00:31,252
+Và trong tương lai còn có thể có dữ liệu từ cảm
 
 17
-00:01:08,000 --> 00:01:14,500
-Mà bằng cách kết nối tín hiệu, bằng chứng, mức độ ưu tiên và quá trình xử lý thành một hồ sơ có thể theo dõi.
+00:00:31,252 --> 00:00:31,557
+biến.
 
 18
-00:01:14,800 --> 00:01:19,200
-Điểm mới của DustGuard không nằm ở việc tạo thêm một nơi để gửi phản ánh.
+00:00:31,557 --> 00:00:35,217
+Nhưng những thông tin đó thường nằm ở nhiều nơi khác nhau.
 
 19
-00:01:19,200 --> 00:01:24,000
-Điều chúng tôi muốn giải quyết là khoảng trống sau khi phản ánh đã được gửi.
+00:00:35,217 --> 00:00:37,353
+Và khi dữ liệu bị phân tán,
 
 20
-00:01:24,200 --> 00:01:28,500
-Một tín hiệu ban đầu phải có cơ hội trở thành một hồ sơ.
+00:00:37,353 --> 00:00:41,013
+điều khó nhất là biến nó thành một hành động có thứ
 
 21
-00:01:28,500 --> 00:01:31,500
-Một hồ sơ phải có bằng chứng.
+00:00:41,013 --> 00:00:41,928
+tự ưu tiên.
 
 22
-00:01:31,500 --> 00:01:34,800
-Một trường hợp phải có mức độ ưu tiên.
+00:00:41,928 --> 00:00:44,019
+Nếu cùng lúc có mười phản ánh,
 
 23
-00:01:34,800 --> 00:01:40,500
-Và quan trọng nhất: phải có thể biết nó đang được xử lý tới đâu.
+00:00:44,019 --> 00:00:46,708
+chúng ta nên nhìn vào trường hợp nào trước?
 
 24
-00:01:40,800 --> 00:01:45,200
-Nhưng DustGuard hôm nay không còn giống phiên bản ban đầu.
+00:00:46,708 --> 00:00:49,099
+Vì sao trường hợp đó đáng chú ý?
 
 25
-00:01:45,200 --> 00:01:50,500
-Sau vòng tập huấn, chúng tôi nhận ra rằng một hệ thống thông minh không nên cố gắng đưa ra nhiều quyết định hơn con người.
+00:00:49,099 --> 00:00:50,592
+Hồ sơ còn thiếu gì?
 
 26
-00:01:50,800 --> 00:01:55,800
-Nó phải giúp con người có đủ thông tin để đưa ra quyết định tốt hơn.
+00:00:50,592 --> 00:00:51,788
+Ai đang phụ trách?
 
 27
-00:01:56,000 --> 00:02:02,000
-Vì vậy, chúng tôi thay đổi cách nhìn về AI, về điểm rủi ro và cả vai trò của IoT.
+00:00:51,788 --> 00:00:54,477
+Và sau khi một phản ánh được gửi đi...
 
 28
-00:02:02,200 --> 00:02:07,000
-Dust Risk Score không trả lời rằng một công trình có vi phạm hay không.
+00:00:54,477 --> 00:00:56,568
+nó đã thực sự đi đến đâu?
 
 29
-00:02:07,000 --> 00:02:13,200
-Nó chỉ hỗ trợ một câu hỏi thực tế hơn: trong nhiều trường hợp đang tồn tại, trường hợp nào nên được xem xét trước, và vì sao?
+00:00:56,568 --> 00:00:59,657
+DustGuard được xây dựng để trả lời những câu hỏi đó.
 
 30
-00:02:13,500 --> 00:02:18,500
-AI có thể phân loại, tóm tắt, tìm thông tin còn thiếu và hỗ trợ checklist.
+00:00:59,657 --> 00:01:02,466
+Không phải bằng cách thay thế người ra quyết định.
 
 31
-00:02:18,500 --> 00:02:21,500
-Nhưng AI không tự kết luận vi phạm.
+00:01:02,466 --> 00:01:04,432
+Mà bằng cách kết nối tín hiệu,
 
 32
-00:02:21,500 --> 00:02:24,200
-Không tự quyết định xử phạt.
+00:01:04,432 --> 00:01:04,994
+bằng chứng,
 
 33
-00:02:24,200 --> 00:02:28,500
-Và không thay thế cơ quan có thẩm quyền.
+00:01:04,994 --> 00:01:08,364
+mức độ ưu tiên và quá trình xử lý thành một hồ
 
 34
-00:02:28,800 --> 00:02:34,000
-Chúng tôi cũng học được rằng một giải pháp môi trường không nên bắt đầu bằng một hạ tầng thật lớn.
+00:01:08,364 --> 00:01:09,768
+sơ có thể theo dõi.
 
 35
-00:02:34,200 --> 00:02:39,500
-DustGuard có thể bắt đầu chỉ với dữ liệu đang có: phản ánh, hình ảnh, vị trí, checklist và hồ sơ.
+00:01:09,768 --> 00:01:13,134
+Điểm mới của DustGuard không nằm ở việc tạo thêm một nơi
 
 36
-00:02:39,800 --> 00:02:45,000
-Một pilot có thể triển khai trong một cộng đồng nhỏ, một trường học hoặc một câu lạc bộ môi trường.
+00:01:13,134 --> 00:01:14,256
+để gửi phản ánh.
 
 37
-00:02:45,000 --> 00:02:47,500
-Trong bốn đến tám tuần.
+00:01:14,256 --> 00:01:17,623
+Điều chúng tôi muốn giải quyết là khoảng trống sau khi phản
 
 38
-00:02:47,500 --> 00:02:51,200
-Với hai mươi đến ba mươi người dùng thật.
+00:01:17,623 --> 00:01:18,745
+ánh đã được gửi.
 
 39
-00:02:51,200 --> 00:02:55,000
-Và những chỉ số có thể đo được.
+00:01:18,745 --> 00:01:22,111
+Một tín hiệu ban đầu phải có cơ hội trở thành một
 
 40
-00:02:55,200 --> 00:02:58,800
-Bao nhiêu trường hợp có đủ bằng chứng?
+00:01:22,111 --> 00:01:22,672
+hồ sơ.
 
 41
-00:02:58,800 --> 00:03:02,000
-Thời gian từ phát hiện đến hành động là bao lâu?
+00:01:22,672 --> 00:01:24,636
+Một hồ sơ phải có bằng chứng.
 
 42
-00:03:02,000 --> 00:03:05,800
-Bao nhiêu trường hợp thực sự có bước xử lý tiếp theo?
+00:01:24,636 --> 00:01:27,160
+Một trường hợp phải có mức độ ưu tiên.
 
 43
-00:03:05,800 --> 00:03:11,500
-Bao nhiêu vụ việc có thể được theo dõi từ lúc xuất hiện tín hiệu đến khi có kết quả?
+00:01:27,160 --> 00:01:28,282
+Và quan trọng nhất:
 
 44
-00:03:11,800 --> 00:03:17,500
-Đó mới là những con số chúng tôi muốn dùng để chứng minh DustGuard có giá trị.
+00:01:28,282 --> 00:01:31,368
+phải có thể biết nó đang được xử lý tới đâu.
 
 45
-00:03:17,800 --> 00:03:21,500
-Và DustGuard không chỉ dành cho cơ quan quản lý.
+00:01:31,368 --> 00:01:34,323
+Nhưng DustGuard hôm nay không còn giống phiên bản ban đầu.
 
 46
-00:03:21,500 --> 00:03:27,500
-Chúng tôi muốn bắt đầu từ những cộng đồng đã có động lực hành động: trường học, câu lạc bộ môi trường, tổ chức thanh niên và những người trẻ.
+00:01:34,323 --> 00:01:35,397
+Sau vòng tập huấn,
 
 47
-00:03:27,800 --> 00:03:31,000
-Để họ không chỉ nhìn thấy một vấn đề.
+00:01:35,397 --> 00:01:38,620
+chúng tôi nhận ra rằng một hệ thống thông minh không nên
 
 48
-00:03:31,000 --> 00:03:37,000
-Mà biết cách ghi nhận nó tốt hơn, theo dõi nó lâu hơn và giúp nó không bị bỏ quên.
+00:01:38,620 --> 00:01:41,306
+cố gắng đưa ra nhiều quyết định hơn con người.
 
 49
-00:03:37,200 --> 00:03:43,000
-Nếu cách tiếp cận này được kiểm chứng với bụi công trình, chúng tôi tin rằng cùng một lõi có thể tiếp tục được phát triển cho những vấn đề môi trường khác.
+00:01:41,306 --> 00:01:44,530
+Nó phải giúp con người có đủ thông tin để đưa ra
 
 50
-00:03:43,200 --> 00:03:45,200
-Nước thải.
+00:01:44,530 --> 00:01:45,604
+quyết định tốt hơn.
 
 51
-00:03:45,200 --> 00:03:47,200
-Đốt rơm rạ.
+00:01:45,604 --> 00:01:46,141
+Vì vậy,
 
 52
-00:03:47,200 --> 00:03:49,800
-Thuốc bảo vệ thực vật.
+00:01:46,141 --> 00:01:48,290
+chúng tôi thay đổi cách nhìn về AI,
 
 53
-00:03:49,800 --> 00:03:52,000
-Tiếng ồn.
+00:01:48,290 --> 00:01:50,976
+về điểm rủi ro và cả vai trò của IoT.
 
 54
-00:03:52,000 --> 00:03:58,500
-Nhưng mỗi bước mở rộng đều phải bắt đầu lại bằng việc hiểu đúng người dùng, đúng dữ liệu và đúng quy trình thực tế.
+00:01:50,976 --> 00:01:54,527
+Dust Risk Score không trả lời rằng một công trình có vi
 
 55
-00:03:58,800 --> 00:04:03,800
-DustGuard không đặt mục tiêu trở thành một hệ thống quyết định thay con người.
+00:01:54,527 --> 00:01:55,415
+phạm hay không.
 
 56
-00:04:03,800 --> 00:04:08,200
-Chúng tôi muốn nó trở thành một công cụ giúp một vấn đề được nhìn thấy rõ hơn.
+00:01:55,415 --> 00:01:58,374
+Nó chỉ hỗ trợ một câu hỏi thực tế hơn:
 
 57
-00:04:08,200 --> 00:04:11,500
-Được ghi nhận đầy đủ hơn.
+00:01:58,374 --> 00:02:00,445
+trong nhiều trường hợp đang tồn tại,
 
 58
-00:04:11,500 --> 00:04:14,800
-Được theo dõi lâu hơn.
+00:02:00,445 --> 00:02:02,812
+trường hợp nào nên được xem xét trước,
 
 59
-00:04:14,800 --> 00:04:20,000
-Và có nhiều cơ hội hơn để đi từ một tín hiệu… đến một hành động thực sự.
+00:02:02,812 --> 00:02:03,700
+và vì sao?
 
 60
-00:04:20,200 --> 00:04:26,500
-DustGuard — biến dữ liệu thành hành động quản lý có ưu tiên, có bằng chứng và có theo dõi.
+00:02:03,700 --> 00:02:05,179
+AI có thể phân loại,
+
+61
+00:02:05,179 --> 00:02:05,771
+tóm tắt,
+
+62
+00:02:05,771 --> 00:02:08,434
+tìm thông tin còn thiếu và hỗ trợ checklist.
+
+63
+00:02:08,434 --> 00:02:10,801
+Nhưng AI không tự kết luận vi phạm.
+
+64
+00:02:10,801 --> 00:02:12,577
+Không tự quyết định xử phạt.
+
+65
+00:02:12,577 --> 00:02:15,240
+Và không thay thế cơ quan có thẩm quyền.
+
+66
+00:02:15,240 --> 00:02:18,737
+Chúng tôi cũng học được rằng một giải pháp môi trường không
+
+67
+00:02:18,737 --> 00:02:21,359
+nên bắt đầu bằng một hạ tầng thật lớn.
+
+68
+00:02:21,359 --> 00:02:24,564
+DustGuard có thể bắt đầu chỉ với dữ liệu đang có:
+
+69
+00:02:24,564 --> 00:02:25,147
+phản ánh,
+
+70
+00:02:25,147 --> 00:02:25,730
+hình ảnh,
+
+71
+00:02:25,730 --> 00:02:26,313
+vị trí,
+
+72
+00:02:26,313 --> 00:02:27,478
+checklist và hồ sơ.
+
+73
+00:02:27,478 --> 00:02:30,684
+Một pilot có thể triển khai trong một cộng đồng nhỏ,
+
+74
+00:02:30,684 --> 00:02:33,597
+một trường học hoặc một câu lạc bộ môi trường.
+
+75
+00:02:33,597 --> 00:02:35,054
+Trong bốn đến tám tuần.
+
+76
+00:02:35,054 --> 00:02:37,677
+Với hai mươi đến ba mươi người dùng thật.
+
+77
+00:02:37,677 --> 00:02:40,008
+Và những chỉ số có thể đo được.
+
+78
+00:02:40,008 --> 00:02:42,123
+Bao nhiêu trường hợp có đủ bằng chứng?
+
+79
+00:02:42,123 --> 00:02:45,031
+Thời gian từ phát hiện đến hành động là bao lâu?
+
+80
+00:02:45,031 --> 00:02:48,203
+Bao nhiêu trường hợp thực sự có bước xử lý tiếp theo?
+
+81
+00:02:48,203 --> 00:02:51,375
+Bao nhiêu vụ việc có thể được theo dõi từ lúc xuất
+
+82
+00:02:51,375 --> 00:02:53,490
+hiện tín hiệu đến khi có kết quả?
+
+83
+00:02:53,490 --> 00:02:56,662
+Đó mới là những con số chúng tôi muốn dùng để chứng
+
+84
+00:02:56,662 --> 00:02:57,984
+minh DustGuard có giá trị.
+
+85
+00:02:57,984 --> 00:03:00,676
+Và DustGuard không chỉ dành cho cơ quan quản lý.
+
+86
+00:03:00,676 --> 00:03:03,907
+Chúng tôi muốn bắt đầu từ những cộng đồng đã có động
+
+87
+00:03:03,907 --> 00:03:04,714
+lực hành động:
+
+88
+00:03:04,714 --> 00:03:05,253
+trường học,
+
+89
+00:03:05,253 --> 00:03:06,599
+câu lạc bộ môi trường,
+
+90
+00:03:06,599 --> 00:03:08,753
+tổ chức thanh niên và những người trẻ.
+
+91
+00:03:08,753 --> 00:03:11,176
+Để họ không chỉ nhìn thấy một vấn đề.
+
+92
+00:03:11,176 --> 00:03:13,329
+Mà biết cách ghi nhận nó tốt hơn,
+
+93
+00:03:13,329 --> 00:03:16,560
+theo dõi nó lâu hơn và giúp nó không bị bỏ quên.
+
+94
+00:03:16,560 --> 00:03:19,991
+Nếu cách tiếp cận này được kiểm chứng với bụi công trình,
+
+95
+00:03:19,991 --> 00:03:23,423
+chúng tôi tin rằng cùng một lõi có thể tiếp tục được
+
+96
+00:03:23,423 --> 00:03:25,996
+phát triển cho những vấn đề môi trường khác.
+
+97
+00:03:25,996 --> 00:03:26,568
+Nước thải.
+
+98
+00:03:26,568 --> 00:03:27,426
+Đốt rơm rạ.
+
+99
+00:03:27,426 --> 00:03:28,856
+Thuốc bảo vệ thực vật.
+
+100
+00:03:28,856 --> 00:03:29,427
+Tiếng ồn.
+
+101
+00:03:29,427 --> 00:03:32,859
+Nhưng mỗi bước mở rộng đều phải bắt đầu lại bằng việc
+
+102
+00:03:32,859 --> 00:03:34,003
+hiểu đúng người dùng,
+
+103
+00:03:34,003 --> 00:03:36,576
+đúng dữ liệu và đúng quy trình thực tế.
+
+104
+00:03:36,576 --> 00:03:39,895
+DustGuard không đặt mục tiêu trở thành một hệ thống quyết định
+
+105
+00:03:39,895 --> 00:03:40,725
+thay con người.
+
+106
+00:03:40,725 --> 00:03:44,044
+Chúng tôi muốn nó trở thành một công cụ giúp một vấn
+
+107
+00:03:44,044 --> 00:03:45,703
+đề được nhìn thấy rõ hơn.
+
+108
+00:03:45,703 --> 00:03:47,363
+Được ghi nhận đầy đủ hơn.
+
+109
+00:03:47,363 --> 00:03:48,746
+Được theo dõi lâu hơn.
+
+110
+00:03:48,746 --> 00:03:52,065
+Và có nhiều cơ hội hơn để đi từ một tín hiệu...
+
+111
+00:03:52,065 --> 00:03:53,724
+đến một hành động thực sự.
+
+112
+00:03:53,724 --> 00:03:57,043
+DustGuard — biến dữ liệu thành hành động quản lý có ưu
+
+113
+00:03:57,043 --> 00:03:57,320
+tiên,
+
+114
+00:03:57,320 --> 00:03:59,256
+có bằng chứng và có theo dõi.

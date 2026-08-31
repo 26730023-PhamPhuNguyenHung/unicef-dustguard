@@ -1,28 +1,35 @@
-segment: 4
-title: "DustGuard xuất hiện & Chuỗi 4 bên phối hợp"
-timecode:
-  start: 61.200
-  end: 75.480
-  duration: 14.280
-voice:
-  file: 04_audio/voice_final/04.wav
-  duration_seconds: 14.280
+segment_id: '04'
+title: DustGuard xuất hiện (Beat Drop)
+start_time: 56.568
+end_time: 69.768
+duration: 13.2
+energy_level: 7
+overlay: overlay_04_flow.png
+voice_text: DustGuard được xây dựng để trả lời những câu hỏi đó. Không phải bằng cách
+  thay thế người ra quyết định. Mà bằng cách kết nối tín hiệu, bằng chứng, mức độ
+  ưu tiên và quá trình xử lý thành một hồ sơ có thể theo dõi.
 shots:
-  - source_id: S001
-    type: slide
-    in_point: 0.000
-    out_point: 6.000
-    duration: 6.000
-    timeline_start: 61.200
-    timeline_end: 67.200
-    motion: "logo_pop_reveal"
-    on_screen_text: "DUSTGUARD VN — NỀN TẢNG QUẢN TRỊ TÍN HIỆU"
-  - source_id: S002
-    type: slide
-    in_point: 0.000
-    out_point: 8.280
-    duration: 8.280
-    timeline_start: 67.200
-    timeline_end: 75.480
-    motion: "pan_stakeholders"
-    on_screen_text: "Kết nối tín hiệu ➔ bằng chứng ➔ phối hợp ➔ theo dõi"
+- shot_index: 1
+  source_id: I010
+  source_type: image
+  file: 02_sources/real_images/project/ChatGPT Image 09_56_51 31 thg 8, 2026 (10).png
+  start_time: 56.568
+  duration: 4.4
+  transition: cut
+  ken_burns: true
+- shot_index: 2
+  source_id: I001
+  source_type: image
+  file: 02_sources/real_images/project/ChatGPT Image 09_56_46 31 thg 8, 2026 (1).png
+  start_time: 60.968
+  duration: 4.4
+  transition: fade
+  ken_burns: true
+- shot_index: 3
+  source_id: I002
+  source_type: image
+  file: 02_sources/real_images/project/ChatGPT Image 09_56_47 31 thg 8, 2026 (2).png
+  start_time: 65.368
+  duration: 4.4
+  transition: fade
+  ken_burns: true

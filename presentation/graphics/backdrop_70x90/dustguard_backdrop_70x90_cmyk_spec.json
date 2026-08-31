@@ -1,0 +1,106 @@
+{
+  "project": "DustGuard VN",
+  "competition": "UNICEF Hackathon 2026",
+  "asset_type": "Exhibition Backdrop & Presentation Poster",
+  "print_specs": {
+    "trim_size_mm": [
+      700,
+      900
+    ],
+    "bleed_mm": 3,
+    "bleed_size_mm": [
+      706,
+      906
+    ],
+    "safety_margin_mm": 15,
+    "resolution_dpi": 300,
+    "pixel_dimensions_exact": [
+      8268,
+      10630
+    ],
+    "pixel_dimensions_with_bleed": [
+      8339,
+      10701
+    ],
+    "color_profile": "CMYK FOGRA39 / Japan Color 2001 Coated",
+    "material_recommendation": "Decal PP ngoai troi can mang mo boi Formex 5mm"
+  },
+  "color_palette_ssot": {
+    "bg_cream": {
+      "hex": "#FDFBF7",
+      "rgb": [
+        253,
+        251,
+        247
+      ],
+      "cmyk": "C0 M1 Y3 K1",
+      "role": "Main civic background"
+    },
+    "ink_dark": {
+      "hex": "#231B14",
+      "rgb": [
+        35,
+        27,
+        20
+      ],
+      "cmyk": "C60 M65 Y65 K75",
+      "role": "Primary typography (AAA contrast)"
+    },
+    "seal_red": {
+      "hex": "#9F241F",
+      "rgb": [
+        159,
+        36,
+        31
+      ],
+      "cmyk": "C15 M95 Y90 K10",
+      "role": "Brand seal & headers"
+    },
+    "dustguard_red": {
+      "hex": "#B51F24",
+      "rgb": [
+        181,
+        31,
+        36
+      ],
+      "cmyk": "C15 M95 Y90 K5",
+      "role": "Risk alerts & CTA buttons"
+    },
+    "civic_teal": {
+      "hex": "#0D6F64",
+      "rgb": [
+        13,
+        111,
+        100
+      ],
+      "cmyk": "C85 M25 Y55 K15",
+      "role": "Tech infrastructure & positive highlights"
+    },
+    "action_green": {
+      "hex": "#1E7E4E",
+      "rgb": [
+        30,
+        126,
+        78
+      ],
+      "cmyk": "C80 M20 Y85 K10",
+      "role": "Verified proof & closure status"
+    },
+    "alert_amber": {
+      "hex": "#B45309",
+      "rgb": [
+        180,
+        83,
+        9
+      ],
+      "cmyk": "C20 M70 Y100 K10",
+      "role": "In-progress warning status"
+    }
+  },
+  "structure_blocks": {
+    "block_1": "Van de & Boi canh o nhiem bui cong trinh do thi",
+    "block_2": "Giai phap DustGuard & Quy trinh 5 buoc dong vong (5-Step Closed Loop)",
+    "block_3": "Trach nhiem AI (AI la Tro ly, Khong Phan xet) & Bang chung D1 SSOT",
+    "block_4": "Lo trinh Lean Pilot, 3 Chi so Vang & 3 Tru cot hop tac"
+  }
+}

@@ -1,0 +1,781 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 7000 9000" width="700mm" height="900mm" style="background-color: #FDFBF7; font-family: 'Be Vietnam Pro', 'Segoe UI', system-ui, -apple-system, sans-serif;">
+  <defs>
+    <!-- Solid Linear Gradients for Badges & Cards -->
+    <linearGradient id="header-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#9F241F"/>
+      <stop offset="100%" stop-color="#B51F24"/>
+    </linearGradient>
+    <linearGradient id="teal-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0D6F64"/>
+      <stop offset="100%" stop-color="#084C44"/>
+    </linearGradient>
+  </defs>
+
+  <!-- NỀN CHÍNH CIVIC TECH (SOLID CREAM #FDFBF7) -->
+  <rect width="7000" height="9000" fill="#FDFBF7"/>
+
+  <!-- KHUNG VIỀN NGOÀI BẢO VỆ (OUTER BORDER) -->
+  <rect x="80" y="80" width="6840" height="8840" fill="none" stroke="#D4CEBF" stroke-width="8"/>
+  <rect x="150" y="150" width="6700" height="8700" fill="none" stroke="#E5E0D8" stroke-width="4" stroke-dasharray="24,12"/>
+
+  <!-- ========================================================================= -->
+  <!-- TẦNG 1: HEADER & ĐỊNH VỊ THƯƠNG HIỆU (Y: 180 -> 1340)                    -->
+  <!-- ========================================================================= -->
+  <g id="header-section">
+    <!-- Top Ribbon: UNICEF Hackathon 2026 Finals -->
+    <rect x="250" y="240" width="6500" height="110" rx="20" fill="#9F241F"/>
+    <text x="3500" y="312" fill="#FFFFFF" font-size="44" font-weight="800" text-anchor="middle" letter-spacing="4">
+      ★ CUỘC THI SÁNG KIẾN ĐỔI MỚI XÃ HỘI &amp; MÔI TRƯỜNG — UNICEF HACKATHON 2026 ★
+    </text>
+
+    <!-- Main Header Card -->
+    <rect x="250" y="390" width="6500" height="950" rx="32" fill="#FFFFFF" stroke="#D4CEBF" stroke-width="5"/>
+    
+    <!-- Shield Logo Icon Vector -->
+    <g transform="translate(450, 510)">
+      <!-- Shield Outer -->
+      <path d="M140 0 L280 60 L280 250 C280 390 140 480 140 480 C140 480 0 390 0 250 L0 60 Z" fill="#9F241F"/>
+      <!-- Shield Inner -->
+      <path d="M140 30 L250 80 L250 240 C250 355 140 435 140 435 C140 435 30 355 30 240 L30 80 Z" fill="#FFFFFF"/>
+      <!-- Shield Core Emblem: Leaf & Sensor Wave -->
+      <path d="M140 90 C190 90 220 130 220 180 C220 250 140 330 140 330 C140 330 60 250 60 180 C60 130 90 90 140 90 Z" fill="#0D6F64"/>
+      <circle cx="140" cy="180" r="30" fill="#FFFFFF"/>
+      <circle cx="140" cy="180" r="15" fill="#9F241F"/>
+      <!-- Antenna Wave -->
+      <path d="M100 140 C120 120 160 120 180 140" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round" fill="none"/>
+      <path d="M80 115 C115 85 165 85 200 115" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round" fill="none"/>
+    </g>
+
+    <!-- Brand Typography & Titles -->
+    <g transform="translate(850, 520)">
+      <text x="0" y="110" fill="#231B14" font-size="125" font-weight="900" letter-spacing="-1">DUSTGUARD VN</text>
+      
+      <!-- Slogan Pill Badge -->
+      <rect x="0" y="160" width="2350" height="75" rx="16" fill="#E6F4F1" stroke="#0D6F64" stroke-width="3"/>
+      <text x="30" y="212" fill="#0D6F64" font-size="38" font-weight="800" letter-spacing="2">
+        GIÁM SÁT BỤI CÔNG TRÌNH · HÀNH ĐỘNG CỘNG ĐỒNG · MINH BẠCH BẰNG CHỨNG
+      </text>
+
+      <!-- Positioning Statement -->
+      <text x="0" y="300" fill="#231B14" font-size="44" font-weight="600">
+        Nền tảng Civic Tech kết nối tín hiệu bụi hiện trường thành hồ sơ số có bảo chứng SHA-256
+      </text>
+      <text x="0" y="360" fill="#574F45" font-size="38" font-weight="400">
+        Khép kín chu trình tái kiểm 24h–48h, đồng hành cùng Thanh niên vì Không khí Sạch Việt Nam
+      </text>
+    </g>
+
+    <!-- Right Header Badges -->
+    <g transform="translate(4950, 520)">
+      <!-- Badge 1: 5-Step Loop -->
+      <rect x="0" y="30" width="1650" height="150" rx="20" fill="#FDFBF7" stroke="#D4CEBF" stroke-width="4"/>
+      <circle cx="80" cy="105" r="45" fill="#0D6F64"/>
+      <text x="80" y="118" fill="#FFFFFF" font-size="34" font-weight="800" text-anchor="middle">5S</text>
+      <text x="150" y="85" fill="#231B14" font-size="36" font-weight="800">Chu Trình Khép Kín</text>
+      <text x="150" y="130" fill="#574F45" font-size="30" font-weight="500">Phát hiện → Xử lý → Tái kiểm 48h</text>
+
+      <!-- Badge 2: D1 & SHA-256 -->
+      <rect x="0" y="210" width="1650" height="150" rx="20" fill="#FDFBF7" stroke="#D4CEBF" stroke-width="4"/>
+      <circle cx="80" cy="285" r="45" fill="#9F241F"/>
+      <text x="80" y="297" fill="#FFFFFF" font-size="30" font-weight="800" text-anchor="middle">D1</text>
+      <text x="150" y="265" fill="#231B14" font-size="36" font-weight="800">Bảo Chứng SHA-256</text>
+      <text x="150" y="310" fill="#574F45" font-size="30" font-weight="500">Cloudflare D1 SSOT · Toàn vẹn dữ liệu</text>
+    </g>
+  </g>
+
+  <!-- ========================================================================= -->
+  <!-- KHỐI 1: VẤN ĐỀ & BỐI CẢNH ĐÔ THỊ (Y: 1390 -> 2680)                         -->
+  <!-- ========================================================================= -->
+  <g id="block-1-problem">
+    <!-- Block Title Bar -->
+    <rect x="250" y="1390" width="6500" height="90" rx="16" fill="#231B14"/>
+    <rect x="250" y="1390" width="20" height="90" rx="4" fill="#9F241F"/>
+    <text x="310" y="1450" fill="#FFFFFF" font-size="44" font-weight="800" letter-spacing="2">
+      KHỐI 1: VẤN ĐỀ &amp; NGHỊCH LÝ GIÁM SÁT BỤI CÔNG TRÌNH ĐÔ THỊ
+    </text>
+    <text x="6550" y="1450" fill="#D97706" font-size="36" font-weight="700" text-anchor="end">
+      THỰC TRẠNG &amp; THÁCH THỨC
+    </text>
+
+    <!-- Main Container Card -->
+    <rect x="250" y="1500" width="6500" height="1160" rx="28" fill="#FFFFFF" stroke="#D4CEBF" stroke-width="4"/>
+
+    <!-- 3 Stat Highlight Columns -->
+    <!-- Stat 1: PM2.5 vượt ngưỡng -->
+    <g transform="translate(350, 1550)">
+      <rect x="0" y="0" width="1950" height="420" rx="20" fill="#FFF5F5" stroke="#B51F24" stroke-width="3"/>
+      <text x="60" y="80" fill="#9F241F" font-size="34" font-weight="800">Ô NHIỄM BỤI CÔNG TRÌNH</text>
+      <text x="60" y="210" fill="#B51F24" font-size="110" font-weight="900">3x – 7x</text>
+      <text x="60" y="280" fill="#231B14" font-size="36" font-weight="700">Vượt QCVN 05:2023/BTNM</text>
+      <text x="60" y="340" fill="#574F45" font-size="30" font-weight="500">Nồng độ PM2.5 &amp; PM10 giờ cao điểm xe tải đào móng, san lấp vượt mức an toàn.</text>
+    </g>
+
+    <!-- Stat 2: 85% Trôi phản ánh -->
+    <g transform="translate(2525, 1550)">
+      <rect x="0" y="0" width="1950" height="420" rx="20" fill="#FEF3C7" stroke="#B45309" stroke-width="3"/>
+      <text x="60" y="80" fill="#B45309" font-size="34" font-weight="800">NGHỊCH LÝ PHẢN ÁNH CŨ</text>
+      <text x="60" y="210" fill="#B45309" font-size="110" font-weight="900">&gt; 85%</text>
+      <text x="60" y="280" fill="#231B14" font-size="36" font-weight="700">Không có tái kiểm thực chất</text>
+      <text x="60" y="340" fill="#574F45" font-size="30" font-weight="500">Phản ánh trên mạng xã hội trôi nhanh, không tọa độ chuẩn, thiếu chế tài đối soát.</text>
+    </g>
+
+    <!-- Stat 3: 0 Đối soát Before/After -->
+    <g transform="translate(4700, 1550)">
+      <rect x="0" y="0" width="1950" height="420" rx="20" fill="#E6F4F1" stroke="#0D6F64" stroke-width="3"/>
+      <text x="60" y="80" fill="#0D6F64" font-size="34" font-weight="800">THIẾU MINH CHỨNG PHÁP LÝ</text>
+      <text x="60" y="210" fill="#0D6F64" font-size="110" font-weight="900">0 LẦN</text>
+      <text x="60" y="280" fill="#231B14" font-size="36" font-weight="700">Đối soát Before/After độc lập</text>
+      <text x="60" y="340" fill="#574F45" font-size="30" font-weight="500">Nhà thầu phủ nhận, chính quyền thiếu dữ liệu tức thời, người dân bất lực sống chung.</text>
+    </g>
+
+    <!-- Comparison Table: Phương pháp Cũ vs DustGuard VN -->
+    <g transform="translate(350, 2010)">
+      <rect x="0" y="0" width="6300" height="600" rx="20" fill="#FDFBF7" stroke="#D4CEBF" stroke-width="3"/>
+      
+      <!-- Headers -->
+      <rect x="0" y="0" width="6300" height="90" rx="20" fill="#231B14"/>
+      <text x="150" y="60" fill="#FFFFFF" font-size="36" font-weight="800">TIÊU CHÍ SO SÁNH</text>
+      <text x="2100" y="60" fill="#FFAAAA" font-size="36" font-weight="800">PHẢN ÁNH TRUYỀN THỐNG (CŨ)</text>
+      <text x="4300" y="60" fill="#A7F3D0" font-size="36" font-weight="800">DUSTGUARD VN (CIVIC TECH)</text>
+
+      <!-- Row 1: Thu thập dữ liệu -->
+      <text x="150" y="170" fill="#231B14" font-size="34" font-weight="800">1. Thu thập dữ liệu:</text>
+      <text x="2100" y="170" fill="#574F45" font-size="32" font-weight="500">Chụp ảnh tự phát, không đo đạc, dễ tranh cãi</text>
+      <text x="4300" y="170" fill="#0D6F64" font-size="34" font-weight="800">✓ Vi cảm biến mở (~0.5tr) + GPS + Chỉ số PM2.5/10</text>
+      <line x1="100" y1="210" x2="6200" y2="210" stroke="#E5E0D8" stroke-width="2"/>
+
+      <!-- Row 2: Toàn vẹn bằng chứng -->
+      <text x="150" y="280" fill="#231B14" font-size="34" font-weight="800">2. Toàn vẹn chứng cứ:</text>
+      <text x="2100" y="280" fill="#574F45" font-size="32" font-weight="500">Ảnh bị nén, mất EXIF, không kiểm tra được giả mạo</text>
+      <text x="4300" y="280" fill="#9F241F" font-size="34" font-weight="800">✓ Băm SHA-256 Web Crypto tại client, lưu D1 SSOT</text>
+      <line x1="100" y1="320" x2="6200" y2="320" stroke="#E5E0D8" stroke-width="2"/>
+
+      <!-- Row 3: Chuyển giao & Tái kiểm -->
+      <text x="150" y="390" fill="#231B14" font-size="34" font-weight="800">3. Quy trình thực thi:</text>
+      <text x="2100" y="390" fill="#574F45" font-size="32" font-weight="500">Gửi đơn thư chậm 7-14 ngày, không có tái kiểm</text>
+      <text x="4300" y="390" fill="#1E7E4E" font-size="34" font-weight="800">✓ Liên thông Cổng 1022 + SLA tái kiểm 24h–48h đóng vòng</text>
+      <line x1="100" y1="430" x2="6200" y2="430" stroke="#E5E0D8" stroke-width="2"/>
+
+      <!-- Row 4: Vai trò thanh niên -->
+      <text x="150" y="500" fill="#231B14" font-size="34" font-weight="800">4. Vai trò cộng đồng:</text>
+      <text x="2100" y="500" fill="#574F45" font-size="32" font-weight="500">Đơn độc, bức xúc thụ động, không được công nhận</text>
+      <text x="4300" y="500" fill="#0D6F64" font-size="34" font-weight="800">✓ Đội xung kích tình nguyện, tích lũy giờ rèn luyện/tín chỉ</text>
+    </g>
+  </g>
+
+  <!-- ========================================================================= -->
+  <!-- KHỐI 2: GIẢI PHÁP & QUY TRÌNH 5 BƯỚC ĐÓNG VÒNG (Y: 2720 -> 5180)           -->
+  <!-- ========================================================================= -->
+  <g id="block-2-solution">
+    <!-- Block Title Bar -->
+    <rect x="250" y="2720" width="6500" height="90" rx="16" fill="#0D6F64"/>
+    <rect x="250" y="2720" width="20" height="90" rx="4" fill="#9F241F"/>
+    <text x="310" y="2780" fill="#FFFFFF" font-size="44" font-weight="800" letter-spacing="2">
+      KHỐI 2: GIẢI PHÁP DUSTGUARD VN &amp; QUY TRÌNH 5 BƯỚC ĐÓNG VÒNG HÀNH ĐỘNG
+    </text>
+    <text x="6550" y="2780" fill="#FFFFFF" font-size="36" font-weight="700" text-anchor="end">
+      THE 5-STEP CLOSED LOOP
+    </text>
+
+    <!-- Main Container Card -->
+    <rect x="250" y="2830" width="6500" height="2310" rx="28" fill="#FFFFFF" stroke="#D4CEBF" stroke-width="4"/>
+
+    <!-- 5 Steps Flow Layout (Horizontal Chain) -->
+    <!-- Step 1: Detect -->
+    <g transform="translate(350, 2890)">
+      <rect x="0" y="0" width="1180" height="750" rx="24" fill="#FDFBF7" stroke="#0D6F64" stroke-width="3"/>
+      <rect x="0" y="0" width="1180" height="90" rx="24" fill="#0D6F64"/>
+      <circle cx="60" cy="45" r="30" fill="#FFFFFF"/>
+      <text x="60" y="57" fill="#0D6F64" font-size="32" font-weight="900" text-anchor="middle">1</text>
+      <text x="120" y="58" fill="#FFFFFF" font-size="36" font-weight="800">PHÁT HIỆN</text>
+      <text x="120" y="140" fill="#231B14" font-size="32" font-weight="800">Tín hiệu đa nguồn</text>
+      <text x="40" y="190" fill="#574F45" font-size="28" font-weight="500">
+        <tspan x="40" dy="0">• Vi cảm biến mở ESP32</tspan>
+        <tspan x="40" dy="45">• Phản ánh cộng đồng</tspan>
+        <tspan x="40" dy="45">• Định vị GPS chuẩn &lt; 5m</tspan>
+        <tspan x="40" dy="45">• Ảnh hiện trường gốc</tspan>
+      </text>
+      <!-- Bottom Chip -->
+      <rect x="40" y="650" width="1100" height="65" rx="12" fill="#E6F4F1"/>
+      <text x="590" y="692" fill="#0D6F64" font-size="26" font-weight="800" text-anchor="middle">📡 IoT + Dân Vụ Civic App</text>
+    </g>
+
+    <!-- Arrow 1 -> 2 -->
+    <path d="M1560 3260 L1600 3260" stroke="#9F241F" stroke-width="8" stroke-linecap="round"/>
+    <polygon points="1600,3245 1630,3260 1600,3275" fill="#9F241F"/>
+
+    <!-- Step 2: Prioritize -->
+    <g transform="translate(1650, 2890)">
+      <rect x="0" y="0" width="1180" height="750" rx="24" fill="#FDFBF7" stroke="#B45309" stroke-width="3"/>
+      <rect x="0" y="0" width="1180" height="90" rx="24" fill="#B45309"/>
+      <circle cx="60" cy="45" r="30" fill="#FFFFFF"/>
+      <text x="60" y="57" fill="#B45309" font-size="32" font-weight="900" text-anchor="middle">2</text>
+      <text x="120" y="58" fill="#FFFFFF" font-size="36" font-weight="800">ƯU TIÊN</text>
+      <text x="120" y="140" fill="#231B14" font-size="32" font-weight="800">Dust Risk Score</text>
+      <text x="40" y="190" fill="#574F45" font-size="28" font-weight="500">
+        <tspan x="40" dy="0">• Thang điểm rủi ro 0-100</tspan>
+        <tspan x="40" dy="45">• Mật độ trường học lân cận</tspan>
+        <tspan x="40" dy="45">• Lịch sử tái phạm nhà thầu</tspan>
+        <tspan x="40" dy="45">• Phân cấp SLA tự động</tspan>
+      </text>
+      <!-- Bottom Chip -->
+      <rect x="40" y="650" width="1100" height="65" rx="12" fill="#FEF3C7"/>
+      <text x="590" y="692" fill="#B45309" font-size="26" font-weight="800" text-anchor="middle">⚖️ Thuật toán Minh bạch</text>
+    </g>
+
+    <!-- Arrow 2 -> 3 -->
+    <path d="M2860 3260 L2900 3260" stroke="#9F241F" stroke-width="8" stroke-linecap="round"/>
+    <polygon points="2900,3245 2930,3260 2900,3275" fill="#9F241F"/>
+
+    <!-- Step 3: Digital Dossier -->
+    <g transform="translate(2950, 2890)">
+      <rect x="0" y="0" width="1180" height="750" rx="24" fill="#FDFBF7" stroke="#9F241F" stroke-width="3"/>
+      <rect x="0" y="0" width="1180" height="90" rx="24" fill="#9F241F"/>
+      <circle cx="60" cy="45" r="30" fill="#FFFFFF"/>
+      <text x="60" y="57" fill="#9F241F" font-size="32" font-weight="900" text-anchor="middle">3</text>
+      <text x="120" y="58" fill="#FFFFFF" font-size="36" font-weight="800">HỒ SƠ SỐ</text>
+      <text x="120" y="140" fill="#231B14" font-size="32" font-weight="800">Bảo chứng SHA-256</text>
+      <text x="40" y="190" fill="#574F45" font-size="28" font-weight="500">
+        <tspan x="40" dy="0">• Web Crypto Hash ảnh gốc</tspan>
+        <tspan x="40" dy="45">• Gắn tem thời gian chuẩn</tspan>
+        <tspan x="40" dy="45">• Chống chỉnh sửa / chối bỏ</tspan>
+        <tspan x="40" dy="45">• Đóng gói PDF/JSON Dossier</tspan>
+      </text>
+      <!-- Bottom Chip -->
+      <rect x="40" y="650" width="1100" height="65" rx="12" fill="#FFF0F0"/>
+      <text x="590" y="692" fill="#9F241F" font-size="26" font-weight="800" text-anchor="middle">🔒 SHA-256 Tamper-Proof</text>
+    </g>
+
+    <!-- Arrow 3 -> 4 -->
+    <path d="M4160 3260 L4200 3260" stroke="#9F241F" stroke-width="8" stroke-linecap="round"/>
+    <polygon points="4200,3245 4230,3260 4200,3275" fill="#9F241F"/>
+
+    <!-- Step 4: Dispatch -->
+    <g transform="translate(4250, 2890)">
+      <rect x="0" y="0" width="1180" height="750" rx="24" fill="#FDFBF7" stroke="#0D6F64" stroke-width="3"/>
+      <rect x="0" y="0" width="1180" height="90" rx="24" fill="#0D6F64"/>
+      <circle cx="60" cy="45" r="30" fill="#FFFFFF"/>
+      <text x="60" y="57" fill="#0D6F64" font-size="32" font-weight="900" text-anchor="middle">4</text>
+      <text x="120" y="58" fill="#FFFFFF" font-size="36" font-weight="800">CHUYỂN GIAO</text>
+      <text x="120" y="140" fill="#231B14" font-size="32" font-weight="800">Liên thông &amp; Xung kích</text>
+      <text x="40" y="190" fill="#574F45" font-size="28" font-weight="500">
+        <tspan x="40" dy="0">• Cổng Dịch vụ công 1022</tspan>
+        <tspan x="40" dy="45">• Ứng dụng Công dân iHanoi</tspan>
+        <tspan x="40" dy="45">• Phân công Đội sinh viên</tspan>
+        <tspan x="40" dy="45">• Thông báo BQL Dự án</tspan>
+      </text>
+      <!-- Bottom Chip -->
+      <rect x="40" y="650" width="1100" height="65" rx="12" fill="#E6F4F1"/>
+      <text x="590" y="692" fill="#0D6F64" font-size="26" font-weight="800" text-anchor="middle">🤝 Cổng 1022 &amp; iHanoi</text>
+    </g>
+
+    <!-- Arrow 4 -> 5 -->
+    <path d="M5460 3260 L5500 3260" stroke="#1E7E4E" stroke-width="8" stroke-linecap="round"/>
+    <polygon points="5500,3245 5530,3260 5500,3275" fill="#1E7E4E"/>
+
+    <!-- Step 5: Reinspect & Close -->
+    <g transform="translate(5550, 2890)">
+      <rect x="0" y="0" width="1180" height="750" rx="24" fill="#FDFBF7" stroke="#1E7E4E" stroke-width="3"/>
+      <rect x="0" y="0" width="1180" height="90" rx="24" fill="#1E7E4E"/>
+      <circle cx="60" cy="45" r="30" fill="#FFFFFF"/>
+      <text x="60" y="57" fill="#1E7E4E" font-size="32" font-weight="900" text-anchor="middle">5</text>
+      <text x="120" y="58" fill="#FFFFFF" font-size="36" font-weight="800">TÁI KIỂM</text>
+      <text x="120" y="140" fill="#231B14" font-size="32" font-weight="800">Đóng vòng 24h–48h</text>
+      <text x="40" y="190" fill="#574F45" font-size="28" font-weight="500">
+        <tspan x="40" dy="0">• Tái kiểm tra thực địa</tspan>
+        <tspan x="40" dy="45">• Chụp ảnh đối chứng T2</tspan>
+        <tspan x="40" dy="45">• Nghiệm thu dập bụi sạch</tspan>
+        <tspan x="40" dy="45">• Đóng hồ sơ công khai</tspan>
+      </text>
+      <!-- Bottom Chip -->
+      <rect x="40" y="650" width="1100" height="65" rx="12" fill="#E8F7EE"/>
+      <text x="590" y="692" fill="#1E7E4E" font-size="26" font-weight="800" text-anchor="middle">🎯 Đóng Vòng Minh Bạch</text>
+    </g>
+
+    <!-- Interactive Case Study Banner: Before / After Dossier #DG-2026-0842 -->
+    <g transform="translate(350, 3700)">
+      <rect x="0" y="0" width="6300" height="1380" rx="24" fill="#FDFBF7" stroke="#D4CEBF" stroke-width="4"/>
+
+      <!-- Case Header -->
+      <rect x="0" y="0" width="6300" height="110" rx="24" fill="#231B14"/>
+      <circle cx="60" cy="55" r="28" fill="#D97706"/>
+      <text x="60" y="66" fill="#231B14" font-size="30" font-weight="900" text-anchor="middle">★</text>
+      <text x="110" y="70" fill="#FFFFFF" font-size="40" font-weight="800">
+        HỒ SƠ BẰNG CHỨNG ĐỐI SOÁT THỰC ĐỊA #DG-2026-0842 — ĐƯỜNG VÀNH ĐAI 3, CẦU GIẤY, HÀ NỘI
+      </text>
+      <rect x="5250" y="25" width="980" height="60" rx="12" fill="#E8F7EE"/>
+      <text x="5740" y="67" fill="#1E7E4E" font-size="28" font-weight="800" text-anchor="middle">
+        ✓ ĐÃ NGHIỆM THU ĐÓNG VÒNG
+      </text>
+
+      <!-- Before Card (Left Column) -->
+      <g transform="translate(60, 160)">
+        <rect x="0" y="0" width="2980" height="1140" rx="20" fill="#FFFFFF" stroke="#B51F24" stroke-width="3"/>
+        
+        <!-- Header Tag -->
+        <rect x="0" y="0" width="2980" height="90" rx="20" fill="#B51F24"/>
+        <text x="40" y="60" fill="#FFFFFF" font-size="38" font-weight="800">
+          🔴 THỜI ĐIỂM T1: PHÁT HIỆN BAN ĐẦU (08:30 — 12/03/2026)
+        </text>
+
+        <!-- Metric Display -->
+        <g transform="translate(40, 120)">
+          <rect x="0" y="0" width="1380" height="240" rx="16" fill="#FFF5F5" stroke="#B51F24" stroke-width="2"/>
+          <text x="30" y="55" fill="#9F241F" font-size="30" font-weight="800">NỒNG ĐỘ PM2.5</text>
+          <text x="30" y="170" fill="#B51F24" font-size="100" font-weight="900">142 <tspan font-size="44" font-weight="600">µg/m³</tspan></text>
+          <text x="30" y="215" fill="#9F241F" font-size="26" font-weight="700">Mức Nguy Hại (Vượt chuẩn QCVN 5.6 lần)</text>
+        </g>
+
+        <!-- Status & Observations -->
+        <g transform="translate(1480, 120)">
+          <rect x="0" y="0" width="1440" height="240" rx="16" fill="#FDFBF7" stroke="#D4CEBF" stroke-width="2"/>
+          <text x="30" y="50" fill="#231B14" font-size="28" font-weight="800">HIỆN TRẠNG QUAN SÁT:</text>
+          <text x="30" y="95" fill="#574F45" font-size="26" font-weight="500">• Xe tải đào móng không phủ bạt</text>
+          <text x="30" y="140" fill="#574F45" font-size="26" font-weight="500">• Đất cát rơi vãi kéo dài 300m</text>
+          <text x="30" y="185" fill="#574F45" font-size="26" font-weight="500">• Bụi cuốn mù mịt trước cổng trường học</text>
+          <text x="30" y="225" fill="#9F241F" font-size="24" font-weight="700">Risk Score: 92/100 (Khẩn cấp)</text>
+        </g>
+
+        <!-- Visual Mock Card Graphic -->
+        <g transform="translate(40, 390)">
+          <rect x="0" y="0" width="2880" height="480" rx="16" fill="#F8EBEB" stroke="#B51F24" stroke-width="2"/>
+          <text x="1440" y="240" fill="#9F241F" font-size="40" font-weight="800" text-anchor="middle">
+            [ẢNH HIỆN TRƯỜNG T1: BỤI ĐỎ XE BEN RƠI VÃI]
+          </text>
+          <text x="1440" y="300" fill="#574F45" font-size="28" text-anchor="middle">
+            Tọa độ: 21.0285° N, 105.7823° E · Thiết bị: DustGuard Optical Node #04
+          </text>
+        </g>
+
+        <!-- SHA-256 Cryptographic Proof Box -->
+        <g transform="translate(40, 900)">
+          <rect x="0" y="0" width="2880" height="200" rx="14" fill="#231B14"/>
+          <text x="30" y="45" fill="#D97706" font-size="26" font-weight="800">BẢO CHỨNG SỐ NGUYÊN BẢN (WEB CRYPTO SHA-256):</text>
+          <text x="30" y="95" fill="#A7F3D0" font-size="26" font-family="monospace" font-weight="700">
+            SHA-256: 7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069
+          </text>
+          <text x="30" y="145" fill="#E5E0D8" font-size="24">
+            Cloudflare D1 Transaction ID: <tspan fill="#FFFFFF" font-weight="700">#TXN-D1-8942-01A</tspan> · Xác thực không thể sửa đổi
+          </text>
+        </g>
+      </g>
+
+      <!-- After Card (Right Column) -->
+      <g transform="translate(3240, 160)">
+        <rect x="0" y="0" width="2980" height="1140" rx="20" fill="#FFFFFF" stroke="#1E7E4E" stroke-width="3"/>
+        
+        <!-- Header Tag -->
+        <rect x="0" y="0" width="2980" height="90" rx="20" fill="#1E7E4E"/>
+        <text x="40" y="60" fill="#FFFFFF" font-size="38" font-weight="800">
+          🟢 THỜI ĐIỂM T2: TÁI KIỂM SAU 26H XỬ LÝ (10:30 — 13/03/2026)
+        </text>
+
+        <!-- Metric Display -->
+        <g transform="translate(40, 120)">
+          <rect x="0" y="0" width="1380" height="240" rx="16" fill="#E8F7EE" stroke="#1E7E4E" stroke-width="2"/>
+          <text x="30" y="55" fill="#1E7E4E" font-size="30" font-weight="800">NỒNG ĐỘ PM2.5 SAU XỬ LÝ</text>
+          <text x="30" y="170" fill="#1E7E4E" font-size="100" font-weight="900">28 <tspan font-size="44" font-weight="600">µg/m³</tspan></text>
+          <text x="30" y="215" fill="#1E7E4E" font-size="26" font-weight="700">✓ Đạt Chuẩn QCVN 05:2023 (Giảm 80.3%)</text>
+        </g>
+
+        <!-- Status & Actions Taken -->
+        <g transform="translate(1480, 120)">
+          <rect x="0" y="0" width="1440" height="240" rx="16" fill="#FDFBF7" stroke="#D4CEBF" stroke-width="2"/>
+          <text x="30" y="50" fill="#231B14" font-size="28" font-weight="800">BIỆN PHÁP KHẮC PHỤC:</text>
+          <text x="30" y="95" fill="#574F45" font-size="26" font-weight="500">• Kích hoạt vòi phun sương dập bụi</text>
+          <text x="30" y="140" fill="#574F45" font-size="26" font-weight="500">• Quét dọn &amp; rửa sạch mặt đường</text>
+          <text x="30" y="185" fill="#574F45" font-size="26" font-weight="500">• 100% xe ben ra vào được phủ bạt kín</text>
+          <text x="30" y="225" fill="#1E7E4E" font-size="24" font-weight="700">Đội TNXP Tái kiểm: Đạt yêu cầu</text>
+        </g>
+
+        <!-- Visual Mock Card Graphic -->
+        <g transform="translate(40, 390)">
+          <rect x="0" y="0" width="2880" height="480" rx="16" fill="#EAF7EF" stroke="#1E7E4E" stroke-width="2"/>
+          <text x="1440" y="240" fill="#1E7E4E" font-size="40" font-weight="800" text-anchor="middle">
+            [ẢNH ĐỐI CHỨNG T2: ĐƯỜNG RỬA SẠCH, VÒI PHUN HOẠT ĐỘNG]
+          </text>
+          <text x="1440" y="300" fill="#574F45" font-size="28" text-anchor="middle">
+            Đồng bộ Cổng 1022: Mã #1022-HN-89421 · Tái kiểm bởi Đội Tình nguyện ĐH Xây dựng
+          </text>
+        </g>
+
+        <!-- SHA-256 Proof Box -->
+        <g transform="translate(40, 900)">
+          <rect x="0" y="0" width="2880" height="200" rx="14" fill="#231B14"/>
+          <text x="30" y="45" fill="#D97706" font-size="26" font-weight="800">BẢO CHỨNG TÁI KIỂM (RE-INSPECTION PROOF):</text>
+          <text x="30" y="95" fill="#A7F3D0" font-size="26" font-family="monospace" font-weight="700">
+            SHA-256: 9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08
+          </text>
+          <text x="30" y="145" fill="#E5E0D8" font-size="24">
+            Trạng thái liên thông: <tspan fill="#A7F3D0" font-weight="700">HOÀN TẤT ĐÓNG HỒ SƠ 1022 / iHANOI</tspan> (Chu kỳ: 26 giờ)
+          </text>
+        </g>
+      </g>
+    </g>
+  </g>
+
+  <!-- ========================================================================= -->
+  <!-- KHỐI 3: TRÁCH NHIỆM AI & BẰNG CHỨNG D1 SSOT (Y: 5220 -> 6870)              -->
+  <!-- ========================================================================= -->
+  <g id="block-3-responsible-ai">
+    <!-- Block Title Bar -->
+    <rect x="250" y="5220" width="6500" height="90" rx="16" fill="#231B14"/>
+    <rect x="250" y="5220" width="20" height="90" rx="4" fill="#9F241F"/>
+    <text x="310" y="5280" fill="#FFFFFF" font-size="44" font-weight="800" letter-spacing="2">
+      KHỐI 3: TRÁCH NHIỆM AI &amp; NỀN TẢNG BẰNG CHỨNG D1 SSOT
+    </text>
+    <text x="6550" y="5280" fill="#D97706" font-size="36" font-weight="700" text-anchor="end">
+      RESPONSIBLE AI &amp; DATA INTEGRITY
+    </text>
+
+    <!-- Main Container Card -->
+    <rect x="250" y="5330" width="6500" height="1520" rx="28" fill="#FFFFFF" stroke="#D4CEBF" stroke-width="4"/>
+
+    <!-- Left Pillar: AI là Trợ lý, Không Phán xét -->
+    <g transform="translate(350, 5410)">
+      <rect x="0" y="0" width="3050" height="1360" rx="24" fill="#FDFBF7" stroke="#9F241F" stroke-width="3"/>
+      <rect x="0" y="0" width="3050" height="100" rx="24" fill="#9F241F"/>
+      <text x="60" y="65" fill="#FFFFFF" font-size="40" font-weight="800">
+        1. NGUYÊN TẮC: "AI LÀ TRỢ LÝ, KHÔNG PHÁN XÉT"
+      </text>
+
+      <g transform="translate(60, 140)">
+        <!-- Core Concept 1 -->
+        <rect x="0" y="0" width="2930" height="240" rx="16" fill="#FFFFFF" stroke="#E5E0D8" stroke-width="2"/>
+        <circle cx="60" cy="60" r="30" fill="#9F241F"/>
+        <text x="60" y="72" fill="#FFFFFF" font-size="28" font-weight="800" text-anchor="middle">AI</text>
+        <text x="120" y="60" fill="#231B14" font-size="34" font-weight="800">Hỗ trợ trích xuất &amp; Phân loại rủi ro</text>
+        <text x="120" y="110" fill="#574F45" font-size="28" font-weight="500">
+          AI Vision &amp; Timeseries tự động nhận diện khói bụi, phân tích đỉnh nồng độ PM, tính toán điểm Dust Risk Score (0–100) để phân luồng ưu tiên.
+        </text>
+        <text x="120" y="160" fill="#9F241F" font-size="26" font-weight="700">
+          → Tuyệt đối KHÔNG tự động ban hành quyết định xử phạt vi phạm.
+        </text>
+
+        <!-- Core Concept 2 -->
+        <rect x="0" y="270" width="2930" height="240" rx="16" fill="#FFFFFF" stroke="#E5E0D8" stroke-width="2"/>
+        <circle cx="60" cy="330" r="30" fill="#0D6F64"/>
+        <text x="60" y="342" fill="#FFFFFF" font-size="24" font-weight="800" text-anchor="middle">HUM</text>
+        <text x="120" y="330" fill="#231B14" font-size="34" font-weight="800">Con người làm chủ quyết định &amp; Tái kiểm</text>
+        <text x="120" y="380" fill="#574F45" font-size="28" font-weight="500">
+          Cán bộ quản lý đô thị và Đội thanh niên xung kích trực tiếp thẩm định, xác minh hồ sơ hiện trường và thực hiện nghiệm thu dập bụi thực tế.
+        </text>
+        <text x="120" y="430" fill="#0D6F64" font-size="26" font-weight="700">
+          → Đảm bảo tính pháp lý, đạo đức và sự đồng thuận xã hội.
+        </text>
+
+        <!-- Core Concept 3 -->
+        <rect x="0" y="540" width="2930" height="240" rx="16" fill="#FFFFFF" stroke="#E5E0D8" stroke-width="2"/>
+        <circle cx="60" cy="600" r="30" fill="#1E7E4E"/>
+        <text x="60" y="612" fill="#FFFFFF" font-size="24" font-weight="800" text-anchor="middle">SLA</text>
+        <text x="120" y="600" fill="#231B14" font-size="34" font-weight="800">Gợi ý hành động &amp; Kích hoạt vòi phun</text>
+        <text x="120" y="650" fill="#574F45" font-size="28" font-weight="500">
+          Đề xuất phương án kỹ thuật phù hợp cho nhà thầu (phun sương, phủ bạt, rửa xe) và tự động tạo phiếu tái kiểm tra sau 24h–48h.
+        </text>
+        <text x="120" y="700" fill="#1E7E4E" font-size="26" font-weight="700">
+          → Chuyển đổi từ trừng phạt thụ động sang phối hợp khắc phục chủ động.
+        </text>
+
+        <!-- Bottom Warning Banner -->
+        <rect x="0" y="810" width="2930" height="340" rx="16" fill="#FFF5F5" stroke="#B51F24" stroke-width="2"/>
+        <text x="40" y="860" fill="#9F241F" font-size="32" font-weight="800">TIÊU CHUẨN ĐẠO ĐỨC AI (ETHICS IN CIVIC TECH):</text>
+        <text x="40" y="910" fill="#231B14" font-size="28" font-weight="600">1. Không thiên vị nhà thầu hay khu vực dân cư.</text>
+        <text x="40" y="955" fill="#231B14" font-size="28" font-weight="600">2. Minh bạch 100% công thức chấm điểm Risk Score.</text>
+        <text x="40" y="1000" fill="#231B14" font-size="28" font-weight="600">3. Bảo vệ quyền riêng tư người phản ánh (Ẩn danh dữ liệu nhạy cảm).</text>
+        <text x="40" y="1045" fill="#231B14" font-size="28" font-weight="600">4. Cho phép kiểm toán độc lập chuỗi suy luận của mô hình.</text>
+      </g>
+    </g>
+
+    <!-- Right Pillar: Kiến trúc Bằng chứng D1 SSOT & Web Crypto -->
+    <g transform="translate(3600, 5410)">
+      <rect x="0" y="0" width="3050" height="1360" rx="24" fill="#FDFBF7" stroke="#0D6F64" stroke-width="3"/>
+      <rect x="0" y="0" width="3050" height="100" rx="24" fill="#0D6F64"/>
+      <text x="60" y="65" fill="#FFFFFF" font-size="40" font-weight="800">
+        2. KIẾN TRÚC D1 SSOT &amp; CHUỖI BẰNG CHỨNG BẢO MẬT
+      </text>
+
+      <g transform="translate(60, 140)">
+        <!-- Feature 1: D1 SSOT -->
+        <rect x="0" y="0" width="2930" height="240" rx="16" fill="#FFFFFF" stroke="#E5E0D8" stroke-width="2"/>
+        <circle cx="60" cy="60" r="30" fill="#0D6F64"/>
+        <text x="60" y="72" fill="#FFFFFF" font-size="24" font-weight="800" text-anchor="middle">SSOT</text>
+        <text x="120" y="60" fill="#231B14" font-size="34" font-weight="800">Cloudflare D1 SQLite — Single Source of Truth</text>
+        <text x="120" y="110" fill="#574F45" font-size="28" font-weight="500">
+          Cơ sở dữ liệu quan hệ phân tán tại rìa mạng (Edge Serverless). Tuyệt đối KHÔNG sử dụng mock data hay localStorage làm database.
+        </text>
+        <text x="120" y="160" fill="#0D6F64" font-size="26" font-weight="700">
+          → Độ trễ truy vấn &lt; 50ms, sẵn sàng mở rộng toàn quốc.
+        </text>
+
+        <!-- Feature 2: SHA-256 Chain -->
+        <rect x="0" y="270" width="2930" height="240" rx="16" fill="#FFFFFF" stroke="#E5E0D8" stroke-width="2"/>
+        <circle cx="60" cy="330" r="30" fill="#9F241F"/>
+        <text x="60" y="342" fill="#FFFFFF" font-size="24" font-weight="800" text-anchor="middle">HASH</text>
+        <text x="120" y="330" fill="#231B14" font-size="34" font-weight="800">Chuỗi Băm SHA-256 Web Crypto Client-Side</text>
+        <text x="120" y="380" fill="#574F45" font-size="28" font-weight="500">
+          Ảnh và tọa độ được băm SHA-256 ngay trên trình duyệt trước khi gửi lên máy chủ. Bất kỳ sự can thiệp nào cũng làm hỏng chuỗi kiểm chứng.
+        </text>
+        <text x="120" y="430" fill="#9F241F" font-size="26" font-weight="700">
+          → Giá trị pháp lý vững chắc trước thanh tra xây dựng.
+        </text>
+
+        <!-- Feature 3: IoT Optional -->
+        <rect x="0" y="540" width="2930" height="240" rx="16" fill="#FFFFFF" stroke="#E5E0D8" stroke-width="2"/>
+        <circle cx="60" cy="600" r="30" fill="#D97706"/>
+        <text x="60" y="612" fill="#231B14" font-size="24" font-weight="800" text-anchor="middle">EDGE</text>
+        <text x="120" y="600" fill="#231B14" font-size="34" font-weight="800">Hệ thống Độc lập — IoT là Tùy chọn (Optional)</text>
+        <text x="120" y="650" fill="#574F45" font-size="28" font-weight="500">
+          Hệ thống hoạt động 100% hiệu năng kể cả khi không có cảm biến phần cứng (thông qua ảnh chụp hiện trường chuẩn hóa của cộng đồng).
+        </text>
+        <text x="120" y="700" fill="#D97706" font-size="26" font-weight="700">
+          → Khả năng triển khai linh hoạt tại mọi địa bàn không tốn chi phí lớn.
+        </text>
+
+        <!-- Diagram Representation -->
+        <g transform="translate(0, 810)">
+          <rect x="0" y="0" width="2930" height="340" rx="16" fill="#231B14"/>
+          <text x="40" y="50" fill="#D97706" font-size="28" font-weight="800">LUỒNG DỮ LIỆU BẢO CHỨNG (CRYPTOGRAPHIC FLOW):</text>
+          
+          <!-- Step A -->
+          <rect x="40" y="80" width="600" height="220" rx="12" fill="#332A22"/>
+          <text x="340" y="140" fill="#FFFFFF" font-size="26" font-weight="800" text-anchor="middle">Ảnh Hiện Trường</text>
+          <text x="340" y="190" fill="#D97706" font-size="22" text-anchor="middle">+ GPS + Timestamp</text>
+          <text x="340" y="240" fill="#A7F3D0" font-size="20" text-anchor="middle">Client Browser</text>
+
+          <path d="M660 190 L720 190" stroke="#FFFFFF" stroke-width="4"/>
+          <polygon points="720,180 740,190 720,200" fill="#FFFFFF"/>
+
+          <!-- Step B -->
+          <rect x="760" y="80" width="650" height="220" rx="12" fill="#1C3833"/>
+          <text x="1085" y="140" fill="#FFFFFF" font-size="26" font-weight="800" text-anchor="middle">SHA-256 Web Crypto</text>
+          <text x="1085" y="190" fill="#A7F3D0" font-size="22" font-family="monospace" text-anchor="middle">hashHex = crypto.subtle</text>
+          <text x="1085" y="240" fill="#FFAAAA" font-size="20" text-anchor="middle">Không thể đảo ngược</text>
+
+          <path d="M1430 190 L1490 190" stroke="#FFFFFF" stroke-width="4"/>
+          <polygon points="1490,180 1510,190 1490,200" fill="#FFFFFF"/>
+
+          <!-- Step C -->
+          <rect x="1530" y="80" width="650" height="220" rx="12" fill="#2E1C21"/>
+          <text x="1855" y="140" fill="#FFFFFF" font-size="26" font-weight="800" text-anchor="middle">Hono Cloudflare Edge</text>
+          <text x="1855" y="190" fill="#E6F4F1" font-size="22" text-anchor="middle">D1 SQLite Transaction</text>
+          <text x="1855" y="240" fill="#A7F3D0" font-size="20" text-anchor="middle">Tốc độ &lt; 50ms</text>
+
+          <path d="M2200 190 L2260 190" stroke="#FFFFFF" stroke-width="4"/>
+          <polygon points="2260,180 2280,190 2260,200" fill="#FFFFFF"/>
+
+          <!-- Step D -->
+          <rect x="2300" y="80" width="590" height="220" rx="12" fill="#1D2A3A"/>
+          <text x="2595" y="140" fill="#FFFFFF" font-size="26" font-weight="800" text-anchor="middle">Cổng 1022 / iHanoi</text>
+          <text x="2595" y="190" fill="#93C5FD" font-size="22" text-anchor="middle">Hồ sơ Dossier PDF</text>
+          <text x="2595" y="240" fill="#D97706" font-size="20" text-anchor="middle">Đóng Vòng Hành Động</text>
+        </g>
+      </g>
+    </g>
+  </g>
+
+  <!-- ========================================================================= -->
+  <!-- KHỐI 4: LỘ TRÌNH LEAN PILOT, CHỈ SỐ & MÔ HÌNH HỢP TÁC (Y: 6910 -> 8780)    -->
+  <!-- ========================================================================= -->
+  <g id="block-4-lean-pilot">
+    <!-- Block Title Bar -->
+    <rect x="250" y="6910" width="6500" height="90" rx="16" fill="#9F241F"/>
+    <rect x="250" y="6910" width="20" height="90" rx="4" fill="#D97706"/>
+    <text x="310" y="6970" fill="#FFFFFF" font-size="44" font-weight="800" letter-spacing="2">
+      KHỐI 4: LỘ TRÌNH LEAN PILOT, 3 CHỈ SỐ VÀNG &amp; MÔ HÌNH 3 TRỤ CỘT
+    </text>
+    <text x="6550" y="6970" fill="#FFFFFF" font-size="36" font-weight="700" text-anchor="end">
+      FEASIBILITY &amp; IMPACT
+    </text>
+
+    <!-- Main Container Card -->
+    <rect x="250" y="7020" width="6500" height="1750" rx="28" fill="#FFFFFF" stroke="#D4CEBF" stroke-width="4"/>
+
+    <!-- Top: 3 Lean Metric Cards -->
+    <!-- Metric 1: 0.5 Triệu VNĐ -->
+    <g transform="translate(350, 7080)">
+      <rect x="0" y="0" width="1950" height="340" rx="20" fill="#E6F4F1" stroke="#0D6F64" stroke-width="3"/>
+      <text x="50" y="70" fill="#0D6F64" font-size="32" font-weight="800">1. CHI PHÍ LINH KIỆN VI CẢM BIẾN</text>
+      <text x="50" y="190" fill="#0D6F64" font-size="95" font-weight="900">≈ 0,5 Triệu</text>
+      <text x="50" y="255" fill="#231B14" font-size="32" font-weight="700">VNĐ / 1 Trạm Cảm Biến Mở</text>
+      <text x="50" y="305" fill="#574F45" font-size="26" font-weight="500">ESP32 + PMS5003 + Vỏ che 3D in rẻ, dễ lắp ráp bởi học sinh.</text>
+    </g>
+
+    <!-- Metric 2: 24h-48h SLA -->
+    <g transform="translate(2525, 7080)">
+      <rect x="0" y="0" width="1950" height="340" rx="20" fill="#FEF3C7" stroke="#B45309" stroke-width="3"/>
+      <text x="50" y="70" fill="#B45309" font-size="32" font-weight="800">2. CHU KỲ TÁI KIỂM BẮT BUỘC (SLA)</text>
+      <text x="50" y="190" fill="#B45309" font-size="95" font-weight="900">24h – 48h</text>
+      <text x="50" y="255" fill="#231B14" font-size="32" font-weight="700">Đóng Vòng Xử Lý Hiện Trường</text>
+      <text x="50" y="305" fill="#574F45" font-size="26" font-weight="500">Khắc phục triệt để tình trạng phản ánh bị trôi hoặc bỏ ngỏ.</text>
+    </g>
+
+    <!-- Metric 3: 100% SSOT Edge -->
+    <g transform="translate(4700, 7080)">
+      <rect x="0" y="0" width="1950" height="340" rx="20" fill="#FFF5F5" stroke="#9F241F" stroke-width="3"/>
+      <text x="50" y="70" fill="#9F241F" font-size="32" font-weight="800">3. HẠ TẦNG CLOUD SERVERLESS</text>
+      <text x="50" y="190" fill="#9F241F" font-size="95" font-weight="900">100% D1</text>
+      <text x="50" y="255" fill="#231B14" font-size="32" font-weight="700">Zero Mock · Tối Ưu Chi Phí 0đ</text>
+      <text x="50" y="305" fill="#574F45" font-size="26" font-weight="500">Vận hành Edge Hono Cloudflare, đáp ứng 100.000 yêu cầu/ngày.</text>
+    </g>
+
+    <!-- Middle: Mô hình 3 Trụ Cột Hợp Tác (Tripartite Civic Ecosystem) -->
+    <g transform="translate(350, 7460)">
+      <rect x="0" y="0" width="4150" height="740" rx="20" fill="#FDFBF7" stroke="#D4CEBF" stroke-width="3"/>
+      <text x="50" y="65" fill="#231B14" font-size="36" font-weight="800">
+        MÔ HÌNH HỢP TÁC 3 TRỤ CỘT: THANH NIÊN — DOANH NGHIỆP — CHÍNH QUYỀN
+      </text>
+
+      <!-- Pillar 1: Thanh niên -->
+      <g transform="translate(50, 110)">
+        <rect x="0" y="0" width="1280" height="580" rx="16" fill="#FFFFFF" stroke="#0D6F64" stroke-width="2"/>
+        <rect x="0" y="0" width="1280" height="70" rx="16" fill="#0D6F64"/>
+        <text x="40" y="48" fill="#FFFFFF" font-size="30" font-weight="800">1. THANH NIÊN &amp; HỌC SINH</text>
+        <text x="40" y="120" fill="#231B14" font-size="28" font-weight="700">• Giám sát &amp; Lắp trạm đo IoT</text>
+        <text x="40" y="170" fill="#574F45" font-size="26" font-weight="500">CLB Tình nguyện, Đoàn trường</text>
+        <text x="40" y="225" fill="#231B14" font-size="28" font-weight="700">• Chụp ảnh tái kiểm 24h-48h</text>
+        <text x="40" y="275" fill="#574F45" font-size="26" font-weight="500">Xác thực độc lập ngoài hiện trường</text>
+        <text x="40" y="330" fill="#231B14" font-size="28" font-weight="700">• Quyền lợi thiết thực</text>
+        <text x="40" y="380" fill="#0D6F64" font-size="26" font-weight="700">Tích lũy 20h = 4.0 Tín chỉ Tình nguyện</text>
+        <!-- Bottom Icon Tag -->
+        <rect x="40" y="470" width="1200" height="60" rx="10" fill="#E6F4F1"/>
+        <text x="640" y="510" fill="#0D6F64" font-size="26" font-weight="800" text-anchor="middle">🌱 Nòng cốt Tác nhân Thay đổi</text>
+      </g>
+
+      <!-- Pillar 2: Nhà thầu -->
+      <g transform="translate(1380, 110)">
+        <rect x="0" y="0" width="1280" height="580" rx="16" fill="#FFFFFF" stroke="#B45309" stroke-width="2"/>
+        <rect x="0" y="0" width="1280" height="70" rx="16" fill="#B45309"/>
+        <text x="40" y="48" fill="#FFFFFF" font-size="30" font-weight="800">2. NHÀ THẦU &amp; BQL DỰ ÁN</text>
+        <text x="40" y="120" fill="#231B14" font-size="28" font-weight="700">• Nhận cảnh báo sớm tự động</text>
+        <text x="40" y="170" fill="#574F45" font-size="26" font-weight="500">Biết ngay khi bụi vượt ngưỡng an toàn</text>
+        <text x="40" y="225" fill="#231B14" font-size="28" font-weight="700">• Chủ động dập bụi tức thì</text>
+        <text x="40" y="275" fill="#574F45" font-size="26" font-weight="500">Phun sương, phủ bạt, rửa bánh xe</text>
+        <text x="40" y="330" fill="#231B14" font-size="28" font-weight="700">• Lợi ích Doanh nghiệp</text>
+        <text x="40" y="380" fill="#B45309" font-size="26" font-weight="700">Tránh bị xử phạt dừng thi công</text>
+        <!-- Bottom Icon Tag -->
+        <rect x="40" y="470" width="1200" height="60" rx="10" fill="#FEF3C7"/>
+        <text x="640" y="510" fill="#B45309" font-size="26" font-weight="800" text-anchor="middle">🏗️ Chủ động Hợp tác Bền vững</text>
+      </g>
+
+      <!-- Pillar 3: Cơ quan quản lý -->
+      <g transform="translate(2710, 110)">
+        <rect x="0" y="0" width="1380" height="580" rx="16" fill="#FFFFFF" stroke="#9F241F" stroke-width="2"/>
+        <rect x="0" y="0" width="1380" height="70" rx="16" fill="#9F241F"/>
+        <text x="40" y="48" fill="#FFFFFF" font-size="30" font-weight="800">3. CƠ QUAN QUẢN LÝ (1022/iHANOI)</text>
+        <text x="40" y="120" fill="#231B14" font-size="28" font-weight="700">• Tiếp nhận hồ sơ số chuẩn hóa</text>
+        <text x="40" y="170" fill="#574F45" font-size="26" font-weight="500">Đầy đủ tọa độ, ảnh băm SHA-256</text>
+        <text x="40" y="225" fill="#231B14" font-size="28" font-weight="700">• Giảm 70% tải xác minh hiện trường</text>
+        <text x="40" y="275" fill="#574F45" font-size="26" font-weight="500">Dữ liệu đối soát đã được thanh niên kiểm tra</text>
+        <text x="40" y="330" fill="#231B14" font-size="28" font-weight="700">• Ra quyết định minh bạch</text>
+        <text x="40" y="380" fill="#9F241F" font-size="26" font-weight="700">Đóng hồ sơ có biên bản số đối chứng</text>
+        <!-- Bottom Icon Tag -->
+        <rect x="40" y="470" width="1300" height="60" rx="10" fill="#FFF0F0"/>
+        <text x="690" y="510" fill="#9F241F" font-size="26" font-weight="800" text-anchor="middle">🏛️ Quản trị Đô thị Thông minh</text>
+      </g>
+    </g>
+
+    <!-- Right: 2 Large Interactive QR Code Cards (Width: 2000px) -->
+    <g transform="translate(4600, 7460)">
+      <rect x="0" y="0" width="2050" height="740" rx="20" fill="#FDFBF7" stroke="#D4CEBF" stroke-width="3"/>
+      
+      <!-- QR 1 (Left): Live Demo Web App -->
+      <g transform="translate(50, 40)">
+        <rect x="0" y="0" width="920" height="660" rx="16" fill="#FFFFFF" stroke="#0D6F64" stroke-width="3"/>
+        <rect x="0" y="0" width="920" height="70" rx="16" fill="#0D6F64"/>
+        <text x="460" y="48" fill="#FFFFFF" font-size="28" font-weight="800" text-anchor="middle">TRẢI NGHIỆM WEB APP</text>
+        
+        <!-- QR 1 SVG Vector Graphics -->
+        <g transform="translate(235, 110) scale(18.0)">
+          <path d="M0,0h1v1h-1z M1,0h1v1h-1z M2,0h1v1h-1z M3,0h1v1h-1z M4,0h1v1h-1z M5,0h1v1h-1z M6,0h1v1h-1z M9,0h1v1h-1z M10,0h1v1h-1z M14,0h1v1h-1z M16,0h1v1h-1z M18,0h1v1h-1z M19,0h1v1h-1z M20,0h1v1h-1z M21,0h1v1h-1z M22,0h1v1h-1z M23,0h1v1h-1z M24,0h1v1h-1z M0,1h1v1h-1z M6,1h1v1h-1z M8,1h1v1h-1z M9,1h1v1h-1z M13,1h1v1h-1z M14,1h1v1h-1z M18,1h1v1h-1z M24,1h1v1h-1z M0,2h1v1h-1z M2,2h1v1h-1z M3,2h1v1h-1z M4,2h1v1h-1z M6,2h1v1h-1z M8,2h1v1h-1z M10,2h1v1h-1z M12,2h1v1h-1z M15,2h1v1h-1z M16,2h1v1h-1z M18,2h1v1h-1z M20,2h1v1h-1z M21,2h1v1h-1z M22,2h1v1h-1z M24,2h1v1h-1z M0,3h1v1h-1z M2,3h1v1h-1z M3,3h1v1h-1z M4,3h1v1h-1z M6,3h1v1h-1z M8,3h1v1h-1z M10,3h1v1h-1z M11,3h1v1h-1z M13,3h1v1h-1z M16,3h1v1h-1z M18,3h1v1h-1z M20,3h1v1h-1z M21,3h1v1h-1z M22,3h1v1h-1z M24,3h1v1h-1z M0,4h1v1h-1z M2,4h1v1h-1z M3,4h1v1h-1z M4,4h1v1h-1z M6,4h1v1h-1z M9,4h1v1h-1z M11,4h1v1h-1z M12,4h1v1h-1z M14,4h1v1h-1z M16,4h1v1h-1z M18,4h1v1h-1z M20,4h1v1h-1z M21,4h1v1h-1z M22,4h1v1h-1z M24,4h1v1h-1z M0,5h1v1h-1z M6,5h1v1h-1z M9,5h1v1h-1z M10,5h1v1h-1z M11,5h1v1h-1z M13,5h1v1h-1z M14,5h1v1h-1z M18,5h1v1h-1z M24,5h1v1h-1z M0,6h1v1h-1z M1,6h1v1h-1z M2,6h1v1h-1z M3,6h1v1h-1z M4,6h1v1h-1z M5,6h1v1h-1z M6,6h1v1h-1z M8,6h1v1h-1z M10,6h1v1h-1z M12,6h1v1h-1z M14,6h1v1h-1z M16,6h1v1h-1z M18,6h1v1h-1z M19,6h1v1h-1z M20,6h1v1h-1z M21,6h1v1h-1z M22,6h1v1h-1z M23,6h1v1h-1z M24,6h1v1h-1z M8,7h1v1h-1z M10,7h1v1h-1z M11,7h1v1h-1z M12,7h1v1h-1z M15,7h1v1h-1z M0,8h1v1h-1z M6,8h1v1h-1z M8,8h1v1h-1z M9,8h1v1h-1z M10,8h1v1h-1z M11,8h1v1h-1z M12,8h1v1h-1z M13,8h1v1h-1z M14,8h1v1h-1z M15,8h1v1h-1z M16,8h1v1h-1z M17,8h1v1h-1z M18,8h1v1h-1z M21,8h1v1h-1z M22,8h1v1h-1z M23,8h1v1h-1z M0,9h1v1h-1z M2,9h1v1h-1z M3,9h1v1h-1z M5,9h1v1h-1z M7,9h1v1h-1z M8,9h1v1h-1z M13,9h1v1h-1z M14,9h1v1h-1z M15,9h1v1h-1z M17,9h1v1h-1z M19,9h1v1h-1z M20,9h1v1h-1z M21,9h1v1h-1z M22,9h1v1h-1z M23,9h1v1h-1z M0,10h1v1h-1z M3,10h1v1h-1z M5,10h1v1h-1z M6,10h1v1h-1z M9,10h1v1h-1z M10,10h1v1h-1z M13,10h1v1h-1z M14,10h1v1h-1z M15,10h1v1h-1z M16,10h1v1h-1z M17,10h1v1h-1z M18,10h1v1h-1z M21,10h1v1h-1z M23,10h1v1h-1z M24,10h1v1h-1z M0,11h1v1h-1z M1,11h1v1h-1z M4,11h1v1h-1z M5,11h1v1h-1z M7,11h1v1h-1z M8,11h1v1h-1z M17,11h1v1h-1z M18,11h1v1h-1z M19,11h1v1h-1z M21,11h1v1h-1z M24,11h1v1h-1z M1,12h1v1h-1z M3,12h1v1h-1z M4,12h1v1h-1z M5,12h1v1h-1z M6,12h1v1h-1z M10,12h1v1h-1z M11,12h1v1h-1z M13,12h1v1h-1z M14,12h1v1h-1z M15,12h1v1h-1z M16,12h1v1h-1z M18,12h1v1h-1z M19,12h1v1h-1z M24,12h1v1h-1z M0,13h1v1h-1z M2,13h1v1h-1z M4,13h1v1h-1z M5,13h1v1h-1z M9,13h1v1h-1z M10,13h1v1h-1z M12,13h1v1h-1z M13,13h1v1h-1z M15,13h1v1h-1z M16,13h1v1h-1z M17,13h1v1h-1z M19,13h1v1h-1z M23,13h1v1h-1z M0,14h1v1h-1z M2,14h1v1h-1z M5,14h1v1h-1z M6,14h1v1h-1z M13,14h1v1h-1z M14,14h1v1h-1z M15,14h1v1h-1z M16,14h1v1h-1z M18,14h1v1h-1z M19,14h1v1h-1z M20,14h1v1h-1z M21,14h1v1h-1z M23,14h1v1h-1z M24,14h1v1h-1z M0,15h1v1h-1z M2,15h1v1h-1z M3,15h1v1h-1z M5,15h1v1h-1z M9,15h1v1h-1z M10,15h1v1h-1z M12,15h1v1h-1z M13,15h1v1h-1z M14,15h1v1h-1z M17,15h1v1h-1z M19,15h1v1h-1z M21,15h1v1h-1z M22,15h1v1h-1z M24,15h1v1h-1z M0,16h1v1h-1z M4,16h1v1h-1z M6,16h1v1h-1z M8,16h1v1h-1z M12,16h1v1h-1z M14,16h1v1h-1z M15,16h1v1h-1z M16,16h1v1h-1z M17,16h1v1h-1z M18,16h1v1h-1z M19,16h1v1h-1z M20,16h1v1h-1z M22,16h1v1h-1z M8,17h1v1h-1z M10,17h1v1h-1z M15,17h1v1h-1z M16,17h1v1h-1z M20,17h1v1h-1z M0,18h1v1h-1z M1,18h1v1h-1z M2,18h1v1h-1z M3,18h1v1h-1z M4,18h1v1h-1z M5,18h1v1h-1z M6,18h1v1h-1z M12,18h1v1h-1z M13,18h1v1h-1z M14,18h1v1h-1z M16,18h1v1h-1z M18,18h1v1h-1z M20,18h1v1h-1z M24,18h1v1h-1z M0,19h1v1h-1z M6,19h1v1h-1z M10,19h1v1h-1z M11,19h1v1h-1z M14,19h1v1h-1z M15,19h1v1h-1z M16,19h1v1h-1z M20,19h1v1h-1z M24,19h1v1h-1z M0,20h1v1h-1z M2,20h1v1h-1z M3,20h1v1h-1z M4,20h1v1h-1z M6,20h1v1h-1z M11,20h1v1h-1z M15,20h1v1h-1z M16,20h1v1h-1z M17,20h1v1h-1z M18,20h1v1h-1z M19,20h1v1h-1z M20,20h1v1h-1z M22,20h1v1h-1z M23,20h1v1h-1z M24,20h1v1h-1z M0,21h1v1h-1z M2,21h1v1h-1z M3,21h1v1h-1z M4,21h1v1h-1z M6,21h1v1h-1z M10,21h1v1h-1z M12,21h1v1h-1z M13,21h1v1h-1z M15,21h1v1h-1z M17,21h1v1h-1z M18,21h1v1h-1z M23,21h1v1h-1z M24,21h1v1h-1z M0,22h1v1h-1z M2,22h1v1h-1z M3,22h1v1h-1z M4,22h1v1h-1z M6,22h1v1h-1z M10,22h1v1h-1z M13,22h1v1h-1z M14,22h1v1h-1z M17,22h1v1h-1z M21,22h1v1h-1z M22,22h1v1h-1z M24,22h1v1h-1z M0,23h1v1h-1z M6,23h1v1h-1z M9,23h1v1h-1z M10,23h1v1h-1z M12,23h1v1h-1z M13,23h1v1h-1z M16,23h1v1h-1z M17,23h1v1h-1z M18,23h1v1h-1z M19,23h1v1h-1z M20,23h1v1h-1z M24,23h1v1h-1z M0,24h1v1h-1z M1,24h1v1h-1z M2,24h1v1h-1z M3,24h1v1h-1z M4,24h1v1h-1z M5,24h1v1h-1z M6,24h1v1h-1z M8,24h1v1h-1z M11,24h1v1h-1z M12,24h1v1h-1z M13,24h1v1h-1z M16,24h1v1h-1z M17,24h1v1h-1z M18,24h1v1h-1z M21,24h1v1h-1z M24,24h1v1h-1z" fill="#231B14"/>
+        </g>
+        
+        <text x="460" y="600" fill="#231B14" font-size="24" font-weight="800" text-anchor="middle">Quét xem Live Demo</text>
+        <text x="460" y="635" fill="#0D6F64" font-size="20" font-weight="700" text-anchor="middle">dustguard.vn</text>
+      </g>
+
+      <!-- QR 2 (Right): Tech Whitepaper & SHA-256 Dossier -->
+      <g transform="translate(1030, 40)">
+        <rect x="0" y="0" width="950" height="660" rx="16" fill="#FFFFFF" stroke="#9F241F" stroke-width="3"/>
+        <rect x="0" y="0" width="950" height="70" rx="16" fill="#9F241F"/>
+        <text x="475" y="48" fill="#FFFFFF" font-size="28" font-weight="800" text-anchor="middle">HỒ SƠ BẰNG CHỨNG</text>
+        
+        <!-- QR 2 SVG Vector Graphics -->
+        <g transform="translate(250, 110) scale(15.517241379310345)">
+          <path d="M0,0h1v1h-1z M1,0h1v1h-1z M2,0h1v1h-1z M3,0h1v1h-1z M4,0h1v1h-1z M5,0h1v1h-1z M6,0h1v1h-1z M8,0h1v1h-1z M9,0h1v1h-1z M12,0h1v1h-1z M13,0h1v1h-1z M14,0h1v1h-1z M15,0h1v1h-1z M16,0h1v1h-1z M17,0h1v1h-1z M18,0h1v1h-1z M22,0h1v1h-1z M23,0h1v1h-1z M24,0h1v1h-1z M25,0h1v1h-1z M26,0h1v1h-1z M27,0h1v1h-1z M28,0h1v1h-1z M0,1h1v1h-1z M6,1h1v1h-1z M9,1h1v1h-1z M10,1h1v1h-1z M11,1h1v1h-1z M13,1h1v1h-1z M14,1h1v1h-1z M17,1h1v1h-1z M19,1h1v1h-1z M20,1h1v1h-1z M22,1h1v1h-1z M28,1h1v1h-1z M0,2h1v1h-1z M2,2h1v1h-1z M3,2h1v1h-1z M4,2h1v1h-1z M6,2h1v1h-1z M10,2h1v1h-1z M14,2h1v1h-1z M15,2h1v1h-1z M16,2h1v1h-1z M17,2h1v1h-1z M18,2h1v1h-1z M20,2h1v1h-1z M22,2h1v1h-1z M24,2h1v1h-1z M25,2h1v1h-1z M26,2h1v1h-1z M28,2h1v1h-1z M0,3h1v1h-1z M2,3h1v1h-1z M3,3h1v1h-1z M4,3h1v1h-1z M6,3h1v1h-1z M8,3h1v1h-1z M9,3h1v1h-1z M13,3h1v1h-1z M16,3h1v1h-1z M18,3h1v1h-1z M22,3h1v1h-1z M24,3h1v1h-1z M25,3h1v1h-1z M26,3h1v1h-1z M28,3h1v1h-1z M0,4h1v1h-1z M2,4h1v1h-1z M3,4h1v1h-1z M4,4h1v1h-1z M6,4h1v1h-1z M8,4h1v1h-1z M9,4h1v1h-1z M11,4h1v1h-1z M13,4h1v1h-1z M15,4h1v1h-1z M16,4h1v1h-1z M18,4h1v1h-1z M22,4h1v1h-1z M24,4h1v1h-1z M25,4h1v1h-1z M26,4h1v1h-1z M28,4h1v1h-1z M0,5h1v1h-1z M6,5h1v1h-1z M8,5h1v1h-1z M10,5h1v1h-1z M11,5h1v1h-1z M12,5h1v1h-1z M14,5h1v1h-1z M16,5h1v1h-1z M17,5h1v1h-1z M18,5h1v1h-1z M19,5h1v1h-1z M22,5h1v1h-1z M28,5h1v1h-1z M0,6h1v1h-1z M1,6h1v1h-1z M2,6h1v1h-1z M3,6h1v1h-1z M4,6h1v1h-1z M5,6h1v1h-1z M6,6h1v1h-1z M8,6h1v1h-1z M10,6h1v1h-1z M12,6h1v1h-1z M14,6h1v1h-1z M16,6h1v1h-1z M18,6h1v1h-1z M20,6h1v1h-1z M22,6h1v1h-1z M23,6h1v1h-1z M24,6h1v1h-1z M25,6h1v1h-1z M26,6h1v1h-1z M27,6h1v1h-1z M28,6h1v1h-1z M8,7h1v1h-1z M9,7h1v1h-1z M16,7h1v1h-1z M17,7h1v1h-1z M18,7h1v1h-1z M19,7h1v1h-1z M20,7h1v1h-1z M0,8h1v1h-1z M4,8h1v1h-1z M6,8h1v1h-1z M7,8h1v1h-1z M8,8h1v1h-1z M14,8h1v1h-1z M16,8h1v1h-1z M17,8h1v1h-1z M20,8h1v1h-1z M21,8h1v1h-1z M22,8h1v1h-1z M23,8h1v1h-1z M24,8h1v1h-1z M25,8h1v1h-1z M28,8h1v1h-1z M1,9h1v1h-1z M3,9h1v1h-1z M5,9h1v1h-1z M7,9h1v1h-1z M10,9h1v1h-1z M13,9h1v1h-1z M15,9h1v1h-1z M16,9h1v1h-1z M20,9h1v1h-1z M22,9h1v1h-1z M23,9h1v1h-1z M24,9h1v1h-1z M25,9h1v1h-1z M26,9h1v1h-1z M27,9h1v1h-1z M28,9h1v1h-1z M2,10h1v1h-1z M3,10h1v1h-1z M4,10h1v1h-1z M5,10h1v1h-1z M6,10h1v1h-1z M7,10h1v1h-1z M8,10h1v1h-1z M12,10h1v1h-1z M14,10h1v1h-1z M15,10h1v1h-1z M22,10h1v1h-1z M23,10h1v1h-1z M28,10h1v1h-1z M0,11h1v1h-1z M1,11h1v1h-1z M3,11h1v1h-1z M4,11h1v1h-1z M5,11h1v1h-1z M7,11h1v1h-1z M8,11h1v1h-1z M9,11h1v1h-1z M11,11h1v1h-1z M12,11h1v1h-1z M14,11h1v1h-1z M15,11h1v1h-1z M17,11h1v1h-1z M18,11h1v1h-1z M19,11h1v1h-1z M20,11h1v1h-1z M25,11h1v1h-1z M27,11h1v1h-1z M28,11h1v1h-1z M2,12h1v1h-1z M4,12h1v1h-1z M6,12h1v1h-1z M7,12h1v1h-1z M8,12h1v1h-1z M11,12h1v1h-1z M12,12h1v1h-1z M14,12h1v1h-1z M15,12h1v1h-1z M17,12h1v1h-1z M18,12h1v1h-1z M20,12h1v1h-1z M21,12h1v1h-1z M23,12h1v1h-1z M27,12h1v1h-1z M0,13h1v1h-1z M1,13h1v1h-1z M2,13h1v1h-1z M3,13h1v1h-1z M7,13h1v1h-1z M9,13h1v1h-1z M10,13h1v1h-1z M13,13h1v1h-1z M15,13h1v1h-1z M17,13h1v1h-1z M18,13h1v1h-1z M21,13h1v1h-1z M22,13h1v1h-1z M23,13h1v1h-1z M24,13h1v1h-1z M25,13h1v1h-1z M26,13h1v1h-1z M27,13h1v1h-1z M28,13h1v1h-1z M0,14h1v1h-1z M1,14h1v1h-1z M3,14h1v1h-1z M4,14h1v1h-1z M6,14h1v1h-1z M7,14h1v1h-1z M9,14h1v1h-1z M10,14h1v1h-1z M11,14h1v1h-1z M12,14h1v1h-1z M13,14h1v1h-1z M14,14h1v1h-1z M15,14h1v1h-1z M16,14h1v1h-1z M18,14h1v1h-1z M22,14h1v1h-1z M24,14h1v1h-1z M25,14h1v1h-1z M26,14h1v1h-1z M28,14h1v1h-1z M0,15h1v1h-1z M1,15h1v1h-1z M2,15h1v1h-1z M3,15h1v1h-1z M9,15h1v1h-1z M10,15h1v1h-1z M12,15h1v1h-1z M16,15h1v1h-1z M17,15h1v1h-1z M18,15h1v1h-1z M19,15h1v1h-1z M20,15h1v1h-1z M22,15h1v1h-1z M23,15h1v1h-1z M27,15h1v1h-1z M28,15h1v1h-1z M3,16h1v1h-1z M4,16h1v1h-1z M6,16h1v1h-1z M7,16h1v1h-1z M8,16h1v1h-1z M9,16h1v1h-1z M11,16h1v1h-1z M12,16h1v1h-1z M13,16h1v1h-1z M14,16h1v1h-1z M16,16h1v1h-1z M17,16h1v1h-1z M19,16h1v1h-1z M21,16h1v1h-1z M23,16h1v1h-1z M27,16h1v1h-1z M0,17h1v1h-1z M1,17h1v1h-1z M3,17h1v1h-1z M4,17h1v1h-1z M5,17h1v1h-1z M7,17h1v1h-1z M8,17h1v1h-1z M12,17h1v1h-1z M14,17h1v1h-1z M15,17h1v1h-1z M16,17h1v1h-1z M18,17h1v1h-1z M22,17h1v1h-1z M23,17h1v1h-1z M24,17h1v1h-1z M25,17h1v1h-1z M27,17h1v1h-1z M28,17h1v1h-1z M3,18h1v1h-1z M4,18h1v1h-1z M6,18h1v1h-1z M8,18h1v1h-1z M10,18h1v1h-1z M11,18h1v1h-1z M12,18h1v1h-1z M13,18h1v1h-1z M14,18h1v1h-1z M15,18h1v1h-1z M17,18h1v1h-1z M18,18h1v1h-1z M21,18h1v1h-1z M22,18h1v1h-1z M26,18h1v1h-1z M28,18h1v1h-1z M2,19h1v1h-1z M5,19h1v1h-1z M7,19h1v1h-1z M12,19h1v1h-1z M13,19h1v1h-1z M15,19h1v1h-1z M17,19h1v1h-1z M19,19h1v1h-1z M20,19h1v1h-1z M22,19h1v1h-1z M27,19h1v1h-1z M28,19h1v1h-1z M0,20h1v1h-1z M1,20h1v1h-1z M3,20h1v1h-1z M6,20h1v1h-1z M8,20h1v1h-1z M12,20h1v1h-1z M13,20h1v1h-1z M17,20h1v1h-1z M20,20h1v1h-1z M21,20h1v1h-1z M22,20h1v1h-1z M23,20h1v1h-1z M24,20h1v1h-1z M25,20h1v1h-1z M28,20h1v1h-1z M8,21h1v1h-1z M9,21h1v1h-1z M10,21h1v1h-1z M11,21h1v1h-1z M12,21h1v1h-1z M13,21h1v1h-1z M14,21h1v1h-1z M15,21h1v1h-1z M16,21h1v1h-1z M17,21h1v1h-1z M18,21h1v1h-1z M19,21h1v1h-1z M20,21h1v1h-1z M24,21h1v1h-1z M28,21h1v1h-1z M0,22h1v1h-1z M1,22h1v1h-1z M2,22h1v1h-1z M3,22h1v1h-1z M4,22h1v1h-1z M5,22h1v1h-1z M6,22h1v1h-1z M8,22h1v1h-1z M10,22h1v1h-1z M15,22h1v1h-1z M18,22h1v1h-1z M19,22h1v1h-1z M20,22h1v1h-1z M22,22h1v1h-1z M24,22h1v1h-1z M25,22h1v1h-1z M26,22h1v1h-1z M28,22h1v1h-1z M0,23h1v1h-1z M6,23h1v1h-1z M9,23h1v1h-1z M12,23h1v1h-1z M14,23h1v1h-1z M15,23h1v1h-1z M16,23h1v1h-1z M17,23h1v1h-1z M18,23h1v1h-1z M20,23h1v1h-1z M24,23h1v1h-1z M27,23h1v1h-1z M28,23h1v1h-1z M0,24h1v1h-1z M2,24h1v1h-1z M3,24h1v1h-1z M4,24h1v1h-1z M6,24h1v1h-1z M8,24h1v1h-1z M10,24h1v1h-1z M12,24h1v1h-1z M13,24h1v1h-1z M14,24h1v1h-1z M15,24h1v1h-1z M17,24h1v1h-1z M19,24h1v1h-1z M20,24h1v1h-1z M21,24h1v1h-1z M22,24h1v1h-1z M23,24h1v1h-1z M24,24h1v1h-1z M25,24h1v1h-1z M28,24h1v1h-1z M0,25h1v1h-1z M2,25h1v1h-1z M3,25h1v1h-1z M4,25h1v1h-1z M6,25h1v1h-1z M9,25h1v1h-1z M11,25h1v1h-1z M15,25h1v1h-1z M16,25h1v1h-1z M19,25h1v1h-1z M20,25h1v1h-1z M21,25h1v1h-1z M23,25h1v1h-1z M28,25h1v1h-1z M0,26h1v1h-1z M2,26h1v1h-1z M3,26h1v1h-1z M4,26h1v1h-1z M6,26h1v1h-1z M9,26h1v1h-1z M10,26h1v1h-1z M11,26h1v1h-1z M13,26h1v1h-1z M14,26h1v1h-1z M15,26h1v1h-1z M19,26h1v1h-1z M25,26h1v1h-1z M26,26h1v1h-1z M27,26h1v1h-1z M28,26h1v1h-1z M0,27h1v1h-1z M6,27h1v1h-1z M9,27h1v1h-1z M10,27h1v1h-1z M11,27h1v1h-1z M16,27h1v1h-1z M17,27h1v1h-1z M18,27h1v1h-1z M20,27h1v1h-1z M21,27h1v1h-1z M22,27h1v1h-1z M23,27h1v1h-1z M25,27h1v1h-1z M27,27h1v1h-1z M28,27h1v1h-1z M0,28h1v1h-1z M1,28h1v1h-1z M2,28h1v1h-1z M3,28h1v1h-1z M4,28h1v1h-1z M5,28h1v1h-1z M6,28h1v1h-1z M8,28h1v1h-1z M11,28h1v1h-1z M12,28h1v1h-1z M14,28h1v1h-1z M16,28h1v1h-1z M17,28h1v1h-1z M20,28h1v1h-1z M22,28h1v1h-1z M23,28h1v1h-1z M24,28h1v1h-1z M25,28h1v1h-1z M27,28h1v1h-1z" fill="#231B14"/>
+        </g>
+        
+        <text x="475" y="600" fill="#231B14" font-size="24" font-weight="800" text-anchor="middle">Tra cứu Thuyết minh SHA-256</text>
+        <text x="475" y="635" fill="#9F241F" font-size="20" font-weight="700" text-anchor="middle">Bản quyền UNICEF 2026</text>
+      </g>
+    </g>
+
+    <!-- Bottom Pilot Roadmap Bar -->
+    <g transform="translate(350, 8240)">
+      <rect x="0" y="0" width="6300" height="480" rx="16" fill="#231B14"/>
+      <text x="60" y="65" fill="#D97706" font-size="34" font-weight="800">
+        LỘ TRÌNH TRIỂN KHAI LEAN PILOT (2026 — 2027):
+      </text>
+
+      <!-- Milestone 1 -->
+      <g transform="translate(60, 110)">
+        <rect x="0" y="0" width="1450" height="320" rx="12" fill="#2C231B"/>
+        <text x="30" y="55" fill="#D97706" font-size="28" font-weight="800">GIAI ĐOẠN 1 (Q2/2026)</text>
+        <text x="30" y="105" fill="#FFFFFF" font-size="30" font-weight="700">Pilot 5 Đại Công Trình</text>
+        <text x="30" y="160" fill="#E5E0D8" font-size="24" font-weight="500">
+          • Triển khai tại Hà Nội &amp; TP.HCM<br/>
+          • Lắp đặt 20 vi trạm quang học mở<br/>
+          • 100 sinh viên tình nguyện xung kích
+        </text>
+        <text x="30" y="275" fill="#A7F3D0" font-size="22" font-weight="700">✓ Mục tiêu: Kiểm chứng SLA 48h</text>
+      </g>
+
+      <!-- Milestone 2 -->
+      <g transform="translate(1600, 110)">
+        <rect x="0" y="0" width="1450" height="320" rx="12" fill="#2C231B"/>
+        <text x="30" y="55" fill="#D97706" font-size="28" font-weight="800">GIAI ĐOẠN 2 (Q3-Q4/2026)</text>
+        <text x="30" y="105" fill="#FFFFFF" font-size="30" font-weight="700">Liên Thông Cổng 1022</text>
+        <text x="30" y="160" fill="#E5E0D8" font-size="24" font-weight="500">
+          • Tích hợp API Cổng 1022 &amp; iHanoi<br/>
+          • Mở rộng 50 công trình trọng điểm<br/>
+          • Ra mắt Bảng điểm Nhà thầu Xanh
+        </text>
+        <text x="30" y="275" fill="#A7F3D0" font-size="22" font-weight="700">✓ Mục tiêu: Tự động hóa chuyển giao</text>
+      </g>
+
+      <!-- Milestone 3 -->
+      <g transform="translate(3140, 110)">
+        <rect x="0" y="0" width="1450" height="320" rx="12" fill="#2C231B"/>
+        <text x="30" y="55" fill="#D97706" font-size="28" font-weight="800">GIAI ĐOẠN 3 (2027)</text>
+        <text x="30" y="105" fill="#FFFFFF" font-size="30" font-weight="700">Nhân Rộng Toàn Quốc</text>
+        <text x="30" y="160" fill="#E5E0D8" font-size="24" font-weight="500">
+          • Kết nối mạng lưới 63 tỉnh thành<br/>
+          • Chuyển giao mã nguồn mở Civic Tech<br/>
+          • Tiêu chuẩn hóa hồ sơ băm SHA-256
+        </text>
+        <text x="30" y="275" fill="#A7F3D0" font-size="22" font-weight="700">✓ Mục tiêu: Thể chế hóa Civic Tech</text>
+      </g>
+
+      <!-- Milestone 4: Impact Vision -->
+      <g transform="translate(4680, 110)">
+        <rect x="0" y="0" width="1550" height="320" rx="12" fill="#0D6F64"/>
+        <text x="30" y="55" fill="#FFFFFF" font-size="28" font-weight="800">TÁC ĐỘNG XÃ HỘI (IMPACT)</text>
+        <text x="30" y="115" fill="#D97706" font-size="44" font-weight="900">-40% Bụi Công Trình</text>
+        <text x="30" y="170" fill="#FFFFFF" font-size="26" font-weight="600">Bảo vệ sức khỏe cho 500.000+ trẻ em &amp; học sinh sống quanh các trục đường thi công trọng điểm.</text>
+        <text x="30" y="275" fill="#FFFFFF" font-size="24" font-weight="800">★ Vì Một Việt Nam Không Khí Sạch ★</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- ========================================================================= -->
+  <!-- FOOTER: BẢN QUYỀN & THÔNG TIN LIÊN HỆ                                    -->
+  <!-- ========================================================================= -->
+  <g id="footer-section" transform="translate(250, 8820)">
+    <text x="0" y="80" fill="#574F45" font-size="32" font-weight="600">
+      DustGuard VN — Nền Tảng Civic Tech Giám Sát &amp; Đóng Vòng Bụi Công Trình Đô Thị
+    </text>
+    <text x="6500" y="80" fill="#9F241F" font-size="32" font-weight="800" text-anchor="end">
+      UNICEF HACKATHON 2026 · VÒNG CHUNG KẾT · ĐỘI THI DUSTGUARD VIỆT NAM
+    </text>
+  </g>
+
+</svg>

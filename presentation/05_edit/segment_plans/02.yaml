@@ -1,37 +1,37 @@
-segment: 2
-title: "Nút thắt dữ liệu phân tán & Vấn đề giải quyết"
-timecode:
-  start: 16.968
-  end: 45.360
-  duration: 28.392
-voice:
-  file: 04_audio/voice_final/02.wav
-  duration_seconds: 28.392
+segment_id: '02'
+title: Nút thắt dữ liệu phân tán
+start_time: 15.696
+end_time: 41.928
+duration: 26.232
+energy_level: 4
+overlay: null
+voice_text: 'Điều chúng tôi nhận ra là: vấn đề không phải chúng ta hoàn toàn không
+  có dữ liệu. Người dân có phản ánh. Có hình ảnh. Có vị trí. Có thông tin công trình.
+  Có hồ sơ kiểm tra. Và trong tương lai còn có thể có dữ liệu từ cảm biến. Nhưng những
+  thông tin đó thường nằm ở nhiều nơi khác nhau. Và khi dữ liệu bị phân tán, điều
+  khó nhất là biến nó thành một hành động có thứ tự ưu tiên.'
 shots:
-  - source_id: V004
-    type: video
-    in_point: 0.000
-    out_point: 8.000
-    duration: 8.000
-    timeline_start: 16.968
-    timeline_end: 24.968
-    motion: "tracking_truck"
-    on_screen_text: "Xe tải không bạt che — Bụi mù mịt đường phố"
-  - source_id: V005
-    type: video
-    in_point: 0.000
-    out_point: 8.000
-    duration: 8.000
-    timeline_start: 24.968
-    timeline_end: 32.968
-    motion: "static_focus"
-    on_screen_text: "Người dân có phản ánh — Dữ liệu nằm ở nhiều nơi"
-  - source_id: S001
-    type: slide
-    in_point: 0.000
-    out_point: 12.392
-    duration: 12.392
-    timeline_start: 32.968
-    timeline_end: 45.360
-    motion: "ken_burns_zoom_dossier"
-    on_screen_text: "Từ dữ liệu rời rạc đến hành động có ưu tiên"
+- shot_index: 1
+  source_id: V004
+  source_type: video
+  file: 02_sources/real_video/dust/clip_hcm_02_uncovered_truck_road_dust.mp4
+  start_time: 15.696
+  duration: 8.744
+  transition: cut
+  ken_burns: false
+- shot_index: 2
+  source_id: V005
+  source_type: video
+  file: 02_sources/real_video/people/clip_hn_02_citizen_elderly_concern.mp4
+  start_time: 24.44
+  duration: 8.744
+  transition: fade
+  ken_burns: false
+- shot_index: 3
+  source_id: V016
+  source_type: video
+  file: 02_sources/real_video/project_demo/clip_hn2_01_emission_sources_graphic.mp4
+  start_time: 33.184
+  duration: 8.744
+  transition: fade
+  ken_burns: false

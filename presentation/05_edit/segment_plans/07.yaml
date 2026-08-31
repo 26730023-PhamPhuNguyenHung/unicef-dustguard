@@ -1,28 +1,29 @@
-segment: 7
-title: "Responsible AI: Kiểm chứng quy trình & Vai trò hỗ trợ"
-timecode:
-  start: 120.072
-  end: 146.328
-  duration: 26.256
-voice:
-  file: 04_audio/voice_final/07.wav
-  duration_seconds: 26.256
+segment_id: '07'
+title: Responsible AI Assistant
+start_time: 110.976
+end_time: 135.24
+duration: 24.264
+energy_level: 8
+overlay: overlay_07_responsible_ai.png
+voice_text: 'Dust Risk Score không trả lời rằng một công trình có vi phạm hay không.
+  Nó chỉ hỗ trợ một câu hỏi thực tế hơn: trong nhiều trường hợp đang tồn tại, trường
+  hợp nào nên được xem xét trước, và vì sao? AI có thể phân loại, tóm tắt, tìm thông
+  tin còn thiếu và hỗ trợ checklist. Nhưng AI không tự kết luận vi phạm. Không tự
+  quyết định xử phạt. Và không thay thế cơ quan có thẩm quyền.'
 shots:
-  - source_id: S008
-    type: slide
-    in_point: 0.000
-    out_point: 13.000
-    duration: 13.000
-    timeline_start: 120.072
-    timeline_end: 133.072
-    motion: "zoom_responsible_ai_box"
-    on_screen_text: "AI gợi ý checklist & tóm tắt — Con người quyết định"
-  - source_id: V014
-    type: video
-    in_point: 0.000
-    out_point: 13.256
-    duration: 13.256
-    timeline_start: 133.072
-    timeline_end: 146.328
-    motion: "tech_mist_cannon"
-    on_screen_text: "AI hỗ trợ kiểm tra thực địa — Không thay thế thanh tra"
+- shot_index: 1
+  source_id: V009
+  source_type: video
+  file: 02_sources/real_video/construction/clip_hcm_04_barrier_water_spraying_audit.mp4
+  start_time: 110.976
+  duration: 12.132
+  transition: cut
+  ken_burns: false
+- shot_index: 2
+  source_id: V014
+  source_type: video
+  file: 02_sources/real_video/construction/clip_hn2_03_mist_cannon_truck_and_ai_camera.mp4
+  start_time: 123.108
+  duration: 12.132
+  transition: fade
+  ken_burns: false

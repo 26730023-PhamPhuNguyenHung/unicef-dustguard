@@ -1,0 +1,110 @@
+[
+  {
+    "id": "01",
+    "title": "Mở vấn đề",
+    "text": "Ở một thành phố đang phát triển, những công trường mới đồng nghĩa với những con đường mới, những ngôi nhà mới và những cơ hội mới. Nhưng cùng với sự phát triển đó, có một tác động rất dễ bị xem là nhỏ... cho đến khi nó trở thành vấn đề của cả một cộng đồng. Đó là bụi công trình.",
+    "file": "04_audio/voice_final/01.mp3",
+    "duration": 15.696,
+    "start_time": 0.0,
+    "end_time": 15.696
+  },
+  {
+    "id": "02",
+    "title": "Nút thắt dữ liệu",
+    "text": "Điều chúng tôi nhận ra là: vấn đề không phải chúng ta hoàn toàn không có dữ liệu. Người dân có phản ánh. Có hình ảnh. Có vị trí. Có thông tin công trình. Có hồ sơ kiểm tra. Và trong tương lai còn có thể có dữ liệu từ cảm biến. Nhưng những thông tin đó thường nằm ở nhiều nơi khác nhau. Và khi dữ liệu bị phân tán, điều khó nhất là biến nó thành một hành động có thứ tự ưu tiên.",
+    "file": "04_audio/voice_final/02.mp3",
+    "duration": 26.232,
+    "start_time": 15.696,
+    "end_time": 41.928
+  },
+  {
+    "id": "03",
+    "title": "5 Câu hỏi trung tâm",
+    "text": "Nếu cùng lúc có mười phản ánh, chúng ta nên nhìn vào trường hợp nào trước? Vì sao trường hợp đó đáng chú ý? Hồ sơ còn thiếu gì? Ai đang phụ trách? Và sau khi một phản ánh được gửi đi... nó đã thực sự đi đến đâu?",
+    "file": "04_audio/voice_final/03.mp3",
+    "duration": 14.64,
+    "start_time": 41.928,
+    "end_time": 56.568
+  },
+  {
+    "id": "04",
+    "title": "DustGuard xuất hiện",
+    "text": "DustGuard được xây dựng để trả lời những câu hỏi đó. Không phải bằng cách thay thế người ra quyết định. Mà bằng cách kết nối tín hiệu, bằng chứng, mức độ ưu tiên và quá trình xử lý thành một hồ sơ có thể theo dõi.",
+    "file": "04_audio/voice_final/04.mp3",
+    "duration": 13.2,
+    "start_time": 56.568,
+    "end_time": 69.768
+  },
+  {
+    "id": "05",
+    "title": "Tính mới của giải pháp",
+    "text": "Điểm mới của DustGuard không nằm ở việc tạo thêm một nơi để gửi phản ánh. Điều chúng tôi muốn giải quyết là khoảng trống sau khi phản ánh đã được gửi. Một tín hiệu ban đầu phải có cơ hội trở thành một hồ sơ. Một hồ sơ phải có bằng chứng. Một trường hợp phải có mức độ ưu tiên. Và quan trọng nhất: phải có thể biết nó đang được xử lý tới đâu.",
+    "file": "04_audio/voice_final/05.mp3",
+    "duration": 21.6,
+    "start_time": 69.768,
+    "end_time": 91.368
+  },
+  {
+    "id": "06",
+    "title": "Bài học sau tập huấn",
+    "text": "Nhưng DustGuard hôm nay không còn giống phiên bản ban đầu. Sau vòng tập huấn, chúng tôi nhận ra rằng một hệ thống thông minh không nên cố gắng đưa ra nhiều quyết định hơn con người. Nó phải giúp con người có đủ thông tin để đưa ra quyết định tốt hơn. Vì vậy, chúng tôi thay đổi cách nhìn về AI, về điểm rủi ro và cả vai trò của IoT.",
+    "file": "04_audio/voice_final/06.mp3",
+    "duration": 19.608,
+    "start_time": 91.368,
+    "end_time": 110.976
+  },
+  {
+    "id": "07",
+    "title": "AI đúng vai trò",
+    "text": "Dust Risk Score không trả lời rằng một công trình có vi phạm hay không. Nó chỉ hỗ trợ một câu hỏi thực tế hơn: trong nhiều trường hợp đang tồn tại, trường hợp nào nên được xem xét trước, và vì sao? AI có thể phân loại, tóm tắt, tìm thông tin còn thiếu và hỗ trợ checklist. Nhưng AI không tự kết luận vi phạm. Không tự quyết định xử phạt. Và không thay thế cơ quan có thẩm quyền.",
+    "file": "04_audio/voice_final/07.mp3",
+    "duration": 24.264,
+    "start_time": 110.976,
+    "end_time": 135.24
+  },
+  {
+    "id": "08",
+    "title": "Mô hình Lean Pilot",
+    "text": "Chúng tôi cũng học được rằng một giải pháp môi trường không nên bắt đầu bằng một hạ tầng thật lớn. DustGuard có thể bắt đầu chỉ với dữ liệu đang có: phản ánh, hình ảnh, vị trí, checklist và hồ sơ. Một pilot có thể triển khai trong một cộng đồng nhỏ, một trường học hoặc một câu lạc bộ môi trường. Trong bốn đến tám tuần. Với hai mươi đến ba mươi người dùng thật. Và những chỉ số có thể đo được.",
+    "file": "04_audio/voice_final/08.mp3",
+    "duration": 24.768,
+    "start_time": 135.24,
+    "end_time": 160.008
+  },
+  {
+    "id": "09",
+    "title": "Đo lường giá trị thật",
+    "text": "Bao nhiêu trường hợp có đủ bằng chứng? Thời gian từ phát hiện đến hành động là bao lâu? Bao nhiêu trường hợp thực sự có bước xử lý tiếp theo? Bao nhiêu vụ việc có thể được theo dõi từ lúc xuất hiện tín hiệu đến khi có kết quả? Đó mới là những con số chúng tôi muốn dùng để chứng minh DustGuard có giá trị.",
+    "file": "04_audio/voice_final/09.mp3",
+    "duration": 17.976,
+    "start_time": 160.008,
+    "end_time": 177.984
+  },
+  {
+    "id": "10",
+    "title": "Vai trò cộng đồng",
+    "text": "Và DustGuard không chỉ dành cho cơ quan quản lý. Chúng tôi muốn bắt đầu từ những cộng đồng đã có động lực hành động: trường học, câu lạc bộ môi trường, tổ chức thanh niên và những người trẻ. Để họ không chỉ nhìn thấy một vấn đề. Mà biết cách ghi nhận nó tốt hơn, theo dõi nó lâu hơn và giúp nó không bị bỏ quên.",
+    "file": "04_audio/voice_final/10.mp3",
+    "duration": 18.576,
+    "start_time": 177.984,
+    "end_time": 196.56
+  },
+  {
+    "id": "11",
+    "title": "Tầm nhìn mở rộng",
+    "text": "Nếu cách tiếp cận này được kiểm chứng với bụi công trình, chúng tôi tin rằng cùng một lõi có thể tiếp tục được phát triển cho những vấn đề môi trường khác. Nước thải. Đốt rơm rạ. Thuốc bảo vệ thực vật. Tiếng ồn. Nhưng mỗi bước mở rộng đều phải bắt đầu lại bằng việc hiểu đúng người dùng, đúng dữ liệu và đúng quy trình thực tế.",
+    "file": "04_audio/voice_final/11.mp3",
+    "duration": 20.016,
+    "start_time": 196.56,
+    "end_time": 216.576
+  },
+  {
+    "id": "12",
+    "title": "Kết mạnh và Slogan",
+    "text": "DustGuard không đặt mục tiêu trở thành một hệ thống quyết định thay con người. Chúng tôi muốn nó trở thành một công cụ giúp một vấn đề được nhìn thấy rõ hơn. Được ghi nhận đầy đủ hơn. Được theo dõi lâu hơn. Và có nhiều cơ hội hơn để đi từ một tín hiệu... đến một hành động thực sự. DustGuard — biến dữ liệu thành hành động quản lý có ưu tiên, có bằng chứng và có theo dõi.",
+    "file": "04_audio/voice_final/12.mp3",
+    "duration": 22.68,
+    "start_time": 216.576,
+    "end_time": 239.256
+  }
+]

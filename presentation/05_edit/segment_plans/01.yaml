@@ -1,37 +1,36 @@
-segment: 1
-title: "Vấn đề bụi công trình ngoài đường"
-timecode:
-  start: 0.000
-  end: 16.968
-  duration: 16.968
-voice:
-  file: 04_audio/voice_final/01.wav
-  duration_seconds: 16.968
+segment_id: '01'
+title: Mở vấn đề — Bụi công trình
+start_time: 0.0
+end_time: 15.696
+duration: 15.696
+energy_level: 2
+overlay: overlay_01_hook.png
+voice_text: Ở một thành phố đang phát triển, những công trường mới đồng nghĩa với
+  những con đường mới, những ngôi nhà mới và những cơ hội mới. Nhưng cùng với sự phát
+  triển đó, có một tác động rất dễ bị xem là nhỏ... cho đến khi nó trở thành vấn đề
+  của cả một cộng đồng. Đó là bụi công trình.
 shots:
-  - source_id: V001
-    type: video
-    in_point: 0.000
-    out_point: 5.500
-    duration: 5.500
-    timeline_start: 0.000
-    timeline_end: 5.500
-    motion: "slow_zoom_in"
-    on_screen_text: "Mỗi ngày, thành phố vẫn tiếp tục xây dựng."
-  - source_id: V002
-    type: video
-    in_point: 2.000
-    out_point: 7.500
-    duration: 5.500
-    timeline_start: 5.500
-    timeline_end: 11.000
-    motion: "pan_right"
-    on_screen_text: "Những công trường mới... những cơ hội mới."
-  - source_id: V003
-    type: video
-    in_point: 3.000
-    out_point: 8.968
-    duration: 5.968
-    timeline_start: 11.000
-    timeline_end: 16.968
-    motion: "shake_impact"
-    on_screen_text: "BỤI CÔNG TRÌNH"
+- shot_index: 1
+  source_id: V001
+  source_type: video
+  file: 02_sources/real_video/flycam/clip_hn_01_city_haze.mp4
+  start_time: 0.0
+  duration: 5.232
+  transition: cut
+  ken_burns: false
+- shot_index: 2
+  source_id: V002
+  source_type: video
+  file: 02_sources/real_video/construction/clip_hcm_01_construction_overview.mp4
+  start_time: 5.232
+  duration: 5.232
+  transition: fade
+  ken_burns: false
+- shot_index: 3
+  source_id: V003
+  source_type: video
+  file: 02_sources/real_video/dust/clip_hue_01_giant_dust_clouds.mp4
+  start_time: 10.464
+  duration: 5.232
+  transition: fade
+  ken_burns: false

@@ -1,130 +1,176 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
-DustGuard VN - Source Indexer
-Tự động quét toàn bộ nguồn video, ảnh, slide có sẵn và xuất ra 02_sources/SOURCE_INDEX.csv
-Đồng thời phân bổ link/copy vào các danh mục phù hợp.
+🎬 DUSTGUARD VN — SOURCE INDEXER
+Quét kho tài nguyên media trong presentation/02_sources/, đo lường thời lượng,
+kích thước, tỷ lệ khung hình bằng ffprobe và cập nhật 02_sources/SOURCE_INDEX.csv.
 """
 
 import os
 import sys
 import csv
 import json
-import shutil
 import subprocess
 from pathlib import Path
 
+# Cấu hình UTF-8 cho Windows Console chống lỗi charmap cp1252
 if hasattr(sys.stdout, "reconfigure"):
-    sys.stdout.reconfigure(encoding="utf-8")
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
 if hasattr(sys.stderr, "reconfigure"):
-    sys.stderr.reconfigure(encoding="utf-8")
+    try:
+        sys.stderr.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+SOURCES_DIR = BASE_DIR / "02_sources"
+OUTPUT_CSV = SOURCES_DIR / "SOURCE_INDEX.csv"
 
-def get_media_duration(file_path):
+def get_media_info(file_path):
+    """Sử dụng ffprobe để lấy thời lượng và độ phân giải của file media."""
     try:
-        cmd = ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "json", str(file_path)]
-        res = subprocess.run(cmd, capture_output=True, text=True, check=True)
-        data = json.loads(res.stdout)
-        return round(float(data["format"]["duration"]), 2)
-    except Exception:
-        return 0.0
+        cmd = [
+            "ffprobe",
+            "-v", "error",
+            "-show_entries", "format=duration:stream=width,height,codec_type",
+            "-of", "json",
+            str(file_path)
+        ]
+        result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
+        data = json.loads(result.stdout)
+        
+        duration = float(data.get("format", {}).get("duration", 0.0))
+        width = 0
+        height = 0
+        codec_type = "unknown"
+        for s in data.get("streams", []):
+            if s.get("codec_type") == "video":
+                width = int(s.get("width", 0))
+                height = int(s.get("height", 0))
+                codec_type = "video"
+                break
+            elif s.get("codec_type") == "audio" and codec_type == "unknown":
+                codec_type = "audio"
+        return {"duration": round(duration, 3), "width": width, "height": height, "codec_type": codec_type}
+    except Exception as e:
+        return {"duration": 0.0, "width": 0, "height": 0, "codec_type": "unknown", "error": str(e)}
 
-def main():
-    print("=== DUSTGUARD VN SOURCE INDEXER ===")
+def index_all_sources():
+    print("[Stage 3] Đang quét và đánh chỉ mục tài nguyên trong 02_sources/...")
     
-    extracted_clips_dir = BASE_DIR / "output" / "extracted_clips"
-    media_dir = BASE_DIR / "media"
-    sources_dir = BASE_DIR / "02_sources"
-    csv_file = sources_dir / "SOURCE_INDEX.csv"
+    sources = []
     
-    records = []
-    
-    # 1. Quét các video trích xuất (extracted clips)
-    clip_metadata = {
-        "clip_hn_01_city_haze.mp4": {"id": "V001", "sub": "flycam", "tags": "flycam,hà nội,sương bụi,thành phố", "quality": "A", "segments": "01;02"},
-        "clip_01_city_haze.mp4": {"id": "V001_alt", "sub": "flycam", "tags": "flycam,hà nội,sương bụi", "quality": "A", "segments": "01"},
-        "clip_hcm_01_construction_overview.mp4": {"id": "V002", "sub": "construction", "tags": "công trường,tphcm,cần cẩu,máy xúc", "quality": "A", "segments": "01;02"},
-        "clip_hue_01_giant_dust_clouds.mp4": {"id": "V003", "sub": "dust", "tags": "đám mây bụi,huế,17ha,xe ben,bụi cuốn", "quality": "A", "segments": "01;02"},
-        "clip_hcm_02_uncovered_truck_road_dust.mp4": {"id": "V004", "sub": "dust", "tags": "xe tải,bụi đường,tphcm,không phủ bạt", "quality": "A", "segments": "02;03"},
-        "clip_hn_02_citizen_elderly_concern.mp4": {"id": "V005", "sub": "people", "tags": "người dân,hà nội,người già,lo lắng", "quality": "A", "segments": "02;03"},
-        "clip_hue_03_children_respiratory_concern.mp4": {"id": "V006", "sub": "people", "tags": "trẻ em,hô hấp,huế,nhà dân bụi", "quality": "A", "segments": "03;04"},
-        "clip_hcm_03_resident_frustration.mp4": {"id": "V007", "sub": "people", "tags": "bức xúc,đóng cửa nhà,lau dọn bụi", "quality": "A", "segments": "02;03"},
-        "clip_hue_04_ineffective_manual_watering.mp4": {"id": "V008", "sub": "construction", "tags": "tưới nước thủ công,bất lực,bụi mù", "quality": "A", "segments": "06"},
-        "clip_hcm_04_barrier_water_spraying_audit.mp4": {"id": "V009", "sub": "construction", "tags": "kiểm tra rào chắn,phun sương,thực địa", "quality": "A", "segments": "07"},
-        "clip_hn_04_youth_action.mp4": {"id": "V010", "sub": "people", "tags": "thanh niên,hành động,khẩu trang,môi trường", "quality": "A", "segments": "08;10"},
-        "clip_hn2_04_green_transport_electric_bus.mp4": {"id": "V011", "sub": "vietnam", "tags": "xe buýt điện,giao thông xanh,hà nội", "quality": "B", "segments": "08;11"},
-        "clip_hn2_01_emission_sources_graphic.mp4": {"id": "V012", "sub": "project_demo", "tags": "nguồn phát thải,đồ họa,phân tích", "quality": "B", "segments": "02;11"},
-        "clip_hn2_02_directive19_halt_construction.mp4": {"id": "V013", "sub": "vietnam", "tags": "chỉ thị 19,thanh tra,đình chỉ công trình", "quality": "B", "segments": "06;07"},
-        "clip_hn2_03_mist_cannon_truck_and_ai_camera.mp4": {"id": "V014", "sub": "construction", "tags": "vòi rồng phun sương,ai camera,giám sát", "quality": "B", "segments": "07"},
-        "clip_hue_02_dust_on_trees_and_houses.mp4": {"id": "V015", "sub": "dust", "tags": "bụi bám cây cối,nhà cửa,huế", "quality": "A", "segments": "03"}
+    # 1. Quét Video
+    video_dir = SOURCES_DIR / "real_video"
+    video_mapping = {
+        "clip_hn_01_city_haze.mp4": ("V001", "flycam,hà nội,sương bụi,toàn cảnh thành phố", "01;12"),
+        "clip_01_city_haze.mp4": ("V001_ALT", "flycam,sương mù bụi,đô thị", "01"),
+        "clip_hcm_01_construction_overview.mp4": ("V002", "công trường tphcm,cần cẩu,máy xúc,bụi", "01;04"),
+        "clip_hue_01_giant_dust_clouds.mp4": ("V003", "đám mây bụi,huế 17ha,xe ben,bụi cuốn mù mịt", "01"),
+        "clip_hcm_02_uncovered_truck_road_dust.mp4": ("V004", "xe tải không phủ bạt,bụi đường phố,tphcm", "02"),
+        "clip_hn_02_citizen_elderly_concern.mp4": ("V005", "người cao tuổi,hà nội,lo lắng sức khỏe,ngột ngạt", "02"),
+        "clip_02_citizen_elderly_concern.mp4": ("V005_ALT", "phản ánh người dân,sức khỏe", "02"),
+        "clip_hue_03_children_respiratory_concern.mp4": ("V006", "trẻ em,viêm hô hấp,nhà dân bám bụi,huế", "03"),
+        "clip_hcm_03_resident_frustration.mp4": ("V007", "người dân đóng kín cửa,bức xúc lau dọn bụi", "03"),
+        "clip_hue_04_ineffective_manual_watering.mp4": ("V008", "tưới nước thủ công bất lực,bụi vẫn mù trời", "06"),
+        "clip_hcm_04_barrier_water_spraying_audit.mp4": ("V009", "kiểm tra rào chắn,phun sương dập bụi,thực địa", "05;07"),
+        "clip_hn_04_youth_action.mp4": ("V010", "thanh niên hành động,khẩu trang chống bụi,môi trường", "08;10"),
+        "clip_04_youth_action.mp4": ("V010_ALT", "thanh niên tình nguyện,môi trường", "08;10"),
+        "clip_hn2_04_green_transport_electric_bus.mp4": ("V011", "xe buýt điện vinbus,giao thông xanh tương lai", "11"),
+        "clip_hn2_03_mist_cannon_truck_and_ai_camera.mp4": ("V014", "xe vòi rồng phun sương,ai camera giám sát", "07"),
+        "clip_hue_02_dust_on_trees_and_houses.mp4": ("V015", "bụi phủ trắng xóa cây cối,nhà cửa dân cư", "03"),
+        "clip_hn2_01_emission_sources_graphic.mp4": ("V016", "đồ họa nguồn phát thải bụi đô thị", "02;04"),
+        "clip_hn2_02_directive19_halt_construction.mp4": ("V017", "chỉ thị 19 đình chỉ công trình gây bụi", "06;07"),
     }
     
-    if extracted_clips_dir.exists():
-        for f in extracted_clips_dir.glob("*.mp4"):
-            fname = f.name
-            meta = clip_metadata.get(fname, {
-                "id": f"V_{fname[:6]}", "sub": "vietnam", "tags": "clip trích xuất", "quality": "B", "segments": "01"
-            })
-            duration = get_media_duration(f)
-            
-            # Copy vào thư mục 02_sources/real_video/{sub}
-            target_sub = sources_dir / "real_video" / meta["sub"]
-            target_sub.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(f, target_sub / fname)
-            
-            rel_path = f"02_sources/real_video/{meta['sub']}/{fname}"
-            records.append({
-                "id": meta["id"],
-                "type": "video",
-                "file": rel_path,
-                "duration": duration,
-                "tags": meta["tags"],
-                "quality": meta["quality"],
-                "segment_priority": meta["segments"]
-            })
-            
-    # 2. Quét các ảnh đồ họa AI / UI Screenshots
-    img_metadata = {
-        "ChatGPT Image 09_56_46 31 thg 8, 2026 (1).png": {"id": "I001", "sub": "project", "tags": "tình nguyện viên,khảo sát hiện trường,bản đồ", "segments": "08;10"},
-        "ChatGPT Image 09_56_47 31 thg 8, 2026 (2).png": {"id": "I002", "sub": "project", "tags": "phân tích dữ liệu,dashboard,thanh niên", "segments": "04;09"},
-        "ChatGPT Image 09_56_48 31 thg 8, 2026 (3).png": {"id": "I003", "sub": "environment", "tags": "môi trường đô thị,giám sát bụi", "segments": "01;05"},
-        "ChatGPT Image 09_56_49 31 thg 8, 2026 (4).png": {"id": "I004", "sub": "project", "tags": "quy trình hồ sơ,bằng chứng số", "segments": "05;07"},
-        "ChatGPT Image 09_56_50 31 thg 8, 2026 (5).png": {"id": "I005", "sub": "environment", "tags": "bảo vệ sức khỏe cộng đồng,trẻ em", "segments": "03;10"},
-        "ChatGPT Image 09_56_50 31 thg 8, 2026 (6).png": {"id": "I006", "sub": "construction", "tags": "công trường xây dựng,biện pháp che chắn", "segments": "06;07"},
-        "ChatGPT Image 09_56_50 31 thg 8, 2026 (7).png": {"id": "I007", "sub": "vietnam", "tags": "thành phố xanh,hành động tương lai", "segments": "11;12"},
-        "ChatGPT Image 09_56_51 31 thg 8, 2026 (8).png": {"id": "I008", "sub": "project", "tags": "mô hình pilot,trường học,clb", "segments": "08;09"},
-        "ChatGPT Image 09_56_51 31 thg 8, 2026 (9).png": {"id": "I009", "sub": "environment", "tags": "đa bài toán môi trường,nước thải,khói", "segments": "11"},
-        "ChatGPT Image 09_56_51 31 thg 8, 2026 (10).png": {"id": "I010", "sub": "project", "tags": "logo dustguard,kết thúc,tầm nhìn", "segments": "04;12"}
+    if video_dir.exists():
+        for root, _, files in os.walk(video_dir):
+            for file in files:
+                if file.endswith((".mp4", ".mov", ".mkv", ".webm")):
+                    full_path = Path(root) / file
+                    rel_path = full_path.relative_to(BASE_DIR).as_posix()
+                    info = get_media_info(full_path)
+                    
+                    id_val, tags_val, priority_val = video_mapping.get(file, (f"V_AUTO_{len(sources)+1:03d}", "video,b-roll", "00"))
+                    sources.append({
+                        "id": id_val,
+                        "type": "video",
+                        "file": rel_path,
+                        "duration": info["duration"],
+                        "resolution": f"{info['width']}x{info['height']}",
+                        "tags": tags_val,
+                        "quality": "A" if info["height"] >= 720 else "B",
+                        "segment_priority": priority_val
+                    })
+
+    # 2. Quét Ảnh (Real Images)
+    image_dir = SOURCES_DIR / "real_images"
+    image_mapping = {
+        "ChatGPT Image 09_56_46 31 thg 8, 2026 (1).png": ("I001", "app ui,bản đồ điểm nóng,mobile view", "04;10"),
+        "ChatGPT Image 09_56_47 31 thg 8, 2026 (2).png": ("I002", "dashboard kpi,dust risk score,ưu tiên xử lý", "04;09"),
+        "ChatGPT Image 09_56_48 31 thg 8, 2026 (3).png": ("I003", "trạm đo iot vi cảm biến,quang học mở", "05;08"),
+        "ChatGPT Image 09_56_49 31 thg 8, 2026 (4).png": ("I004", "hồ sơ vụ việc,đối chứng before after,sha256", "05"),
+        "ChatGPT Image 09_56_50 31 thg 8, 2026 (5).png": ("I005", "thanh niên khảo sát thực địa,đo kiểm bụi", "10"),
+        "ChatGPT Image 09_56_50 31 thg 8, 2026 (6).png": ("I006", "công trường thi công,rào chắn,tưới ẩm", "06"),
+        "ChatGPT Image 09_56_50 31 thg 8, 2026 (7).png": ("I007", "đô thị thông minh việt nam,không khí sạch", "11;12"),
+        "ChatGPT Image 09_56_51 31 thg 8, 2026 (8).png": ("I008", "biểu đồ tiến độ pilot,chỉ số lean", "08;09"),
+        "ChatGPT Image 09_56_51 31 thg 8, 2026 (9).png": ("I009", "hệ sinh thái mở rộng đa bài toán môi trường", "11"),
+        "ChatGPT Image 09_56_51 31 thg 8, 2026 (10).png": ("I010", "logo dustguard vn,khiên bảo vệ,civic tech", "04;12"),
     }
     
-    if media_dir.exists():
-        for f in media_dir.glob("*.png"):
-            fname = f.name
-            meta = img_metadata.get(fname, {
-                "id": f"I_{fname[:4]}", "sub": "project", "tags": "ảnh minh họa", "segments": "01"
-            })
-            target_sub = sources_dir / "real_images" / meta["sub"]
-            target_sub.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(f, target_sub / fname)
-            
-            rel_path = f"02_sources/real_images/{meta['sub']}/{fname}"
-            records.append({
-                "id": meta["id"],
-                "type": "image",
-                "file": rel_path,
-                "duration": "",
-                "tags": meta["tags"],
-                "quality": "A",
-                "segment_priority": meta["segments"]
-            })
-            
-    # Ghi ra file SOURCE_INDEX.csv
-    with open(csv_file, "w", encoding="utf-8", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=["id", "type", "file", "duration", "tags", "quality", "segment_priority"])
+    if image_dir.exists():
+        for root, _, files in os.walk(image_dir):
+            for file in files:
+                if file.endswith((".png", ".jpg", ".jpeg", ".webp")):
+                    full_path = Path(root) / file
+                    rel_path = full_path.relative_to(BASE_DIR).as_posix()
+                    info = get_media_info(full_path)
+                    
+                    id_val, tags_val, priority_val = image_mapping.get(file, (f"I_AUTO_{len(sources)+1:03d}", "hình ảnh thực địa", "00"))
+                    sources.append({
+                        "id": id_val,
+                        "type": "image",
+                        "file": rel_path,
+                        "duration": 5.0,
+                        "resolution": f"{info['width']}x{info['height']}",
+                        "tags": tags_val,
+                        "quality": "A",
+                        "segment_priority": priority_val
+                    })
+
+    # 3. Quét Slides
+    slides_dir = SOURCES_DIR / "slides" / "png"
+    if slides_dir.exists():
+        for file in sorted(os.listdir(slides_dir)):
+            if file.endswith(".png"):
+                full_path = slides_dir / file
+                rel_path = full_path.relative_to(BASE_DIR).as_posix()
+                info = get_media_info(full_path)
+                slide_num = file.split("_")[1] if len(file.split("_")) > 1 else "01"
+                sources.append({
+                    "id": f"S0{slide_num}",
+                    "type": "slide",
+                    "file": rel_path,
+                    "duration": 5.0,
+                    "resolution": f"{info['width']}x{info['height']}",
+                    "tags": f"slide {slide_num},thuyết trình,unicef hackathon",
+                    "quality": "A",
+                    "segment_priority": slide_num
+                })
+
+    # Ghi ra CSV
+    fieldnames = ["id", "type", "file", "duration", "resolution", "tags", "quality", "segment_priority"]
+    with open(OUTPUT_CSV, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
-        for r in records:
-            writer.writerow(r)
+        for row in sources:
+            writer.writerow(row)
             
-    print(f"[OK] Đã đánh chỉ mục {len(records)} tài nguyên vào: {csv_file.relative_to(BASE_DIR)}")
+    print(f"-> Đã đánh chỉ mục {len(sources)} tài nguyên vào {OUTPUT_CSV}")
+    return sources
 
 if __name__ == "__main__":
-    main()
+    index_all_sources()
