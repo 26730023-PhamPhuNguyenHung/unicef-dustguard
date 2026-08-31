@@ -1,6 +1,32 @@
 # ACTIVE CONTEXT — DUSTGUARD VN
 
-## 1. Focus Hiện Tại & Mốc Đã Hoàn Tất
+- **📋 HOÀN TẤT 100%: AGENT 3 — STAFF / CÁN BỘ XỬ LÝ CASE HUB WORKFLOW AUDITOR**:
+  1. **Kiểm Toán & Vận Hành Chu Trình Xử Lý Hồ Sơ Từ Đầu Đến Cuối (E2E Case Hub Lifecycle)**:
+     - Đóng vai Cán bộ Vận hành & Thanh tra, kiểm tra toàn bộ luồng công việc từ Bàn làm việc & Hàng đợi ưu tiên (`StaffDashboard.jsx`, `StaffCases.jsx`), Khảo sát hiện trường 10 tiêu chí QCVN 18/05 (`StaffInspections.jsx`), Nghiệm thu đối chứng Before/After Geofence < 50m (`RemediationWorkspace.jsx`), đến Xuất bộ hồ sơ thực chứng A4 (`CaseDossierPackageModal.jsx`, `cases.js:archive-package`).
+  2. **Chuẩn Hóa State Machine DAG 7 Bước & Chặn Toàn Diện Bước Nhảy Cóc (Illegal Jumps)**:
+     - Đồng bộ 100% ma trận chuyển trạng thái giữa Backend `case.rules.js` (`VALID_CASE_TRANSITIONS`) và Frontend `caseStateMachine.js` (`VALID_TRANSITIONS`): `SCREENING` $\to$ `PREPARING` $\to$ `DECISION_ISSUED` $\to$ `ON_SITE` $\to$ `REPORTING` $\to$ `APPRAISING` $\to$ `COMPLETED`.
+     - Loại bỏ triệt để các đường tắt bỏ bước trong `case.rules.js` (như `PREPARING -> ON_SITE` hoặc `ON_SITE -> APPRAISING`), bảo đảm chặn cứng các bước chuyển không hợp lệ (ví dụ `SCREENING` $\to$ `ON_SITE`) trên cả 2 tầng API và UI.
+  3. **Tích Hợp 7-Step Interactive Stepper Strip & Transition Modal (`StaffCaseDetail.jsx`)**:
+     - Bổ sung thanh Stepper trực quan 7 bước hiển thị tiến độ thời gian thực (Đã đạt ✓, Đang thực hiện, Sẵn sàng chuyển bước, Bị khóa).
+     - Bổ sung nút bấm chuyển bước tuần tự kèm Modal Xác nhận ghi chú/căn cứ tác nghiệp, kiểm tra điều kiện pre-flight trước khi chuyển trạng thái.
+     - Khóa vô hiệu hóa các lựa chọn trạng thái nhảy cóc trong form chỉnh sửa inline.
+     - Bổ sung các phương thức `updateCase`, `updateCaseStatus`, `deleteCase` vào `staffApi` (`staff-api.js`).
+  4. **Kiểm Định & Xác Thực Toàn Diện**:
+     - `node --test app/tests/case-enforcement-dag-7steps.test.js app/tests/case-service.test.js app/tests/cases-inspections-complaints-audit.test.js app/tests/staff-case-management-qa.test.js app/tests/auth-rbac-geofence-audit.test.js app/tests/administrative-document-studio.test.js`: PASS 100% (37/37 tests, 0.6s).
+     - `npm --prefix app run verify:quick`: PASS 100% (OpenAPI 386 routes parity, 28 test files, 279/279 tests).
+- **🎨 HOÀN TẤT 100%: AGENT 8 — CHROME DEVTOOLS UI/UX & RESPONSIVE AUDITOR (MULTI-VIEWPORT & AUTO-FIX)**:
+  1. **Rà Soát & Thẩm Định Đa Viewport (Desktop 1440x900, Mobile 360px, 375px, 390px, 430px)**:
+     - Quét toàn diện 441 files UI trong `app/src/` về 4 khía cạnh: Glassmorphism, Fixed widths rủi ro > 340px, Bảng dữ liệu không có wrapper cuộn di động, và Text wrapping cho Case ID/SHA-256 hash.
+  2. **Tự Động Sửa Lỗi & Chuẩn Hóa Code (Auto-Fix Codebase)**:
+     - **Zero Glassmorphism**: Gỡ bỏ triệt để các class `backdrop-blur-*` (kể cả `backdrop-blur-none` trong `Modal.jsx` và comment trong `tokens/index.ts`), đạt 0 vi phạm trên toàn bộ codebase.
+     - **Component Imports**: Bổ sung `import StatusBadge from '../../shared/components/StatusBadge.jsx'` trong `ExecutiveHeatmap.jsx` ngăn ngừa lỗi `ReferenceError`.
+     - **Bảng dữ liệu di động**: Bổ sung `overflow-x-auto` cho bảng hoạt động đã ghi nhận trong `CommunityImpact.jsx`, bảng độ tin cậy cảm biến trong `SensorGuide.jsx`, và bảng cấu phần rủi ro trong `RiskBreakdownModal.jsx`.
+     - **Touch Targets $\ge 44\text{px} \times 44\text{px}$**: Nâng cấp các nút bấm, tab điều hướng và thanh công cụ trong `PageTemplate.jsx` (Back button, Search, Filters, Primary/Secondary action buttons), `ContractorLayout.jsx` (mobile close button), `ExecutiveReports.jsx` (Xuất PDF/CSV), `StaffSettings.jsx` (các tab cấu hình), và `executive-layout.jsx`.
+     - **Text Wrapping & SHA-256 Safety**: Bổ sung `break-all` và `break-words` cho Case ID trong `CitizenReportFormSection.jsx`, hash nhật ký audit trong `StaffSettings.jsx`, code API spec trong `SensorGuide.jsx`, và con dấu điện tử trong `SignatureBlock.jsx`.
+     - **OpenAPI 3.0.3 Contract Parity**: Bổ sung 3 endpoints người dùng (`PUT /api/users/{id}/status`, `PUT /api/v1/users/{id}/status`, `POST /api/v1/users`) đạt 100% khớp nối 386/386 routes Worker.
+  3. **Kiểm Định & Xác Thực Toàn Diện**:
+     - `node --test app/tests/mobile-layout-audit.test.js app/tests/responsive-accessibility-layout-audit.test.js app/tests/design-system-ui-components-audit.test.js`: PASS 100% (46/46 tests, 0.54s).
+     - `npm --prefix app run verify:quick`: PASS 100% (OpenAPI 386 routes parity, 28 test files, 279/279 tests, 7.5s).
 - **🛡️ HOÀN TẤT 100%: AGENT 7 — DATA INTEGRITY & D1 SSOT VS LOCALSTORAGE AUDITOR**:
   1. **Rà Soát Toàn Bộ Codebase & Phân Loại Bộ Nhớ Client Storage**:
      - Quét toàn bộ các mẫu `localStorage`, `sessionStorage`, `mock`, `fixture`, `demoData`, `fake`, `placeholder`, `hardcoded`, `TODO`.

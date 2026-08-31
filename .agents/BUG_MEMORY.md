@@ -58,6 +58,10 @@
 - **Nguyên nhân**: Kiểm tra `Array.isArray(center)` trả về `true` cho mảng `[undefined, undefined]`, truyền vào Leaflet MapContainer gây lỗi `Invalid LatLng object`.
 - **Giải pháp**: Thêm hàm kiểm tra an toàn `isValidCoord(lat, lng)` trước khi gán tọa độ center cho Leaflet, fallback về `HANOI_DEFAULT_CENTER`.
 
+### 🚨 Trap 1.23: Bỏ qua bước trung gian trong Case State Machine DAG (Illegal Step Jumps)
+- **Nguyên nhân**: `case.rules.js` trước đây chứa các đường tắt không hợp lệ (`PREPARING -> ON_SITE`, `ON_SITE -> APPRAISING`), làm lệch chuẩn DAG 7 bước so với `caseStateMachine.js`, cho phép bỏ qua bước ban hành quyết định hoặc lập biên bản. Đồng thời UI `StaffCaseDetail.jsx` thiếu Stepper trực quan và không khóa các trạng thái nhảy cóc trong form chỉnh sửa.
+- **Giải pháp**: Đồng bộ 100% ma trận `VALID_CASE_TRANSITIONS` trong `case.rules.js` và `caseStateMachine.js`; tích hợp 7-Step Interactive Workflow Stepper Strip trên `StaffCaseDetail.jsx`, khóa disabled các option trạng thái vi phạm DAG và hiển thị dialog xác nhận kèm ghi chú khi chuyển bước hợp lệ.
+
 ### 🚨 Trap 1.20: Lạm dụng LocalStorage làm SSOT thay vì Cloudflare D1 Persistent Storage
 - **Nguyên nhân**: Lưu trữ các thực thể nghiệp vụ cốt lõi (`users`, `cases`, `complaints`, `sites`, `tasks`, `campaigns`, `sensors`, `evidences`, `credits`) trong `localStorage` hoặc fallback dữ liệu fake/mock trong `catch` block làm dữ liệu bị phân mảnh trên từng client, không đồng bộ giữa các máy và rò rỉ dữ liệu ảo.
 - **Giải pháp**:
@@ -90,9 +94,13 @@
 - **Nguyên nhân**: Trên môi trường Windows PowerShell, `sys.stdout` mặc định sử dụng mã hóa `cp1252` hoặc `cp936`, dẫn đến lỗi `UnicodeEncodeError: 'charmap' codec can't encode character...` khi in emoji hoặc biểu tượng Unicode đặc biệt.
 - **Giải pháp**: Luôn đặt cấu hình `sys.stdout.reconfigure(encoding='utf-8')` và `sys.stderr.reconfigure(encoding='utf-8')` ở đầu tất cả các scripts CLI / Python runners.
 
-### 🚨 Trap 2.18: Dòng phụ đề vượt quá 38 ký tự hoặc quá 2 dòng làm vỡ safe-zone video 1080p
-- **Nguyên nhân**: Dòng văn bản lồng ghép quá dài không ngắt nhịp ngữ nghĩa tự nhiên, làm chữ bị tràn ra mép màn hình hoặc che khuất giao diện video player.
-- **Giải pháp**: Tích hợp hàm `run_qa_audit(cues)` kiểm tra nghiêm ngặt `max_chars_per_line <= 38`, `max_lines <= 2`, tốc độ đọc `CPS` lý tưởng 12-18 chars/s và vị trí `MarginV=80px` trước khi xuất file `.srt`, `.ass`, `.vtt`.
+### 🚨 Trap 1.24: Bảng dữ liệu di động bị cắt xén nội dung do thiếu container `overflow-x-auto`
+- **Nguyên nhân**: Bảng 4-5 cột đặt trực tiếp trong container `overflow-hidden` hoặc không có thanh cuộn ngang, khiến trên màn hình hẹp (360px - 430px) các cột trạng thái hoặc hành động bị xén mất.
+- **Giải pháp**: Luôn bọc thẻ `<table>` bằng thẻ `<div className="overflow-x-auto">` hoặc chuyển đổi sang Mobile Card View (`hidden lg:block` + `lg:hidden flex flex-col gap-3`).
+
+### 🚨 Trap 2.19: Chuỗi định danh dài (Case ID / SHA-256 Hash / API Spec) làm phình rộng container trên màn hình nhỏ 360px
+- **Nguyên nhân**: Không có class `break-all` hoặc `break-words` trên chuỗi mã băm hoặc ID dài như `COMP-2026-089-XXXX`, khiến flex items hoặc grid cell bị ép mở rộng vượt quá chiều rộng màn hình, gây tràn ngang.
+- **Giải pháp**: Luôn áp dụng `break-all` hoặc `break-words` cho mọi thẻ `span`/`code`/`b` hiển thị mã băm, URL endpoint hoặc Case ID.
 
 ### 🚨 Trap 2.19: Regex Overclaim Catch-All Bắt Nhầm Câu Phủ Định Rào Trước (Intervening Words in Negation Pattern)
 - **Nguyên nhân**: Khi viết regex quét các từ khóa cấm overclaim (`thay thế thanh tra`, `kết luận vi phạm`, `tự động xử phạt`), nếu mẫu phủ định (`allowed_negations`) chỉ match dạng nối liền `không thay thế` thì các phát biểu rào trước mang tính bảo vệ như *"AI không phán quyết hay thay thế thanh tra"* hoặc *"không tự ra quyết định xử phạt"* sẽ bị bắt nhầm thành lỗi vi phạm do có từ chèn giữa (`phán quyết hay`, `tự ra quyết định`).
@@ -413,14 +421,20 @@
 
 ---
 
-## 📡 13. IoT & Sensor Telemetry Pipeline Traps
+## 👥 14. Citizen Real-World Browser & Workflow Traps
 
-### 🚨 Trap 13.1: Lỗi Replay Attack & Timestamp Clock Drift Không Đồng Bộ Giữa Express và Worker
-- **Nguyên nhân**: Thiết bị IoT gửi bản tin telemetry kèm timestamp từ RTC địa phương. Nếu không kiểm tra độ lệch giờ (RTC drift > 5 phút) hoặc không có sliding window cache ghi nhớ chữ ký/nonce, kẻ xấu có thể phát lại gói tin cũ (Replay Attack) để giả lập ô nhiễm nhân tạo.
-- **Giải pháp**: 
-  1. `ReplayProtector` triển khai sliding window 5 phút (`maxDriftMs = 300000`), từ chối mã 400 nếu lệch quá 5 phút và 409 nếu phát hiện trùng lặp khóa `sensorCode_timestamp_signature`.
-  2. Bổ sung `app.post(['/api/telemetry', '/api/v1/telemetry'])` vào Express router map trực tiếp sang `sensorRoutes` bảo đảm tính nhất quán 100% với Cloudflare Worker Hono edge runtime.
+### 🚨 Trap 14.1: Unwrapping dữ liệu API phân trang dạng Object `{ items: [...] }` làm hỏng tải dữ liệu thật từ D1
+- **Nguyên nhân**: Backend Express và Cloudflare Worker trả về phản hồi danh sách chuẩn `{ status: 'success', data: { items: [...], pagination: {...} } }`. Nếu Frontend chỉ check `const list = json.data || json || []`, `list` nhận về object thay vì array, khiến `list.length` là `undefined` và `list.length > 0` trả về `false`, dẫn tới việc giao diện (`CitizenPortal.jsx`, `CitizenTrack.jsx`) luôn rơi vào nhánh fallback mock data và không hiển thị phản ánh thực tế từ D1 CSDL.
+- **Giải pháp**: Luôn unwrap an toàn đa tầng: `const list = Array.isArray(json.data?.items) ? json.data.items : (Array.isArray(json.data) ? json.data : (Array.isArray(json.items) ? json.items : (Array.isArray(json) ? json : [])))`.
 
-### 🚨 Trap 13.2: Bẫy Mất Cân Bằng Trọng Số Khi Không Có Cảm Biến (Zero-IoT Resilience Trap)
-- **Nguyên nhân**: Nếu hệ thống trừ thẳng 10% điểm khi không có cảm biến, các khu vực ngoại thành hoặc công trình chưa lắp đặt trạm đo sẽ luôn bị đánh giá thấp rủi ro dù đang bị phản ánh gay gắt từ người dân và tiếp giáp trường học.
-- **Giải pháp**: Thuật toán `DustRiskEngine` tự động lọc các thành phần `available` và tái chuẩn hóa: `rawScore = weightedSum / totalAvailableWeight` (với 4 thành phần còn lại, `totalAvailableWeight = 0.90`). Hệ thống giữ nguyên 100% độ nhạy rủi ro khi có 0 cảm biến kết nối.
+### 🚨 Trap 14.2: Thiếu import Icon từ `lucide-react` gây `ReferenceError` làm vỡ màn hình Citizen
+- **Nguyên nhân**: Trong `CitizenNearby.jsx`, icon `<Compass />` được render tại tiêu đề và trạng thái nhưng không được import từ `lucide-react`, dẫn tới lỗi runtime `ReferenceError: Compass is not defined` khi người dùng bấm vào tab "Quanh tôi".
+- **Giải pháp**: Luôn import đầy đủ tất cả icon components được sử dụng từ `lucide-react` và kiểm định qua targeted test / UI smoke test.
+
+### 🚨 Trap 14.3: Chưa khởi tạo bộ lắng nghe `setupAutoSync` và lưu nháp tạm khi người dùng đang nhập form
+- **Nguyên nhân**: Module `CitizenReport.jsx` import `setupAutoSync` nhưng không gọi trong `useEffect` khi mount; đồng thời form phản ánh nếu người dùng vô tình F5/reload trang sẽ bị mất toàn bộ nội dung đã gõ và vị trí đã chọn.
+- **Giải pháp**:
+  1. Đăng ký `setupAutoSync` trong `useEffect` khi mount để tự động đẩy các bản tin nháp ngoại tuyến lên máy chủ ngay khi có internet.
+  2. Tự động lưu bản nháp form đang nhập vào `localStorage ('dg_active_report_form')` và khôi phục khi reload trang; xóa nháp khi đã nộp thành công ở Bước 4.
+  3. Hiển thị banner trạng thái hàng đợi nháp kèm nút "Đồng bộ ngay" khi `offlineDraftsCount > 0`.
+
