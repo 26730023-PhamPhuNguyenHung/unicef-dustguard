@@ -1,0 +1,21 @@
+segment: 2
+title: "Nút thắt dữ liệu phân tán"
+target:
+  start: 18.0
+  end: 38.0
+  duration: 20.0
+voice:
+  file: 04_audio/voice_final/02.wav
+  text: "Điều chúng tôi nhận ra là: vấn đề không phải chúng ta hoàn toàn không có dữ liệu. Người dân có phản ánh. Có hình ảnh. Có vị trí. Có thông tin công trình. Có hồ sơ kiểm tra. Và trong tương lai còn có thể có dữ liệu từ cảm biến. Nhưng những thông tin đó thường nằm ở nhiều nơi khác nhau. Và khi dữ liệu bị phân tán, điều khó nhất là biến nó thành một hành động có thứ tự ưu tiên."
+visuals:
+  - V004
+  - V005
+  - V007
+editing:
+  cut_rate: 3.0
+  transition: hard_cut
+  motion: pan_left
+music:
+  track: epic
+  energy: 4
+  role: problem_build

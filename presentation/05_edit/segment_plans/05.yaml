@@ -1,0 +1,20 @@
+segment: 5
+title: "1 Tín hiệu ➔ 1 Hồ sơ"
+target:
+  start: 70.0
+  end: 90.0
+  duration: 20.0
+voice:
+  file: 04_audio/voice_final/05.wav
+  text: "Điểm mới của DustGuard không nằm ở việc tạo thêm một nơi để gửi phản ánh. Điều chúng tôi muốn giải quyết là khoảng trống sau khi phản ánh đã được gửi. Một tín hiệu ban đầu phải có cơ hội trở thành một hồ sơ. Một hồ sơ phải có bằng chứng. Một trường hợp phải có mức độ ưu tiên. Và quan trọng nhất: phải có thể biết nó đang được xử lý tới đâu."
+visuals:
+  - I004
+  - I003
+editing:
+  cut_rate: 3.0
+  transition: hard_cut
+  motion: cursor_click
+music:
+  track: epic
+  energy: 8
+  role: dynamic_flow

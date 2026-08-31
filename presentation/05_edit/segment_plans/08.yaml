@@ -1,0 +1,21 @@
+segment: 8
+title: "Mô hình Lean Pilot 4-8 tuần"
+target:
+  start: 128.0
+  end: 148.0
+  duration: 20.0
+voice:
+  file: 04_audio/voice_final/08.wav
+  text: "Chúng tôi cũng học được rằng một giải pháp môi trường không nên bắt đầu bằng một hạ tầng thật lớn. DustGuard có thể bắt đầu chỉ với dữ liệu đang có: phản ánh, hình ảnh, vị trí, checklist và hồ sơ. Một pilot có thể triển khai trong một cộng đồng nhỏ, một trường học hoặc một câu lạc bộ môi trường. Trong bốn đến tám tuần. Với hai mươi đến ba mươi người dùng thật. Và những chỉ số có thể đo được."
+visuals:
+  - V010
+  - I008
+  - V011
+editing:
+  cut_rate: 2.5
+  transition: crossfade_music
+  motion: roadmap_flow
+music:
+  track: achievement
+  energy: 7
+  role: pilot_crossfade

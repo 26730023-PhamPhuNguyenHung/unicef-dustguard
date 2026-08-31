@@ -1,0 +1,21 @@
+segment: 4
+title: "DustGuard xuất hiện"
+target:
+  start: 55.0
+  end: 70.0
+  duration: 15.0
+voice:
+  file: 04_audio/voice_final/04.wav
+  text: "DustGuard được xây dựng để trả lời những câu hỏi đó. Không phải bằng cách thay thế người ra quyết định. Mà bằng cách kết nối tín hiệu, bằng chứng, mức độ ưu tiên và quá trình xử lý thành một hồ sơ có thể theo dõi."
+visuals:
+  - I010
+  - I002
+  - V002
+editing:
+  cut_rate: 2.5
+  transition: flash_white_cut
+  motion: zoom_ui
+music:
+  track: epic
+  energy: 7
+  role: solution_reveal_beat_drop

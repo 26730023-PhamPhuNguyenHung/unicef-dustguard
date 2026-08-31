@@ -1,0 +1,40 @@
+project:
+  name: DustGuard VN
+  title: "DustGuard VN — Nền tảng Quản trị Tín hiệu & Bằng chứng Môi trường"
+  target_duration: 210 # 3 phút 30 giây (210s)
+  resolution: 1920x1080
+  aspect_ratio: "16:9"
+  fps: 30
+
+master_coordination_files:
+  project_config: PROJECT.yaml
+  edit_plan: EDIT_PLAN.md
+  timeline: TIMELINE.json
+  source_index: 02_sources/SOURCE_INDEX.csv
+  music_map: 04_audio/music/MUSIC_MAP.yaml
+  script: 01_script/master_voiceover.md
+  subtitles: 01_script/subtitles/final.srt
+
+audio:
+  voice_provider: vieneu
+  primary_voice: "Minh Đức" # Hoặc "Trúc Ly" cho tone truyền cảm
+  style: "tin_tuc"
+  speech_speed_target: 1.08
+  final_voice_dir: 04_audio/voice_final
+  music:
+    primary: 04_audio/music/epic-presentation.mp3
+    secondary: 04_audio/music/achievement.mp3
+    crossfade_point_seconds: 130.0
+    crossfade_duration_seconds: 5.0
+    ducking_attenuation_db: -18.0
+    loudness_target_lufs: -14.0
+    true_peak_db: -1.0
+
+render:
+  codec: h264
+  video_bitrate: "16M"
+  audio_codec: aac
+  audio_sample_rate: 48000
+  audio_bitrate: "320k"
+  output_master: 07_output/final/DustGuardVN_FINAL_1080p.mp4
+  output_subtitled: 07_output/final/DustGuardVN_FINAL_1080p_subtitled.mp4

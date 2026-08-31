@@ -29,11 +29,12 @@
      - `verify:quick`: 28 test files (279 unit + 42 UI smoke tests) PASS 100% (3.8s).
      - `npm --prefix app run build`: Vite build PASS 100% trong 7.81s (0 errors).
 
-- **TRIỂN KHAI BỘ TÀI LIỆU & VOICE-OVER PROPOSAL VÒNG CHUNG KẾT (3 PHÚT 30 GIÂY)**:
-  - Khởi tạo thư mục `presentation/` chuẩn SSOT, đã nạp đầy đủ các asset nhạc (`achievement`, `epic-presentation`) và 10 hình ảnh ý tưởng vào `presentation/media/`.
-  - Cập nhật `.gitignore` để ignore toàn bộ binary nặng (`presentation/media/`, `presentation/output/`, `*.mp4`, `*.wav`).
-  - Soạn thảo tài liệu kịch bản chi tiết [presentation/FINAL_VOICEOVER_PROPOSAL.md](file:///d:/07-Competitions-Hackathons/unicef-dustguard/presentation/FINAL_VOICEOVER_PROPOSAL.md) với phân cảnh timeline, visual cue, mốc beat nhạc và cao trào.
-  - Xây dựng script Python [presentation/generate_voiceover.py](file:///d:/07-Competitions-Hackathons/unicef-dustguard/presentation/generate_voiceover.py) và đã sinh hoàn chỉnh 12 phân đoạn + file tổng hợp của 2 giọng đọc chất lượng cao (`vi-VN-NamMinhNeural` và `vi-VN-HoaiMyNeural`).
+- **TRIỂN KHAI HOÀN CHỈNH DETERMINISTIC AI VIDEO-PRODUCTION PIPELINE (presentation/)**:
+  - Tái cấu trúc thư mục `presentation/` thành hệ thống điều phối deterministic 4 file: `PROJECT.yaml`, `EDIT_PLAN.md`, `TIMELINE.json`, `02_sources/SOURCE_INDEX.csv`.
+  - Tích hợp 12 segment plans (`05_edit/segment_plans/01.yaml` -> `12.yaml`), kịch bản thoại (`01_script/master_voiceover.md`), phụ đề broadcast (`01_script/subtitles/final.srt`).
+  - Xây dựng bộ audio: phân tích sóng âm & nhịp beat (`04_audio/music/MUSIC_MAP.yaml`), crossfade 2 BGM (Epic ➔ Achievement) và auto-ducking `-18dB`.
+  - Tích hợp công cụ sinh voice VieNeu offline (`Minh Đức` 1.08x & `Trúc Ly` 1.07x) không giới hạn kí tự, không phụ thuộc API.
+  - Tự động hóa toàn bộ qua CLI scripts: `index_sources.py`, `analyze_music.py`, `build_timeline.py`, `test_voices.py`, `generate_final_voices.py`, `render_final.py`, `qc_final.py`.
 
 - **Mục tiêu hoàn thành**: Audit và dọn dẹp triệt để toàn bộ hệ thống Bản đồ Không gian của DustGuard VN; giải quyết dứt điểm lỗi `ReferenceError: selectedEntity is not defined` từ nguyên nhân gốc rễ; loại bỏ toàn bộ rác dead code, legacy components và proxy barrels thừa; đảm bảo kiến trúc One Map SSOT tinh gọn, ổn định, responsive, không rò rỉ lỗi kỹ thuật ra giao diện production.
 - **Chi tiết triển khai kỹ thuật**:

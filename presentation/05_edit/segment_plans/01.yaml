@@ -1,0 +1,21 @@
+segment: 1
+title: "Vấn đề bụi công trình"
+target:
+  start: 0.0
+  end: 18.0
+  duration: 18.0
+voice:
+  file: 04_audio/voice_final/01.wav
+  text: "Ở một thành phố đang phát triển, những công trường mới đồng nghĩa với những con đường mới, những ngôi nhà mới và những cơ hội mới. Nhưng cùng với sự phát triển đó, có một tác động rất dễ bị xem là nhỏ... cho đến khi nó trở thành vấn đề của cả một cộng đồng. Đó là bụi công trình."
+visuals:
+  - V001
+  - V002
+  - V003
+editing:
+  cut_rate: 3.5
+  transition: cross_dissolve
+  motion: subtle_zoom_in
+music:
+  track: epic
+  energy: 2
+  role: atmospheric_intro

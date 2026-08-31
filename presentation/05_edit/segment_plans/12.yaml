@@ -1,0 +1,21 @@
+segment: 12
+title: "Tuyên ngôn kết thúc & Sứ mệnh"
+target:
+  start: 197.0
+  end: 210.0
+  duration: 13.0
+voice:
+  file: 04_audio/voice_final/12.wav
+  text: "DustGuard không đặt mục tiêu trở thành một hệ thống quyết định thay con người. Chúng tôi muốn nó trở thành một công cụ giúp một vấn đề được nhìn thấy rõ hơn. Được ghi nhận đầy đủ hơn. Được theo dõi lâu hơn. Và có nhiều cơ hội hơn để đi từ một tín hiệu... đến một hành động thực sự. DustGuard — biến dữ liệu thành hành động quản lý có ưu tiên, có bằng chứng và có theo dõi."
+visuals:
+  - I010
+  - I007
+  - V001
+editing:
+  cut_rate: 1.8
+  transition: flash_climax
+  motion: hero_brand
+music:
+  track: achievement
+  energy: 10
+  role: peak_climax_finale

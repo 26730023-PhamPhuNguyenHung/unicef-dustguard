@@ -1,0 +1,20 @@
+segment: 3
+title: "5 Câu hỏi trung tâm"
+target:
+  start: 38.0
+  end: 55.0
+  duration: 17.0
+voice:
+  file: 04_audio/voice_final/03.wav
+  text: "Nếu cùng lúc có mười phản ánh, chúng ta nên nhìn vào trường hợp nào trước? Vì sao trường hợp đó đáng chú ý? Hồ sơ còn thiếu gì? Ai đang phụ trách? Và sau khi một phản ánh được gửi đi... nó đã thực sự đi đến đâu?"
+visuals:
+  - V006
+  - V015
+editing:
+  cut_rate: 2.5
+  transition: hard_cut
+  motion: text_pop_in
+music:
+  track: epic
+  energy: 4
+  role: tension_pre_drop
