@@ -1,5 +1,20 @@
 # ACTIVE CONTEXT — DUSTGUARD VN
 
+- **👥 HOÀN TẤT 100%: AGENT 1 — CITIZEN REAL-WORLD BROWSER & WORKFLOW AUDITOR**:
+  1. **Kiểm Toán Trải Nghiệm Công Dân & Trình Duyệt Thực Tế (Citizen Real-World Browser Audit)**:
+     - **Landing Page (`LandingPage.jsx`, `LandingNav.jsx`, `HeroSection.jsx`)**: 3 CTAs rõ ràng (`/community/observe`, `/demo`, `/login`), tương tác Trước/Sau đối chứng minh chứng SHA-256 và tem liên thông Cổng 1022 / iHanoi, không glassmorphism, responsive mượt mà từ 360px đến desktop.
+     - **Gửi Phản Ánh Ẩn Danh & Có Tài Khoản (`CitizenReport.jsx`, `api/complaints.js`)**: Quy trình 3 bước trực quan, tự động nén ảnh client `<300KB`, gỡ bỏ EXIF nhạy cảm bảo vệ quyền riêng tư, sinh mã băm SHA-256 tamper-evident, định vị GPS 3 cấp độ (High accuracy -> Low accuracy -> Map picker), hỗ trợ tùy chọn gửi ẩn danh 100% bảo mật thông tin.
+     - **Cơ Chế Offline Drafts & Auto-Sync (`offline-drafts.js`, `CitizenReport.jsx`)**: Tự động lưu nháp form đang nhập vào `localStorage ('dg_active_report_form')` chống mất dữ liệu khi F5/reload trang; đăng ký `setupAutoSync` tự động gửi lên D1 khi có mạng; hiển thị banner hàng đợi nháp kèm nút "Đồng bộ ngay".
+     - **Theo Dõi Phản Ánh & Minh Chứng Đối Chứng (`CitizenTrack.jsx`)**: Hiển thị ảnh Trước/Sau (Before/After) đối chứng từ D1 CSDL, mã tra cứu dạng Shopee (`DG-2026-XXXX`), tra cứu trực tiếp theo paramId qua API backend, tích hợp QR Code ISO/IEC 18004 tra cứu hồ sơ và form gửi góp ý quan sát của người dân.
+  2. **Vá Lỗi & Hoàn Thiện Codebase**:
+     - Sửa lỗi unwrap dữ liệu paginated `{ items: [...] }` từ D1 API trong `CitizenPortal.jsx` và `CitizenTrack.jsx`.
+     - Sửa lỗi `ReferenceError: Compass is not defined` trong `CitizenNearby.jsx` bằng cách import đầy đủ từ `lucide-react`.
+     - Nâng cấp `offline-drafts.js` nhận diện `res.data` và `res.code` cho đồng bộ API.
+  3. **Kiểm Thử & Xác Thực Toàn Diện**:
+     - `node --test app/tests/citizen-real-world-audit.test.js`: PASS 100% (6/6 tests, 0.38s).
+     - `npm --prefix app run verify:quick`: PASS 100% (OpenAPI 386 routes parity, 28 test files, 279/279 tests, 3.9s).
+     - `npm --prefix app run build`: Vite production build PASS 100% (4.86s).
+
 - **🛡️ HOÀN TẤT 100%: AGENT 9 — NETWORK, ERROR HANDLING & RESILIENCE AUDITOR**:
   1. **Chuẩn Hóa Mã Lỗi HTTP theo RFC 7807 Problem Details (400, 401, 403, 404, 429, 500)**:
      - Edge Worker: Tinh chỉnh `app.onError` trong `worker.js` trả về JSON envelope `{ status: 'error', statusCode, code, type, title, detail, instance, error, message, timestamp, errors }`.
