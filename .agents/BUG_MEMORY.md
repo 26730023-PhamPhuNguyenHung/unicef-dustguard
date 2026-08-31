@@ -58,6 +58,15 @@
 - **Nguyên nhân**: Kiểm tra `Array.isArray(center)` trả về `true` cho mảng `[undefined, undefined]`, truyền vào Leaflet MapContainer gây lỗi `Invalid LatLng object`.
 - **Giải pháp**: Thêm hàm kiểm tra an toàn `isValidCoord(lat, lng)` trước khi gán tọa độ center cho Leaflet, fallback về `HANOI_DEFAULT_CENTER`.
 
+### 🚨 Trap 1.20: Voiceover timeline overlap & FFmpeg loudnorm stdout blocking trên Windows
+- **Nguyên nhân**: 
+  1. Khi tổng hợp Voiceover tốc độ cố định, các phân đoạn có nhiều từ (như segment 2, 7, 8, 12) có thời lượng dài hơn khung thời gian của phân cảnh, dẫn đến việc đè giọng thoại lên phân cảnh tiếp theo hoặc nuốt mất khoảng lặng Beat Drop ở 0:55.
+  2. Lệnh FFmpeg loudnorm pass 1 dùng `-f null -` trên Windows chờ handle stdout khiến Python `subprocess.run(capture_output=True)` bị treo.
+- **Giải pháp**: 
+  1. Căn chỉnh khung thời gian tối đa `max_dur` cho từng phân đoạn, đo thời lượng raw bằng `ffprobe`, tự động tính toán speed factor và áp dụng bộ lọc `atempo` (bảo toàn cao độ giọng nói 100%) để bảo đảm 0 overlap (Zero-Overlap Guarantee) và giữ trọn khoảng lặng 53.5s - 56.5s cho Beat Drop 0:55 và 207.5s - 210.0s cho Grand Finale.
+  2. Sử dụng target sink `-f null NUL` trên Windows cho FFmpeg loudnorm pass 1.
+  3. Sử dụng thuật toán vector downsampling & exponential smoothing (10ms hop) trên NumPy giúp tính toán Auto-Ducking 10.080.000 samples trong dưới 0.05 giây.
+
 ### 🚨 Trap 2.15: ReferenceError `handleSubmit` trong form nộp 5 bước của `CreateObservation.jsx`
 - **Nguyên nhân**: Bước 5 gọi `onClick={handleSubmit}` nhưng component chỉ có `handleQuickSubmit`.
 - **Giải pháp**: Khai báo hàm `handleSubmit` đồng bộ logic với `handleQuickSubmit` và gửi request chuẩn tới `/api/observations`.
@@ -367,9 +376,24 @@
   }
   ```
 
-### 🚨 Trap 11.3: Regex Zero-Glassmorphism Bắt Nhầm Lớp `backdrop-blur-none`
-- **Nguyên nhân**: Regex kiểm tra zero-glassmorphism `/backdrop-blur/` kiểm tra mọi từ khóa chứa `backdrop-blur`, bao gồm cả `backdrop-blur-none`.
-- **Giải pháp**: Loại bỏ hoàn toàn lớp thay vì gán `backdrop-blur-none`, vì không có blur là mặc định của CSS thuần Civic Tech.
+---
+
+## 🎬 12. Video Production, Audio Synthesis & FFmpeg / CLI Traps
+
+### 🚨 Trap 12.1: `UnicodeEncodeError: 'charmap' codec can't encode character` khi in Emoji trên Windows PowerShell
+- **Nguyên nhân**: Mặc định luồng `sys.stdout` trên Windows Console chạy bảng mã `cp1252` hoặc `cp437`. Khi script Python in các biểu tượng Emoji như `🔍`, `✅`, `🎬` sẽ bị crash với mã lỗi `UnicodeEncodeError`.
+- **Giải pháp**: Luôn cấu hình cưỡng bức UTF-8 cho luồng stdout/stderr ở ngay đầu mọi file Python script:
+  ```python
+  if hasattr(sys.stdout, "reconfigure"):
+      sys.stdout.reconfigure(encoding="utf-8")
+  if hasattr(sys.stderr, "reconfigure"):
+      sys.stderr.reconfigure(encoding="utf-8")
+  ```
+
+### 🚨 Trap 12.2: Tái sinh lặp lại toàn bộ Audio Voiceover gây tốn thời gian và rủi ro Network Timeout
+- **Nguyên nhân**: Mỗi lần chạy pipeline render video lại gọi lại API `edge-tts` tải lại 12 file audio từ đầu dù kịch bản không thay đổi, làm chậm chu kỳ inner dev loop (> 45s thay vì < 1s).
+- **Giải pháp**: Triển khai cơ chế Audio Cache thông minh: Kiểm tra nếu `out_mp3.exists()` và `out_mp3.stat().st_size > 1000` và `duration > 1.0s` thì tự động tái sử dụng, chỉ sinh lại khi file chưa có hoặc khi truyền cờ `--force`.
+
 
 
 

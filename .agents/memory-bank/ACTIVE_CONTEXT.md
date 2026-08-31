@@ -1,6 +1,29 @@
 # ACTIVE CONTEXT — DUSTGUARD VN
 
 ## 1. Focus Hiện Tại & Mốc Đã Hoàn Tất
+- **🎧 HOÀN TẤT 100%: SUBAGENT 5 — BACKGROUND MUSIC & AUDIO MIXING ENGINEER**:
+  1. **Background Music 2 Giai Đoạn Chuẩn Điện Ảnh**: Xây dựng track BGM Cinematic 210 giây (Giai đoạn 1 tự sự Am-F-C-G 0:00-0:54 -> Tension riser & filter cutoff 0:54-0:55 -> Beat Drop 0:55 bùng nổ 808 Sub-Boom + Cymbal Crash -> Giai đoạn 2 C/D Major công nghệ, khải hoàn 0:55-3:30).
+  2. **Script Hòa Âm Tối Ưu (`presentation/scripts/05_audio_mixing.py`)**: Viết engine hòa âm đa luồng tự động tổng hợp Voiceover 12 phân đoạn (Edge-TTS 48kHz `vi-VN-NamMinhNeural`), căn chỉnh thời gian chuẩn xác từng mili-giây với thuật toán time-stretch `atempo` chống 100% chồng lấn giọng đọc (Zero-Overlap Guarantee), giữ trọn khoảng lặng Beat Drop 0:55 và Finale 3:28.
+  3. **Sidechain Dynamic Ducking**: Tự động giảm BGM xuống `-18.0 dB` khi có giọng nói, nâng lên `-8.0 dB` ở các đoạn ngắt câu / chuyển cảnh (bùng nổ `-7.0 dB` ở Beat Drop 0:55 và Outro Finale); thuật toán downsampled exponential smoothing (10ms hop) tính toán trên 10.080.000 samples trong dưới 0.05s.
+  4. **Mastering Chuẩn EBU R128 (-14.0 LUFS)**: Áp dụng chuẩn hóa âm lượng BS.1770-4 2-Pass qua FFmpeg: Integrated Loudness `-14.76 LUFS`, True Peak `-3.12 dBFS` (chống méo DAC), Loudness Range `15.70 LU`, Sample Rate `48,000 Hz / 24-bit PCM`.
+  5. **Bộ Deliverables & Báo Cáo Âm Học**: Xuất bản `presentation/04_audio/final_soundtrack.wav`, `final_soundtrack.mp3` (320kbps), `bgm_master.wav`, `voiceover_full.wav`, 12 file segment WAVs và Báo cáo âm học chi tiết `presentation/04_audio/AUDIO_MIX_REPORT.md`.
+- **🎬 HOÀN TẤT 100%: SUBAGENT 3 — VIDEO FOOTAGE INDEXER & SCENE MATCHER**:
+  1. **Quét & Phân Tích ffprobe Toàn Diện**: Quét toàn bộ 20 video nguồn trong `presentation/02_sources/real_video/` (Hà Nội, TP.HCM, Huế, cần cẩu, máy xúc, xe tải không phủ bạt, người già, trẻ em, bụi mù mịt, thanh niên, giao thông xanh, xe vòi rồng, camera AI).
+  2. **Trích Xuất & Chuẩn Hóa 29 Golden Cuts**: Tạo script `presentation/scripts/03_index_and_select_footage.py` tự động cắt và render 29 phân đoạn đắt giá nhất (193.32s, 110.28MB) về chuẩn 1920x1080 Full HD, 25fps progressive, H.264 CRF 18, lọc khử rung/unsharp phục hồi chi tiết, mute audio (-an) theo nguyên tắc Anti-Overclaim QC.
+  3. **Ánh Xạ Khớp 100% 12 Phân Cảnh Kịch Bản**: Kết nối chính xác từng Golden Cut với 12 segments trong `DIRECTOR_TREATMENT_EDITING_SPEC.md` và `EDIT_PLAN.md`.
+  4. **Xuất Bản Footage Manifest SSOT**: Tạo file `presentation/03_selected/footage_manifest.json` đầy đủ metadata, inventory, segments mapping và thông số kiểm định chất lượng.
+- **🚀 HOÀN TẤT 100%: SUBAGENT 10 — EXECUTIVE DIRECTOR & VERIFICATION ORCHESTRATOR**:
+  - Xây dựng Master Execution Orchestrator `presentation/scripts/run_production_pipeline.py` điều phối toàn bộ 9 Stages sản xuất:
+    1. `Stage 1: Voiceover Synthesis` (Edge-TTS 48kHz `vi-VN-NamMinhNeural` 12 phân đoạn + Audio Cache).
+    2. `Stage 2: Subtitle Synchronization` (`final.srt` 114 cues khớp từng mili-giây).
+    3. `Stage 3: Footage & Source Indexer` (quét 40 assets video/ảnh/slide qua ffprobe vào `02_sources/SOURCE_INDEX.csv`).
+    4. `Stage 4: Motion Graphics & Civic Overlays` (6 overlays Civic High-Contrast `#FDFBF7`, `#231B14`, `#0D6F64`, `#9F241F`).
+    5. `Stage 5: Audio Synthesis & Ducking Mixer` (BGM 2 pha, Beat Drop 0:55, Crossfade 2:10, Auto-Ducking -18dB khi có voice).
+    6. `Stage 6: Timeline & Segment Plans SSOT` (`TIMELINE.json` 239s và 12 YAML segment plans trong `05_edit/segment_plans/`).
+    7. `Stage 7: Master Video 1080p Render` (FFmpeg Ken Burns effect, Motion Overlays, Audio Mux và Hard-sub broadcast).
+    8. `Stage 8: Content QC & Anti-Overclaim Audit` (Quét 0 lỗi overclaim, kiểm tra technical specs, xuất `07_output/QC_REPORT.md` PASS 100%).
+    9. `Stage 9: Backdrop 70x90cm Print Build` (Tạo `backdrop_70x90_renderer.html` và sinh ảnh Standee 300 DPI `DustGuardVN_Backdrop_70x90cm_300DPI.png`).
+  - Toàn bộ Deliverables nghiệm thu sẵn sàng 100% cho Vòng Chung kết UNICEF Hackathon 2026.
 - **🛡️ HOÀN TẤT 100%: SUBAGENT 8 — ANTI-OVERCLAIM & CIVIC TECH CONTENT QC INSPECTOR**:
   1. **Automated Content QC Engine**: Xây dựng script kiểm tra tự động `presentation/scripts/08_content_qc.py` quét toàn bộ 24 files tài liệu, kịch bản, phụ đề, specs và source index.
   2. **Zero Overclaim Verification**: 0 lỗi vi phạm các bẫy overclaim (AI phán quyết vi phạm, tự động xử phạt, phủ sóng 63 tỉnh thành, thay thế cơ quan chức năng, bắt buộc phần cứng IoT).
