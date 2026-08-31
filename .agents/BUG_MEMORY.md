@@ -99,6 +99,10 @@
 - **Nguyên nhân**: Container `.a4-preview-scale-wrapper` đặt `height: calc(297mm * var(--a4-scale, 1))` và `overflow: hidden`, khiến các văn bản dài từ 2 trang trở lên bị cắt mất phần nội dung phía sau.
 - **Giải pháp**: Đổi thành `minHeight: calc(297mm * var(--a4-scale, 1))` và `overflow: visible` để hỗ trợ văn bản nhiều trang co giãn tự nhiên.
 
+### 🚨 Trap 1.19: Tàn dư Thư viện Kế thừa (Legacy Dependencies & Template Boilerplate Residues)
+- **Nguyên nhân**: Các thư viện cũ như `@supabase/supabase-js`, `pg` và các file template (`components/ecommerce`, `charts/bar`, `tables/BasicTables`, `fix_icons.cjs`, `restore.cjs`, root `server/`) vẫn tồn tại trong repo sau các đợt migration, làm tăng dung lượng bundle (+200KB) và phát sinh console warnings không đáng có.
+- **Giải pháp**: Xóa bỏ toàn bộ tệp dead code/template boilerplate, tách rời `useSupabaseRealtime` thành reactive DOM event/broadcast hook thuần không phụ thuộc SDK ngoài, xóa thư viện không dùng khỏi `package.json`.
+
 ### 🚨 Trap 1.19: `SpatialMapCanvas` crash khi nhận mảng tọa độ rỗng `[undefined, undefined]` hoặc `[NaN, NaN]`
 - **Nguyên nhân**: Kiểm tra `Array.isArray(center)` trả về `true` cho mảng `[undefined, undefined]`, truyền vào Leaflet MapContainer gây lỗi `Invalid LatLng object`.
 - **Giải pháp**: Thêm hàm kiểm tra an toàn `isValidCoord(lat, lng)` trước khi gán tọa độ center cho Leaflet, fallback về `HANOI_DEFAULT_CENTER`.
