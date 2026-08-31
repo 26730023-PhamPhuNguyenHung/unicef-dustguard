@@ -1,6 +1,22 @@
 # ACTIVE CONTEXT — DUSTGUARD VN
 
 ## 1. Focus Hiện Tại & Mốc Đã Hoàn Tất
+- **📡 HOÀN TẤT 100%: AGENT 6 — IOT & SENSOR OPERATIONAL FLOW AUDITOR**:
+  1. **Luồng Ingestion & Xác Thực Phần Cứng (`device-auth.js`, `hmac.js`, `replay-protection.js`)**:
+     - Kiểm tra xác thực mật mã HMAC-SHA256 Pre-Shared Key phần cứng tương thích 100% với firmware ESP32 `RequestSigner.cpp` trên cả Web Crypto API (Cloudflare Worker SubtleCrypto) và Node.js crypto (`timingSafeCompare`).
+     - Chống tấn công lặp lại (Anti-Replay) với sliding window memory cache 5 phút và kiểm soát độ lệch đồng hồ RTC $\pm 5$ phút (`maxDriftMs = 300000`). Tự động phát hiện và chặn các đợt phát lại bản tin (mã 409) hoặc sequence counter rollback.
+  2. **Động Cơ Kiểm Định Chất Lượng & Phát Hiện Gian Lận (`data-quality.engine.js`, `sensor.rules.js`)**:
+     - Kiểm tra giới hạn vật lý nghiêm ngặt (0 - 2500 $\mu\text{g/m}^3$ cho PM2.5 và PM10), loại bỏ toàn bộ số đo âm hoặc giá trị ảo.
+     - Phát hiện tín hiệu đóng băng (Flatline detection): Khi có 5 số đo liên tiếp hoàn toàn giống nhau, hệ thống tự động chuyển trạng thái cảm biến sang `FAULTY`, gắn nhãn cảnh báo gian lận/che chắn cảm biến và ghi nhật ký `SENSOR_TAMPER_SUSPECTED`.
+  3. **Thuật Toán Zero-IoT Resilience (`dust-risk-engine.js`)**:
+     - Kiểm tra công thức 5 thành phần (Community 30%, Exposure 25%, Compliance 20%, History 15%, IoT Sensor 10%).
+     - Khi 0 có cảm biến kết nối hoặc cảm biến bị `FAULTY`/`OFFLINE`, thuật toán tự động tái chuẩn hóa 100% trọng số dựa trên 4 thành phần khả dụng (`totalAvailableWeight = 0.90`), giúp hệ thống giữ trọn 100% độ nhạy cảnh báo rủi ro mà không bị trừ phạt điểm.
+  4. **Đồng Bộ Hoá Route & Giao Diện Telemetry (`app/server/index.js`, `IoTDemo.jsx`, `StaffMonitoring.jsx`, `ExecutiveSensorHealth.jsx`)**:
+     - Bổ sung Express route mapping cho `POST /api/telemetry` và `POST /api/v1/telemetry` trỏ về `sensorRoutes` bảo đảm đồng bộ 100% với Cloudflare Worker Hono edge router.
+     - Giao diện `IoTDemo.jsx`, `StaffMonitoring.jsx`, `ExecutiveSensorHealth.jsx` tuân thủ nghiêm ngặt **Zero Glassmorphism**, bảng màu Civic Tech tương phản cao (`#FDFBF7`, `#231B14`, `#0D6F64`, `#9F241F`), touch target $\ge 44\text{px}$ và hỗ trợ responsive mượt mà từ Mobile đến Desktop.
+  5. **Kiểm Định & Xác Thực Toàn Diện**:
+     - Tạo mới `app/tests/iot-operational-flow-auditor.test.js` (14/14 tests PASS 100%).
+     - `npm --prefix app run verify:quick`: 28 test files (279/279 tests) PASS 100% (4.9s).
 - **🎬 HOÀN TẤT 100%: KỊCH BẢN DỰNG VIDEO DOCUMENTARY PITCH 46 CẢNH (210s) & ENGINE CẮT GHÉP CHUẨN XÁC**:
   1. **Kịch bản SSOT 46 Cảnh**: Thiết lập tài liệu `presentation/01_script/MASTER_DOCUMENTARY_PITCH_SCRIPT_46_SCENES.md`, đồng bộ `TIMELINE.json`, `EDIT_PLAN.md`, `DIRECTOR_TREATMENT_EDITING_SPEC.md` với 8 phần mạch lạc (Hook 20s, Thực trạng 30s, Khoảng trống 20s, Reveal Beat Drop 1:10 20s, Vận hành Case 45s, Người thật 4 bên 30s, Giá trị 25s, Ending 20s).
   2. **Giải Quyết Triệt Để Lỗi Cắt Video**: Tái cấu trúc `presentation/scripts/07_master_render.py` theo quy trình **2-Stage Multi-Pass Rendering** (Stage 1: Pre-cut & Render 46 shot độc lập bằng FFmpeg chính xác từng mili-giây, Ken Burns mượt cho ảnh tĩnh, Text Overlay Civic Tech `#FDFBF7` trên `#231B14`; Stage 2: Lossless Concat Demuxer + Flash Beat Drop 1:10 + Watermark + 2 BGM Sidechain Ducking).
