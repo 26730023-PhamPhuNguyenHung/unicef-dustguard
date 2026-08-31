@@ -6,10 +6,15 @@
 
 ## 🎯 1. Trọng Tâm Hoạt Động Hiện Tại (Active Operational State)
 - **Hệ thống**: Toàn bộ kiến trúc Cloudflare D1 + Worker Edge Router + Vite React Client đã hoàn tất kiểm toán 100%.
-- **Dọn dẹp Tài nguyên Ảnh (Image Asset Cleanup)**: Đã kiểm toán toàn bộ thư mục ảnh trong repo, phân loại chính xác giữa asset cần thiết (Landing Page assets, UI Icons, Logo, Presentation slides/real footage) và rác/dư thừa (scratch grids, debug sheets, temp video frames, legacy template images). Đã xóa 749 file rác và giải phóng 862.98 MB bộ nhớ.
+- **Hoàn thiện Flow Thêm Công Trình Mới (Staff Sites Modal)**:
+  - Loại bỏ hoàn toàn trường Quận/Huyện, chuẩn hóa luồng Tỉnh/Thành phố → Phường/Xã trực tiếp.
+  - Sửa dứt điểm Dropdown Tỉnh/Thành phố & Phường/Xã kết nối backend D1 + Fallback SSOT.
+  - Tích hợp Parser thông minh dán link Google Maps, tự động bóc tách tọa độ `lat, lng` trực quan không cần nhập số thủ công.
+  - Loại bỏ trường điểm ưu tiên 0-100 và tối ưu form còn 3 section tinh gọn.
 - **Sức khỏe Mã nguồn**:
   - `npm --prefix app run verify:quick`: **279/279 tests PASS 100%** (28 test files + 42 UI smoke tests, ~3.5s).
-  - `npm --prefix app run build`: **Vite production bundle PASS 100%** (0 errors, 2.5s).
+  - `node --test app/tests/site-location-maps-audit.test.js`: **7/7 tests PASS 100%**.
+  - `npm --prefix app run build`: **Vite production bundle PASS 100%** (0 errors, 1.96s).
 - **Quy tắc Vận hành**: 
   - Tuân thủ nghiêm ngặt 10 Core Invariants trong [`AGENTS.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/AGENTS.md).
   - Sử dụng Fast Verification Pipeline: Chỉ chạy Level 0 (`node --test app/tests/<file>.test.js`) khi đang code, chạy Level 3 trước khi hoàn tất.
