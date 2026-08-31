@@ -4,6 +4,26 @@
 
 ---
 
+## 🏛️ -1. Architecture & Refactoring Guardrails (Modular Monolith SSOT)
+
+### 📌 Invariant -1.1: Single Cloudflare Worker != Single God File
+- **Nguyên nhân**: Dồn toàn bộ ~7.700 dòng code gồm routing, auth, SQL queries, D1 binding, R2 upload, IoT state machine và cron vào 1 file `worker.js` duy nhất vì nghĩ rằng deploy 1 Worker thì chỉ được viết 1 file.
+- **Quy tắc chuẩn**: Cloudflare Worker deploy 1 worker bundle duy nhất qua bundler, nhưng source code bắt buộc phải là **Modular Monolith**:
+  - `server/worker.js` (~35 dòng): Thin Entrypoint điều hướng `ASSETS` vs `app.fetch` + `scheduled()` cron.
+  - `server/app.js` (~150 dòng): Composition Root khởi tạo Hono app, gắn middleware và mount các domain routers.
+  - `server/routes/worker/*.routes.js`: Domain routers độc lập (100–400 dòng/file).
+- **Tuyệt đối không biến thành Microservices**: Không chia thành 5–10 Worker riêng biệt để tránh phức tạp hóa distributed infrastructure.
+
+### 📌 Invariant -1.2: Nguyên Tắc Vàng "Move, Don't Rewrite"
+- **Nguyên tắc**: Mỗi commit chỉ được phép thay đổi vị trí code HOẶC thay đổi behavior, **không được làm cả hai cùng một lúc**.
+- Khi tách file từ God File sang Domain Router: Giữ nguyên 100% logic, SQL query, response shape, auth và status codes. Sau khi test pass 100% mới refactor logic nội bộ nếu cần.
+
+### 📌 Invariant -1.3: Cấm Chạy Schema Migration (`ensureSchema()`) Trên Từng Request Cycle
+- **Nguyên nhân**: Gọi `ensureSchema()` trong middleware `app.use('*', ...)` làm chậm request cycle và lãng phí subrequests / CPU time trên Edge.
+- **Giải pháp**: Tách schema initialization ra khỏi request lifecycle, chạy qua migration script hoặc lazy initialize một lần duy nhất.
+
+---
+
 ## 🌐 0. API Request & Network Traps
 
 ### 🚨 Trap 0.1: Lặp tiền tố URL `/api/api/...` khi gọi API Client
