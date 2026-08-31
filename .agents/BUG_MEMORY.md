@@ -10,6 +10,16 @@
 - **Nguyên nhân**: `request(path)` định nghĩa `API_BASE = '/api'`, khi caller truyền `path = '/api/cases'` hoặc `path = '/api/observations'`, chuỗi URL bị ghép thành `${API_BASE}${path}` = `'/api/api/cases'`, dẫn đến lỗi HTTP 404 Not Found ngầm và kích hoạt fallback mock.
 - **Giải pháp**: Luôn chuẩn hóa `cleanPath = path.startsWith('/api/') ? path.slice(4) : path` trong `request.js` và `getApiFileUrl` trước khi nối `${API_BASE}`.
 
+### 🚨 Trap 0.2: Trả về lỗi dạng plain-text hoặc thiếu cấu trúc RFC 7807 Problem Details
+- **Nguyên nhân**: Handler bắt lỗi trả về chuỗi text thuần hoặc JSON thiếu các trường chuẩn (`type`, `title`, `statusCode`/`status`, `detail`, `instance`), làm cho frontend không trích xuất được nguyên nhân chi tiết và hiển thị thông báo chung chung không thân thiện.
+- **Giải pháp**: Sử dụng `formatRfc7807Error(status, code, title, detail, instance)` trên Worker Edge (`app.onError`) và `errorResponse(res, message, statusCode, errors, req)` trên Express backend; frontend `createApiError` trích xuất đầy đủ `error.status`, `error.code`, `error.title`, `error.detail`, `error.instance`.
+
+### 🚨 Trap 0.3: Mất dữ liệu Form khi mất mạng (Offline/Slow 3G) và Duplicate Clicks trên nút Gửi
+- **Nguyên nhân**: Bấm nút Submit liên tiếp khi mạng chậm làm bắn nhiều request trùng lặp, hoặc khi request thất bại/mất mạng thì form bị reset trắng làm người dùng mất toàn bộ nội dung đã nhập và ảnh đã chụp.
+- **Giải pháp**:
+  1. Luôn khóa nút submit bằng cờ `submitting`/`isSubmitting` và kiểm tra `if (submitting) return;` ở đầu submit handler.
+  2. Bắt lỗi mạng / offline (`!navigator.onLine` hoặc `isOffline`/`isNetworkError`) tự động lưu nháp vào `saveOfflineDraft(payload)` (localStorage queue) và thông báo người dùng, bảo toàn 100% dữ liệu form.
+
 ---
 
 ## 🗄️ 1. D1 SQLite & Database Traps
@@ -418,6 +428,20 @@
 ### 🚨 Trap 12.2: Tái sinh lặp lại toàn bộ Audio Voiceover gây tốn thời gian và rủi ro Network Timeout
 - **Nguyên nhân**: Mỗi lần chạy pipeline render video lại gọi lại API `edge-tts` tải lại 12 file audio từ đầu dù kịch bản không thay đổi, làm chậm chu kỳ inner dev loop (> 45s thay vì < 1s).
 - **Giải pháp**: Triển khai cơ chế Audio Cache thông minh: Kiểm tra nếu `out_mp3.exists()` và `out_mp3.stat().st_size > 1000` và `duration > 1.0s` thì tự động tái sử dụng, chỉ sinh lại khi file chưa có hoặc khi truyền cờ `--force`.
+
+---
+
+## 📡 13. IoT & Sensor Telemetry Pipeline Traps
+
+### 🚨 Trap 13.1: Lỗi Replay Attack & Timestamp Clock Drift Không Đồng Bộ Giữa Express và Worker
+- **Nguyên nhân**: Thiết bị IoT gửi bản tin telemetry kèm timestamp từ RTC địa phương. Nếu không kiểm tra độ lệch giờ (RTC drift > 5 phút) hoặc không có sliding window cache ghi nhớ chữ ký/nonce, kẻ xấu có thể phát lại gói tin cũ (Replay Attack) để giả lập ô nhiễm nhân tạo.
+- **Giải pháp**: 
+  1. `ReplayProtector` triển khai sliding window 5 phút (`maxDriftMs = 300000`), từ chối mã 400 nếu lệch quá 5 phút và 409 nếu phát hiện trùng lặp khóa `sensorCode_timestamp_signature`.
+  2. Bổ sung `app.post(['/api/telemetry', '/api/v1/telemetry'])` vào Express router map trực tiếp sang `sensorRoutes` bảo đảm tính nhất quán 100% với Cloudflare Worker Hono edge runtime.
+
+### 🚨 Trap 13.2: Bẫy Mất Cân Bằng Trọng Số Khi Không Có Cảm Biến (Zero-IoT Resilience Trap)
+- **Nguyên nhân**: Nếu hệ thống trừ thẳng 10% điểm khi không có cảm biến, các khu vực ngoại thành hoặc công trình chưa lắp đặt trạm đo sẽ luôn bị đánh giá thấp rủi ro dù đang bị phản ánh gay gắt từ người dân và tiếp giáp trường học.
+- **Giải pháp**: Thuật toán `DustRiskEngine` tự động lọc các thành phần `available` và tái chuẩn hóa: `rawScore = weightedSum / totalAvailableWeight` (với 4 thành phần còn lại, `totalAvailableWeight = 0.90`). Hệ thống giữ nguyên 100% độ nhạy rủi ro khi có 0 cảm biến kết nối.
 
 ---
 

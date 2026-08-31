@@ -1,5 +1,21 @@
 # ACTIVE CONTEXT — DUSTGUARD VN
 
+- **🛡️ HOÀN TẤT 100%: AGENT 9 — NETWORK, ERROR HANDLING & RESILIENCE AUDITOR**:
+  1. **Chuẩn Hóa Mã Lỗi HTTP theo RFC 7807 Problem Details (400, 401, 403, 404, 429, 500)**:
+     - Edge Worker: Tinh chỉnh `app.onError` trong `worker.js` trả về JSON envelope `{ status: 'error', statusCode, code, type, title, detail, instance, error, message, timestamp, errors }`.
+     - Express Backend: Nâng cấp `errorResponse` trong `response.js` tự động thiết lập đầy đủ mã lỗi `code`, `invalid_params`, `instance`, và title tương ứng với từng HTTP status code.
+     - Frontend Client: Tinh chỉnh `createApiError` và `request` trong `request.js` để parse trích xuất toàn vẹn các trường RFC 7807 (`error.status`, `error.statusCode`, `error.code`, `error.title`, `error.detail`, `error.instance`, `error.invalidParams`, `error.retryAfter`).
+  2. **Chống Duplicate Clicks & Double Submits**:
+     - Khóa cờ trạng thái `submitting`/`isSubmitting`/`loading` trên toàn bộ các form trọng yếu: `CreateObservation.jsx`, `CitizenReport.jsx`, `ObservationDetail.jsx`, `StaffCaseDetail.jsx`, `RemediationWorkspace.jsx`, `StaffTaskEditor.jsx`, `StaffTaskDetail.jsx`, `ExecutiveDirectiveModal.jsx`, `ProofApprovalModal.jsx`, `DocumentPreviewPage.jsx`.
+     - Bổ sung bảo vệ `if (submitting) return;` ngay đầu các hàm submit handler để ngăn chặn hoàn toàn việc bấm đúp tạo request trùng lặp.
+  3. **Khả Năng Chịu Lỗi Ngoại Tuyến (Offline) & Mạng Chậm (Slow 3G)**:
+     - Khi mất mạng hoặc gửi API thất bại, `CreateObservation.jsx` và `CitizenReport.jsx` tự động lưu nháp dữ liệu form vào `saveOfflineDraft(payload)` (hàng đợi `localStorage`), giữ trọn vẹn 100% nội dung và ảnh đã chọn mà không làm mất trắng form, đồng thời kích hoạt `setupAutoSync` tự động gửi lại khi có internet.
+     - Xử lý thông báo lỗi mạng tự nhiên, thân thiện bằng tiếng Việt (`isOffline`, `isNetworkError`).
+  4. **Kiểm Định & Xác Thực Toàn Diện**:
+     - Viết mới test suite `app/tests/network-resilience-and-error-audit.test.js`: 6/6 tests PASS 100% (1.18s).
+     - `npm --prefix app run verify:quick`: 28 test files (279/279 tests) PASS 100% (6.9s).
+     - `npm --prefix app run build`: Vite production bundle biên dịch thành công 100% trong 6.93s (0 errors).
+
 - **📋 HOÀN TẤT 100%: AGENT 3 — STAFF / CÁN BỘ XỬ LÝ CASE HUB WORKFLOW AUDITOR**:
   1. **Kiểm Toán & Vận Hành Chu Trình Xử Lý Hồ Sơ Từ Đầu Đến Cuối (E2E Case Hub Lifecycle)**:
      - Đóng vai Cán bộ Vận hành & Thanh tra, kiểm tra toàn bộ luồng công việc từ Bàn làm việc & Hàng đợi ưu tiên (`StaffDashboard.jsx`, `StaffCases.jsx`), Khảo sát hiện trường 10 tiêu chí QCVN 18/05 (`StaffInspections.jsx`), Nghiệm thu đối chứng Before/After Geofence < 50m (`RemediationWorkspace.jsx`), đến Xuất bộ hồ sơ thực chứng A4 (`CaseDossierPackageModal.jsx`, `cases.js:archive-package`).
