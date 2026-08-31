@@ -58,7 +58,18 @@
 - **Nguyên nhân**: Kiểm tra `Array.isArray(center)` trả về `true` cho mảng `[undefined, undefined]`, truyền vào Leaflet MapContainer gây lỗi `Invalid LatLng object`.
 - **Giải pháp**: Thêm hàm kiểm tra an toàn `isValidCoord(lat, lng)` trước khi gán tọa độ center cho Leaflet, fallback về `HANOI_DEFAULT_CENTER`.
 
-### 🚨 Trap 1.20: Voiceover timeline overlap & FFmpeg loudnorm stdout blocking trên Windows
+### 🚨 Trap 1.20: Lạm dụng LocalStorage làm SSOT thay vì Cloudflare D1 Persistent Storage
+- **Nguyên nhân**: Lưu trữ các thực thể nghiệp vụ cốt lõi (`users`, `cases`, `complaints`, `sites`, `tasks`, `campaigns`, `sensors`, `evidences`, `credits`) trong `localStorage` hoặc fallback dữ liệu fake/mock trong `catch` block làm dữ liệu bị phân mảnh trên từng client, không đồng bộ giữa các máy và rò rỉ dữ liệu ảo.
+- **Giải pháp**:
+  1. **Quy định Phân Loại Rõ Ràng**: Chỉ cho phép `localStorage` lưu: Ngôn ngữ (`dg-lang`), Giao diện (`theme`), Cache token/session tạm thời (`dustguard_user`), và Offline draft tạm thời khi mất mạng 3G (`dg_report_drafts`).
+  2. **D1 Persistent Storage là SSOT Duy Nhất**: Mọi thao tác CRUD, tính toán điểm rủi ro, chuyển đổi trạng thái hồ sơ, tích lũy giờ tình nguyện và chứng chỉ đều phải ghi nhận và truy vấn trực tiếp từ CSDL D1 SQLite (`dev.db` / Cloudflare D1).
+  3. **Zero Fake in Catch Block**: Khi API lỗi mạng, hiển thị `ErrorState` hoặc chuyển sang `saveOfflineDraft` rõ ràng, tuyệt đối không trả về mock fake entity. Khi logout, gọi `purgeAllSessionData()` để dọn sạch toàn bộ cache.
+
+### 🚨 Trap 1.21: Trạng thái Phản ánh (Complaint) bị treo `PROCESSING` khi Hồ sơ vụ việc (Case) đã chuyển `COMPLETED`
+- **Nguyên nhân**: Khi Case chuyển trạng thái sang `COMPLETED`, backend `transitionCaseStatus` chỉ cập nhật bản ghi `cases` mà chưa đồng bộ cập nhật `prisma.complaint.update({ where: { id: caseRecord.complaintId }, data: { status: 'RESOLVED' } })`, khiến người dân tra cứu phản ánh vẫn thấy trạng thái xử lý dở dang.
+- **Giải pháp**: Trong `case.service.js` `transitionCaseStatus`, khi `normalizedNext === 'COMPLETED'` và có `caseRecord.complaintId`, luôn tự động cập nhật bản ghi `complaint` tương ứng sang `RESOLVED`.
+
+### 🚨 Trap 1.21: Voiceover timeline overlap & FFmpeg loudnorm stdout blocking trên Windows
 - **Nguyên nhân**: 
   1. Khi tổng hợp Voiceover tốc độ cố định, các phân đoạn có nhiều từ (như segment 2, 7, 8, 12) có thời lượng dài hơn khung thời gian của phân cảnh, dẫn đến việc đè giọng thoại lên phân cảnh tiếp theo hoặc nuốt mất khoảng lặng Beat Drop ở 0:55.
   2. Lệnh FFmpeg loudnorm pass 1 dùng `-f null -` trên Windows chờ handle stdout khiến Python `subprocess.run(capture_output=True)` bị treo.

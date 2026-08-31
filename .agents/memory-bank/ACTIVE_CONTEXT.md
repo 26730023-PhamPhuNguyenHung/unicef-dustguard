@@ -1,6 +1,35 @@
 # ACTIVE CONTEXT — DUSTGUARD VN
 
 ## 1. Focus Hiện Tại & Mốc Đã Hoàn Tất
+- **🛡️ HOÀN TẤT 100%: AGENT 7 — DATA INTEGRITY & D1 SSOT VS LOCALSTORAGE AUDITOR**:
+  1. **Rà Soát Toàn Bộ Codebase & Phân Loại Bộ Nhớ Client Storage**:
+     - Quét toàn bộ các mẫu `localStorage`, `sessionStorage`, `mock`, `fixture`, `demoData`, `fake`, `placeholder`, `hardcoded`, `TODO`.
+     - **Cho phép trong LocalStorage**: Ngôn ngữ giao diện (`dg-lang`), Cài đặt giao diện (`theme`), Session token cache tạm thời (`dustguard_user`), và Offline draft tạm thời khi 3G mất sóng (`dg_report_drafts`, `dustguard_case_draft_*`).
+     - **Tuân thủ Tuyệt Đối Cấm LocalStorage làm SSOT**: 100% các thực thể nghiệp vụ cốt lõi (`users`, `cases`, `complaints`, `sites`, `tasks`, `campaigns`, `sensors`, `evidences`, `credits`) được lưu trữ, tính toán và truy vấn trực tiếp từ Cloudflare D1 Persistent SQLite database.
+  2. **Xác Thực Chu Trình D1 CRUD & Session Purge Lifecycle**:
+     - Tạo bài test tự động chuyên sâu [`app/tests/d1-ssot-full-crud-lifecycle.test.js`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/app/tests/d1-ssot-full-crud-lifecycle.test.js) kiểm thử đầy đủ 5 luồng:
+       1. User Auth & Session Lifecycle (Login -> Session Cache -> Logout -> `purgeAllSessionData()` -> Purge).
+       2. Site CRUD & Spatial Metadata WGS84 Consistency.
+       3. Complaint & Digital Evidence SHA-256 Linkage.
+       4. Case Multi-Party Workflow & State Machine Invariants (`OPEN` -> `PROCESSING` -> `RESOLVED`).
+       5. Youth Credits Calculation & Digital HMAC-SHA256 Verifiable Impact Certificate (Quy tắc 20h = 4.0 tín chỉ).
+  3. **Kiểm Định & Xác Thực Toàn Diện**:
+     - `node --test app/tests/d1-ssot-full-crud-lifecycle.test.js`: PASS 100% (5/5 tests, 0.45s).
+     - `node --test app/tests/d1-ssot-crud-persistence.test.js`: PASS 100% (3/3 tests, 1.1s).
+     - `npm --prefix app run verify:quick`: 28 test files (279/279 tests) PASS 100% (3.6s).
+- **🛡️ HOÀN TẤT 100%: AGENT 10 — CROSS-ROLE E2E AUDITOR & SYNTHESIS LEAD**:
+  1. **Kiểm Toán Liền Mạch Chuỗi 5 Persona (End-to-End Operational Lifecycle)**:
+     - Rà soát toàn diện chuỗi 8 mắt xích: $\text{Citizen gửi phản ánh} \to \text{Staff tiếp nhận/triage} \to \text{Hệ thống tính điểm rủi ro CPS} \to \text{Thanh tra lập biên bản} \to \text{Nhà thầu nộp đối chứng Before/After} \to \text{Staff nghiệm thu/đóng hồ sơ} \to \text{Citizen xem kết quả} \to \text{Admin xem số liệu cập nhật}$.
+     - Kiểm tra đồng thời trên cả 3 tầng: UI Components, Edge/Worker APIs và Cloudflare D1 Persistent SQLite database.
+  2. **Tự Động Khắc Phục Lỗi Đồng Bộ Trạng Thái (Auto-Fix Code)**:
+     - Đồng bộ hóa 2 chiều: Khi Case chuyển sang `COMPLETED`, backend `transitionCaseStatus` (`case.service.js`) tự động cập nhật bản ghi `complaint.status = 'RESOLVED'`, giúp người dân tra cứu phản ánh thấy ngay kết quả đã xử lý kèm ảnh khắc phục.
+     - Khép kín thao tác nghiệm thu trong `RemediationWorkspace.jsx`: Tiếp nhận `caseData` và `onRefresh`, gọi API thật `POST /api/cases/:id/complete` để đóng hồ sơ 1 chạm.
+     - Củng cố test suite `vertical-slice-1.test.js` kiểm tra trạng thái `RESOLVED` của `complaint` sau khi hoàn tất chuỗi 8 bước.
+  3. **Xuất Bản Báo Cáo Kiểm Toán Toàn Diện**:
+     - Tạo tài liệu [`docs/audits/REAL_WORLD_BROWSER_AUDIT_2026-08-31.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/docs/audits/REAL_WORLD_BROWSER_AUDIT_2026-08-31.md).
+  4. **Kiểm Định & Xác Thực Toàn Diện**:
+     - `node --test app/tests/vertical-slice-1.test.js`: PASS 100% (8/8 lifecycle steps, 0.5s).
+     - `npm --prefix app run verify:quick`: 28 test files (279/279 tests) PASS 100% (3.3s).
 - **📡 HOÀN TẤT 100%: AGENT 6 — IOT & SENSOR OPERATIONAL FLOW AUDITOR**:
   1. **Luồng Ingestion & Xác Thực Phần Cứng (`device-auth.js`, `hmac.js`, `replay-protection.js`)**:
      - Kiểm tra xác thực mật mã HMAC-SHA256 Pre-Shared Key phần cứng tương thích 100% với firmware ESP32 `RequestSigner.cpp` trên cả Web Crypto API (Cloudflare Worker SubtleCrypto) và Node.js crypto (`timingSafeCompare`).
