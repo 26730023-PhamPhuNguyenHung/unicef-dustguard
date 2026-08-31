@@ -1,6 +1,27 @@
 # ACTIVE CONTEXT — DUSTGUARD VN
 
+- **🏛️ HOÀN TẤT 100%: AGENT 5 — ADMIN / LÃNH ĐẠO & RBAC SECURITY AUDITOR**:
+
+  1. **Quản Lý Người Dùng & Phân Quyền (`UsersManagement.jsx`, `user.repository.js`, `worker.js`)**:
+     - Đồng bộ vai trò `community` (Cộng đồng / CLB Thanh niên) vào `roleConfig`, dropdown bộ lọc, và form tạo/sửa tài khoản.
+     - Bổ sung `updateUserStatus` và `createUser` trong `user.repository.js` với ghi nhận audit log tự động.
+     - Triển khai endpoints `PUT /api/users/:id/status`, `PUT /api/v1/users/:id/status`, `POST /api/users`, `POST /api/v1/users`, và nâng cấp `GET /api/users` hỗ trợ tìm kiếm, lọc theo vai trò/trạng thái và kết nối bảng profile.
+     - Chuẩn hóa toàn bộ nút hành động và thanh chọn đạt touch target tối thiểu $44\text{px} \times 44\text{px}$.
+  2. **Trung Tâm Chỉ Đạo Điều Hành Lãnh Đạo (`ExecutiveDashboard.jsx`, `PriorityCommandCenter.jsx`, `ExecutiveDirectiveModal.jsx`, `executive.service.js`)**:
+     - Ban hành chỉ đạo khẩn cấp (`issueDirective`), phân công cán bộ thanh tra (`assign`), phê duyệt kết luận hồ sơ (`approveCase`), yêu cầu thanh tra lại (`rejectCase`), và đóng hồ sơ (`closeCase`) ghi nhận trực tiếp vào bảng `cases`, `action_records`/`actions` và `audit_logs` trong D1 SQLite SSOT.
+     - Ký số điện tử Nghị định 30/2020/NĐ-CP: mã PIN `1234`, con dấu đỏ `#9f241f` `★ ĐÃ KÝ DUYỆT ĐIỆN TỬ ★`, sinh mã băm SHA-256 `docHash`, in chuẩn A4 `@media print`.
+  3. **Vá Lỗ Hổng Bảo Mật RBAC Boundary & Loại Bỏ Duplicate Routes (`worker.js`)**:
+     - Áp dụng kiểm tra danh tính và phân quyền role (`['executive', 'admin', 'demo_admin', 'super_admin', 'staff', 'inspector']`) cho tất cả các endpoint `GET /api/executive/*` và `POST /api/executive/cases/:id/*`.
+     - Trả về mã lỗi RFC 7807 Problem Details chuẩn xác: 401 khi chưa đăng nhập, 403 khi role thấp (Citizen, Contractor) cố gắng truy cập.
+     - Xóa bỏ triệt để khối duplicate unauthenticated executive endpoints ở cuối `worker.js`.
+  4. **Kiểm Định & Xác Thực Thâm Nhập RBAC Toàn Diện**:
+     - Viết mới test suite `app/tests/admin-executive-rbac-penetration.test.js`: 9/9 tests PASS 100%.
+     - Chạy 9 test suites liên quan đến Quản trị & Điều hành: 117/117 tests PASS 100%.
+     - Chạy `npm --prefix app run verify:quick`: 28 test files (279/279 tests) PASS 100% (6.1s).
+     - Chạy `npm --prefix app run build`: Vite production build PASS 100%.
+
 - **👥 HOÀN TẤT 100%: AGENT 1 — CITIZEN REAL-WORLD BROWSER & WORKFLOW AUDITOR**:
+
   1. **Kiểm Toán Trải Nghiệm Công Dân & Trình Duyệt Thực Tế (Citizen Real-World Browser Audit)**:
      - **Landing Page (`LandingPage.jsx`, `LandingNav.jsx`, `HeroSection.jsx`)**: 3 CTAs rõ ràng (`/community/observe`, `/demo`, `/login`), tương tác Trước/Sau đối chứng minh chứng SHA-256 và tem liên thông Cổng 1022 / iHanoi, không glassmorphism, responsive mượt mà từ 360px đến desktop.
      - **Gửi Phản Ánh Ẩn Danh & Có Tài Khoản (`CitizenReport.jsx`, `api/complaints.js`)**: Quy trình 3 bước trực quan, tự động nén ảnh client `<300KB`, gỡ bỏ EXIF nhạy cảm bảo vệ quyền riêng tư, sinh mã băm SHA-256 tamper-evident, định vị GPS 3 cấp độ (High accuracy -> Low accuracy -> Map picker), hỗ trợ tùy chọn gửi ẩn danh 100% bảo mật thông tin.

@@ -20,6 +20,13 @@
   1. Luôn khóa nút submit bằng cờ `submitting`/`isSubmitting` và kiểm tra `if (submitting) return;` ở đầu submit handler.
   2. Bắt lỗi mạng / offline (`!navigator.onLine` hoặc `isOffline`/`isNetworkError`) tự động lưu nháp vào `saveOfflineDraft(payload)` (localStorage queue) và thông báo người dùng, bảo toàn 100% dữ liệu form.
 
+### 🚨 Trap 0.4: Định nghĩa Route trùng lặp trong Hono Router làm vô hiệu hóa Middleware kiểm tra Quyền (RBAC Boundary Bypass)
+- **Nguyên nhân**: Khi khai báo 2 khối handler cùng path trong file `worker.js` (ví dụ `POST /api/executive/cases/:id/directive` ở giữa file có check RBAC nhưng ở cuối file lại khai báo lại một khối duplicate unauthenticated fallback `c.get('user') || { name: 'Lãnh đạo Cơ quan', role: 'executive' }`), Hono router sẽ ưu tiên đăng ký handler sau cùng, làm bypass toàn bộ cơ chế bảo vệ danh tính và phân quyền.
+- **Giải pháp**:
+  1. Tuyệt đối không để duplicate route paths trong Hono Worker application.
+  2. Luôn áp dụng xác thực danh tính `getAuthenticatedUser(c)` + kiểm tra role `requireRoles` trên từng endpoint nhạy cảm (Executive, Admin), trả về chuẩn mã lỗi 401 khi chưa đăng nhập và 403 khi role thấp hơn (Citizen, Contractor) cố gọi API.
+
+
 ---
 
 ## 🗄️ 1. D1 SQLite & Database Traps
