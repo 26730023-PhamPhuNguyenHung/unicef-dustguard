@@ -46,6 +46,26 @@
 - **Nguyên nhân**: `schema-healer.js` và test suite `d1-architecture-healer.test.js` định nghĩa default `category = 'DUST_CONSTRUCTION'` và `status = 'NEW'` cho bảng `observations`, trong khi Business Rules SSOT quy định `category = 'CONSTRUCTION_DUST'` và `status = 'RECORDED'`. Khi test chạy chèn bản ghi mẫu vào DB làm `audit:db` fail enum constraint. Đồng thời vi phạm claim linter do hardcode `(20h = 4.0 tín chỉ)`.
 - **Giải pháp**: Chuẩn hóa 100% enum defaults trong `schema-healer.js`, test suites và migrations về enum SSOT (`CONSTRUCTION_DUST`, `RECORDED`). Đổi chuỗi claim sang "Tín chỉ ngoại khóa đề xuất" tuân thủ Claim Integrity Policy SSOT.
 
+### 🚨 Trap 1.17: Docx OpenXML Parser vỡ cấu trúc `<table>` do regex chèn `\n` vào `<td>` và thiếu no-borders cho Official Header
+- **Nguyên nhân**: Khi parse HTML sang AST DOCX, lệnh regex `.replace(/<div\b[^>]*>([\s\S]*?)<\/div>/gi, '\n$1\n')` chèn ngắt dòng vào bên trong cell bảng Quốc hiệu & Tiêu ngữ, làm vỡ dòng table và khiến `docx` tự động thêm viền đen và nền xám F4F4F5 vào tiêu đề văn bản hành chính — vi phạm thể thức Nghị định 30/2020/NĐ-CP.
+- **Giải pháp**: Bảo vệ toàn bộ khối `<table>...</table>` bằng token placeholder trước khi xử lý ngắt dòng ngoài bảng; tự động nhận diện class `.dg-legal-header-table` để đặt `borders: NONE` và `shading: NONE`.
+
+### 🚨 Trap 1.18: A4 Editor Canvas khóa cứng height 1 trang `height: calc(297mm * var(--a4-scale, 1))` làm xén mất trang 2, 3
+- **Nguyên nhân**: Container `.a4-preview-scale-wrapper` đặt `height: calc(297mm * var(--a4-scale, 1))` và `overflow: hidden`, khiến các văn bản dài từ 2 trang trở lên bị cắt mất phần nội dung phía sau.
+- **Giải pháp**: Đổi thành `minHeight: calc(297mm * var(--a4-scale, 1))` và `overflow: visible` để hỗ trợ văn bản nhiều trang co giãn tự nhiên.
+
+### 🚨 Trap 1.19: `SpatialMapCanvas` crash khi nhận mảng tọa độ rỗng `[undefined, undefined]` hoặc `[NaN, NaN]`
+- **Nguyên nhân**: Kiểm tra `Array.isArray(center)` trả về `true` cho mảng `[undefined, undefined]`, truyền vào Leaflet MapContainer gây lỗi `Invalid LatLng object`.
+- **Giải pháp**: Thêm hàm kiểm tra an toàn `isValidCoord(lat, lng)` trước khi gán tọa độ center cho Leaflet, fallback về `HANOI_DEFAULT_CENTER`.
+
+### 🚨 Trap 2.15: ReferenceError `handleSubmit` trong form nộp 5 bước của `CreateObservation.jsx`
+- **Nguyên nhân**: Bước 5 gọi `onClick={handleSubmit}` nhưng component chỉ có `handleQuickSubmit`.
+- **Giải pháp**: Khai báo hàm `handleSubmit` đồng bộ logic với `handleQuickSubmit` và gửi request chuẩn tới `/api/observations`.
+
+### 🚨 Trap 2.16: Rò rỉ session & cache quyền hạn khi logout đa vai trò do thiếu dọn dẹp cờ guest và role storage
+- **Nguyên nhân**: `signOut()` chỉ xóa `dustguard_token`, bỏ sót `guest_user`, `dustguard_role`, `dg_applied_citation` trong `localStorage`/`sessionStorage`, dẫn đến khi login role mới bị nhận nhầm quyền cũ.
+- **Giải pháp**: Sử dụng hàm tập trung `purgeAllSessionData()` dọn sạch toàn bộ 100% auth keys và session flags khi đăng xuất.
+
 ### 🚨 Trap 1.1: Tọa độ GIS Map / Contractor Workspace bị `undefined`
 - **Nguyên nhân**: Repository chỉ trả về chuỗi `coordinates: "21.028,105.854"` hoặc tên cột lẻ `latitude`, trong khi frontend UI đọc `lat` / `lng`.
 - **Giải pháp**: Luôn bọc entity qua `app/server/domain/spatial/spatial-adapter.js` bằng hàm `normalizeEntityCoordinates(entity)`. Hàm này sẽ tự động gắn kết đồng thời cả 5 thuộc tính: `{ latitude, longitude, lat, lng, coordinates }`.

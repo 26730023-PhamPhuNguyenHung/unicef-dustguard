@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DustGuard VN — Backdrop 70x90cm High-Res Print Renderer (300 DPI)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <style>
+    :root {
+      --bg-cream: #FDFBF7;
+      --text-dark: #231B14;
+      --text-muted: #5A524A;
+      --brand-red: #9F241F;
+      --brand-red-light: #B51F24;
+      --brand-red-wash: #FDF0EF;
+      --civic-teal: #0D6F64;
+      --civic-teal-wash: #EEF8F6;
+      --action-green: #1E7E4E;
+      --action-green-wash: #EDF7F2;
+      --alert-amber: #B45309;
+      --alert-amber-wash: #FEF3C7;
+      --card-bg: #FFFFFF;
+      --border-line: rgba(35, 27, 20, 0.12);
+      --border-soft: rgba(35, 27, 20, 0.06);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #333338;
+      color: var(--text-dark);
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 9999;
+      width: 100%;
+      background: #1e1e24;
+      color: #ffffff;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    .toolbar-brand { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 15px; }
+    .toolbar-brand span { color: #ff5555; }
+    .toolbar-actions { display: flex; align-items: center; gap: 12px; }
+    .btn-tool {
+      background: #2a2a35;
+      color: #ffffff;
+      border: 1px solid rgba(255,255,255,0.15);
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-tool:hover { background: #3a3a48; }
+    .btn-tool-primary { background: #9F241F; border-color: #b51f24; }
+    .btn-tool-primary:hover { background: #b51f24; }
+    .backdrop-preview-stage {
+      padding: 40px 20px;
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      overflow-x: auto;
+    }
+    .backdrop-page {
+      width: 700mm;
+      height: 900mm;
+      background-color: var(--bg-cream);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      padding: 24mm 24mm 20mm 24mm;
+      transform-origin: top center;
+    }
+    .backdrop-page.show-bleed::after {
+      content: "";
+      position: absolute;
+      inset: 3mm;
+      border: 1.5mm dashed rgba(181, 31, 36, 0.4);
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    .tier-header {
+      height: 155mm;
+      border-bottom: 2mm solid var(--brand-red);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding-bottom: 8mm;
+      margin-bottom: 8mm;
+    }
+    .header-top-row { display: flex; align-items: center; justify-content: space-between; }
+    .brand-cluster { display: flex; align-items: center; gap: 10mm; }
+    .brand-logo-svg { width: 32mm; height: 35mm; flex-shrink: 0; }
+    .brand-text-block { display: flex; flex-direction: column; }
+    .brand-title { font-size: 38pt; font-weight: 900; letter-spacing: -0.03em; color: var(--text-dark); line-height: 1; }
+    .brand-title b { color: var(--brand-red); }
+    .brand-slogan { font-size: 14pt; font-weight: 800; letter-spacing: 0.12em; color: var(--civic-teal); text-transform: uppercase; margin-top: 3mm; }
+    .event-badge {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      background: var(--brand-red-wash);
+      border: 1.5mm solid rgba(159, 36, 31, 0.25);
+      border-radius: 6mm;
+      padding: 4mm 8mm;
+      text-align: right;
+    }
+    .event-badge-label { font-size: 11pt; font-weight: 800; color: var(--brand-red); letter-spacing: 0.08em; text-transform: uppercase; }
+    .event-badge-sub { font-size: 14pt; font-weight: 900; color: var(--text-dark); margin-top: 1mm; }
+    .header-tagline-box {
+      background: #FFFFFF;
+      border: 1mm solid var(--border-line);
+      border-left: 3.5mm solid var(--civic-teal);
+      border-radius: 4mm;
+      padding: 5mm 8mm;
+    }
+    .header-tagline-text { font-size: 16pt; font-weight: 700; line-height: 1.4; color: var(--text-dark); }
+    .header-tagline-text span { color: var(--brand-red); }
+    .tier-body { flex: 1; display: flex; flex-direction: column; gap: 7mm; padding-bottom: 6mm; }
+    .workflow-strip-box { background: #FFFFFF; border: 1mm solid var(--border-line); border-radius: 6mm; padding: 6mm 8mm; }
+    .section-eyebrow {
+      font-size: 12pt;
+      font-weight: 900;
+      color: var(--brand-red);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 4mm;
+      display: flex;
+      align-items: center;
+      gap: 3mm;
+    }
+    .section-eyebrow::before { content: ""; display: inline-block; width: 6mm; height: 1.5mm; background: var(--brand-red); border-radius: 1mm; }
+    .flow-steps-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3.5mm; }
+    .flow-step-card { background: var(--bg-cream); border: 0.8mm solid var(--border-line); border-radius: 4mm; padding: 4mm 3.5mm; display: flex; flex-direction: column; gap: 2mm; }
+    .step-badge-row { display: flex; align-items: center; justify-content: space-between; }
+    .step-num-pill { font-size: 10pt; font-weight: 900; background: var(--brand-red); color: #FFFFFF; padding: 1mm 3mm; border-radius: 2mm; }
+    .step-title { font-size: 12pt; font-weight: 900; color: var(--text-dark); text-transform: uppercase; }
+    .step-desc { font-size: 9.5pt; color: var(--text-muted); line-height: 1.35; font-weight: 600; }
+    .middle-main-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 6mm; flex: 1; }
+    .dossier-showcase-box { background: #FFFFFF; border: 1mm solid var(--border-line); border-radius: 6mm; padding: 6mm 7mm; display: flex; flex-direction: column; justify-content: space-between; }
+    .dossier-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 0.6mm solid var(--border-soft); padding-bottom: 3mm; margin-bottom: 4mm; }
+    .dossier-tag { font-size: 11pt; font-weight: 900; color: var(--brand-red); display: flex; align-items: center; gap: 2mm; }
+    .dossier-id { font-family: 'JetBrains Mono', monospace; font-size: 12pt; font-weight: 800; color: var(--text-dark); background: var(--bg-cream); padding: 1mm 3mm; border-radius: 2mm; border: 0.5mm solid var(--border-line); }
+    .dossier-location { font-size: 11pt; font-weight: 700; color: var(--text-dark); margin-bottom: 3mm; }
+    .handover-status-pill { background: var(--action-green-wash); border: 0.8mm solid rgba(30, 126, 78, 0.3); border-radius: 3mm; padding: 2.5mm 5mm; font-size: 10pt; font-weight: 800; color: var(--action-green); display: flex; align-items: center; gap: 2mm; margin-bottom: 4mm; }
+    .dossier-compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; margin-bottom: 4mm; }
+    .compare-card { border-radius: 4mm; padding: 4mm 4.5mm; display: flex; flex-direction: column; gap: 2mm; }
+    .compare-card-before { background: var(--brand-red-wash); border: 0.8mm solid rgba(159, 36, 31, 0.25); }
+    .compare-card-after { background: var(--action-green-wash); border: 0.8mm solid rgba(30, 126, 78, 0.3); }
+    .compare-head { display: flex; align-items: center; justify-content: space-between; font-size: 10pt; font-weight: 900; }
+    .compare-card-before .compare-head { color: var(--brand-red); }
+    .compare-card-after .compare-head { color: var(--action-green); }
+    .compare-score { font-size: 18pt; font-weight: 900; line-height: 1; margin-top: 1mm; }
+    .compare-pm { font-size: 10pt; font-weight: 800; margin-top: 1mm; }
+    .compare-desc { font-size: 9pt; font-weight: 600; color: var(--text-dark); line-height: 1.3; }
+    .sha-crypto-box { background: var(--bg-cream); border: 0.6mm solid var(--border-line); border-radius: 3mm; padding: 3mm 4mm; }
+    .sha-title { font-size: 8.5pt; font-weight: 800; color: var(--civic-teal); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 1mm; }
+    .sha-code { font-family: 'JetBrains Mono', monospace; font-size: 8pt; color: var(--text-dark); word-break: break-all; line-height: 1.3; }
+    .operating-model-box { background: #FFFFFF; border: 1mm solid var(--border-line); border-radius: 6mm; padding: 6mm 6mm; display: flex; flex-direction: column; justify-content: space-between; }
+    .actor-stack { display: flex; flex-direction: column; gap: 3mm; }
+    .actor-item { display: flex; align-items: center; gap: 3.5mm; background: var(--bg-cream); border: 0.6mm solid var(--border-line); border-radius: 3mm; padding: 3.5mm 4mm; }
+    .actor-icon { width: 9mm; height: 9mm; border-radius: 2mm; background: var(--civic-teal); color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 11pt; flex-shrink: 0; }
+    .actor-info h4 { font-size: 11pt; font-weight: 800; color: var(--text-dark); }
+    .actor-info p { font-size: 9pt; font-weight: 600; color: var(--text-muted); margin-top: 0.5mm; }
+    .quote-callout { background: var(--civic-teal-wash); border-left: 2.5mm solid var(--civic-teal); border-radius: 3mm; padding: 3.5mm 4mm; margin-top: 3mm; }
+    .quote-text { font-size: 9.5pt; font-style: italic; font-weight: 700; color: var(--text-dark); line-height: 1.35; }
+    .tier-footer { height: 155mm; border-top: 1.5mm solid var(--border-line); padding-top: 6mm; display: flex; flex-direction: column; justify-content: space-between; }
+    .footer-metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5mm; }
+    .metric-card { background: #FFFFFF; border: 0.8mm solid var(--border-line); border-radius: 4mm; padding: 4mm 5mm; display: flex; flex-direction: column; gap: 1.5mm; }
+    .metric-val { font-size: 22pt; font-weight: 900; color: var(--brand-red); line-height: 1; }
+    .metric-lbl { font-size: 11pt; font-weight: 800; color: var(--text-dark); }
+    .metric-sub { font-size: 8.5pt; font-weight: 600; color: var(--text-muted); line-height: 1.3; }
+    .footer-action-row { display: flex; align-items: center; justify-content: space-between; background: #FFFFFF; border: 1mm solid var(--border-line); border-radius: 5mm; padding: 4mm 8mm; margin-top: 3mm; }
+    .qr-group { display: flex; align-items: center; gap: 6mm; }
+    .qr-item { display: flex; align-items: center; gap: 3.5mm; }
+    .qr-svg { width: 22mm; height: 22mm; background: #ffffff; border: 0.6mm solid var(--border-line); padding: 1.5mm; border-radius: 2mm; }
+    .qr-text h5 { font-size: 11pt; font-weight: 900; color: var(--text-dark); }
+    .qr-text p { font-size: 8.5pt; font-weight: 600; color: var(--brand-red); margin-top: 0.5mm; }
+    .footer-copy-block { text-align: right; display: flex; flex-direction: column; gap: 1mm; }
+    .footer-copy-text { font-size: 9pt; font-weight: 700; color: var(--text-muted); }
+    .footer-tagline-badge { font-size: 10pt; font-weight: 900; color: var(--civic-teal); letter-spacing: 0.05em; }
+    @page { size: 700mm 900mm; margin: 0mm; }
+    @media print {
+      body { background-color: var(--bg-cream) !important; margin: 0 !important; padding: 0 !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      .toolbar { display: none !important; }
+      .backdrop-preview-stage { padding: 0 !important; }
+      .backdrop-page { box-shadow: none !important; transform: scale(1) !important; width: 700mm !important; height: 900mm !important; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="toolbar">
+    <div class="toolbar-brand">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="#9F241F" stroke="#ffffff"/>
+      </svg>
+      <span>DustGuard VN</span> &mdash; Backdrop 70x90cm High-Res Vector Print Renderer
+    </div>
+    <div class="toolbar-actions">
+      <button class="btn-tool" onclick="toggleBleed()">Bật/Tắt Khung Tràn Lề (3mm Bleed)</button>
+      <button class="btn-tool" onclick="setZoom(0.35)">Zoom 35%</button>
+      <button class="btn-tool" onclick="setZoom(0.5)">Zoom 50%</button>
+      <button class="btn-tool" onclick="setZoom(1.0)">Kích thước thật 100%</button>
+      <button class="btn-tool btn-tool-primary" onclick="window.print()">In PDF (Vector 700x900mm)</button>
+      <button class="btn-tool btn-tool-primary" onclick="exportHighResPng()">Xuất PNG 300 DPI (8268x10630px)</button>
+    </div>
+  </div>
+
+  <div class="backdrop-preview-stage">
+    <div class="backdrop-page" id="backdrop-page">
+
+      <header class="tier-header">
+        <div class="header-top-row">
+          <div class="brand-cluster">
+            <svg class="brand-logo-svg" viewBox="0 0 100 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M50 5L92 22V55C92 82 74 102 50 108C26 102 8 82 8 55V22L50 5Z" fill="#9F241F" stroke="#231B14" stroke-width="4" stroke-linejoin="round"/>
+              <path d="M50 16L82 30V55C82 76 68 92 50 97C32 92 18 76 18 55V30L50 16Z" fill="#B51F24"/>
+              <path d="M32 55L45 68L70 40" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="brand-text-block">
+              <h1 class="brand-title">DustGuard <b>VN</b></h1>
+              <div class="brand-slogan">GIÁM SÁT BỤI &middot; HÀNH ĐỘNG &middot; MINH BẠCH</div>
+            </div>
+          </div>
+          <div class="event-badge">
+            <span class="event-badge-label">UNICEF Youth Hackathon 2026</span>
+            <span class="event-badge-sub">Chung Kết Toàn Quốc</span>
+          </div>
+        </div>
+
+        <div class="header-tagline-box">
+          <p class="header-tagline-text">
+            Nền tảng <span>Civic Tech</span> chuyển hóa tín hiệu ô nhiễm bụi công trình thành <span>hồ sơ số có bảo chứng SHA-256</span>, liên thông điều phối <span>Cổng 1022 &amp; iHanoi</span> và đảm bảo <span>tái kiểm đóng vòng sau 24h&ndash;48h</span>.
+          </p>
+        </div>
+      </header>
+
+      <main class="tier-body">
+        <div class="workflow-strip-box">
+          <div class="section-eyebrow">Chu Trình Quản Lý &amp; Đóng Vòng Hành Động Thực Địa (5 Bước)</div>
+          <div class="flow-steps-grid">
+            <div class="flow-step-card">
+              <div class="step-badge-row">
+                <span class="step-num-pill">01</span>
+                <span style="font-size:12pt;">📡</span>
+              </div>
+              <h3 class="step-title">Phát hiện</h3>
+              <p class="step-desc">Cảm biến IoT quang học mở &amp; ảnh phản ánh hiện trường có tọa độ GPS.</p>
+            </div>
+            <div class="flow-step-card">
+              <div class="step-badge-row">
+                <span class="step-num-pill">02</span>
+                <span style="font-size:12pt;">📊</span>
+              </div>
+              <h3 class="step-title">Ưu tiên</h3>
+              <p class="step-desc">Thang điểm Dust Risk Score 0&ndash;100 hỗ trợ xác định việc cần xử lý trước.</p>
+            </div>
+            <div class="flow-step-card">
+              <div class="step-badge-row">
+                <span class="step-num-pill">03</span>
+                <span style="font-size:12pt;">📁</span>
+              </div>
+              <h3 class="step-title">Hồ sơ số</h3>
+              <p class="step-desc">Bảo chứng toàn vẹn bằng mã băm SHA-256 và lưu vết lịch sử bất biến.</p>
+            </div>
+            <div class="flow-step-card">
+              <div class="step-badge-row">
+                <span class="step-num-pill">04</span>
+                <span style="font-size:12pt;">🚀</span>
+              </div>
+              <h3 class="step-title">Điều phối</h3>
+              <p class="step-desc">Liên thông cổng 1022 / iHanoi &amp; phân công Đội sinh viên xung kích.</p>
+            </div>
+            <div class="flow-step-card">
+              <div class="step-badge-row">
+                <span class="step-num-pill">05</span>
+                <span style="font-size:12pt;">✅</span>
+              </div>
+              <h3 class="step-title">Tái kiểm</h3>
+              <p class="step-desc">Đối soát ảnh trước / sau sau 24h&ndash;48h, nghiệm thu dứt điểm hiện trường.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="middle-main-grid">
+          <div class="dossier-showcase-box">
+            <div>
+              <div class="dossier-header">
+                <span class="dossier-tag">
+                  <span style="width:8px;height:8px;border-radius:50%;background:#9F241F;display:inline-block;"></span>
+                  HỒ SƠ BẰNG CHỨNG THỰC ĐỊA
+                </span>
+                <span class="dossier-id">#DG-2026-0842</span>
+              </div>
+              <div class="dossier-location">
+                📍 Tuyến đường Vành Đai 3, P. Dịch Vọng Hậu, Cầu Giấy, Hà Nội
+              </div>
+              <div class="handover-status-pill">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span>ĐÃ LIÊN THÔNG CỔNG 1022 / iHANOI (#1022-HN-89421)</span>
+              </div>
+              <div class="dossier-compare-grid">
+                <div class="compare-card compare-card-before">
+                  <div class="compare-head">
+                    <span>T1: PHÁT HIỆN</span>
+                    <span>08:30 31/08</span>
+                  </div>
+                  <div class="compare-score" style="color:#9F241F;">85/100</div>
+                  <div class="compare-pm" style="color:#9F241F;">PM2.5: 142 &micro;g/m&sup3;</div>
+                  <p class="compare-desc">Xe ben chở đất rơi vãi, không che bạt, bụi cuốn mù mịt.</p>
+                </div>
+                <div class="compare-card compare-card-after">
+                  <div class="compare-head">
+                    <span>T2: TÁI KIỂM</span>
+                    <span>10:15 01/09 (+26h)</span>
+                  </div>
+                  <div class="compare-score" style="color:#1E7E4E;">18/100</div>
+                  <div class="compare-pm" style="color:#1E7E4E;">PM2.5: 28 &micro;g/m&sup3; (QCVN)</div>
+                  <p class="compare-desc">Trạm rửa xe &amp; vòi phun sương kích hoạt, phủ kín bạt.</p>
+                </div>
+              </div>
+            </div>
+            <div class="sha-crypto-box">
+              <div class="sha-title">Mã băm SHA-256 Đối soát (Bảo chứng Toàn vẹn Bằng chứng)</div>
+              <div class="sha-code">9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08</div>
+            </div>
+          </div>
+
+          <div class="operating-model-box">
+            <div>
+              <div class="section-eyebrow">Tam Giác Vận Hành Thực Địa</div>
+              <div class="actor-stack">
+                <div class="actor-item">
+                  <div class="actor-icon">01</div>
+                  <div class="actor-info">
+                    <h4>CLB Sinh Viên Xung Kích</h4>
+                    <p>Khảo sát, gắn tọa độ GPS, lập hồ sơ &amp; tái kiểm độc lập.</p>
+                  </div>
+                </div>
+                <div class="actor-item">
+                  <div class="actor-icon" style="background:#9F241F;">02</div>
+                  <div class="actor-info">
+                    <h4>Nhà Thầu &amp; Đơn Vị Thi Công</h4>
+                    <p>Tiếp nhận yêu cầu, dập bụi phun sương trong 24h&ndash;48h.</p>
+                  </div>
+                </div>
+                <div class="actor-item">
+                  <div class="actor-icon" style="background:#B45309;">03</div>
+                  <div class="actor-info">
+                    <h4>Cơ Quan Quản Lý &amp; 1022</h4>
+                    <p>Giám sát toàn trình, lưu vết audit trail và xử lý dứt điểm.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="quote-callout">
+              <p class="quote-text">
+                &ldquo;Từ người phản ánh thụ động thành công dân chủ động theo dõi một vấn đề môi trường đến cùng kết quả thực tế.&rdquo;
+              </p>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="tier-footer">
+        <div class="footer-metrics-grid">
+          <div class="metric-card">
+            <div class="metric-val">&asymp; 0,5 tr</div>
+            <div class="metric-lbl">Node IoT Prototype</div>
+            <div class="metric-sub">Chi phí linh kiện trạm đo quang học mở ESP32 phục vụ nghiên cứu &amp; pilot.</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-val">24h &ndash; 48h</div>
+            <div class="metric-lbl">Chu kỳ Tái kiểm Chuẩn</div>
+            <div class="metric-sub">Quy trình đối chứng hiện trường bắt buộc nhằm xác nhận chuyển biến thực chất.</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-val">100% Free</div>
+            <div class="metric-lbl">Thanh niên &amp; Cộng đồng</div>
+            <div class="metric-sub">Hạ tầng Serverless Cloudflare D1 SQLite tối ưu chi phí &amp; thời gian phản hồi.</div>
+          </div>
+        </div>
+
+        <div class="footer-action-row">
+          <div class="qr-group">
+            <div class="qr-item">
+              <svg class="qr-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="100" height="100" fill="#ffffff"/>
+                <rect x="10" y="10" width="28" height="28" fill="#231B14"/>
+                <rect x="16" y="16" width="16" height="16" fill="#ffffff"/>
+                <rect x="20" y="20" width="8" height="8" fill="#231B14"/>
+                <rect x="62" y="10" width="28" height="28" fill="#231B14"/>
+                <rect x="68" y="16" width="16" height="16" fill="#ffffff"/>
+                <rect x="72" y="20" width="8" height="8" fill="#231B14"/>
+                <rect x="10" y="62" width="28" height="28" fill="#231B14"/>
+                <rect x="16" y="68" width="16" height="16" fill="#ffffff"/>
+                <rect x="20" y="72" width="8" height="8" fill="#231B14"/>
+                <rect x="45" y="15" width="8" height="12" fill="#231B14"/>
+                <rect x="45" y="35" width="18" height="8" fill="#231B14"/>
+                <rect x="45" y="55" width="10" height="15" fill="#231B14"/>
+                <rect x="65" y="50" width="25" height="8" fill="#231B14"/>
+                <rect x="60" y="68" width="12" height="22" fill="#231B14"/>
+                <rect x="80" y="68" width="10" height="22" fill="#9F241F"/>
+              </svg>
+              <div class="qr-text">
+                <h5>Trải Nghiệm Live Demo</h5>
+                <p>Quét truy cập Web App</p>
+              </div>
+            </div>
+
+            <div class="qr-item">
+              <svg class="qr-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="100" height="100" fill="#ffffff"/>
+                <rect x="10" y="10" width="28" height="28" fill="#231B14"/>
+                <rect x="16" y="16" width="16" height="16" fill="#ffffff"/>
+                <rect x="20" y="20" width="8" height="8" fill="#231B14"/>
+                <rect x="62" y="10" width="28" height="28" fill="#231B14"/>
+                <rect x="68" y="16" width="16" height="16" fill="#ffffff"/>
+                <rect x="72" y="20" width="8" height="8" fill="#231B14"/>
+                <rect x="10" y="62" width="28" height="28" fill="#231B14"/>
+                <rect x="16" y="68" width="16" height="16" fill="#ffffff"/>
+                <rect x="20" y="72" width="8" height="8" fill="#231B14"/>
+                <rect x="45" y="10" width="10" height="20" fill="#0D6F64"/>
+                <rect x="45" y="40" width="30" height="8" fill="#231B14"/>
+                <rect x="50" y="58" width="15" height="12" fill="#231B14"/>
+                <rect x="75" y="58" width="15" height="12" fill="#231B14"/>
+                <rect x="50" y="78" width="40" height="12" fill="#0D6F64"/>
+              </svg>
+              <div class="qr-text">
+                <h5>Thuyết Minh Kỹ Thuật</h5>
+                <p>Tài liệu &amp; Báo cáo Pilot</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="footer-copy-block">
+            <span class="footer-tagline-badge">DUSTGUARD VN &bull; CIVIC TECH FOR CLEAN AIR</span>
+            <span class="footer-copy-text">&copy; 2026 UNICEF Hackathon Finalist &bull; Bản quyền phát triển vì cộng đồng</span>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    function autoScale() {
+      const page = document.getElementById('backdrop-page');
+      const stageWidth = window.innerWidth - 60;
+      const targetWidth = 700 * 3.7795275591;
+      const scale = Math.min(0.4, stageWidth / targetWidth);
+      setZoom(scale);
+    }
+    function setZoom(scale) {
+      const page = document.getElementById('backdrop-page');
+      page.style.transform = 'scale(' + scale + ')';
+      page.style.marginBottom = '-' + ((1 - scale) * (900 * 3.7795275591)) + 'px';
+    }
+    function toggleBleed() {
+      const page = document.getElementById('backdrop-page');
+      page.classList.toggle('show-bleed');
+    }
+    async function exportHighResPng() {
+      const page = document.getElementById('backdrop-page');
+      const prevTransform = page.style.transform;
+      const prevMargin = page.style.marginBottom;
+      page.style.transform = 'none';
+      page.style.marginBottom = '0';
+      alert('Hệ thống đang render Backdrop ở độ phân giải siêu nét (300 DPI: 8268 x 10630 px). Vui lòng đợi trong giây lát...');
+      try {
+        const canvas = await html2canvas(page, {
+          scale: 3.125,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: '#FDFBF7'
+        });
+        const link = document.createElement('a');
+        link.download = 'DustGuard_Backdrop_70x90cm_300DPI.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      } catch (err) {
+        console.error('Render error:', err);
+        alert('Có lỗi khi render canvas, bạn có thể dùng nút In PDF (Vector) để lưu file chất lượng in!');
+      } finally {
+        page.style.transform = prevTransform;
+        page.style.marginBottom = prevMargin;
+      }
+    }
+    window.addEventListener('DOMContentLoaded', autoScale);
+    window.addEventListener('resize', autoScale);
+  </script>
+</body>
+</html>

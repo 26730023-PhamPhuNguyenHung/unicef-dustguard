@@ -1,6 +1,34 @@
 # ACTIVE CONTEXT — DUSTGUARD VN
 
-## 1. Focus Hiện Tại
+## 1. Focus Hiện Tại & Mốc Đã Hoàn Tất
+- **🚀 HOÀN TẤT 100%: TRIỂN KHAI TOÀN DIỆN 5 TIỂU BAN KỸ THUẬT & FIX LỖI TOÀN BỘ CODEBASE**:
+  1. **Tiểu ban 1 (Legal Docx Engine & Multi-Page A4 Canvas)**:
+     - Tạo `app/src/legal-document-engine/renderers/renderLegalDocumentDocx.js` biên dịch AST trực tiếp sang OpenXML `.docx` chuẩn Nghị định 30/2020/NĐ-CP (lề 30-15-20-20mm, bảng Quốc hiệu/Tiêu ngữ không viền không xám, dấu đỏ `#9f241f`, chữ ký số CA `#0052CC`).
+     - Export `renderLegalDocumentDocx`, `exportLegalDocumentDocxBlob`, `exportLegalDocumentDocxBuffer` từ `legal-document-engine/index.js`.
+     - Nâng cấp `document-docx-parser.js` hỗ trợ Tiptap JSON AST, sửa lỗi regex làm vỡ thẻ `<table>`.
+     - Cải tiến `A4InteractiveEditor.jsx` với `minHeight` và `overflow: visible` hỗ trợ văn bản nhiều trang không bị xén; Thêm nút "Tải file Word (.docx)" trực tiếp trên `DocumentPreviewPage.jsx`.
+  2. **Tiểu ban 2 (Auth, 5-Role 1-Click Login & Multi-Role Logout)**:
+     - `DemoAccessModal.jsx` bổ sung đủ 5 vai trò chuẩn: `citizen`, `community`, `staff`, `contractor`, `admin` với touch target $\ge 44\text{px}$, không glassmorphism.
+     - `auth-client.js` bổ sung hàm `purgeAllSessionData()` dọn sạch 100% auth tokens, user profiles, guest flags, role cache và AI draft citations khi `signOut()`.
+     - `clerk.middleware.js` đồng bộ `DEMO_ACCOUNTS` 5 roles và các alias `demo-*`.
+     - `mode-switch.jsx` tự consume `useAuth()` để tự động hiển thị trên `AppHeader.tsx`.
+     - `CommunityNavigation.jsx` & `CommunityHeader.jsx` tích hợp User Session Chip và nút Đăng xuất cho cộng đồng/CLB; Tạo mới `LogoutConfirmModal.jsx` chuẩn Civic High Contrast.
+  3. **Tiểu ban 3 (Citizen & Community Workflow Bugfix & Spatial Map Guard)**:
+     - Sửa critical bug `handleSubmit` trong `CreateObservation.jsx:L1526` giúp form nộp 5 bước submit mượt mà vào `/api/observations`.
+     - Xóa bỏ các trường phạt tiền `fine` trong `CitizenReport.jsx`, thay bằng quy chuẩn kỹ thuật tham chiếu QCVN 18:2021 / QCVN 05:2023.
+     - Phòng thủ an toàn `isValidCoord` trong `SpatialMapCanvas.jsx` chống crash `[undefined, undefined]`; Chặn xung đột click marker `stopPropagation()`.
+     - Loại bỏ logic sinh tọa độ giả bằng hash trong `ExecutiveHeatmap.jsx`, đạt chuẩn Zero Fake Coordinates.
+  4. **Tiểu ban 4 (Landing Page, Backdrop 70x90cm & Presentation)**:
+     - Nâng cấp `LandingNav.jsx` & `HeroSection.jsx`: 3 CTA rõ ràng (`/community/observe`, `/demo`, `/login`, `/citizen/map`), Interactive Dossier Preview Before/After kèm mã băm SHA-256 và tem liên thông 1022.
+     - Ban hành tài liệu `presentation/BACKDROP_70X90_SPEC.md` và công cụ render in ấn 300 DPI `presentation/backdrop_70x90_renderer.html` (chuẩn in khổ đứng 700x900mm, bleed 3mm, tỷ lệ 7:9).
+  5. **Tiểu ban 5 (Badge & UI Primitives SSOT)**:
+     - Củng cố `StatusBadge.jsx` nhận diện 7 nhóm trạng thái (11 bước Case Lifecycle, Legal Docs, Severity/Risk, SLA, IoT Health, Evidence SHA-256, User Roles).
+     - Đồng bộ `MetricCard.jsx`, `PageHeader.jsx`, `UnifiedDataTable.jsx` (mobile card view + floating bulk action bar).
+     - Thay thế toàn bộ các hàm render inline helper tự chế bằng `<StatusBadge />` chuẩn SSOT.
+  6. **Xác thực Kiểm thử & Release Gate**:
+     - `verify:quick`: 28 test files (279 unit + 42 UI smoke tests) PASS 100% (3.8s).
+     - `npm --prefix app run build`: Vite build PASS 100% trong 7.81s (0 errors).
+
 - **TRIỂN KHAI BỘ TÀI LIỆU & VOICE-OVER PROPOSAL VÒNG CHUNG KẾT (3 PHÚT 30 GIÂY)**:
   - Khởi tạo thư mục `presentation/` chuẩn SSOT, đã nạp đầy đủ các asset nhạc (`achievement`, `epic-presentation`) và 10 hình ảnh ý tưởng vào `presentation/media/`.
   - Cập nhật `.gitignore` để ignore toàn bộ binary nặng (`presentation/media/`, `presentation/output/`, `*.mp4`, `*.wav`).
