@@ -71,6 +71,35 @@ CLIPS = [
         "desc": "Kiểm tra rào chắn, lưới che và vòi phun sương dập bụi",
         "start": "00:02:15",
         "duration": "00:00:25"
+    },
+    # Nguồn 3: TP. Huế - Đại công trường 17ha & Bụi ảnh hưởng trẻ em
+    {
+        "name": "clip_hue_01_giant_dust_clouds.mp4",
+        "src": "hue_construction_dust_footage.mp4",
+        "desc": "Đoàn xe ben tạo cột khói bụi khổng lồ bao trùm công trường",
+        "start": "00:00:45",
+        "duration": "00:00:25"
+    },
+    {
+        "name": "clip_hue_02_dust_on_trees_and_houses.mp4",
+        "src": "hue_construction_dust_footage.mp4",
+        "desc": "Bụi bám trắng xóa trên cây cối và nhà cửa khu dân cư",
+        "start": "00:01:28",
+        "duration": "00:00:20"
+    },
+    {
+        "name": "clip_hue_03_children_respiratory_concern.mp4",
+        "src": "hue_construction_dust_footage.mp4",
+        "desc": "Người dân phường Xuân Phú lo ngại bệnh hô hấp cho trẻ nhỏ",
+        "start": "00:01:40",
+        "duration": "00:00:20"
+    },
+    {
+        "name": "clip_hue_04_ineffective_manual_watering.mp4",
+        "src": "hue_construction_dust_footage.mp4",
+        "desc": "Công nhân xịt nước thủ công bất lực trước bụi đất mênh mông",
+        "start": "00:03:20",
+        "duration": "00:00:15"
     }
 ]
 

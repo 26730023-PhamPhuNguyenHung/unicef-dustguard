@@ -80,4 +80,23 @@
      - Cảnh kiểm tra rào chắn lưới, bạt phủ, vòi xịt nước dập bụi và phỏng vấn chuyên gia về sự cần thiết của quy trình kiểm soát liên tục.
      - *Khớp hoàn hảo với*: Phân đoạn `1:49 - 2:08` (AI đúng vai trò: Hỗ trợ checklist, không thay thế thanh tra) & `2:08 - 2:28` (Pilot thực tế).
 
+### 🏛️ Nguồn 3: Phóng sự Công Trường 17ha Mịt Mù Bụi — TP. Huế
+- **Nguồn gốc**: [YouTube - Đại công trường mịt mù bụi tại Huế (IE33k7NsdpE)](https://www.youtube.com/watch?v=IE33k7NsdpE)
+- **Local File**: `presentation/media/hue_construction_dust_footage.mp4`
+- **Mức độ tương thích**: Hình ảnh trực quan cực mạnh về quy mô đại công trường 17ha sát khu dân cư và sự bất lực của biện pháp tưới nước thủ công.
+- **Các phân cảnh trích xuất đắt giá**:
+  1. **`0:12 - 1:00` | Đoàn xe ben & Đám mây bụi khổng lồ**:
+     - Hàng trăm lượt xe ben tải nặng cuốn bụi thành những cột khói bụi khổng lồ bao trùm bầu trời công trường 17ha.
+     - *Khớp hoàn hảo với*: Phân đoạn `0:00 - 0:18` (Mở vấn đề: "bụi công trình") & `0:18 - 0:38` (Nút thắt dữ liệu).
+  2. **`1:30 - 1:55` | Bụi bám dày đặc trên cây cối, nhà cửa & Nỗi lo bệnh hô hấp cho trẻ em**:
+     - Cận cảnh lá cây và nhà dân phủ lớp bụi trắng xóa; phỏng vấn người dân phường Xuân Phú lo cho hô hấp của trẻ nhỏ.
+     - *Khớp hoàn hảo với*: Phân đoạn `0:38 - 0:55` (Vì sao trường hợp đó đáng chú ý? Ai đang phụ trách?).
+  3. **`2:08 - 2:30` | Vị trí công trường 17ha sát vách khu dân cư & Cơ quan công sở**:
+     - Toàn cảnh công trường nằm dọc trục Tố Hữu - Võ Nguyên Giáp kề sát khu dân cư đông đúc.
+     - *Khớp hoàn hảo với*: Phân đoạn `1:10 - 1:30` (Tính mới: Kết nối bản đồ không gian và hồ sơ theo dõi).
+  4. **`3:20 - 3:30` | Minh chứng giải pháp thủ công không hiệu quả**:
+     - Cảnh 1 công nhân đơn độc cầm vòi nước nhỏ xịt vào bãi đất cát mênh mông, bụi vẫn cuồn cuộn bay lên.
+     - *Khớp hoàn hảo với*: Phân đoạn `1:30 - 1:49` (Bài học sau tập huấn: Cần một quy trình theo dõi thực chất, không chỉ là hình thức).
+
+
 
