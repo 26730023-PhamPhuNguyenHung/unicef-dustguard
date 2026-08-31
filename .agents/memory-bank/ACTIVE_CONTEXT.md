@@ -1,6 +1,26 @@
 # ACTIVE CONTEXT — DUSTGUARD VN
 
 ## 1. Focus Hiện Tại & Mốc Đã Hoàn Tất
+- **🎬 HOÀN TẤT 100%: KỊCH BẢN DỰNG VIDEO DOCUMENTARY PITCH 46 CẢNH (210s) & ENGINE CẮT GHÉP CHUẨN XÁC**:
+  1. **Kịch bản SSOT 46 Cảnh**: Thiết lập tài liệu `presentation/01_script/MASTER_DOCUMENTARY_PITCH_SCRIPT_46_SCENES.md`, đồng bộ `TIMELINE.json`, `EDIT_PLAN.md`, `DIRECTOR_TREATMENT_EDITING_SPEC.md` với 8 phần mạch lạc (Hook 20s, Thực trạng 30s, Khoảng trống 20s, Reveal Beat Drop 1:10 20s, Vận hành Case 45s, Người thật 4 bên 30s, Giá trị 25s, Ending 20s).
+  2. **Giải Quyết Triệt Để Lỗi Cắt Video**: Tái cấu trúc `presentation/scripts/07_master_render.py` theo quy trình **2-Stage Multi-Pass Rendering** (Stage 1: Pre-cut & Render 46 shot độc lập bằng FFmpeg chính xác từng mili-giây, Ken Burns mượt cho ảnh tĩnh, Text Overlay Civic Tech `#FDFBF7` trên `#231B14`; Stage 2: Lossless Concat Demuxer + Flash Beat Drop 1:10 + Watermark + 2 BGM Sidechain Ducking).
+  3. **Kiểm Định & Xuất Bản**: Render thành công 46/46 cảnh `[OK]` 100%, Content QC quét 32 files đạt 0 lỗi overclaim, `verify:quick` PASS 279/279 tests (3.2s).
+
+- **🛡️ HOÀN TẤT 100%: SUBAGENT 10 — SYSTEM HEALTH, DEVTOOLS & FAST DEV LOOP INSPECTOR**:
+  1. **System Health & Fast Dev Loop**:
+     - `npm --prefix app run verify:quick`: 100% OpenAPI Contract Parity (380 operations), 28 test files (237 unit tests + 42 UI smoke tests) = 279/279 tests PASS 100% (15.8s).
+     - `npm --prefix app run build`: Vite production bundle biên dịch thành công 100% trong 17.71s (0 errors, 2309 modules transformed).
+     - `npm --prefix app run verify` (Level 4 Full Release Gate): 74/74 test files (586 tests) PASS 100% (34.3s).
+     - `verify-live-api-outputs.js`: 10/10 Domain Groups Verified (0 mock claims, 0 unmatched routes, 0 schema integrity errors).
+  2. **UI Standards & DevTools Audit**:
+     - **Zero Glassmorphism**: Quét toàn bộ `app/src/`, 0 vi phạm class `backdrop-blur-*` (100% nền đặc vững chắc `#FDFBF7` canvas, `#FFFFFF` surface).
+     - **Civic High-Contrast Palette**: Tuân thủ chuẩn 4 màu cốt lõi (`#FDFBF7` cream, `#231b14` ink, `#0d6f64` teal, `#9f241f` seal red). Nền sáng chữ đậm, nền đậm chữ sáng, đạt chuẩn tương phản WCAG 2.2 AA/AAA.
+     - **Touch Targets**: 100% nút bấm chính và link điều hướng đạt kích thước $\ge 44\text{px} \times 44\text{px}$ (`min-h-[44px]`, `min-w-[44px]`).
+     - **Responsive & Zero Overflow**: Bảo đảm an toàn hiển thị từ màn hình nhỏ Mobile (360px - 430px) đến Desktop, chống tràn ngang (`overflow-x-hidden`, `min-w-0`, `break-words`).
+  3. **Vá lỗi & Tối ưu hóa SSOT**:
+     - Sửa thuật toán `calculateNd30TableWidths` trong `document-docx-parser.js` chia đều độ rộng các cột bảng dữ liệu tổng quát (`Math.floor(totalWidthDxa / colCount)`).
+     - Sửa path resolution trong `verify-live-api-outputs.js` trỏ chính xác đến `worker.js` khi thực thi từ bất kỳ working directory nào.
+     - Cập nhật Trap 11.3 trong `BUG_MEMORY.md` và SSOT `TIMELINE.md`.
 - **🎧 HOÀN TẤT 100%: SUBAGENT 5 — BACKGROUND MUSIC & AUDIO MIXING ENGINEER**:
   1. **Background Music 2 Giai Đoạn Chuẩn Điện Ảnh**: Xây dựng track BGM Cinematic 210 giây (Giai đoạn 1 tự sự Am-F-C-G 0:00-0:54 -> Tension riser & filter cutoff 0:54-0:55 -> Beat Drop 0:55 bùng nổ 808 Sub-Boom + Cymbal Crash -> Giai đoạn 2 C/D Major công nghệ, khải hoàn 0:55-3:30).
   2. **Script Hòa Âm Tối Ưu (`presentation/scripts/05_audio_mixing.py`)**: Viết engine hòa âm đa luồng tự động tổng hợp Voiceover 12 phân đoạn (Edge-TTS 48kHz `vi-VN-NamMinhNeural`), căn chỉnh thời gian chuẩn xác từng mili-giây với thuật toán time-stretch `atempo` chống 100% chồng lấn giọng đọc (Zero-Overlap Guarantee), giữ trọn khoảng lặng Beat Drop 0:55 và Finale 3:28.

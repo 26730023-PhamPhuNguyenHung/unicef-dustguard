@@ -376,6 +376,12 @@
   }
   ```
 
+### 🚨 Trap 11.3: Bảng NĐ 30/2020 DXA Table Width Algorithm & Cross-Directory Script Execution
+- **Nguyên nhân**: `calculateNd30TableWidths(2)` ban đầu hardcode tỷ lệ 40%/60% của Header thay vì chia đều cho các bảng dữ liệu tổng quát; đồng thời script `verify-live-api-outputs.js` hardcode đường dẫn `server/worker.js` gây lỗi `ENOENT` khi chạy từ root directory.
+- **Giải pháp**:
+  1. `calculateNd30TableWidths(colCount, totalWidthDxa = 9355)` phân bổ đều các cột theo `Math.floor(totalWidthDxa / colCount)` và bù phần dư vào cột cuối cùng.
+  2. Dùng `existsSync('server/worker.js') ? 'server/worker.js' : 'app/server/worker.js'` hoặc `new URL('../server/worker.js', import.meta.url)` trong các công cụ verification.
+
 ---
 
 ## 🎬 12. Video Production, Audio Synthesis & FFmpeg / CLI Traps

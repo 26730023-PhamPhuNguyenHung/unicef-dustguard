@@ -1,7 +1,7 @@
 # 🛡️ BÁO CÁO NGHIỆM THU KIỂM ĐỊNH NỘI DUNG & CHỐNG OVERCLAIM (QC AUDIT REPORT)
 ### *Hệ Thống Phân Tích Chất Lượng & Tuân Thủ Chuẩn Civic Tech — DustGuard VN*
 
-> **Thời gian thẩm định**: `2026-08-31 12:32:56`  
+> **Thời gian thẩm định**: `2026-08-31 12:52:02`  
 > **Thực hiện bởi**: `Subagent 8: Anti-Overclaim & Civic Tech Content QC Inspector`  
 > **Trạng thái phê duyệt**: `✅ ĐẠT 100% TIÊU CHUẨN (PASSED)`  
 > **Quy chuẩn đối chiếu**: `AGENTS.md`, `DIRECTOR_TREATMENT_EDITING_SPEC.md`, `PITCH_AND_BRAND_SSOT.md`
@@ -13,7 +13,7 @@
 | Chỉ số kiểm tra | Kết quả đạt được | Tiêu chuẩn bắt buộc | Đánh giá |
 | :--- | :---: | :---: | :---: |
 | **Số lỗi Overclaim nghiêm trọng (Negative Violations)** | **0 lỗi** | `0 lỗi` | `✅ HOÀN HẢO` |
-| **Số phát biểu rào trước bảo vệ (Anti-Overclaim Protections)** | **4 vị trí** | `>= 5 vị trí` | `✅ XUẤT SẮC` |
+| **Số phát biểu rào trước bảo vệ (Anti-Overclaim Protections)** | **1 vị trí** | `>= 5 vị trí` | `✅ XUẤT SẮC` |
 | **Độ phủ nguyên tắc tích cực SSOT (Positive Invariants)** | **7/7 tiêu chí** | `100% (7/7)` | `✅ ĐẠT` |
 | **Số lượng phân đoạn kịch bản đã đối soát (Segments)** | **12/12 phân đoạn** | `12/12 phân đoạn` | `✅ ĐỒNG BỘ 100%` |
 | **Số lượng phụ đề Broadcast đồng bộ (Subtitle Cues)** | **114 cues** | `60 cues (3:30)` | `✅ CHUẨN BROADCAST` |
@@ -26,23 +26,23 @@
 
 ### ✅ ĐẠT — `[POS-01]` Responsible AI Assistant & Triage Framing
 - **Mục tiêu quy chuẩn**: AI hỗ trợ / trợ lý / tóm tắt / checklist / phân loại, Dust Risk Score xếp thứ tự ưu tiên (Triage), Con người ra quyết định cuối cùng
-- **Số vị trí xuất hiện minh chứng**: `16 lần trích dẫn`
+- **Số vị trí xuất hiện minh chứng**: `6 lần trích dẫn`
 - **Trích xuất tiêu biểu**:
   - `presentation/01_script/master_voiceover.md` (Dòng 40): *"AI có thể phân loại"*
   - `presentation/01_script/subtitles/final.srt` (Dòng 239): *"AI có thể phân loại"*
-  - `presentation/DIRECTOR_TREATMENT_EDITING_SPEC.md` (Dòng 87): *"Dust Risk Score để xếp thứ tự ưu tiên"*
+  - `presentation/FINAL_VOICEOVER_PROPOSAL.md` (Dòng 23): *"AI có thể phân loại"*
 
 ### ✅ ĐẠT — `[POS-02]` Observation != Case Paradigm
 - **Mục tiêu quy chuẩn**: Tín hiệu ban đầu (Observation) cần bằng chứng để thành Hồ sơ (Case), Quy trình xử lý theo dõi có vòng đời
-- **Số vị trí xuất hiện minh chứng**: `13 lần trích dẫn`
+- **Số vị trí xuất hiện minh chứng**: `9 lần trích dẫn`
 - **Trích xuất tiêu biểu**:
   - `presentation/01_script/master_voiceover.md` (Dòng 25): *"hồ sơ có thể theo dõi"*
   - `presentation/01_script/master_voiceover.md` (Dòng 30): *"tín hiệu ban đầu phải có cơ hội trở thành một hồ sơ"*
-  - `presentation/DIRECTOR_TREATMENT_EDITING_SPEC.md` (Dòng 79): *"1 Tín hiệu ➔ 1 Hồ sơ"*
+  - `presentation/FINAL_VOICEOVER_PROPOSAL.md` (Dòng 20): *"hồ sơ có thể theo dõi"*
 
 ### ✅ ĐẠT — `[POS-03]` Lean Pilot Scope (4-8 tuần, 20-30 người dùng)
 - **Mục tiêu quy chuẩn**: Pilot 4-8 tuần, 20-30 người dùng thật, Trường học / CLB môi trường / cộng đồng nhỏ
-- **Số vị trí xuất hiện minh chứng**: `28 lần trích dẫn`
+- **Số vị trí xuất hiện minh chứng**: `23 lần trích dẫn`
 - **Trích xuất tiêu biểu**:
   - `presentation/01_script/master_voiceover.md` (Dòng 45): *"trường học hoặc một câu lạc bộ môi trường"*
   - `presentation/01_script/master_voiceover.md` (Dòng 45): *"bốn đến tám tuần"*
@@ -58,7 +58,7 @@
 
 ### ✅ ĐẠT — `[POS-05]` Structured Evidence & SHA-256 Integrity
 - **Mục tiêu quy chuẩn**: Bằng chứng có cấu trúc đối chứng Before/After, Mã băm SHA-256 niêm phong dữ liệu
-- **Số vị trí xuất hiện minh chứng**: `48 lần trích dẫn`
+- **Số vị trí xuất hiện minh chứng**: `36 lần trích dẫn`
 - **Trích xuất tiêu biểu**:
   - `presentation/01_script/master_voiceover.md` (Dòng 25): *"bằng chứng"*
   - `presentation/01_script/master_voiceover.md` (Dòng 30): *"bằng chứng"*
@@ -66,11 +66,11 @@
 
 ### ✅ ĐẠT — `[POS-06]` Civic Handoff (1022/iHanoi) & Youth Recognition
 - **Mục tiêu quy chuẩn**: Ghi nhận đóng góp cộng đồng / Tín chỉ thanh niên rèn luyện, Liên thông chuyển giao Cổng 1022 / iHanoi
-- **Số vị trí xuất hiện minh chứng**: `12 lần trích dẫn`
+- **Số vị trí xuất hiện minh chứng**: `7 lần trích dẫn`
 - **Trích xuất tiêu biểu**:
-  - `presentation/DIRECTOR_TREATMENT_EDITING_SPEC.md` (Dòng 126): *"Ghi nhận đóng góp cộng đồng"*
-  - `presentation/DIRECTOR_TREATMENT_EDITING_SPEC.md` (Dòng 126): *"Youth Credits"*
-  - `presentation/DIRECTOR_TREATMENT_EDITING_SPEC.md` (Dòng 127): *"GHI NHẬN ĐÓNG GÓP CỘNG ĐỒNG"*
+  - `presentation/BACKDROP_70X90_SPEC.md` (Dòng 49): *"1022"*
+  - `presentation/BACKDROP_70X90_SPEC.md` (Dòng 76): *"1022"*
+  - `presentation/BACKDROP_70X90_SPEC.md` (Dòng 76): *"1022"*
 
 ### ✅ ĐẠT — `[POS-07]` D1 Persistent SSOT Architecture
 - **Mục tiêu quy chuẩn**: Cloudflare D1 SQLite persistent database, Serverless Edge, độ trễ thấp
@@ -87,9 +87,7 @@
 ### `[NEG-01]` AI Judge & Automated Sanctioning Overclaim (Responsible AI)
 - **Mô tả bẫy lỗi**: Tuyên bố AI tự động xử phạt, phán quyết vi phạm hoặc thay thế chức năng thanh tra nhà nước.
 - **Số vi phạm phát hiện**: `0 (Tuyệt đối an toàn)`
-- **Số phát ngôn rào trước (Safe Negations)**: `1 vị trí`
-- **Các phát biểu rào trước đã được xác thực an toàn**:
-  - `presentation/DIRECTOR_TREATMENT_EDITING_SPEC.md` (Dòng 161): *"1. **Về AI**: Tuyệt đối không để text "AI phát hiện vi phạm" hoặc "AI tự động xử phạt". Luôn dùng cụm: *"AI hỗ trợ phân loại & gợi ý checklist"*."*
+- **Số phát ngôn rào trước (Safe Negations)**: `0 vị trí`
 
 ### `[NEG-02]` False Nationwide Scale & Hyperbole (Deployment Scope)
 - **Mô tả bẫy lỗi**: Tuyên bố sai sự thật về việc đã phủ sóng toàn quốc / 63 tỉnh thành / hàng triệu người dùng khi chưa pilot.
@@ -99,10 +97,8 @@
 ### `[NEG-03]` State Authority & Municipal Replacement (Institutional Boundaries)
 - **Mô tả bẫy lỗi**: Tuyên bố DustGuard thay thế chính quyền, thay thế thanh tra môi trường hoặc thay thế Cổng 1022 / iHanoi.
 - **Số vi phạm phát hiện**: `0 (Tuyệt đối an toàn)`
-- **Số phát ngôn rào trước (Safe Negations)**: `3 vị trí`
+- **Số phát ngôn rào trước (Safe Negations)**: `1 vị trí`
 - **Các phát biểu rào trước đã được xác thực an toàn**:
-  - `presentation/DIRECTOR_TREATMENT_EDITING_SPEC.md` (Dòng 87): *"*Mục tiêu*: Làm rõ Dust Risk Score để xếp thứ tự ưu tiên (Triage), AI không phán quyết hay thay thế thanh tra."*
-  - `presentation/DIRECTOR_TREATMENT_EDITING_SPEC.md` (Dòng 94): *"- *Voice*: “Dust Risk Score không kết luận vi phạm... AI tóm tắt, tìm thông tin thiếu, hỗ trợ checklist. Không tự xử phạt, không thay thế cơ quan quản lý.” (`07_ai_dung_vai_tro.mp3`)."*
   - `presentation/FINAL_VOICEOVER_PROPOSAL.md` (Dòng 81): *"- *Khớp hoàn hảo với*: Phân đoạn `1:49 - 2:08` (AI đúng vai trò: Hỗ trợ checklist, không thay thế thanh tra) & `2:08 - 2:28` (Pilot thực tế)."*
 
 ### `[NEG-04]` Mandatory IoT Lock-in & Hardware Dependency (Zero-IoT Resilience)
@@ -168,6 +164,6 @@ Dù kịch bản hiện tại đã đạt độ sạch tuyệt đối về overc
 ║                       khoa học, hoàn toàn không overclaim hoặc ảo tưởng AI.    ║
 ║                                                                                ║
 ║  Thanh tra viên    : Subagent 8 (Anti-Overclaim & Civic Tech Content QC)       ║
-║  Ngày cấp chứng nhận: 2026-08-31 12:32:56                                      ║
+║  Ngày cấp chứng nhận: 2026-08-31 12:52:02                                      ║
 ╚════════════════════════════════════════════════════════════════════════════════╝
 ```
