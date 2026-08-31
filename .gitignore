@@ -28,3 +28,10 @@ prisma/*.db-wal
 
 # CodeLens Graph local index
 .codelens/
+
+# Presentation media & Video rendering outputs
+presentation/media/
+presentation/output/
+*.mp4
+*.wav
+

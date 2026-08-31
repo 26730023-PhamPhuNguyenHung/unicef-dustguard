@@ -1,27 +1,12 @@
 # ACTIVE CONTEXT — DUSTGUARD VN
 
 ## 1. Focus Hiện Tại
-- **HOÀN TẤT 100% ĐỢT KIỂM TOÁN TOÀN DIỆN CODEBASE & HỆ THỐNG (FULL SYSTEM & CODEBASE AUDIT)**:
-  - **Claim Integrity Policy Audit (`audit:claims`)**: Khắc phục dứt điểm cảnh báo linter trong `YouthCredits.jsx`, đổi câu từ hardcode `(20h = 4.0 tín chỉ)` sang `Tín chỉ ngoại khóa đề xuất` trung thực, tuân thủ 100% Claim Integrity Policy.
-  - **D1 SQLite Database SSOT Audit (`audit:db`)**: Chuẩn hóa toàn bộ enum `observations.category` (`CONSTRUCTION_DUST`) và `observations.status` (`RECORDED`) trong `schema-healer.js`, `d1-architecture-healer.test.js`, migration `0004_d1_remote_sync.sql` và CSDL `dev.db`, đạt **55/55 checks PASS, 0 warnings, 0 errors**.
-  - **Vite Bundle Cleanliness**: Thêm `/* @vite-ignore */` cho dynamic fallback `node:crypto` trong `image-integrity.js`, loại bỏ hoàn toàn cảnh báo externalized khi build client SPA.
-  - **Toàn bộ Verification Pipelines**:
-    - `audit:claims`: PASS 100% (0 overclaims).
-    - `audit:db`: PASS 100% (55 checks, 0 errors).
-    - `npm --prefix app run build`: Vite build PASS 100% trong ~4.3s (0 errors/warnings).
-    - `verify:quick`: 28 test files (279 unit + UI smoke tests) PASS 100%.
-    - `verify:full`: 74 test files (586 tests + D1 sequential state tests) PASS 100%.
+- **TRIỂN KHAI BỘ TÀI LIỆU & VOICE-OVER PROPOSAL VÒNG CHUNG KẾT (3 PHÚT 30 GIÂY)**:
+  - Khởi tạo thư mục `presentation/` chuẩn SSOT, đã nạp đầy đủ các asset nhạc (`achievement`, `epic-presentation`) và 10 hình ảnh ý tưởng vào `presentation/media/`.
+  - Cập nhật `.gitignore` để ignore toàn bộ binary nặng (`presentation/media/`, `presentation/output/`, `*.mp4`, `*.wav`).
+  - Soạn thảo tài liệu kịch bản chi tiết [presentation/FINAL_VOICEOVER_PROPOSAL.md](file:///d:/07-Competitions-Hackathons/unicef-dustguard/presentation/FINAL_VOICEOVER_PROPOSAL.md) với phân cảnh timeline, visual cue, mốc beat nhạc và cao trào.
+  - Xây dựng script Python [presentation/generate_voiceover.py](file:///d:/07-Competitions-Hackathons/unicef-dustguard/presentation/generate_voiceover.py) và đã sinh hoàn chỉnh 12 phân đoạn + file tổng hợp của 2 giọng đọc chất lượng cao (`vi-VN-NamMinhNeural` và `vi-VN-HoaiMyNeural`).
 
-## 2. Các Mốc Vừa Hoàn Thành
-- [x] Khởi chạy kiểm toán toàn diện codebase và hệ sinh thái test.
-- [x] Sửa lỗi Claim Integrity trong `YouthCredits.jsx`.
-- [x] Đồng bộ enum category/status của observations trong schema-healer và dev.db.
-- [x] Khử warning bundler Vite trong `image-integrity.js`.
-- [x] Lưu bài học Trap 1.16 vào `.agents/BUG_MEMORY.md`.
-- [x] Cập nhật SSOT Timeline & Active Context.
-- [x] Chạy full suite kiểm thử đạt 100% PASS.
-
-## 🚀 HOÀN TẤT 100%: COMPREHENSIVE MAP AUDIT & LEGACY MODULES CLEANUP
 - **Mục tiêu hoàn thành**: Audit và dọn dẹp triệt để toàn bộ hệ thống Bản đồ Không gian của DustGuard VN; giải quyết dứt điểm lỗi `ReferenceError: selectedEntity is not defined` từ nguyên nhân gốc rễ; loại bỏ toàn bộ rác dead code, legacy components và proxy barrels thừa; đảm bảo kiến trúc One Map SSOT tinh gọn, ổn định, responsive, không rò rỉ lỗi kỹ thuật ra giao diện production.
 - **Chi tiết triển khai kỹ thuật**:
   1. **Root Cause Resolution (`SpatialMap.jsx`)**: Truyền đúng computed state `selectedEntity={effectiveSelectedEntity}` và handler an toàn `onClose={() => handleSelectEntity(null)}` cho `SpatialEntityDrawer`. Chuẩn hóa kiểm tra `policy?.can` trong hàm `resolveMapCapabilities`.
