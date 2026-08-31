@@ -11,14 +11,15 @@
   - Phân định rõ ràng: Brand Red cho thương hiệu/nav/primary CTAs, Alert Red (`#DC2626`) chỉ dùng cho lỗi/quá hạn; Giữ vững Semantic Colors (Success green `#15803D`, Warning orange `#C2410C`, Info blue `#0369A1`).
   - Chuẩn hóa toàn bộ Layouts và Pages: `/staff` (Dashboard, Cases, CaseDetail, Sites, SiteDetail, Tasks, Alerts, Settings, Profile), `/citizen` (Home, Reports, ReportNew, Profile), `/contractor` (Layout, Dashboard, Tasks, Cases, Reports), `/admin` (Layout, UsersManagement, Settings), Auth Pages (Login, LoginForm, DemoAccessModal).
   - Nền sáng sạch `#FAFAF9`, thẻ trắng `#FFFFFF`, chữ đậm `#1C1917`, touch targets $\ge 44\text{px}$, zero glassmorphism.
-- **Tái Cấu Trúc Cloudflare Worker Modular Monolith (Hoàn tất 100%)**:
-  - Rút gọn `server/worker.js` từ God File 7.721 dòng xuống **43 dòng (Thin Entrypoint)** chỉ làm 2 việc: điều hướng `ASSETS` vs `app.fetch` và kích hoạt `scheduled()` cron sweep.
-  - Rút gọn `server/app.js` từ 7.707 dòng xuống **115 dòng (Thin Composition Root)**.
-  - Tách thành 17 Domain Routers độc lập, đóng gói rõ ràng tại `server/routes/worker/*.routes.js` (`health`, `storage`, `auth`, `public`, `sites`, `complaints`, `cases`, `inspections`, `actions`, `sensors`, `documents`, `csr`, `contractor`, `community`, `tasks`, `executive`, `ai`, `admin`).
-  - Tối ưu `ensureSchema()` thành **Lazy Isolate Initializer**.
+- **Hoàn Tất Giai Đoạn 2 (Staff Case Workspace) & Giai Đoạn 3 (IoT Monitoring & Alerts)**:
+  - **Staff Case Workspace (`/staff/cases/:id`)**: Nâng cấp thành Case Workspace 6 Tab (`[Thông tin]`, `[Hình ảnh]`, `[Theo dõi]`, `[Khảo sát]`, `[Khắc phục]`, `[Hồ sơ]`). Tích hợp 10 tiêu chuẩn khảo sát hiện trường lưu D1 (`PASS | FAIL | NA`, ghi chú thực địa), đối chứng Before/After evidence và Geofence do backend tính toán.
+  - **IoT Monitoring (`/staff/monitoring`)**: Trang quan trắc realtime với bộ đếm trạng thái (`Online` / `Cảnh báo` / `Offline > 15p`), bảng cảm biến và modal xem đồ thị 24h reading history (`/api/sensors/:id/readings`).
+  - **Atomic Alert-to-Case (`POST /api/alerts/:id/open-case`)**: Tạo vụ việc nguyên tử từ cảnh báo bụi vượt ngưỡng trong D1 transaction, tự động phát hiện và liên kết hồ sơ đang mở để chống trùng lặp.
+  - **Staff Navigation & Router**: Bổ sung đầy đủ route `/staff/monitoring` và `/staff/alerts` vào hệ thống.
 - **Sức khỏe Mã nguồn**:
   - `npm --prefix app run verify:quick`: **279/279 tests PASS 100%** (28 test files + 42 UI smoke tests, ~2.0s).
-  - `npm --prefix app run build`: **Vite production bundle PASS 100%** (0 errors, 2.3s).
+  - `node --test app/tests/alert-to-case-atomic.test.js`: **PASS 100% (20ms)**.
+  - `npm --prefix app run build`: **Vite production bundle PASS 100%** (0 errors, 2.5s).
 - **Quy tắc Vận hành**: 
   - Tuân thủ nghiêm ngặt 10 Core Invariants trong [`AGENTS.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/AGENTS.md).
   - Sử dụng Fast Verification Pipeline: Chỉ chạy Level 0 (`node --test app/tests/<file>.test.js`) khi đang code, chạy Level 3 trước khi hoàn tất.
