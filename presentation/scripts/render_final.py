@@ -47,7 +47,7 @@ def main():
 
     bgm1 = BASE_DIR / "04_audio/music/epic-presentation.mp3"
     bgm2 = BASE_DIR / "04_audio/music/achievement.mp3"
-    voice_track = BASE_DIR / "output/nam_minh/full_voiceover_nam_minh.mp3"
+    voice_track = BASE_DIR / "04_audio/voice_final/full_voiceover_minh_duc.wav"
 
     # 1. Video Footages
     v_flycam = BASE_DIR / sources["V001"]["file"]
