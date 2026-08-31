@@ -26,6 +26,16 @@
   1. Tuyệt đối không để duplicate route paths trong Hono Worker application.
   2. Luôn áp dụng xác thực danh tính `getAuthenticatedUser(c)` + kiểm tra role `requireRoles` trên từng endpoint nhạy cảm (Executive, Admin), trả về chuẩn mã lỗi 401 khi chưa đăng nhập và 403 khi role thấp hơn (Citizen, Contractor) cố gọi API.
 
+### 🚨 Trap 0.5: Demo Persona 1-Click Login bị redirect ngược về `/login` do Clerk signIn throw unhandled error & lệch alias email
+- **Nguyên nhân**: Khi Clerk SDK được bật nhưng người dùng nhấn 1-Click Login với tài khoản demo (`demo-inspector@dustguard.vn`), Clerk remote không tìm thấy user nên throw unhandled error; khối `login` không có `try...catch` nên bỏ qua fallback `signInWithEmail()`. Đồng thời `signInWithEmail` chỉ so khớp chuỗi cứng `staff@dustguard.vn` thay vì hỗ trợ toàn bộ aliases (`demo-inspector`, `demo-staff`, `demo-admin`), dẫn đến ném lỗi và RouteGuard redirect người dùng về trang `/login`.
+- **Giải pháp**:
+  1. Bọc `try { await clerk.client.signIn.create(...) } catch` trong `AuthContext.jsx` để fallback mượt sang local D1 auth `signInWithEmail(email, password)`.
+  2. Mở rộng regex/alias trong `auth-client.js` cho tất cả 5 persona demo (`demo-inspector`, `demo-staff`, `demo-admin`, `demo-community`, `demo-contractor`, `demo-citizen`) và ghi nhận đầy đủ `dustguard_user`, `dustguard_role`, `dustguard_token` vào `localStorage`.
+
+### 🚨 Trap 0.6: Crash Virtual DOM trên StaffDashboard do thiếu import `resolveMapCapabilities` và `SpatialMap`
+- **Nguyên nhân**: Trong `StaffDashboard.jsx`, component gọi hàm `resolveMapCapabilities(effectiveUser)` và render `<SpatialMap />` ở GIS Section nhưng file quên import từ `components/map/`. Khi Cán bộ vào dashboard, React ném `ReferenceError` làm kích hoạt ErrorBoundary.
+- **Giải pháp**: Luôn kiểm tra đầy đủ import `import { resolveMapCapabilities } from '../../components/map/mapCapabilities';` và `import SpatialMap from '../../components/map/SpatialMap';` trước khi render.
+
 
 ---
 

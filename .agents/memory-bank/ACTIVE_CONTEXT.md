@@ -1,5 +1,17 @@
 # ACTIVE CONTEXT — DUSTGUARD VN
 
+- **🚀 HOÀN TẤT 100%: LIVE CHROME DEVTOOLS VISUAL INSPECTION & RUNTIME AUTO-FIX**:
+  1. **Khởi Động Dev Server & Live DevTools MCP**:
+     - Khởi động đồng thời Cloudflare D1 Worker trên cổng 8787 và Vite Client trên cổng 3000.
+     - Sử dụng `chrome-devtools-mcp` trực tiếp duyệt trang, chụp ảnh snapshot (`take_screenshot`), kiểm tra DOM (`take_snapshot`), và kiểm tra console log (`list_console_messages`).
+  2. **Vá Lỗi Thực Tế Đã Bắt Được Trên Live Trình Duyệt**:
+     - **Vá Lỗi 1-Click Demo Login (`DemoHub.jsx`, `AuthContext.jsx`, `auth-client.js`)**: Bọc try-catch quanh Clerk SDK `signIn.create` để tự động fallback sang local D1 auth khi Clerk unhandled reject; mở rộng alias so khớp email cho cả 5 persona demo (`demo-inspector`, `demo-staff`, `demo-admin`, `demo-community`, `demo-contractor`, `demo-citizen`) và lưu trữ session (`dustguard_user`, `dustguard_role`, `dustguard_token`) vào `localStorage`.
+     - **Vá Lỗi Crash Virtual DOM trên StaffDashboard (`StaffDashboard.jsx`)**: Bổ sung import thiếu `resolveMapCapabilities` từ `mapCapabilities.js` và `SpatialMap` từ `SpatialMap.jsx` loại bỏ hoàn toàn ErrorBoundary crash.
+     - **Kiểm Thử & Thực Hiện Bước Chuyển Trạng Thái 7 Bước (`StaffCaseDetail.jsx`)**: Điền ghi chú và thực hiện chuyển thành công hồ sơ `DG-CASE-2026-081` từ Bước 4 ("Khảo sát Hiện trường") sang Bước 5 ("Báo cáo & Đề xuất"), xác nhận thanh Stepper và Timeline cập nhật tức thì.
+     - **Kiểm Thử Đa Kích Thước Màn Hình (Mobile Responsive 390x844 & Desktop 1440x900)**: Xác nhận giao diện co giãn hoàn hảo không tràn viền ngang, touch target $\ge 44\text{px}$, màu sắc tương phản cao, zero glassmorphism.
+  3. **Kiểm Tra Sức Khỏe Toàn Diện (Fast Verification Pipeline Gate)**:
+     - `npm --prefix app run verify:quick`: 28 test files (279/279 tests) PASS 100% (2.5s).
+
 - **🏛️ HOÀN TẤT 100%: AGENT 5 — ADMIN / LÃNH ĐẠO & RBAC SECURITY AUDITOR**:
 
   1. **Quản Lý Người Dùng & Phân Quyền (`UsersManagement.jsx`, `user.repository.js`, `worker.js`)**:
