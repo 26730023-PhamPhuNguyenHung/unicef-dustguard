@@ -40,3 +40,25 @@
 2. **Giọng Đọc (Voice Options)**:
    - **Nam Minh (`vi-VN-NamMinhNeural`)**: Giọng nam miền Bắc, độ trầm ấm và tính tin cậy cao, phù hợp văn phong chính luận, khoa học và thuyết phục ban giám khảo.
    - **Hoài My (`vi-VN-HoaiMyNeural`)**: Giọng nữ miền Bắc, truyền cảm, rõ nét, tươi sáng, phù hợp nhịp điệu hành động thanh niên.
+
+---
+
+## 3. Danh Mục Nguồn Footage Thực Tế (Raw Footage Sources)
+
+### 📹 Nguồn 1: Video Thực Trạng Ô Nhiễm Không Khí & Bụi Mịn Hà Nội
+- **Nguồn gốc**: [YouTube - Bụi mịn & Ô nhiễm không khí Hà Nội (m1B424bsDWs)](https://www.youtube.com/watch?v=m1B424bsDWs)
+- **Local File**: `presentation/media/hanoi_air_pollution_footage.mp4`
+- **Các phân cảnh trích xuất vàng cho Video Proposal**:
+  1. **`0:00 - 0:39` | Thành phố chìm trong khói bụi & tầm nhìn hạn chế**:
+     - Cảnh flycam/panorama các tòa nhà cao tầng và nút giao thông ngập tràn bụi mù mịt, ô nhiễm ngưỡng tím/nâu.
+     - *Khớp hoàn hảo với*: Phân đoạn `0:00 - 0:18` (Mở vấn đề).
+  2. **`0:39 - 1:04` & `2:00 - 2:18` | Phản ánh của người cao tuổi & gánh nặng sức khỏe**:
+     - Người dân cao tuổi chia sẻ trực tiếp về sự ngột ngạt và lo lắng cho sức khỏe trẻ nhỏ, người già.
+     - *Khớp hoàn hảo với*: Phân đoạn `0:18 - 0:38` (Nút thắt thực sự: "Người dân có phản ánh...").
+  3. **`1:05 - 1:50` | Giao thông tắc nghẽn & xe tải cuốn bụi**:
+     - Cảnh thực địa xe máy, ô tô, xe tải chen chúc trong lớp bụi dày đặc, người dân bịt kín khẩu trang.
+     - *Khớp hoàn hảo với*: Phân đoạn `0:38 - 0:55` (Đặt câu hỏi trung tâm).
+  4. **`2:57 - 3:10` | Tiếng nói của thế hệ trẻ**:
+     - Bạn trẻ chia sẻ về việc chủ động đeo khẩu trang chống bụi mịn và chuyển đổi sang phương tiện công cộng/hành động xanh.
+     - *Khớp hoàn hảo với*: Phân đoạn `2:45 - 3:00` (Vai trò cộng đồng thanh niên).
+
