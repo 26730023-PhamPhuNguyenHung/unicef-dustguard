@@ -1,21 +1,34 @@
 segment: 10
-title: "Sức mạnh cộng đồng & Thanh niên"
-target:
-  start: 165.0
-  end: 180.0
-  duration: 15.0
+title: "Cộng đồng & Sức mạnh thanh niên"
+timecode:
+  start: 192.576
+  end: 212.664
+  duration: 20.088
 voice:
   file: 04_audio/voice_final/10.wav
-  text: "Và DustGuard không chỉ dành cho cơ quan quản lý. Chúng tôi muốn bắt đầu từ những cộng đồng đã có động lực hành động: trường học, câu lạc bộ môi trường, tổ chức thanh niên và những người trẻ. Để họ không chỉ nhìn thấy một vấn đề. Mà biết cách ghi nhận nó tốt hơn, theo dõi nó lâu hơn và giúp nó không bị bỏ quên."
-visuals:
-  - V010
-  - I001
-  - I005
-editing:
-  cut_rate: 2.5
-  transition: hard_cut
-  motion: warm_glow
-music:
-  track: achievement
-  energy: 8
-  role: inspiring_youth
+  duration_seconds: 20.088
+shots:
+  - clip_id: V010
+    in_point: 8.000
+    out_point: 14.000
+    duration: 6.000
+    timeline_start: 192.576
+    timeline_end: 198.576
+    motion: "youth_smile_focus"
+    on_screen_text: "SỨC MẠNH THANH NIÊN"
+  - clip_id: I001
+    in_point: 0.000
+    out_point: 7.500
+    duration: 7.500
+    timeline_start: 198.576
+    timeline_end: 206.076
+    motion: "volunteer_map"
+    on_screen_text: "Ghi nhận đóng góp cộng đồng"
+  - clip_id: I005
+    in_point: 0.000
+    out_point: 6.590
+    duration: 6.590
+    timeline_start: 206.076
+    timeline_end: 212.666
+    motion: "warm_protection"
+    on_screen_text: "Không để vấn đề bị bỏ quên"

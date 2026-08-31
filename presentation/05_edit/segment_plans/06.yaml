@@ -1,20 +1,26 @@
 segment: 6
 title: "Bài học sau tập huấn"
-target:
-  start: 90.0
-  end: 109.0
-  duration: 19.0
+timecode:
+  start: 98.856
+  end: 120.072
+  duration: 21.216
 voice:
   file: 04_audio/voice_final/06.wav
-  text: "Nhưng DustGuard hôm nay không còn giống phiên bản ban đầu. Sau vòng tập huấn, chúng tôi nhận ra rằng một hệ thống thông minh không nên cố gắng đưa ra nhiều quyết định hơn con người. Nó phải giúp con người có đủ thông tin để đưa ra quyết định tốt hơn. Vì vậy, chúng tôi thay đổi cách nhìn về AI, về điểm rủi ro và cả vai trò của IoT."
-visuals:
-  - V008
-  - I006
-editing:
-  cut_rate: 3.5
-  transition: cross_dissolve
-  motion: subtle_push
-music:
-  track: epic
-  energy: 6
-  role: contemplative_tech
+  duration_seconds: 21.216
+shots:
+  - clip_id: V008
+    in_point: 0.000
+    out_point: 10.000
+    duration: 10.000
+    timeline_start: 98.856
+    timeline_end: 108.856
+    motion: "static_reflect"
+    on_screen_text: "Hạn chế của biện pháp thủ công"
+  - clip_id: I006
+    in_point: 0.000
+    out_point: 11.220
+    duration: 11.220
+    timeline_start: 108.856
+    timeline_end: 120.076
+    motion: "subtle_push"
+    on_screen_text: "Hệ thống giúp con người có đủ thông tin"

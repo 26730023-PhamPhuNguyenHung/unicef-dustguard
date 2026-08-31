@@ -1,20 +1,26 @@
 segment: 3
 title: "5 Câu hỏi trung tâm"
-target:
-  start: 38.0
-  end: 55.0
-  duration: 17.0
+timecode:
+  start: 45.360
+  end: 61.200
+  duration: 15.840
 voice:
   file: 04_audio/voice_final/03.wav
-  text: "Nếu cùng lúc có mười phản ánh, chúng ta nên nhìn vào trường hợp nào trước? Vì sao trường hợp đó đáng chú ý? Hồ sơ còn thiếu gì? Ai đang phụ trách? Và sau khi một phản ánh được gửi đi... nó đã thực sự đi đến đâu?"
-visuals:
-  - V006
-  - V015
-editing:
-  cut_rate: 2.5
-  transition: hard_cut
-  motion: text_pop_in
-music:
-  track: epic
-  energy: 4
-  role: tension_pre_drop
+  duration_seconds: 15.840
+shots:
+  - clip_id: V006
+    in_point: 0.000
+    out_point: 7.500
+    duration: 7.500
+    timeline_start: 45.360
+    timeline_end: 52.860
+    motion: "slow_zoom"
+    on_screen_text: "Xem trường hợp nào trước?"
+  - clip_id: V015
+    in_point: 2.000
+    out_point: 10.340
+    duration: 8.340
+    timeline_start: 52.860
+    timeline_end: 61.200
+    motion: "tilt_down"
+    on_screen_text: "Hồ sơ còn thiếu gì? Ai phụ trách?"

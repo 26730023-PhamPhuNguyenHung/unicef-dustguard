@@ -1,20 +1,26 @@
 segment: 9
-title: "Đo lường giá trị thật"
-target:
-  start: 148.0
-  end: 165.0
-  duration: 17.0
+title: "Đo lường giá trị thật (Metrics)"
+timecode:
+  start: 173.112
+  end: 192.576
+  duration: 19.464
 voice:
   file: 04_audio/voice_final/09.wav
-  text: "Bao nhiêu trường hợp có đủ bằng chứng? Thời gian từ phát hiện đến hành động là bao lâu? Bao nhiêu trường hợp thực sự có bước xử lý tiếp theo? Bao nhiêu vụ việc có thể được theo dõi từ lúc xuất hiện tín hiệu đến khi có kết quả? Đó mới là những con số chúng tôi muốn dùng để chứng minh DustGuard có giá trị."
-visuals:
-  - I002
-  - I008
-editing:
-  cut_rate: 2.5
-  transition: hard_cut
-  motion: counter_number
-music:
-  track: achievement
-  energy: 8
-  role: metric_growth
+  duration_seconds: 19.464
+shots:
+  - clip_id: I002
+    in_point: 0.000
+    out_point: 9.500
+    duration: 9.500
+    timeline_start: 173.112
+    timeline_end: 182.612
+    motion: "counter_animation"
+    on_screen_text: "Bao nhiêu vụ đủ bằng chứng?"
+  - clip_id: I008
+    in_point: 0.000
+    out_point: 9.960
+    duration: 9.960
+    timeline_start: 182.612
+    timeline_end: 192.572
+    motion: "metrics_highlight"
+    on_screen_text: "Đo khả năng biến tín hiệu thành hành động"

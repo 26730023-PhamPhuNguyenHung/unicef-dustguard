@@ -1,21 +1,34 @@
 segment: 1
-title: "Vấn đề bụi công trình"
-target:
-  start: 0.0
-  end: 18.0
-  duration: 18.0
+title: "Vấn đề bụi công trình ngoài đường"
+timecode:
+  start: 0.000
+  end: 16.968
+  duration: 16.968
 voice:
   file: 04_audio/voice_final/01.wav
-  text: "Ở một thành phố đang phát triển, những công trường mới đồng nghĩa với những con đường mới, những ngôi nhà mới và những cơ hội mới. Nhưng cùng với sự phát triển đó, có một tác động rất dễ bị xem là nhỏ... cho đến khi nó trở thành vấn đề của cả một cộng đồng. Đó là bụi công trình."
-visuals:
-  - V001
-  - V002
-  - V003
-editing:
-  cut_rate: 3.5
-  transition: cross_dissolve
-  motion: subtle_zoom_in
-music:
-  track: epic
-  energy: 2
-  role: atmospheric_intro
+  duration_seconds: 16.968
+shots:
+  - clip_id: V001
+    in_point: 0.000
+    out_point: 6.000
+    duration: 6.000
+    timeline_start: 0.000
+    timeline_end: 6.000
+    motion: "slow_zoom_in"
+    on_screen_text: "Mỗi ngày, thành phố vẫn tiếp tục xây dựng"
+  - clip_id: V002
+    in_point: 2.000
+    out_point: 9.500
+    duration: 7.500
+    timeline_start: 6.000
+    timeline_end: 13.500
+    motion: "pan_right"
+    on_screen_text: "Công trường mới đồng nghĩa với cơ hội mới"
+  - clip_id: V003
+    in_point: 3.000
+    out_point: 10.470
+    duration: 7.470
+    timeline_start: 13.500
+    timeline_end: 20.970
+    motion: "shake_impact"
+    on_screen_text: "BỤI CÔNG TRÌNH"

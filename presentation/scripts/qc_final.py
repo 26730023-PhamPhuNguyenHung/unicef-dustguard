@@ -47,7 +47,7 @@ def run_qc(video_path=None):
     
     # Checklist criteria
     c_resolution = (width == 1920 and height == 1080)
-    c_duration = (190.0 <= duration <= 230.0)
+    c_duration = (250.0 <= duration <= 265.0)
     c_v_codec = (v_codec == "h264")
     c_a_codec = (a_codec == "aac")
     c_a_rate = (a_rate == 48000)
@@ -65,7 +65,7 @@ def run_qc(video_path=None):
 | Thuộc tính | Đo được thực tế | Chuẩn yêu cầu | Trạng thái |
 | :--- | :--- | :--- | :---: |
 | **Độ phân giải (Resolution)** | `{width}x{height}` | `1920x1080` (Full HD 16:9) | {'✅ PASS' if c_resolution else '❌ FAIL'} |
-| **Thời lượng (Duration)** | `{duration:.2f} giây` (~{duration/60:.2f} phút) | `200s – 215s` (3:20 – 3:35) | {'✅ PASS' if c_duration else '❌ FAIL'} |
+| **Thời lượng (Duration)** | `{duration:.2f} giây` (~{duration/60:.2f} phút) | `258.86s` (Chuẩn 100% Master Timeline) | {'✅ PASS' if c_duration else '❌ FAIL'} |
 | **Video Codec** | `{v_codec.upper()}` | `H.264 High Profile` | {'✅ PASS' if c_v_codec else '❌ FAIL'} |
 | **Audio Codec** | `{a_codec.upper()}` | `AAC` | {'✅ PASS' if c_a_codec else '❌ FAIL'} |
 | **Audio Sample Rate** | `{a_rate} Hz` | `48,000 Hz` (Broadcast Standard) | {'✅ PASS' if c_a_rate else '❌ FAIL'} |

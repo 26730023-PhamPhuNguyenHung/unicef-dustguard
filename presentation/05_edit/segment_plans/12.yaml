@@ -1,21 +1,34 @@
 segment: 12
 title: "Tuyên ngôn kết thúc & Sứ mệnh"
-target:
-  start: 197.0
-  end: 210.0
-  duration: 13.0
+timecode:
+  start: 234.312
+  end: 258.864
+  duration: 24.552
 voice:
   file: 04_audio/voice_final/12.wav
-  text: "DustGuard không đặt mục tiêu trở thành một hệ thống quyết định thay con người. Chúng tôi muốn nó trở thành một công cụ giúp một vấn đề được nhìn thấy rõ hơn. Được ghi nhận đầy đủ hơn. Được theo dõi lâu hơn. Và có nhiều cơ hội hơn để đi từ một tín hiệu... đến một hành động thực sự. DustGuard — biến dữ liệu thành hành động quản lý có ưu tiên, có bằng chứng và có theo dõi."
-visuals:
-  - I010
-  - I007
-  - V001
-editing:
-  cut_rate: 1.8
-  transition: flash_climax
-  motion: hero_brand
-music:
-  track: achievement
-  energy: 10
-  role: peak_climax_finale
+  duration_seconds: 24.552
+shots:
+  - clip_id: I010
+    in_point: 0.000
+    out_point: 7.500
+    duration: 7.500
+    timeline_start: 234.312
+    timeline_end: 241.812
+    motion: "finale_dossier"
+    on_screen_text: "CÓ ƯU TIÊN — CÓ BẰNG CHỨNG — CÓ THEO DÕI"
+  - clip_id: I007
+    in_point: 0.000
+    out_point: 8.500
+    duration: 8.500
+    timeline_start: 241.812
+    timeline_end: 250.312
+    motion: "city_sunrise"
+    on_screen_text: "Để dữ liệu không dừng lại ở một phản ánh"
+  - clip_id: V001
+    in_point: 10.000
+    out_point: 18.550
+    duration: 8.550
+    timeline_start: 250.312
+    timeline_end: 258.862
+    motion: "grand_zoom_out"
+    on_screen_text: "DUSTGUARD VN"

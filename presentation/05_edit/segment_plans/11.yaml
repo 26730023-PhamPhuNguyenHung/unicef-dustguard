@@ -1,21 +1,34 @@
 segment: 11
-title: "Tầm nhìn 1 lõi đa bài toán"
-target:
-  start: 180.0
-  end: 197.0
-  duration: 17.0
+title: "Tầm nhìn 1 lõi đa bài toán môi trường"
+timecode:
+  start: 212.664
+  end: 234.312
+  duration: 21.648
 voice:
   file: 04_audio/voice_final/11.wav
-  text: "Nếu cách tiếp cận này được kiểm chứng với bụi công trình, chúng tôi tin rằng cùng một lõi có thể tiếp tục được phát triển cho những vấn đề môi trường khác. Nước thải. Đốt rơm rạ. Thuốc bảo vệ thực vật. Tiếng ồn. Nhưng mỗi bước mở rộng đều phải bắt đầu lại bằng việc hiểu đúng người dùng, đúng dữ liệu và đúng quy trình thực tế."
-visuals:
-  - I009
-  - V011
-  - I007
-editing:
-  cut_rate: 2.0
-  transition: zoom_out
-  motion: grid_4_boxes
-music:
-  track: achievement
-  energy: 9
-  role: ecosystem_vision
+  duration_seconds: 21.648
+shots:
+  - clip_id: I009
+    in_point: 0.000
+    out_point: 7.000
+    duration: 7.000
+    timeline_start: 212.664
+    timeline_end: 219.664
+    motion: "grid_4_topics"
+    on_screen_text: "Bụi ➔ Nước thải ➔ Rơm rạ ➔ Tiếng ồn"
+  - clip_id: V011
+    in_point: 8.000
+    out_point: 15.000
+    duration: 7.000
+    timeline_start: 219.664
+    timeline_end: 226.664
+    motion: "national_bus"
+    on_screen_text: "Một lõi quản trị tín hiệu mở rộng"
+  - clip_id: I007
+    in_point: 0.000
+    out_point: 7.650
+    duration: 7.650
+    timeline_start: 226.664
+    timeline_end: 234.314
+    motion: "future_city"
+    on_screen_text: "Đúng người dùng — Đúng quy trình"

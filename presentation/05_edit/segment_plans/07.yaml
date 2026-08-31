@@ -1,20 +1,26 @@
 segment: 7
-title: "Responsible AI & Triage"
-target:
-  start: 109.0
-  end: 128.0
-  duration: 19.0
+title: "Responsible AI: Triage & Checklist"
+timecode:
+  start: 120.072
+  end: 146.328
+  duration: 26.256
 voice:
   file: 04_audio/voice_final/07.wav
-  text: "Dust Risk Score không trả lời rằng một công trình có vi phạm hay không. Nó chỉ hỗ trợ một câu hỏi thực tế hơn: trong nhiều trường hợp đang tồn tại, trường hợp nào nên được xem xét trước, và vì sao? AI có thể phân loại, tóm tắt, tìm thông tin còn thiếu và hỗ trợ checklist. Nhưng AI không tự kết luận vi phạm. Không tự quyết định xử phạt. Và không thay thế cơ quan có thẩm quyền."
-visuals:
-  - V009
-  - V014
-editing:
-  cut_rate: 3.0
-  transition: hard_cut
-  motion: teal_highlight
-music:
-  track: epic
-  energy: 8
-  role: confident_authority
+  duration_seconds: 26.256
+shots:
+  - clip_id: V009
+    in_point: 0.000
+    out_point: 13.000
+    duration: 13.000
+    timeline_start: 120.072
+    timeline_end: 133.072
+    motion: "field_audit_zoom"
+    on_screen_text: "AI Checklist & Risk Score Triage"
+  - clip_id: V014
+    in_point: 0.000
+    out_point: 13.260
+    duration: 13.260
+    timeline_start: 133.072
+    timeline_end: 146.332
+    motion: "tech_scan"
+    on_screen_text: "AI gợi ý — Con người quyết định"

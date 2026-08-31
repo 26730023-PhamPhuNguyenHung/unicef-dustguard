@@ -1,20 +1,26 @@
 segment: 5
-title: "1 Tín hiệu ➔ 1 Hồ sơ"
-target:
-  start: 70.0
-  end: 90.0
-  duration: 20.0
+title: "1 Tín hiệu ➔ 1 Hồ sơ có theo dõi"
+timecode:
+  start: 75.480
+  end: 98.856
+  duration: 23.376
 voice:
   file: 04_audio/voice_final/05.wav
-  text: "Điểm mới của DustGuard không nằm ở việc tạo thêm một nơi để gửi phản ánh. Điều chúng tôi muốn giải quyết là khoảng trống sau khi phản ánh đã được gửi. Một tín hiệu ban đầu phải có cơ hội trở thành một hồ sơ. Một hồ sơ phải có bằng chứng. Một trường hợp phải có mức độ ưu tiên. Và quan trọng nhất: phải có thể biết nó đang được xử lý tới đâu."
-visuals:
-  - I004
-  - I003
-editing:
-  cut_rate: 3.0
-  transition: hard_cut
-  motion: cursor_click
-music:
-  track: epic
-  energy: 8
-  role: dynamic_flow
+  duration_seconds: 23.376
+shots:
+  - clip_id: I004
+    in_point: 0.000
+    out_point: 11.500
+    duration: 11.500
+    timeline_start: 75.480
+    timeline_end: 86.980
+    motion: "evidence_hash_zoom"
+    on_screen_text: "1 Tín hiệu ➔ 1 Hồ sơ có bằng chứng"
+  - clip_id: I003
+    in_point: 0.000
+    out_point: 11.880
+    duration: 11.880
+    timeline_start: 86.980
+    timeline_end: 98.860
+    motion: "pan_lifecycle"
+    on_screen_text: "Biết rõ tiến độ đang xử lý tới đâu"

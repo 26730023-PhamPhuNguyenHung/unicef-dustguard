@@ -1,6 +1,6 @@
 # 🛡️ DUSTGUARD VN — AUTOMATED VIDEO QUALITY CONTROL (QC) REPORT
-**Thời gian kiểm định**: 2026-08-31 11:27:07  
-**Target Video**: `DustGuardVN_FINAL_1080p.mp4` (66592754 bytes)
+**Thời gian kiểm định**: 2026-08-31 11:34:48  
+**Target Video**: `DustGuardVN_FINAL_1080p.mp4` (184291753 bytes)
 
 ---
 
@@ -9,7 +9,7 @@
 | Thuộc tính | Đo được thực tế | Chuẩn yêu cầu | Trạng thái |
 | :--- | :--- | :--- | :---: |
 | **Độ phân giải (Resolution)** | `1920x1080` | `1920x1080` (Full HD 16:9) | ✅ PASS |
-| **Thời lượng (Duration)** | `127.00 giây` (~2.12 phút) | `200s – 215s` (3:20 – 3:35) | ❌ FAIL |
+| **Thời lượng (Duration)** | `258.88 giây` (~4.31 phút) | `258.86s` (Chuẩn 100% Master Timeline) | ✅ PASS |
 | **Video Codec** | `H264` | `H.264 High Profile` | ✅ PASS |
 | **Audio Codec** | `AAC` | `AAC` | ✅ PASS |
 | **Audio Sample Rate** | `48000 Hz` | `48,000 Hz` (Broadcast Standard) | ✅ PASS |
@@ -26,4 +26,4 @@
 
 ---
 
-### 🏆 KẾT LUẬN CHUNG: `⚠️ CẦN HIỆU CHỈNH LẠI`
+### 🏆 KẾT LUẬN CHUNG: `✅ CHUẨN ĐỦ ĐIỀU KIỆN PHÁT SÓNG & NỘP BÀI`

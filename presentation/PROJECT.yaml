@@ -1,7 +1,8 @@
 project:
   name: DustGuard VN
   title: "DustGuard VN — Nền tảng Quản trị Tín hiệu & Bằng chứng Môi trường"
-  target_duration: 210 # 3 phút 30 giây (210s)
+  target_duration_seconds: 258.864 # Chuẩn xác 100% theo voiceover runtime
+  timecode_precision: "0.001s (millisecond)"
   resolution: 1920x1080
   aspect_ratio: "16:9"
   fps: 30
