@@ -62,3 +62,22 @@
      - Bạn trẻ chia sẻ về việc chủ động đeo khẩu trang chống bụi mịn và chuyển đổi sang phương tiện công cộng/hành động xanh.
      - *Khớp hoàn hảo với*: Phân đoạn `2:45 - 3:00` (Vai trò cộng đồng thanh niên).
 
+### 🏗️ Nguồn 2: Phóng sự TP.HCM — Cần Hạn Chế Bụi Mịn Từ Các Công Trình Xây Dựng
+- **Nguồn gốc**: [YouTube - TP.HCM: Cần hạn chế bụi mịn từ các công trình xây dựng (YF2gUciJUow)](https://www.youtube.com/watch?v=YF2gUciJUow)
+- **Local File**: `presentation/media/hcmc_construction_dust_footage.mp4`
+- **Mức độ tương thích**: 100% đúng bài toán trung tâm của DustGuard VN (Bụi công trường xây dựng đô thị, rào chắn, xe tải, biện pháp giảm thiểu).
+- **Các phân cảnh trích xuất đắt giá**:
+  1. **`0:00 - 0:25` | Đại công trường đô thị TP.HCM & Xe bồn/Xe tải chở vật liệu**:
+     - Cảnh cần cẩu, máy ép cọc, xe ben chở đất cát ra vào công trình đô thị làm bụi bay mù mịt quanh tuyến đường huyết mạch.
+     - *Khớp hoàn hảo với*: Phân đoạn `0:00 - 0:18` (Mở vấn đề: "những công trường mới... bụi công trình").
+  2. **`0:26 - 1:15` | Hiện trường thi công không che chắn & Bụi đất phủ trắng đường**:
+     - Cận cảnh bánh xe tải không được rửa trước khi ra khỏi công trình, đất cát rơi vãi tạo thành màn bụi khi xe máy lưu thông.
+     - *Khớp hoàn hảo với*: Phân đoạn `0:18 - 0:38` & `0:38 - 0:55` (Nút thắt dữ liệu & 5 câu hỏi trung tâm: "Hồ sơ còn thiếu gì? Ai đang phụ trách?").
+  3. **`1:16 - 2:10` | Nỗi bức xúc của người dân sống cạnh công trình**:
+     - Phỏng vấn người dân buôn bán, sinh sống ngay sát vách công trường: phải đóng cửa kín mít, lau dọn liên tục nhưng bụi vẫn dày đặc.
+     - *Khớp hoàn hảo với*: Phân đoạn `1:10 - 1:30` (Tính mới: "biến phản ánh thành hồ sơ có bằng chứng").
+  4. **`2:11 - 3:34` | Quy định rào chắn, phun sương & Khó khăn trong kiểm tra giám sát**:
+     - Cảnh kiểm tra rào chắn lưới, bạt phủ, vòi xịt nước dập bụi và phỏng vấn chuyên gia về sự cần thiết của quy trình kiểm soát liên tục.
+     - *Khớp hoàn hảo với*: Phân đoạn `1:49 - 2:08` (AI đúng vai trò: Hỗ trợ checklist, không thay thế thanh tra) & `2:08 - 2:28` (Pilot thực tế).
+
+
