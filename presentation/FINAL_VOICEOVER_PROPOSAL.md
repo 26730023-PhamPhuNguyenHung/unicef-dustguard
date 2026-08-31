@@ -98,5 +98,24 @@
      - Cảnh 1 công nhân đơn độc cầm vòi nước nhỏ xịt vào bãi đất cát mênh mông, bụi vẫn cuồn cuộn bay lên.
      - *Khớp hoàn hảo với*: Phân đoạn `1:30 - 1:49` (Bài học sau tập huấn: Cần một quy trình theo dõi thực chất, không chỉ là hình thức).
 
+### ⚙️ Nguồn 4: Phóng sự Giải Pháp Ứng Phó Ô Nhiễm & Camera AI Phạt Nguội — Hà Nội
+- **Nguồn gốc**: [YouTube - Nguyên nhân và giải pháp ứng phó ô nhiễm Hà Nội (wnf-udO_mRQ)](https://www.youtube.com/watch?v=wnf-udO_mRQ)
+- **Local File**: `presentation/media/hanoi_causes_and_measures_footage.mp4`
+- **Mức độ tương thích**: Minh họa tuyệt vời cho phần Công nghệ, Camera AI, Xe phun sương dập bụi, Quy định quản lý và Tầm nhìn dài hạn.
+- **Các phân cảnh trích xuất đắt giá**:
+  1. **`0:50 - 1:15` | Đồ họa đa nguồn phát thải & Hiện tượng nghịch nhiệt giữ bụi**:
+     - Đồ họa giải thích các nguồn phát thải (giao thông, xây dựng, công nghiệp) và cơ chế bụi mịn tích tụ tầng thấp.
+     - *Khớp hoàn hảo với*: Phân đoạn `0:18 - 0:38` (Nút thắt thực sự: đa nguồn dữ liệu).
+  2. **`2:04 - 2:28` | Chỉ thị 19 & Tạm dừng đào đường vỉa hè thi công cuối năm**:
+     - Cảnh văn bản chỉ đạo của chính quyền và hiện trường tạm dừng thi công để bảo vệ không khí.
+     - *Khớp hoàn hảo với*: Phân đoạn `0:55 - 1:10` (Hỗ trợ hành động quản lý).
+  3. **`2:30 - 2:48` | Xe chuyên dụng phun sương dập bụi cao áp & Camera AI phạt nguội**:
+     - Cận cảnh xe cơ giới phun sương mù cao áp dập bụi trên đường và hệ thống camera AI quét nhận diện xe làm rơi vãi đất cát.
+     - *Khớp hoàn hảo với*: Phân đoạn `1:49 - 2:08` (AI đúng vai trò) & `2:28 - 2:45` (Đo giá trị thật).
+  4. **`2:50 - 3:15` | Chuyển đổi giao thông xanh (Xe buýt điện, lộ trình vùng phát thải thấp)**:
+     - Cảnh xe buýt điện, xe điện lưu thông trên tuyến phố xanh sạch.
+     - *Khớp hoàn hảo với*: Phân đoạn `3:00 - 3:17` (Tầm nhìn mở rộng).
+
+
 
 

@@ -100,6 +100,35 @@ CLIPS = [
         "desc": "Công nhân xịt nước thủ công bất lực trước bụi đất mênh mông",
         "start": "00:03:20",
         "duration": "00:00:15"
+    },
+    # Nguồn 4: Hà Nội - Xe phun sương, Camera AI & Biện pháp quản lý
+    {
+        "name": "clip_hn2_01_emission_sources_graphic.mp4",
+        "src": "hanoi_causes_and_measures_footage.mp4",
+        "desc": "Đồ họa phân tích đa nguồn phát thải và nghịch nhiệt",
+        "start": "00:00:53",
+        "duration": "00:00:20"
+    },
+    {
+        "name": "clip_hn2_02_directive19_halt_construction.mp4",
+        "src": "hanoi_causes_and_measures_footage.mp4",
+        "desc": "Chỉ thị 19 và tạm dừng thi công đào đường đào vỉa hè",
+        "start": "00:02:04",
+        "duration": "00:00:22"
+    },
+    {
+        "name": "clip_hn2_03_mist_cannon_truck_and_ai_camera.mp4",
+        "src": "hanoi_causes_and_measures_footage.mp4",
+        "desc": "Xe phun sương dập bụi cao áp và camera AI quét phạt nguội",
+        "start": "00:02:29",
+        "duration": "00:00:20"
+    },
+    {
+        "name": "clip_hn2_04_green_transport_electric_bus.mp4",
+        "src": "hanoi_causes_and_measures_footage.mp4",
+        "desc": "Giao thông xanh, xe buýt điện và vùng phát thải thấp",
+        "start": "00:02:50",
+        "duration": "00:00:22"
     }
 ]
 
