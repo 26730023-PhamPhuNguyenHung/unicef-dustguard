@@ -1,5 +1,101 @@
 # ACTIVE CONTEXT — DUSTGUARD VN
 
+- **🛡️ HOÀN TẤT: FIX HEADER TEXT WRAP & RESPONSIVE SSOT (RULE 10)**:
+  1. **Khắc phục triệt để lỗi rớt chữ Navbar**:
+     - Thêm `white-space: nowrap; flex-shrink: 0;` cho `.brand`, `.brand-text-wrap`, `.brand-tag`, `.nav-links a`, `.nav-actions-desktop .btn`.
+     - Tăng breakpoint Mobile Menu từ `860px` lên `1100px` để tránh bị chật layout trên laptop/màn hình thu nhỏ (viewport 860px - 1100px).
+     - Bổ sung media query tinh chỉnh gap/padding cho dải màn hình laptop 1101px - 1280px.
+     - Tăng chiều cao `max-height: 520px` với `overflow-y: auto` cho mobile drawer panel.
+  2. **Xác thực**:
+     - `verify:quick` pass 100% (237/237 domain tests + 42/42 UI smoke tests).
+  1. **Áp Dụng Rule 21 (Actionable Civic Empty States)**:
+     - Thay thế toàn bộ text rỗng chung chung ("Không có dữ liệu", "Không tìm thấy...") sang các thông báo có ngữ cảnh cụ thể:
+       + `EmptyState.jsx`: default `title = 'Chưa có dữ liệu hiển thị'`, `description = 'Chưa có bản ghi nào phù hợp với điều kiện tìm kiếm hoặc bộ lọc.'`
+       + `DataTable.tsx`: `Chưa có dữ liệu hiển thị.`
+       + `ExecutiveCases.jsx`: `Chưa có hồ sơ cần xử lý.`
+       + `ExecutiveApprovals.jsx`: `Chưa có hồ sơ cần phê duyệt.`
+       + `StaffSites.jsx`: `Chưa có công trình nào phù hợp.`
+       + `StaffTasksList.jsx`: `Chưa có nhiệm vụ phù hợp với bộ lọc.`
+       + `CommunityActions.jsx`: `Chưa có nhiệm vụ phù hợp.`
+       + `CommunityDashboard.jsx`: `Chưa có yêu cầu đăng ký mới.`
+       + `SiteMonitoringTab.jsx`: `Chưa có dữ liệu xu hướng quan trắc.`
+       + `ChecklistView.jsx`: `Chưa có thông tin công trình {siteId}.`
+       + `DocInsight.jsx`: `Chưa có bản xem trước tài liệu.`
+  2. **Áp Dụng Rule 22 (Thân Thiện Hóa Error Toast & Error Messages)**:
+     - Gỡ bỏ sạch sẽ các thông báo lỗi kỹ thuật thô (`HTTP ${res.status}`, `Failed to fetch`, `err.message` thô trong alerts).
+     - Thay thế bằng tiếng Việt thân thiện, rõ ràng:
+       + `StaffProfile.jsx`: "Không lưu được thay đổi. Vui lòng kiểm tra lại thông tin."
+       + `DocumentsListPage.jsx`: "Không tải được dữ liệu văn bản. Vui lòng thử lại."
+       + `UsersManagement.jsx`: "Không cập nhật được trạng thái tài khoản. Vui lòng thử lại." / "Không lưu được thông tin người dùng. Vui lòng thử lại."
+       + `ExecutiveApprovals.jsx`: "Không thể phê duyệt hồ sơ. Vui lòng thử lại." / "Không thể gửi yêu cầu kiểm tra lại. Vui lòng thử lại."
+       + `CampaignsList.jsx` & `ClubsList.jsx`: "Không thể thay đổi trạng thái chiến dịch. Vui lòng thử lại." / "Không thể lưu trữ chiến dịch. Vui lòng thử lại."
+       + `StaffTaskDetail.jsx`: "Không thể nghiệm thu minh chứng. Vui lòng thử lại." / "Không thể gửi yêu cầu làm lại. Vui lòng thử lại."
+       + `ChecklistView.jsx`: "Không tải được danh mục kiểm tra. Vui lòng thử lại."
+  3. **Áp Dụng Rule 23 (Rút Gọn & Chuẩn Hóa Modal Confirmations)**:
+     - Rút gọn tiêu đề và nội dung modal theo chuẩn [Hành động + Thực thể?]:
+       + `UsersManagement.jsx`: `${actionText} tài khoản ${user.email}?`
+       + `CampaignsList.jsx`: `Lưu trữ chiến dịch? Chiến dịch sẽ được chuyển khỏi danh sách hiển thị.`
+       + `CommunityDashboard.jsx`: `Từ chối yêu cầu tham gia?`
+       + `StaffTasksList.jsx` & `StaffTaskDetail.jsx`: `Lưu trữ nhiệm vụ? Nhiệm vụ sẽ được chuyển khỏi danh sách...`
+       + `StaffTaskDetail.jsx`: `Nghiệm thu minh chứng? Giờ tình nguyện sẽ được ghi nhận.`
+  4. **Áp Dụng Rule 16 (Anti-Overclaim & Văn Phong Trung Tính)**:
+     - Loại bỏ các từ tự nhận "tuyệt đối", "bắt buộc cơ quan", "xử phạt", "phán quyết":
+       + `CitizenProfile.jsx`: Sửa cam kết bảo vệ dữ liệu công dân chuẩn mực, không dùng "tuyệt đối".
+       + `CitizenReportFormSection.jsx`: Xóa bỏ từ "tuyệt đối" trong phần mô tả và sidebar bảo mật.
+       + `SensorGuide.jsx`: Đổi "giống nhau tuyệt đối" $\to$ "hoàn toàn không đổi"; đổi "bắt buộc" $\to$ "khuyến nghị quy chuẩn".
+       + `image-integrity.js`: Sửa thông điệp pháp lý trung tính, không dùng "tuyệt đối" hay "xử phạt".
+  5. **Kiểm Định & Xác Thực Toàn Diện**:
+     - `npm --prefix app run verify:quick`: 28 test files (279/279 tests) PASS 100% (4.9s).
+     - `npm --prefix app run build`: Vite production bundle build thành công 100% (8.96s).
+
+- **✨ HOÀN TẤT 100%: SUBAGENT 1 — LANDING PAGE & HERO COPY AUDITOR (RULES 3, 4, 5)**:
+  1. **Áp Dụng Rule 4 (Hero Copy SSOT & 3 CTAs)**:
+     - **Eyebrow**: "GIÁM SÁT BỤI ĐÔ THỊ" (`URBAN DUST MONITORING`).
+     - **Headline**: "Phát hiện bụi.\nTheo dõi đến khi được xử lý." (`Detect dust.\nTrack until resolved.`).
+     - **Subheadline**: "DustGuard kết nối phản ánh của người dân, dữ liệu trạm đo và quá trình xử lý trong một hệ thống."
+     - **3 CTAs Tiêu Chuẩn**: "Gửi phản ánh" (Primary Red CTA $\to$ `/community/observe`), "Xem cách hoạt động" (Video/Flow Modal), "Xem bản demo" (Demo Center $\to$ `/demo`), và nút "Bản đồ" (`/citizen/map`).
+  2. **Áp Dụng Rule 5 (Card Demo 3-Second Clarity & Collapsible Technical Hash)**:
+     - Thẻ Demo chuyển giao 1022 rút gọn, người xem hiểu trong 3 giây: Hồ sơ `#DG-2026-0842`, `Vành đai 3, Dịch Vọng Hậu`, Trạng thái: "Đang xử lý" / "Đã hoàn thành", Mức ưu tiên: "Cao" (85/100) / "An toàn" (18/100), Bụi PM2.5: `142 µg/m³` / `28 µg/m³`, Phụ trách: "Đội phản ứng nhanh" / "Tổ kiểm tra hiện trường", Footer: "Đã chuyển đơn vị tiếp nhận".
+     - Chuyển mã xác thực kỹ thuật SHA-256 64 ký tự vào khối collapsible toggle "Xem mã xác thực kỹ thuật", mặc định thu gọn sạch sẽ, khi bấm mở ra xem và sao chép mã minh chứng.
+  3. **Áp Dụng Rule 3 (Natural Civic Copy, Zero Technical Jargon)**:
+     - Thay thế toàn bộ thuật ngữ phô diễn kỹ thuật (telemetry $\to$ chỉ số bụi / dữ liệu trạm đo, DAG $\to$ quy trình, SLA $\to$ thời hạn xử lý, Device Entity $\to$ Thiết bị trạm đo, Mock data $\to$ dữ liệu vận hành thật) trên `LandingPage.jsx`, `HeroSection.jsx`, `LandingNav.jsx`, `LandingFooter.jsx`, `DemoHub.jsx`, `LandingModals.jsx`.
+  4. **Kiểm Định & Xác Thực (Verification)**:
+     - Tạo mới targeted test `app/tests/landing-page-copy-ssot.test.js`: 3/3 tests PASS 100% (0.5s).
+     - `npm run verify:quick`: 28 backend/domain suites + 4 UI smoke suites PASS 100% (0 errors).
+
+- **🖥️ HOÀN TẤT 100%: SUBAGENT 9 — DESKTOP 14-INCH RESPONSIVE & WIDTH AUDITOR (1366x768 & 1440x900)**:
+  1. **Rà Soát & Áp Dụng Rule 11, 12 & 13 (Desktop 14-Inch SSOT)**:
+     - **Header Navigation Không Wrap (Rule 11)**:
+       + `LandingNav.jsx` & `landing.css`: Đảm bảo `.nav-links` và `.nav-actions-desktop` có `flex-nowrap shrink-0`, `white-space: nowrap`, và khoảng cách linh hoạt `gap: clamp(12px, 1.6vw, 24px)` chống rớt dòng trên 1366px/1440px.
+       + `PublicLayout.jsx`: Bổ sung `flex-nowrap shrink-0` cho container navigation và `whitespace-nowrap shrink-0` cho toàn bộ 9 thẻ liên kết và nút hành động Đăng nhập/Đăng ký.
+       + `CommunityNavigation.jsx`: Tinh gọn nhãn "Tác động & Tín chỉ", bổ sung `flex-nowrap shrink-0` cho `<nav>` và loại bỏ `overflow-x-hidden` giả tạo ở header.
+       + `AppHeader.tsx`: Rút gọn độ rộng Breadcrumbs và Search box với `truncate max-w-[200px] sm:max-w-[260px]` và `whitespace-nowrap shrink-0`.
+     - **Nút Bấm & Bảng Dữ Liệu Chống Tràn Layout (Rule 12)**:
+       + `components/ui/button/Button.tsx` & `design-system/components/Button.tsx`: Bổ sung `whitespace-nowrap shrink-0` vào `baseClasses` cho toàn bộ Button primitives của hệ thống.
+       + `components/landing/landing.css`: Cấu hình hoàn chỉnh class `.dg-brand-btn` chuẩn thiết kế với `white-space: nowrap; flex-shrink: 0; min-height: 48px`.
+       + `RegulationAssistantModal.jsx`: Sửa container bảng tra cứu ngưỡng QCVN 05:2023 từ `overflow-hidden` thành `overflow-x-auto` kèm `min-w-[540px]`.
+       + `StaffAlerts.jsx`: Sửa container bảng 5 bản ghi telemetry từ `overflow-hidden` thành `overflow-x-auto`.
+     - **Khử Hardcoded Width & Cấm Overflow-x Hidden Giả Tạo (Rule 13)**:
+       + `StaffTasksList.jsx`: Nâng cấp nhãn nguồn vụ việc từ `max-w-[130px]` cứng sang `max-w-[180px] min-w-0` co giãn linh hoạt.
+  2. **Kiểm Định & Xác Thực Toàn Diện**:
+     - UI smoke tests (`ui-smoke.test.js`, `community-navigation.test.js`, `design-system-tokens.test.js`): 42/42 tests PASS 100%.
+     - Fast Verification Pipeline Quick Gate (`npm --prefix app run verify:quick`): 28 test files (279/279 tests) PASS 100% (5.0s).
+  1. **Rà Soát & Khử Hành Chính Hóa (Rule 14 & Rule 15)**:
+     - Dùng động từ trực tiếp: "Chuyển", "Xác minh", "Cập nhật", "Xử lý", "Lưu", "Phê duyệt", "Khóa/Mở khóa" thay cho "Tiến hành...", "Thực hiện...".
+     - Xóa bỏ copy mơ hồ: "Xem" -> "Xem hồ sơ" / "Xem hồ sơ công trình", "Chỉ đạo" -> "Giao chỉ đạo", "Phê duyệt" -> "Phê duyệt kết luận", "Làm lại" -> "Yêu cầu làm lại".
+  2. **Chuẩn Hóa Giao Diện Điều Hành Lãnh Đạo (Executive Hub)**:
+     - `ExecutiveDashboard.jsx`: Khử rò rỉ mã nguồn (`window.print()`, `showCsrCertModal`, `handleVerifyAndSign`), chuyển nút sang "In văn bản A4", "Xem chứng nhận CSR", "Ký duyệt điện tử".
+     - `ExecutiveHeatmap.jsx`: Loại bỏ thuật ngữ kỹ thuật thừa ("GIS", "trạm IoT"), tinh gọn thành "Bản đồ tình hình", "Ma trận nồng độ bụi theo Phường / Xã", "In phiếu chỉ đạo hỏa tốc".
+     - `ExecutiveCases.jsx`, `PriorityCommandCenter.jsx`, `ExecutiveSummaryCards.jsx`: Chuyển "Quá hạn SLA" / "Hạn SLA" sang "Quá hạn xử lý" / "Hạn xử lý", nút "Giao chỉ đạo", "Phê duyệt kết luận".
+     - `ExecutiveDirectiveModal.jsx`: Chuyển tiêu đề modal thành "Giao việc & Chỉ đạo xử lý", "Thời hạn xử lý", nút "Giao chỉ đạo".
+     - `ExecutiveApprovals.jsx`, `ExecutiveReports.jsx`, `ExecutiveSensorHealth.jsx`, `ExecutiveImpactPanel.jsx`, `ExecutiveCaseDrawer.jsx`: Tinh gọn nhãn biểu đồ, xuất báo cáo, minh chứng và đối soát trạm quan trắc.
+  3. **Chuẩn Hóa Quản Trị Người Dùng & Cài Đặt (Admin Backoffice)**:
+     - `UsersManagement.jsx`: Xóa bỏ thuật ngữ tiếng Anh trong ngoặc (Admin, Staff, Contractor, Executive, Community, Citizen), dùng "Vai trò", "Đổi vai trò", "Khóa / Mở khóa", "Lưu tài khoản".
+     - `StaffSettings.jsx`: Chuẩn hóa "Cấu hình Hệ thống & Kết nối AI", "Nhật ký thao tác", "Quản trị dữ liệu", thông báo toast ngắn gọn, thân thiện.
+  4. **Kiểm Định & Xác Thực Toàn Diện**:
+     - Targeted tests: `executive-dashboard.test.js`, `executive-command-center.test.js`, `executive-operational-suite.test.js`, `auth-user-management-audit.test.js` (41/41 tests PASS 100%).
+     - Fast Verification Pipeline Quick Gate (`npm --prefix app run verify:quick`): 28 test files (279/279 tests) PASS 100% (6.1s).
+
 - **🚀 HOÀN TẤT 100%: LIVE CHROME DEVTOOLS VISUAL INSPECTION & RUNTIME AUTO-FIX**:
   1. **Khởi Động Dev Server & Live DevTools MCP**:
      - Khởi động đồng thời Cloudflare D1 Worker trên cổng 8787 và Vite Client trên cổng 3000.
