@@ -185,12 +185,50 @@ def generate_full_proposal_vieneu(voice_name, api_key):
     subprocess.run(cmd, cwd=str(out_dir), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     print(f"[OK] Đã hoàn thành full voiceover tại: {merged_output}")
 
+def test_inspiring_north(api_key):
+    top_inspiring = [
+        {"name": "Hoàng Nam", "style": "Giọng nam rõ ràng, trẻ trung, tự tin"},
+        {"name": "Hoàng Long", "style": "Giọng nam trẻ, khỏe khoắn, truyền lửa"},
+        {"name": "Nhật Phong", "style": "Giọng nam trẻ trìu mến, gần gũi cộng đồng"},
+        {"name": "Minh Thắng", "style": "Nam Bắc Kể chuyện, tự nhiên, cuốn hút"},
+        {"name": "Tuấn Kiệt", "style": "Giọng nam rắn rỏi, dứt khoát"},
+        {"name": "Đăng Khoa", "style": "Giọng nam rõ ràng, sáng tiếng"},
+        {"name": "Quân Sáng", "style": "Nam Bắc Sáng rõ, kể chuyện mạch lạc"},
+        {"name": "Trí Sáng", "style": "Nam Bắc Kể chuyện, truyền cảm hứng"},
+        {"name": "Minh Công", "style": "Nam Bắc Tin tức thời sự VTV sắc nét"},
+        {"name": "Phạm Tuyên", "style": "Nam Bắc Tự nhiên, thuyết phục"}
+    ]
+    
+    out_dir = Path(__file__).parent / "output" / "vieneu_v4_inspiring_samples"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    
+    print("=" * 75)
+    print("ĐANG SINH SAMPLE CHO TOP 10 GIỌNG NAM BẮC CAO, SÁNG & TRUYỀN CẢM HỨNG")
+    print("=" * 75)
+    
+    for i, v in enumerate(top_inspiring, 1):
+        v_name = v["name"]
+        safe_name = "".join(c for c in v_name if c.isalnum() or c in ("-", "_")).rstrip()
+        out_file = out_dir / f"sample_{i:02d}_{safe_name}.mp3"
+        
+        print(f"[*] [{i}/10] Đang tạo giọng: {v_name:<15} ({v['style']})...")
+        ok = synthesize_text_vieneu(SAMPLE_TEXT, v_name, api_key, str(out_file))
+        if ok:
+            print(f"    [OK] -> {out_file.name}")
+        else:
+            print(f"    [FAIL] Bỏ qua {v_name}")
+            
+    print("\n" + "=" * 75)
+    print(f"[HOÀN TẤT] 10 mẫu giọng nam Bắc truyền cảm hứng đã lưu tại: {out_dir}")
+    print("=" * 75)
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="VieNeu v4 Voice Tester & Full Proposal Generator")
     parser.add_argument("--key", type=str, default=os.getenv("VIENEU_API_KEY", ""), help="VieNeu API Key (vn_sk_... hoặc vn_test_...)")
     parser.add_argument("--list", action="store_true", help="Hiển thị danh sách giọng nam theo vùng miền")
+    parser.add_argument("--test-inspiring", action="store_true", help="Sinh sample cho Top 10 giọng Nam Bắc cao, sáng, truyền cảm hứng")
     parser.add_argument("--test-top", type=int, default=0, help="Sinh sample cho top N giọng nam")
-    parser.add_argument("--voice", type=str, default="", help="Tên hoặc ID giọng (VD: 'Minh Đức', 'Phạm Tuyên'...)")
+    parser.add_argument("--voice", type=str, default="", help="Tên hoặc ID giọng (VD: 'Hoàng Nam', 'Hoàng Long'...)")
     parser.add_argument("--full", action="store_true", help="Sinh trọn bộ 12 phân đoạn proposal 3m30s")
     
     args = parser.parse_args()
@@ -199,7 +237,7 @@ if __name__ == "__main__":
         males = load_male_voices()
         print(f"=== TỔNG CỘNG {len(males)} GIỌNG NAM VIENEU V4 ===")
         for i, v in enumerate(males, 1):
-            print(f"{i:3d}. {v.get('name')} | ID: {v.get('id')} | Vùng: {v.get('accent')} | Tags: {v.get('tags')}")
+            print(f"{i:3d}. {v.get('name')} | ID: {v.get('id')} | Vùng: {v.get('region')} | Mô tả: {v.get('description')}")
         sys.exit(0)
         
     api_key = args.key.strip()
@@ -207,12 +245,13 @@ if __name__ == "__main__":
         print("\n[!] CẦN CUNG CẤP VIENEU API KEY!")
         print("Đăng ký lấy key tại: https://www.vieneu.io (miễn phí 10.000 tokens/ngày).")
         print("Cách chạy:")
-        print("  1. Xem danh sách giọng: python presentation/test_vieneu_v4_voices.py --list")
-        print("  2. Test mẫu top 10 giọng: python presentation/test_vieneu_v4_voices.py --key vn_sk_... --test-top 10")
-        print("  3. Render trọn bộ kịch bản 3m30s: python presentation/test_vieneu_v4_voices.py --key vn_sk_... --voice 'Tên Voice' --full")
+        print("  1. Test Top 10 giọng Nam Bắc cao & truyền cảm hứng: python presentation/test_vieneu_v4_voices.py --key vn_sk_... --test-inspiring")
+        print("  2. Render trọn bộ kịch bản 3m30s: python presentation/test_vieneu_v4_voices.py --key vn_sk_... --voice 'Hoàng Nam' --full")
         sys.exit(1)
         
-    if args.test_top > 0:
+    if args.test_inspiring:
+        test_inspiring_north(api_key)
+    elif args.test_top > 0:
         test_top_voices(api_key, top_n=args.test_top)
     elif args.voice:
         if args.full:
@@ -224,4 +263,5 @@ if __name__ == "__main__":
             synthesize_text_vieneu(SAMPLE_TEXT, args.voice, api_key, str(out_sample))
             print(f"[OK] Đã lưu mẫu tại: {out_sample}")
     else:
-        test_top_voices(api_key, top_n=10)
+        test_inspiring_north(api_key)
+
