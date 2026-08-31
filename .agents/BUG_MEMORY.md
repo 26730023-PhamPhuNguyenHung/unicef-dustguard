@@ -66,6 +66,18 @@
 - **Nguyên nhân**: `signOut()` chỉ xóa `dustguard_token`, bỏ sót `guest_user`, `dustguard_role`, `dg_applied_citation` trong `localStorage`/`sessionStorage`, dẫn đến khi login role mới bị nhận nhầm quyền cũ.
 - **Giải pháp**: Sử dụng hàm tập trung `purgeAllSessionData()` dọn sạch toàn bộ 100% auth keys và session flags khi đăng xuất.
 
+### 🚨 Trap 2.17: `UnicodeEncodeError` khi Python script in ký tự emoji ra stdout trên Windows PowerShell
+- **Nguyên nhân**: Trên môi trường Windows PowerShell, `sys.stdout` mặc định sử dụng mã hóa `cp1252` hoặc `cp936`, dẫn đến lỗi `UnicodeEncodeError: 'charmap' codec can't encode character...` khi in emoji hoặc biểu tượng Unicode đặc biệt.
+- **Giải pháp**: Luôn đặt cấu hình `sys.stdout.reconfigure(encoding='utf-8')` và `sys.stderr.reconfigure(encoding='utf-8')` ở đầu tất cả các scripts CLI / Python runners.
+
+### 🚨 Trap 2.18: Dòng phụ đề vượt quá 38 ký tự hoặc quá 2 dòng làm vỡ safe-zone video 1080p
+- **Nguyên nhân**: Dòng văn bản lồng ghép quá dài không ngắt nhịp ngữ nghĩa tự nhiên, làm chữ bị tràn ra mép màn hình hoặc che khuất giao diện video player.
+- **Giải pháp**: Tích hợp hàm `run_qa_audit(cues)` kiểm tra nghiêm ngặt `max_chars_per_line <= 38`, `max_lines <= 2`, tốc độ đọc `CPS` lý tưởng 12-18 chars/s và vị trí `MarginV=80px` trước khi xuất file `.srt`, `.ass`, `.vtt`.
+
+### 🚨 Trap 2.19: Regex Overclaim Catch-All Bắt Nhầm Câu Phủ Định Rào Trước (Intervening Words in Negation Pattern)
+- **Nguyên nhân**: Khi viết regex quét các từ khóa cấm overclaim (`thay thế thanh tra`, `kết luận vi phạm`, `tự động xử phạt`), nếu mẫu phủ định (`allowed_negations`) chỉ match dạng nối liền `không thay thế` thì các phát biểu rào trước mang tính bảo vệ như *"AI không phán quyết hay thay thế thanh tra"* hoặc *"không tự ra quyết định xử phạt"* sẽ bị bắt nhầm thành lỗi vi phạm do có từ chèn giữa (`phán quyết hay`, `tự ra quyết định`).
+- **Giải pháp**: Trong các công cụ Content QC linter, thiết kế regex negation hỗ trợ từ đệm linh hoạt trong cùng mệnh đề: `r"không\s+(?:[^.?!,;:]*?\s+)?(?:thay thế|kết luận|xử phạt|phán quyết)"`.
+
 ### 🚨 Trap 1.1: Tọa độ GIS Map / Contractor Workspace bị `undefined`
 - **Nguyên nhân**: Repository chỉ trả về chuỗi `coordinates: "21.028,105.854"` hoặc tên cột lẻ `latitude`, trong khi frontend UI đọc `lat` / `lng`.
 - **Giải pháp**: Luôn bọc entity qua `app/server/domain/spatial/spatial-adapter.js` bằng hàm `normalizeEntityCoordinates(entity)`. Hàm này sẽ tự động gắn kết đồng thời cả 5 thuộc tính: `{ latitude, longitude, lat, lng, coordinates }`.

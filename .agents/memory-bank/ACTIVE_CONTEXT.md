@@ -1,6 +1,16 @@
 # ACTIVE CONTEXT — DUSTGUARD VN
 
 ## 1. Focus Hiện Tại & Mốc Đã Hoàn Tất
+- **🛡️ HOÀN TẤT 100%: SUBAGENT 8 — ANTI-OVERCLAIM & CIVIC TECH CONTENT QC INSPECTOR**:
+  1. **Automated Content QC Engine**: Xây dựng script kiểm tra tự động `presentation/scripts/08_content_qc.py` quét toàn bộ 24 files tài liệu, kịch bản, phụ đề, specs và source index.
+  2. **Zero Overclaim Verification**: 0 lỗi vi phạm các bẫy overclaim (AI phán quyết vi phạm, tự động xử phạt, phủ sóng 63 tỉnh thành, thay thế cơ quan chức năng, bắt buộc phần cứng IoT).
+  3. **Full Positive SSOT Invariants**: 7/7 nguyên tắc cốt lõi đạt 100% (Responsible AI & Triage, Observation != Case, Lean Pilot 4-8 tuần 20-30 người dùng, Zero-IoT Resilience, Minh chứng SHA-256 đối chứng Before/After, Tín chỉ thanh niên / Handoff 1022 iHanoi, D1 Persistent SSOT).
+  4. **Báo Cáo Nghiệm Thu Hoàn Chỉnh**: Xuất bản `presentation/QC_AUDIT_REPORT.md` kèm 4 khuyến nghị tinh chỉnh văn phong, kiểm tra đồng bộ 12 segments và 44 subtitle cues, cấp chứng chỉ nghiệm thu chất lượng nội dung.
+- **🎬 HOÀN TẤT 100%: SUBAGENT 2 — SUBTITLE & TYPOGRAPHY TIMING ENGINEER**:
+  1. **Script Engine & Multi-Format Generation**: Tạo `presentation/scripts/02_build_subtitles.py` sinh 4 tệp phụ đề đồng bộ (`final.srt`, `final.ass`, `final.vtt`, `subtitles_data.json`).
+  2. **Typography & Strict Layout Guard**: 44 Cues phân bổ chuẩn 210.0s (3 phút 30 giây) trên 12 phân đoạn. 100% dòng đạt chuẩn $\le 38$ ký tự/dòng, tối đa 2 dòng/cue, ngắt dòng ngữ nghĩa tự nhiên.
+  3. **Keyword Highlighting & Civic Tech Style**: Làm nổi bật các từ khóa trọng tâm (`DUSTGUARD VN`, `BẰNG CHỨNG`, `THEO DÕI`, `AI HỖ TRỢ`, `PILOT 4-8 TUẦN`, `DUST RISK SCORE`, `HỒ SƠ`, `MỨC ƯU TIÊN`) qua ASS color/bold tags và JSON metadata.
+  4. **Quality Assurance Audit**: Tốc độ đọc trung bình 13.33 ký tự/giây (lý tưởng cho voiceover 1.06x - 1.08x), 0 overlap, khoảng cách đáy MarginV = 80px bảo đảm an toàn trên độ phân giải 1080p Full HD.
 - **🚀 HOÀN TẤT 100%: TRIỂN KHAI TOÀN DIỆN 5 TIỂU BAN KỸ THUẬT & FIX LỖI TOÀN BỘ CODEBASE**:
   1. **Tiểu ban 1 (Legal Docx Engine & Multi-Page A4 Canvas)**:
      - Tạo `app/src/legal-document-engine/renderers/renderLegalDocumentDocx.js` biên dịch AST trực tiếp sang OpenXML `.docx` chuẩn Nghị định 30/2020/NĐ-CP (lề 30-15-20-20mm, bảng Quốc hiệu/Tiêu ngữ không viền không xám, dấu đỏ `#9f241f`, chữ ký số CA `#0052CC`).
