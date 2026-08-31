@@ -6,15 +6,18 @@
 
 ## 🎯 1. Trọng Tâm Hoạt Động Hiện Tại (Active Operational State)
 - **Hệ thống**: Toàn bộ kiến trúc Cloudflare D1 + Worker Edge Router + Vite React Client đã hoàn tất kiểm toán 100%.
+- **Red-First Design System SSOT (Hoàn tất)**:
+  - Chuẩn hóa toàn bộ hệ màu thương hiệu chính sang **ĐỎ** (`#B91C1C` Primary Red, `#991B1B` Hover, `#7F1D1D` Dark, `#FEF2F2` Soft, `#FECACA` Border).
+  - Phân định rõ ràng: Brand Red cho thương hiệu/nav/primary CTAs, Alert Red (`#DC2626`) chỉ dùng cho lỗi/quá hạn; Giữ vững Semantic Colors (Success green `#15803D`, Warning orange `#C2410C`, Info blue `#0369A1`).
+  - Chuẩn hóa toàn bộ Layouts và Pages: `/staff` (Dashboard, Cases, CaseDetail, Sites, SiteDetail, Tasks, Alerts, Settings, Profile), `/citizen` (Home, Reports, ReportNew, Profile), `/contractor` (Layout, Dashboard, Tasks, Cases, Reports), `/admin` (Layout, UsersManagement, Settings), Auth Pages (Login, LoginForm, DemoAccessModal).
+  - Nền sáng sạch `#FAFAF9`, thẻ trắng `#FFFFFF`, chữ đậm `#1C1917`, touch targets $\ge 44\text{px}$, zero glassmorphism.
 - **Tái Cấu Trúc Cloudflare Worker Modular Monolith (Hoàn tất)**:
   - Rút gọn `server/worker.js` từ God File 7.721 dòng xuống **43 dòng (Thin Entrypoint)** chỉ làm 2 việc: điều hướng `ASSETS` vs `app.fetch` và kích hoạt `scheduled()` cron sweep.
   - Tạo `server/app.js` làm **Composition Root** duy nhất cho Hono application.
-  - Tối ưu `ensureSchema()` thành **Lazy Isolate Initializer** (chỉ chạy 1 lần duy nhất khi worker warm up thay vì chạy lặp trên mọi request).
-  - Tuân thủ nguyên tắc "Move, don't rewrite", bảo toàn 100% API contract, giữ nguyên 1 Cloudflare Worker deploy duy nhất.
+  - Tối ưu `ensureSchema()` thành **Lazy Isolate Initializer**.
 - **Sức khỏe Mã nguồn**:
-  - `npm --prefix app run verify:quick`: **279/279 tests PASS 100%** (28 test files + 42 UI smoke tests, ~2.7s).
-  - `node --test app/tests/worker-full-edge-routes.test.js`: **12/12 tests PASS 100%**.
-  - `npm --prefix app run build`: **Vite production bundle PASS 100%** (0 errors, 3.41s).
+  - `npm --prefix app run verify:quick`: **279/279 tests PASS 100%** (28 test files + 42 UI smoke tests, ~2.2s).
+  - `npm --prefix app run build`: **Vite production bundle PASS 100%** (0 errors, 2.3s).
 - **Quy tắc Vận hành**: 
   - Tuân thủ nghiêm ngặt 10 Core Invariants trong [`AGENTS.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/AGENTS.md).
   - Sử dụng Fast Verification Pipeline: Chỉ chạy Level 0 (`node --test app/tests/<file>.test.js`) khi đang code, chạy Level 3 trước khi hoàn tất.

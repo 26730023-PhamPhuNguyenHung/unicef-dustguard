@@ -58,6 +58,14 @@
   1. Áp dụng Rule 3: Chuyển toàn bộ thuật ngữ sang ngôn từ tự nhiên, dễ hiểu (`telemetry` $\to$ `chỉ số bụi / dữ liệu trạm đo`, `SLA` $\to$ `thời hạn xử lý`, `Device Entity` $\to$ `Thiết bị trạm đo`, `DAG` $\to$ `quy trình`).
   2. Áp dụng Rule 5: Thẻ demo hiển thị thông tin trọng tâm để người xem nắm bắt trong 3 giây (Hồ sơ, Địa điểm, Trạng thái, Mức ưu tiên, Bụi PM2.5, Phụ trách, Tiếp nhận); đưa mã xác thực kỹ thuật SHA-256 vào khối collapsible toggle "Xem mã xác thực kỹ thuật" để người dùng mở ra khi cần kiểm tra đối chứng.
 
+### 🚨 Trap 0.8: Không phân định Brand Red (#B91C1C) vs Alert Red (#DC2626) hoặc dùng màu Teal/Xanh lá làm Primary
+- **Nguyên nhân**: Sử dụng màu xanh lá/teal làm màu nút chính của ứng dụng làm mất nhận diện thương hiệu đỏ của DustGuard VN; hoặc ngược lại, dùng màu đỏ cảnh báo chói lóa phủ toàn màn hình khiến giao diện trông như trang lỗi/nguy hiểm.
+- **Giải pháp**:
+  1. **Brand Primary Red**: Dùng `#B91C1C` (Hover `#991B1B`, Active `#7F1D1D`, Soft `#FEF2F2`, Border `#FECACA`) cho Logo, active navigation, primary buttons (+ Thêm, + Tạo, Lưu, Xác nhận), links quan trọng.
+  2. **Alert Red**: Chỉ dùng `#DC2626` / `bg-rose-50 text-rose-800` khi có lỗi thực tế, quá hạn hoặc cảnh báo nguy cấp.
+  3. **Bảo tồn Semantic Colors**: Success = `#15803D` (Xanh lá), Warning = `#C2410C` (Cam), Info = `#0369A1` (Xanh dương). Nền sáng sạch `#FAFAF9`, thẻ trắng `#FFFFFF`, chữ đậm `#1C1917`.
+
+
 ### 🚨 Trap 0.9: Nút bấm (Button, CTA, Tab) bị xuống dòng / rớt chữ đơn lẻ (Orphan Word Drop) trên Mobile
 - **Nguyên nhân**: Button dùng nhãn ngắn (ví dụ "Khám phá Demo →", "Tạo phản ánh", "Đang theo dõi 0") nhưng không có `white-space: nowrap` hoặc đặt trong flex container có `shrink` tự do, dẫn đến bị ép hẹp trên mobile viewport (360px - 390px) và bẻ đôi chữ thành 2-3 dòng, hoặc làm rớt 1 chữ đơn độc/icon xuống dòng mới.
 - **Giải pháp**:
