@@ -18,9 +18,24 @@
 - **Nguyên tắc**: Mỗi commit chỉ được phép thay đổi vị trí code HOẶC thay đổi behavior, **không được làm cả hai cùng một lúc**.
 - Khi tách file từ God File sang Domain Router: Giữ nguyên 100% logic, SQL query, response shape, auth và status codes. Sau khi test pass 100% mới refactor logic nội bộ nếu cần.
 
-### 📌 Invariant -1.3: Cấm Chạy Schema Migration (`ensureSchema()`) Trên Từng Request Cycle
-- **Nguyên nhân**: Gọi `ensureSchema()` trong middleware `app.use('*', ...)` làm chậm request cycle và lãng phí subrequests / CPU time trên Edge.
-- **Giải pháp**: Tách schema initialization ra khỏi request lifecycle, chạy qua migration script hoặc lazy initialize một lần duy nhất.
+### 📌 Invariant -1.4: D1 Chỉ Lưu Metadata, R2 Lưu Binary (Cấm Lưu Base64 / File Lớn Trong D1)
+- **Nguyên nhân**: Nhét binary ảnh/tài liệu vào D1 BLOB hoặc encode base64 TEXT làm phình to DB, vượt trần 2MB/row của D1 và tốn chi phí gấp 50 lần so với R2 Standard ($0.75/GB-tháng so với $0.015/GB-tháng). Hơn nữa, Cloudflare enforce limit Free tier hằng ngày (5M reads, 100k writes).
+- **Quy tắc chuẩn**:
+  - D1 chỉ giữ metadata trong bảng `evidence` (`id`, `site_id`, `case_id`, `object_key`, `mime_type`, `size_bytes`, `sha256` hash fingerprint, `created_at`...).
+  - R2 lưu trữ file binary sạch (WebP/JPEG display ~ 1200-1600px).
+  - Khóa `object_key` là canonical reference duy nhất, cấm hardcode URL tuyệt đối vào database.
+
+### 📌 Invariant -1.5: Chuẩn Responsive Laptop 14-inch Windows Scale 125% (CSS Target 1536x864)
+- **Nguyên nhân**: Chỉ kiểm thử trên 1920x1080 làm giao diện bị vỡ nát khi chạy thực tế trên laptop cán bộ (14–15.6 inch với Windows scaling 125%, tức CSS viewport thực tế là 1536x864 hoặc 1366x768). Cột bảng bị co hẹp, action buttons chen lấn nhau và panel phụ bóp nghẹt bảng chính.
+- **Quy tắc chuẩn**:
+  - CSS Acceptance Target số 1 là `1536 x 864`.
+  - Tỉ lệ phân chia Dashboard: Bảng danh sách chính chiếm 74–76% (`flex-1 min-w-0`), Panel phụ "Ưu tiên" cố định 300–320px (`xl:w-[310px]`). Nếu < 1350px, panel phụ chuyển xuống dưới.
+  - Data Table: Ưu tiên cột P1 (Công trình, Điểm rủi ro, Mức độ, Thao tác); gom gọn nút bấm và nhãn.
+
+### 📌 Invariant -1.6: Broken Image Rule — Cấm Lộ Icon Vỡ Ảnh Mặc Định Của Trình Duyệt
+- **Nguyên nhân**: Render thẻ `<img src={...} />` trực tiếp mà không có fallback, khi URL lỗi/chưa có ảnh thì trình duyệt render icon vỡ ảnh thô ráp, phá vỡ trải nghiệm Civic Tech chuyên nghiệp.
+- **Quy tắc chuẩn**:
+  - Tất cả ảnh hiện trường / thumbnails phải đi qua component `SafeImage` với `onError` fallback về neutral SVG placeholder sạch sẽ, nền `#F5F5F4`, fixed aspect ratio và `object-fit: cover`.
 
 ---
 

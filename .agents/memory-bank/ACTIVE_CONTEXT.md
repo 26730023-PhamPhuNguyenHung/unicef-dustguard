@@ -5,20 +5,19 @@
 ---
 
 ## 🎯 1. Trọng Tâm Hoạt Động Hiện Tại (Active Operational State)
-- **Hệ thống**: Toàn bộ kiến trúc Cloudflare D1 + Worker Edge Router + Vite React Client đã hoàn tất kiểm toán 100%.
-- **Red-First Design System SSOT (Hoàn tất)**:
-  - Chuẩn hóa toàn bộ hệ màu thương hiệu chính sang **ĐỎ** (`#B91C1C` Primary Red, `#991B1B` Hover, `#7F1D1D` Dark, `#FEF2F2` Soft, `#FECACA` Border).
-  - Phân định rõ ràng: Brand Red cho thương hiệu/nav/primary CTAs, Alert Red (`#DC2626`) chỉ dùng cho lỗi/quá hạn; Giữ vững Semantic Colors (Success green `#15803D`, Warning orange `#C2410C`, Info blue `#0369A1`).
-  - Chuẩn hóa toàn bộ Layouts và Pages: `/staff` (Dashboard, Cases, CaseDetail, Sites, SiteDetail, Tasks, Alerts, Settings, Profile), `/citizen` (Home, Reports, ReportNew, Profile), `/contractor` (Layout, Dashboard, Tasks, Cases, Reports), `/admin` (Layout, UsersManagement, Settings), Auth Pages (Login, LoginForm, DemoAccessModal).
-  - Nền sáng sạch `#FAFAF9`, thẻ trắng `#FFFFFF`, chữ đậm `#1C1917`, touch targets $\ge 44\text{px}$, zero glassmorphism.
-- **Hoàn Tất Giai Đoạn 2 (Staff Case Workspace) & Giai Đoạn 3 (IoT Monitoring & Alerts)**:
-  - **Màn hình 1**: Trang chính (`/staff`) — 100% Derived Aggregation.
-  - **Màn hình 2**: Quan trắc (`/staff/monitoring`) — 100% D1/SQLite Vertical Slice, Chuỗi 24h thực tế & OSM GIS iframe.
-  - **Màn hình 3**: Cảnh báo (`/staff/alerts`) — 100% D1/SQLite Thật:
-    - 4 KPI cards: Cảnh báo mới (22), Mức gấp (4), Chưa mở hồ sơ (8), Đã xử lý (10).
-    - Cột bên phải: "Ưu tiên hôm nay" (Dust Risk Score 87, 82, tags lý do ưu tiên, nút `Mở`, `+ Tạo hồ sơ`).
-    - Bảng cảnh báo chính: Thumbnails bằng chứng, Tags ưu tiên, Modal gán xử lý & xem ảnh phóng to, Thao tác tạo hồ sơ chuyển đổi D1 thật.
-  - **Màn hình Tiếp theo**: Màn hình 4 — Danh sách Công trình (`/staff/sites`) (Mockup Ảnh 4).
+- **Hệ thống**: Toàn bộ kiến trúc Cloudflare D1 (Structured Metadata) + R2 (Binary Objects) + Worker Edge Router + Vite React Client đã hoàn tất kiểm toán 100%.
+- **Chốt 2 Quy Chuẩn Bắt Buộc Mới**:
+  - **14-inch Windows 125% Scale SSOT (`.agents/rules/ui.md`, `.agents/rules/UI_RULES.md`)**:
+    - Chuẩn CSS viewport acceptance Target số 1: `1536 x 864` (độ phân giải thực tế của Windows 125% scaling trên màn 1080p), tiếp theo là `1366 x 768`.
+    - Data Table Responsive Rules: Tối ưu ưu tiên cột (P1: Tên/Điểm/Mức độ/Thao tác luôn rõ ràng; P2/P3: Co gọn/gộp hoặc ẩn dữ liệu phụ), không gây page horizontal scroll.
+  - **File / Image Storage & Broken Image Rule (`.agents/rules/frontend.md`)**:
+    - D1 chỉ lưu metadata và `object_key` + SHA-256 fingerprint, R2 lưu binary WebP/JPEG (display ~ 1200-1600px).
+    - Cấm lưu base64 TEXT hay URL tuyệt đối vào DB.
+    - Broken Image Rule: Bắt buộc dùng `SafeImage` với `onError` fallback neutral placeholder SVG, cấm lộ icon vỡ hình mặc định của browser.
+- **Hoàn Tất Refactor Trang Cảnh Báo (`/staff/alerts`) Theo Chuẩn 1536x864**:
+  - Tỉ lệ layout: 75% Bảng danh sách (`flex-1 min-w-0`) + 25% Panel "Ưu tiên hôm nay" (cố định `w-full xl:w-[310px] xl:shrink-0`). Khi màn hình hẹp (< 1350px), panel tự chuyển xuống dưới, không bóp nghẹt bảng chính.
+  - Tích hợp `SafeImage` cho thumbnail bằng chứng và card ưu tiên.
+  - Action buttons tinh gọn: `[+ Hồ sơ] [Gán] [Ẩn]`, zero text collision, zero page-level horizontal overflow.
 - **Sức khỏe Mã nguồn**:
   - `npm --prefix app run verify:quick`: **279/279 tests PASS 100%** (28 test files + 42 UI smoke tests, ~2.0s).
   - `node --test app/tests/alert-to-case-atomic.test.js`: **PASS 100% (20ms)**.
