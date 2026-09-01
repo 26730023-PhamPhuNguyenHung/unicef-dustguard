@@ -5,17 +5,18 @@ You are maintaining **DustGuard VN** — A CivicTech platform empowering Youth C
 
 ---
 
-## 2. Core Invariants (10 Nguyên Tắc Tối Thượng)
+## 2. Core Invariants (11 Nguyên Tắc Tối Thượng)
 1. **D1 is SSOT**: Cloudflare D1 (`env.DB` / `prisma/dev.db`) là CSDL chân thực duy nhất. Cấm dùng client localStorage làm CSDL lưu trữ chính.
 2. **Observation != Case**: Ghi nhận (Observation) là phát hiện ban đầu từ cộng đồng; Vụ việc (Case) là hồ sơ theo dõi 7 bước tác nghiệp đa bên.
 3. **IoT is Optional**: Hệ thống hoạt động 100% khi có 0 cảm biến (chuẩn hóa trọng số `sum(score * w) / sum(w)`).
 4. **AI is Assistant, Not Judge**: AI hỗ trợ tóm tắt, trích xuất và gợi ý; con người và quy chuẩn thực tế quyết định.
 5. **No Glassmorphism**: Light mode high-contrast civic tech (`#FDFBF7` cream, `#231b14` ink, `#0d6f64` teal, `#9f241f` seal red). Cấm `backdrop-blur-*`. Touch targets $\ge 44\text{px}$.
-6. **Zero Mock in Core Paths**: Dữ liệu thật qua D1 SQLite queries & API endpoints, không mock fake entities trong catch blocks.
-7. **Fast Inner Loop (< 0.5s)**: Chạy test đơn lẻ mục tiêu (`node --test app/tests/<file>.test.js`) ngay khi code, không spam full verify.
-8. **Proactive PowerShell CLI & Live DevTools**: Tự động chạy lệnh CLI trực tiếp qua PowerShell và dùng Chrome DevTools MCP duyệt trang thật, bắt lỗi runtime và sửa code ngay lập tức (không thụ động chờ user nhắc).
-9. **Natural Civic Copy & Zero Jargon**: Ngôn từ Ngắn — Rõ — Dễ hành động — Phù hợp thực tế. Cấm thuật ngữ kỹ thuật (DAG, SHA-256, HMAC, SLA, telemetry...) trên UI người dùng phổ thông.
-10. **Responsive 14-Inch Desktop & Mobile SSOT**: Bắt buộc tương thích hoàn hảo tại 1366x768, 1440x900, 1536x864, 1920x1080 và Mobile 360-430px (zero header menu wrap, zero button wrap, zero horizontal scroll vô lý).
+6. **Zero Truncate on Critical Civic Entities (UI Text SSOT)**: Cấm dùng `truncate`, `line-clamp`, `overflow-hidden` để che tên công trình, hồ sơ, nhiệm vụ. Copy phải ngắn gọn từ Presentation Layer. Đọc được > Nhét nhiều.
+7. **Zero Mock in Core Paths**: Dữ liệu thật qua D1 SQLite queries & API endpoints, không mock fake entities trong catch blocks.
+8. **Fast Inner Loop (< 0.5s)**: Chạy test đơn lẻ mục tiêu (`node --test app/tests/<file>.test.js`) ngay khi code, không spam full verify.
+9. **Proactive PowerShell CLI & Live DevTools**: Tự động chạy lệnh CLI trực tiếp qua PowerShell và dùng Chrome DevTools MCP duyệt trang thật, bắt lỗi runtime và sửa code ngay lập tức (không thụ động chờ user nhắc).
+10. **Natural Civic Copy & Zero Jargon**: Ngôn từ Ngắn — Rõ — Dễ hành động — Phù hợp thực tế. Cấm thuật ngữ kỹ thuật (DAG, SHA-256, HMAC, SLA, telemetry...) trên UI người dùng phổ thông.
+11. **Responsive 14-Inch Desktop & Mobile SSOT**: Bắt buộc tương thích hoàn hảo tại 1366x768, 1440x900, 1536x864, 1920x1080 và Mobile 360-430px (zero header menu wrap, zero button wrap, zero horizontal scroll vô lý).
 
 ---
 
@@ -23,6 +24,7 @@ You are maintaining **DustGuard VN** — A CivicTech platform empowering Youth C
 
 | Phân hệ / Tác vụ | Tài liệu SSOT cần đọc | Targeted Test (< 0.5s) | Ghi chú cốt lõi |
 |---|---|---|---|
+| **UI Text & Responsive Rules** | [`UI_RULES.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/rules/UI_RULES.md) | `node --test app/tests/design-system-tokens.test.js` | Zero truncate tên công trình/hồ sơ, min-w-0 flex, copy ngắn |
 | **Auth, Users & RBAC** | [`AUTH.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/AUTH.md) | `node --test app/tests/auth-user-management-audit.test.js` | 5 Roles chuẩn: public, citizen, community, staff, executive |
 | **Ghi nhận Cộng đồng (Observation)** | [`DOMAIN.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/DOMAIN.md) | `node --test app/tests/citizen-observation-lifecycle.test.js` | Status: RECORDED -> VERIFIED; 30s quick flow |
 | **Hồ sơ Vụ việc (Case 7-Step DAG)** | [`WORKFLOWS.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/WORKFLOWS.md) | `node --test app/tests/case-enforcement-dag-7steps.test.js` | 7 Bước chuẩn: Tiếp nhận -> Khảo sát -> Đề xuất -> Hoàn tất |
