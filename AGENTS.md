@@ -25,6 +25,8 @@ You are maintaining **DustGuard VN** — A CivicTech platform empowering Youth C
 | Phân hệ / Tác vụ | Tài liệu SSOT cần đọc | Targeted Test (< 0.5s) | Ghi chú cốt lõi |
 |---|---|---|---|
 | **UI Text & Responsive Rules** | [`UI_RULES.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/rules/UI_RULES.md) | `node --test app/tests/design-system-tokens.test.js` | Zero truncate tên công trình/hồ sơ, min-w-0 flex, copy ngắn |
+| **Staff 12-Table Schema SSOT** | [`STAFF_SCHEMA_SSOT.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/STAFF_SCHEMA_SSOT.md) | `node --test app/tests/staff-monitoring-d1-api.test.js` | 12 Bảng nghiệp vụ tối thiểu, zero table for cards/widgets |
+| **Vertical Slice Contract** | [`VERTICAL_SLICE_CONTRACT.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/rules/VERTICAL_SLICE_CONTRACT.md) | `node --test app/tests/staff-monitoring-d1-api.test.js` | UI -> API thật -> D1 thật -> DevTools Verify |
 | **Auth, Users & RBAC** | [`AUTH.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/AUTH.md) | `node --test app/tests/auth-user-management-audit.test.js` | 5 Roles chuẩn: public, citizen, community, staff, executive |
 | **Ghi nhận Cộng đồng (Observation)** | [`DOMAIN.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/DOMAIN.md) | `node --test app/tests/citizen-observation-lifecycle.test.js` | Status: RECORDED -> VERIFIED; 30s quick flow |
 | **Hồ sơ Vụ việc (Case 7-Step DAG)** | [`WORKFLOWS.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/WORKFLOWS.md) | `node --test app/tests/case-enforcement-dag-7steps.test.js` | 7 Bước chuẩn: Tiếp nhận -> Khảo sát -> Đề xuất -> Hoàn tất |
