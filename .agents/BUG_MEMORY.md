@@ -37,6 +37,13 @@
 - **Quy tắc chuẩn**:
   - Tất cả ảnh hiện trường / thumbnails phải đi qua component `SafeImage` với `onError` fallback về neutral SVG placeholder sạch sẽ, nền `#F5F5F4`, fixed aspect ratio và `object-fit: cover`.
 
+### 📌 Invariant -1.7: D1/SQLite Seed Mock Data SSOT — Cấm Hardcode Mock Fallback Trong React UI Pages
+- **Nguyên nhân**: Lười tạo seed script SQLite mà chèn thẳng fake mock objects vào nhánh `else { setSite({...}) }` hoặc initial state trong React UI component. Khi cần kiểm thử hoặc migrate dữ liệu thực tế lên Cloudflare D1 production, dev không biết cấu trúc DB đang ở đâu, schema bị lệch và code frontend bị ô nhiễm bởi dữ liệu giả.
+- **Quy tắc chuẩn**:
+  - **D1 SQLite (`prisma/dev.db`) là nơi duy nhất chứa dữ liệu mẫu/seed data**.
+  - Mọi dữ liệu mẫu phục vụ UI (10 Mockups) bắt buộc phải seed vào DB qua script (`app/scripts/seed-mockups-canonical-d1.mjs`).
+  - Frontend React UI chỉ gọi API endpoints chuẩn (`/api/staff/...`). Nếu API lỗi, hiển thị `ErrorState` kèm nút thử lại; nếu rỗng, hiển thị `EmptyState` chân thực từ hệ thống. Cấm tuyệt đối chèn fake fallback objects trong component client.
+
 ---
 
 ## 🌐 0. API Request & Network Traps
