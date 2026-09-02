@@ -17,9 +17,14 @@
   - **Backend Worker Routes & Schema**: Chuẩn hóa snake_case trên `audit_logs`, `draft_documents`, `evidences`, `contractor_explanations`.
   - **AI & Telemetry Engine**: Thêm `AbortSignal.timeout(10000)` chống treo worker, vá prompt injection XML `<user_query>`, sửa `Number(null) === 0` trong flatline detection.
   - **Security & DAG Engine**: Whitelist MIME types raster, CSP sandbox cho storage upload, từ chối unsigned JWT tại production, HMAC token nhà thầu, tối ưu N+1 batch queries trong automation cron sweep.
+- **Landing Page 10-Second Screen & Copy Streamline Refactoring**:
+  - **Hero Section**: Tinh gọn cực mạnh text above-the-fold, xóa info box thừa ("Không chỉ dừng ở một phản ánh đã gửi..."), giảm còn đúng 2 CTA chính (`Phản ánh` trỏ tới `/citizen/report/new` và `Xem demo` trỏ tới `/demo`).
+  - **Interactive Case Preview Card**: Loại bỏ SHA-256 raw hash, xóa người phụ trách và timestamp rườm rà, chỉ giữ 6 điểm dữ liệu cốt lõi (Mã hồ sơ `#DG-2026-0842`, Địa điểm `Vành đai 3 · Dịch Vọng Hậu`, Trạng thái `Đang xử lý` / `Đã khắc phục`, Tiến trình 5 bước, Mức ưu tiên `85/100 · Cao`, PM2.5 `142 µg/m³`, 1 câu ghi nhận ngắn).
+  - **LandingNav**: Đồng bộ tái sử dụng `BrandLogo` SSOT (`src/shared/components/BrandLogo.jsx`), rút gọn desktop navbar từ 8 xuống đúng 5 mục chính (`Bản đồ`, `Vấn đề`, `Giải pháp`, `Quy trình`, `Pilot`), bảo đảm touch targets $\ge 44\text{px}$ và không wrap line trên laptop 1366x768.
+  - **Typography & Responsive**: Áp dụng `text-wrap: balance` cho headings, `text-wrap: pretty` cho subheads, `overflow-wrap: break-word`, zero glassmorphism.
 - **Sức khỏe Mã nguồn**:
-  - `npm --prefix app run verify:quick`: **279/279 tests PASS 100%** (28 test files + 4 UI smoke tests, 4.8s).
-  - `npm --prefix app run build`: **Vite build thành công 100%** (4.6s).
+  - `npm --prefix app run verify:quick`: **279/279 tests PASS 100%** (28 test files + 4 UI smoke tests, 2.7s).
+  - `npm --prefix app run build`: **Vite build thành công 100%** (2.7s).
 
 ---
 
