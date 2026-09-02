@@ -1,11 +1,11 @@
-# STF-08 — Trung Tâm Xử Lý Cảnh Báo (Staff Alerts)
+# STF-08 — Trung Tâm Xử Lý Cảnh Báo Ô Nhiễm (Staff Alerts)
 
 ## 1. Screen identity
-- Role: Staff / Inspector
-- Route: `/staff/alerts`
-- Component: `apps/staff/pages/alerts/StaffAlertsPage.jsx`
-- Layout: `apps/staff/layout/StaffLayout.jsx`
-- Navigation entry: Sidebar Staff
-- Current implementation status: ACTIVE (Level 5 Production)
+- **Role**: Staff / Inspector
+- **Route**: `/staff/alerts`
+- **Component**: `src/apps/staff/pages/alerts/StaffAlertsPage.jsx`
+- **Layout**: `src/apps/staff/layout/StaffLayout.jsx`
+- **Navigation entry**: Sidebar Staff ("Cảnh báo")
+- **Current implementation status**: ACTIVE (Level 5 Production Coherent)
 
-Purpose: Tiếp nhận và xử lý các sự kiện cảnh báo ô nhiễm tự động kích hoạt khi cảm biến vượt ngưỡng; phân loại mức độ nghiêm trọng và tạo vụ việc xử lý ngay chỉ với 1 click.
+**Purpose**: Tiếp nhận và phân loại các sự kiện nồng độ bụi vượt ngưỡng an toàn do cảm biến tự động gửi về; kích hoạt quy trình tạo hồ sơ vụ việc chỉ với 1 click để cử đoàn thanh tra xử lý ngay.

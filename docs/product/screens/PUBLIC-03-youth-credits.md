@@ -1,84 +1,50 @@
-# PUB-03 — Cổng Tín Chỉ Thanh Niên (Youth Credits)
+# PUB-03 — Cổng Tín Chỉ Thanh Niên & Chứng Chỉ QR (Youth Credits)
 
 ## 1. Screen identity
-- Role: Public / Youth / Sinh viên
-- Route: `/youth`
-- Component: `modules/youth/YouthCredits.jsx`
-- Layout: Public / Youth Layout
-- Navigation entry: Header Menu / Citizen Profile
-- Current implementation status: ACTIVE (Level 5 Production)
+- **Role**: Public / Youth / Sinh viên
+- **Route**: `/youth`
+- **Component**: `src/modules/youth/YouthCredits.jsx`
+- **Layout**: Public / Youth Layout
+- **Navigation entry**: Header Menu "Tín chỉ thanh niên" / Cổng công dân `/citizen/profile`
+- **Current implementation status**: ACTIVE (Level 5 Production Coherent)
 
-Purpose: Quy đổi giờ tình nguyện môi trường thành tín chỉ hoạt động ngoại khóa sinh viên (20h = 4.0 tín chỉ) và xuất chứng chỉ số có mã QR xác thực chuẩn ISO/IEC 18004.
+**Purpose**: Cơ chế khuyến khích thế hệ trẻ tham gia bảo vệ môi trường: quy đổi 20 giờ tình nguyện thành 4.0 tín chỉ hoạt động ngoại khóa, vinh danh câu lạc bộ dẫn đầu và cấp chứng chỉ số có mã QR vector SVG chuẩn ISO/IEC 18004.
 
 ---
 
 ## 2. User goal
-- Xem bảng quy tắc tích lũy giờ tình nguyện và quy đổi tín chỉ.
-- Tra cứu bảng xếp hạng đóng góp của các trường Đại học & Câu lạc bộ.
-- Nhập mã sinh viên để nhận chứng chỉ điện tử có chữ ký số.
+1. **Theo dõi tiến độ tích lũy**: Kiểm tra số giờ ghi nhận hiện trường và số tín chỉ đạt được theo quy chuẩn $20	ext{h} = 4.0	ext{ tín chỉ}$.
+2. **Tra cứu bảng xếp hạng**: Xem vị trí xếp hạng đóng góp của Trường Đại học và Câu lạc bộ Tình nguyện.
+3. **Nhận chứng chỉ điện tử**: Điền thông tin sinh viên để tạo chứng chỉ có chữ ký số và mã QR quét được tức thì.
 
 ---
 
-## 3. Entry points
-- Menu "Tín chỉ thanh niên" trên Header.
-- Nút "Nhận chứng chỉ" từ trang cá nhân công dân `/citizen/profile`.
+## 3. Information hierarchy
+1. **Thanh tiến độ cá nhân (Credit Goal Calculator)**: Vòng tròn tiến độ 20 giờ, số giờ còn lại để đạt mốc nhận chứng chỉ tiếp theo.
+2. **Bảng xếp hạng đóng góp (Universities & Clubs Leaderboard)**: Top 10 trường ĐH có số giờ khảo sát môi trường cao nhất.
+3. **Khung xem trước & Tải chứng chỉ (Verifiable Certificate Frame)**: Khổ giấy A4, Quốc hiệu, Mã định danh duy nhất, Mã QR SVG chuẩn ISO 18004.
+4. **Hướng dẫn tham gia nhiệm vụ**: 4 bước đơn giản để sinh viên bắt đầu ghi nhận và tích lũy giờ công.
 
 ---
 
-## 4. Exit / next actions
-- Bấm "Tham gia ghi nhận" $ightarrow$ `/citizen/report/new`
-- Bấm "Tải chứng chỉ PDF/SVG" $ightarrow$ Lưu file chứng chỉ về máy.
-
----
-
-## 5. Information hierarchy
-1. Banner thông điệp: "20 Giờ Tình Nguyện = 4.0 Tín Chỉ Sinh Viên"
-2. Máy tính quy đổi giờ & Điểm rèn luyện thời gian thực
-3. Bảng xếp hạng Top các Trường ĐH & CLB Tình nguyện dẫn đầu
-4. Trình xuất & Kiểm tra Chứng chỉ số (Certificate Generator with QR Matrix)
-
----
-
-## 6. Above-the-fold content
-- **MUST SEE**: Thẻ quy đổi tiến độ (Ví dụ: 15h / 20h — Đạt 75%), Nút "Nhận chứng chỉ".
-- **SHOULD SEE**: Top 3 trường đại học tích cực nhất (ĐHQG, ĐHBK, ĐHKT).
-- **BELOW FOLD**: Lịch sử các đợt ra quân khảo sát môi trường và danh sách cấp chứng chỉ công khai.
-
----
-
-## 7. Screen sections
-### Section 1 — Credit Converter & Progress
-- Displays: Số giờ ghi nhận, Giờ khảo sát hiện trường, Điểm rèn luyện tích lũy.
-- Status: IMPLEMENTED
-
-### Section 2 — Top Universities Leaderboard
-- Displays: Bảng xếp hạng gồm Tên trường, Số tình nguyện viên, Tổng giờ đóng góp.
-- Status: IMPLEMENTED
-
-### Section 3 — Verifiable Digital Certificate Preview
-- Displays: Mẫu chứng chỉ hành chính A4 có Quốc huy/Logo, Mã băm bảo mật SHA-256, Mã QR SVG quét được trên mọi thiết bị.
-- Status: IMPLEMENTED
-
----
-
-## 8. Data displayed
+## 4. Data displayed
 | Field | Meaning | Required | Source | Current status |
-|---|---|---:|---|---|
-| Volunteer Hours Logged | Tổng giờ tình nguyện đã xác minh | Có | D1 `youth_activities` | REAL |
-| Extracurricular Credits | Tín chỉ ngoại khóa quy đổi | Có | Engine quy đổi | REAL (20h = 4.0) |
-| Certificate Code | Mã định danh chứng chỉ duy nhất | Có | D1 `youth_certificates` | REAL |
-| QR Matrix SVG | Mã QR vector chuẩn ISO 18004 | Có | `youth-credits.js` | REAL |
+|---|---|:---:|---|---|
+| Volunteer Hours Logged | Tổng giờ tình nguyện đã được cán bộ xác minh | Có | D1 `youth_activities` | REAL |
+| Extracurricular Credits | Tín chỉ ngoại khóa quy đổi ($4.0	ext{ TC} / 20	ext{h}$) | Có | `youth-credits.js` | REAL |
+| Top Universities | Danh sách trường ĐH & số giờ đóng góp | Có | D1 `youth_activities` | REAL |
+| Certificate Code | Mã số chứng chỉ duy nhất (VD: `VN-YOUTH-2026-8891`) | Có | D1 `youth_certificates` | REAL |
+| Digital Signature Hash | Mã băm SHA-256 xác thực tính toàn vẹn | Có | Web Crypto Engine | REAL |
 
 ---
 
-## 9. User actions
-| Action | Trigger | Result | Permission | Status |
-|---|---|---|---|---|
-| Đăng ký đổi chứng chỉ | Điền mã SV & bấm "Cấp chứng chỉ" | Sinh bản ghi D1 + tạo file QR | Student/Citizen | WORKING |
-| Tải ảnh chứng chỉ PNG/SVG | Bấm "Tải chứng chỉ" | Tải file Base64 PNG hoặc Vector SVG | Student/Citizen | WORKING |
+## 5. Primary action
+- **Primary action**: `[Cấp chứng chỉ tín chỉ]` (Mở modal nhận chứng chỉ)
+- **Secondary**: `[Tải file SVG/PNG]`, `[Tham gia khảo sát mới]`
 
 ---
 
-## 10. Primary action
-- Primary action: [Nhận chứng chỉ tín chỉ]
-- Secondary: [Xem bảng xếp hạng], [Tham gia đợt khảo sát mới]
+## 6. UI Copy
+- **Page title**: Cổng tín chỉ thanh niên bảo vệ môi trường
+- **Description**: 20 Giờ tình nguyện = 4.0 Tín chỉ ngoại khóa sinh viên.
+- **Button labels**: `[Nhận chứng chỉ]`, `[Tải SVG]`, `[Tải PNG]`, `[Xem bảng xếp hạng]`
