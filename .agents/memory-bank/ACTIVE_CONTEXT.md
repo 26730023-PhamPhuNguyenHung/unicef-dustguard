@@ -1,37 +1,23 @@
 # ACTIVE CONTEXT — DUSTGUARD VN
 
-> **Trạng thái**: Production Ready & Fully Verified | **Branch**: `master` | **Cập nhật**: 2026-09-01
+> **Trạng thái**: Local DB First (100% SQLite SSOT) & Verified | **Branch**: `master` | **Cập nhật**: 2026-09-02
 
 ---
 
 ## 🎯 1. Trọng Tâm Hoạt Động Hiện Tại (Active Operational State)
-- **Hệ thống**: Toàn bộ kiến trúc Cloudflare D1 (Structured Metadata) + R2 (Binary Objects) + Worker Edge Router + Vite React Client đã hoàn tất kiểm toán 100%.
-- **Chốt 3 Quy Chuẩn Bắt Buộc Mới**:
-  - **14-inch Windows 125% Scale SSOT (`.agents/rules/ui.md`, `.agents/rules/UI_RULES.md`)**:
-    - Chuẩn CSS viewport acceptance Target số 1: `1536 x 864` (độ phân giải thực tế của Windows 125% scaling trên màn 1080p), tiếp theo là `1366 x 768`.
-    - Data Table Responsive Rules: Tối ưu ưu tiên cột (P1: Tên/Điểm/Mức độ/Thao tác luôn rõ ràng; P2/P3: Co gọn/gộp hoặc ẩn dữ liệu phụ), không gây page horizontal scroll. Tỉ lệ 75% Bảng chính (`flex-1 min-w-0`) + 25% Panel phụ (cố định `w-full xl:w-[310px] xl:shrink-0`).
-  - **File / Image Storage & Broken Image Rule (`.agents/rules/frontend.md`)**:
-    - D1 chỉ lưu metadata và `object_key` + SHA-256 fingerprint, R2 lưu binary WebP/JPEG (display ~ 1200-1600px).
-    - Cấm lưu base64 TEXT hay URL tuyệt đối vào DB.
-    - Broken Image Rule: Bắt buộc dùng `SafeImage` với `onError` fallback neutral placeholder SVG, cấm lộ icon vỡ hình mặc định của browser.
-  - **D1 SQLite Zero-Mock Rule (`.agents/rules/zero-mock-d1-ssot.md`)**:
-    - Cấm tuyệt đối chèn fake objects (`setSite({ ... })`, hardcode fallback) trong client React UI pages.
-    - Mọi dữ liệu mẫu/seed data đều được seed vào `prisma/dev.db` (D1 SSOT) thông qua `app/scripts/seed-mockups-canonical-d1.mjs` và truy vấn qua API endpoints backend.
-- **Hoàn Tất Chuẩn Hóa 10 Màn Hình Staff Khớp 100% 10 Mockup Chính Thức**:
-  - **Mockup 1 (`/staff`)**: Trang chính Staff Dashboard — Chuỗi 24h & OSM GIS.
-  - **Mockup 2 (`/staff/monitoring`)**: Giám sát quan trắc bụi công trình & Chuỗi thời gian trạm đo.
-  - **Mockup 3 (`/staff/alerts`)**: Cảnh báo mới — Bảng 75% + Panel 25% "Ưu tiên hôm nay", SafeImage.
-  - **Mockup 4 (`/staff/sites`)**: Công trình đang theo dõi — 4 KPI cards, Bảng 9 cột kèm dropdown thao tác, Panel "Cần chú ý - Top 3 công trình" (91, 87, 74), Modal Thêm & Nhập Excel.
-  - **Mockup 5 (`/staff/sites/:id`)**: Chi tiết công trình — Header info card, 4 KPI, Bản đồ vị trí OSM + Line chart 7 ngày + Việc cần bổ sung, 2 Bảng: Hồ sơ liên quan & Lịch sử đo gần đây.
-  - **Mockup 6 (`/staff/cases`)**: Hồ sơ đang xử lý — 4 KPI cards, 6 Tabs, Bảng 7 cột (DAG step badge, avatar initials cán bộ, hạn xử lý), Panel "Ưu tiên hôm nay".
-  - **Mockup 7 (`/staff/cases/:id`)**: Chi tiết hồ sơ vụ việc — Metadata bar, 6 Tabs (Thông tin, Ảnh, Theo dõi, Khảo sát, Khắc phục, Hồ sơ), AI suggestion badge, Bằng chứng cần bổ sung, Timeline, Danh sách việc, Ảnh Before/After qua `SafeImage`.
-  - **Mockup 8 (`/staff/tasks`)**: Nhiệm vụ được giao — 4 KPI, 5 Tabs, Bảng 7 cột (Chip số lượng hồ sơ đính kèm), Panel "Lịch hôm nay" theo giờ tác nghiệp thực tế.
-  - **Mockup 9 (`/staff/reports`)**: Báo cáo và chia sẻ — 4 KPI, Biểu đồ xu hướng 4 tuần (Tuần 20–23), 4 Mẫu báo cáo nhanh (PDF, Excel, Link, Lên lịch), Banner email tự động Thứ 2, Bảng báo cáo đã tạo.
-  - **Mockup 10 (`/staff/notifications`)**: Thông báo vận hành — 4 KPI, 5 Tabs, Bảng thông báo có nút hành động trực tiếp (Mở, Tạo việc, Tắt nhắc), Panel "Việc cần chú ý" sự kiện khẩn.
+- **Quy tắc Phát Triển Mới (Local DB First SSOT - `.agents/rules/local-db-first-development.md`)**:
+  - Toàn bộ backend và frontend chạy 100% trên Local SQLite (`app/prisma/dev.db`). Khi hoàn thiện toàn diện hệ thống sẽ tiến hành sync Cloudflare D1 Production.
+  - Số liệu KPI đồng bộ chính xác với `COUNT(*)` từ SQLite (Sites: 37, High risk: 14, Monitoring: 26, Stable: 5).
+  - Phân trang động dựa trên `Math.ceil(totalSitesCount / limit)` (5 trang cho 37 bản ghi).
+- **Hoàn Tất Khắc Phục UI Rớt Chữ & Nối Dữ Liệu Thực Tế (`SitesListPage.jsx`)**:
+  - Đã bổ sung `whitespace-nowrap`, căn chỉnh `min-w-[...]` cho toàn bộ 9 cột tiêu đề bảng (Mã, Công trình, Khu vực, Điểm rủi ro, Trạm đo, Hồ sơ mở, Phụ trách, Trạng thái, Thao tác).
+  - Input tìm kiếm ngắn gọn, sắc nét; Dropdown Phường/Xã tự động nạp danh sách phường/xã thực tế từ DB qua `/api/staff/sites/wards`.
+  - Thiết kế lại 4 KPI cards trên cùng và Panel "Cần chú ý - Top 3 ưu tiên" với badge trạm đo, số case mở và điểm rủi ro lớn.
+- **Backend Worker Operational Endpoints (`staff.routes.js`)**:
+  - Đã mount toàn bộ 10 phân hệ Staff vào Worker Hono app (`app/server/app.js`), tương thích 100% Local SQLite.
 - **Sức khỏe Mã nguồn**:
-  - `npm --prefix app run verify:quick`: **279/279 tests PASS 100%** (28 test files + 42 UI smoke tests, ~3.5s).
-  - Đã bổ sung 3 test suites mới: `staff-sites-mockup4-5.test.js`, `staff-cases-mockup6-7.test.js`, `staff-mockups8-9-10.test.js`.
-  - `npm --prefix app run build`: **Vite production bundle PASS 100%** (0 errors).
+  - `node --test app/tests/staff-worker-d1-api.test.js`: **8/8 tests PASS 100%**.
+  - `npm --prefix app run verify:quick`: **287/287 tests PASS 100%** (29 test files + 42 UI smoke tests, ~4.5s).
 
 ---
 
