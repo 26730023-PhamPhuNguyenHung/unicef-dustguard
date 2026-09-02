@@ -5,6 +5,27 @@
 ---
 
 ## 🎯 1. Trọng Tâm Hoạt Động Hiện Tại (Active Operational State)
+- **Hoàn Tất Rà Soát & Hoàn Thiện Giao Diện 5 Màn Hình Cán Bộ 7-11 (Subagent UI-4)**:
+  - **1. Màn hình Quan trắc (`StaffMonitoringPage.jsx`)**: Biểu đồ đường chuỗi thời gian 24h rõ ràng (PM2.5 / PM10 đối chiếu ngưỡng QCVN 05:2023), bảng danh sách trạm phân trang mượt mà, bộ lọc khu vực/quận huyện (Thanh Xuân, Cầu Giấy, Ba Đình, Hoàng Mai...), nhúng bản đồ OpenStreetMap GIS tỷ lệ chuẩn không tràn layout, thẻ trạm bất thường trực quan, touch targets $\ge 44\text{px}$, zero glassmorphism.
+  - **2. Màn hình Cảnh báo (`StaffAlertsPage.jsx`)**: Bố cục tối ưu tỷ lệ 75% Bảng danh sách cảnh báo + 25% Cột ưu tiên xử lý khẩn cấp (310px cố định), nút 1-Click `+ Hồ sơ` chuyển đổi nhanh sang vụ việc, tích hợp SafeImage an toàn minh chứng hiện trường và modal phóng to ảnh, touch targets $\ge 44\text{px}$.
+  - **3. Màn hình Báo cáo (`StaffReportsPage.jsx`)**: Tích hợp Modal xem trước và in ấn A4 chuẩn thể thức văn bản hành chính theo **Nghị định 30/2020/NĐ-CP** (Quốc hiệu, Tiêu ngữ, Số hiệu, Trích yếu, 3 phần nội dung & Nơi nhận/Ký duyệt), hỗ trợ xuất file Word (`.doc`), file CSV/Excel (`.csv`), touch targets $\ge 44\text{px}$.
+  - **4. Màn hình Hồ sơ Cán bộ (`StaffProfilePage.jsx`)**: Thẻ định danh công tác số (Mã thẻ thanh tra viên `staffCode`, Đơn vị, Chức vụ, Trạng thái hoạt động), form cập nhật thông tin cá nhân & đổi mật khẩu bảo mật 2 lớp, touch targets $\ge 44\text{px}$.
+  - **5. Màn hình Nhật ký Hoạt động (`StaffActivityPage.jsx`)**: Trục thời gian (Timeline) dọc rõ nét với badge màu phân loại hành động (Biên bản A4, Xử phạt, Cảnh báo, Cập nhật trạng thái), hiển thị đầy đủ cán bộ thực hiện, vai trò, thời gian chính xác, mã hồ sơ mục tiêu và chi tiết kết quả, hỗ trợ lọc theo loại hành động và tìm kiếm từ khóa, touch targets $\ge 44\text{px}$.
+  - **Kiểm thử**: Viết mới test suite `staff-screens-7-11-audit.test.js` (5/5 tests PASS, 7ms), toàn bộ 28 test files + Quick Gate PASS 100%.
+
+- **Hoàn Tất Rà Soát & Nâng Cấp Giao Diện 4 Màn Hình Nhà Thầu + 3 Màn Hình Quản Trị (Subagent UI-5)**:
+  - **Phân Hệ Nhà Thầu (Contractor Workspace & Remediation Flow)**:
+    * `ContractorLayout.jsx`: Bổ sung Mobile Drawer navigation, nâng toàn bộ touch targets lên $\ge 48\text{px}$ glove-friendly, zero glassmorphism, responsive từ 360px đến 1920px.
+    * `ContractorDashboardPage.jsx`: Cung cấp 4 KPI cốt lõi (Yêu cầu khắc phục, Đã xử lý, Điểm tuân thủ QCVN 05:2023, Trạm cảm biến IoT online), giám sát nồng độ bụi công trường, nút bấm to $\ge 48\text{px}$.
+    * `ContractorTasksPage.jsx`: Tích hợp đo khoảng cách định vị GPS Geofence $\le 50$m trực quan, hỗ trợ chụp ảnh After Evidence, tự động băm mã SHA-256 đối chứng tính toàn vẹn, checklist 4 biện pháp tiêu chuẩn, nút bấm glove-friendly $\ge 48\text{px}$.
+    * `ContractorCasesPage.jsx`: Quản lý hồ sơ vụ việc liên kết Cổng DVC 1022 & iHanoi, chuỗi đối chứng Before/After, modal chi tiết trực quan, loại bỏ hoàn toàn cắt cụt text.
+    * `ContractorReportsPage.jsx`: Bảng 10 tiêu chí tuân thủ bảo vệ môi trường thi công (Checklist SSOT), Mẫu in A4 nghiệm thu bàn giao (Printable Handover Certificate với modal xem trước và hỗ trợ in ấn A4 chuẩn thể thức).
+  - **Phân Hệ Quản Trị Hệ Thống (Admin & D1 Cloud Infrastructure)**:
+    * `AdminLayout.jsx`: Bổ sung Mobile Drawer navigation, touch targets $\ge 48\text{px}$, sắc nét, tương phản cao.
+    * `AdminDashboardPage.jsx`: 4 KPI hạ tầng D1 SSOT (D1 SQLite Database queries/storage, Edge Worker latency P99, IoT nodes online, R2 Evidence Vault storage/count), Bảng trạng thái sức khỏe phân hệ lõi (System Health) và Nhật ký kiểm toán tác nghiệp (Audit Trail).
+    * `UsersPage.jsx`: Bảng danh sách tài khoản hỗ trợ Dropdown đổi quyền trực tiếp In-Place (5 roles chuẩn RBAC), Zero Truncate trên họ tên và email (`break-words`/`break-all`), thanh tìm kiếm & bộ lọc, modal thêm người dùng mới.
+    * `SettingsPage.jsx`: Form cấu hình tương tác đầy đủ các ngưỡng quy chuẩn kỹ thuật quốc gia QCVN 05:2023/BTNMT (PM2.5, PM10, TSP, SO2, NO2, CO), tham số Geofence 50m, thời hạn SLA 24h/48h, cấu hình Webhook Zalo OA / Telegram Bot.
+  - **Kiểm thử**: `verify:quick` (279/279 tests) PASS 100%, tất cả test suite Contractor & Admin pass trọn vẹn.
 - **Hoàn Tất Rà Soát & Vá Toàn Diện Phân Hệ Nhà Thầu & Đối Chứng Khắc Phục (Subagent Ops-3)**:
   - **Quick Token 0-Login UTF-8**: Khắc phục lỗi `btoa` crash khi mã hóa payload tiếng Việt có dấu, thay thế bằng helper base64url an toàn UTF-8.
   - **Worker Multipart Upload**: Bổ sung `c.req.parseBody()` cho các endpoint `POST /api/contractor/actions/:id/evidence` và `POST /api/contractor/quick-submit` khi nhận `multipart/form-data`.
