@@ -1,10 +1,15 @@
 # ACTIVE CONTEXT — DUSTGUARD VN
 
-> **Trạng thái**: Hoàn tất Khắc phục Toàn Diện Các Lỗi Tiềm Ẩn & Vượt Qua Full Release Gate 100% | **Branch**: `master` | **Cập nhật**: 2026-09-02
+> **Trạng thái**: Hoàn tất Nâng Cấp Phân Hệ Community & Youth Workspace | **Branch**: `master` | **Cập nhật**: 2026-09-02
 
 ---
 
 ## 🎯 1. Trọng Tâm Hoạt Động Hiện Tại (Active Operational State)
+- **Hoàn Tất Nâng Cấp Phân Hệ Community & Youth (Thanh Niên & Tín Chỉ Xanh)**:
+  - **1. Đồng Bộ Điều Hướng Cổng Công Dân ↔ Góc Thanh Niên**: Thêm tab "Tín chỉ Thanh niên" (`/youth`) trên `CitizenLayout.jsx` và Banner kêu gọi hành động Đoàn - Hội trên `CitizenHomePage.jsx`.
+  - **2. Tác Nghiệp Khảo Sát Thực Địa (Mission Pre-fill)**: Tích hợp `missionCode` query param vào `ReportNewPage.jsx`, tự động điền thông tin khảo sát khi sinh viên nhận nhiệm vụ từ `/youth`.
+  - **3. Quy Đổi Chuẩn Tín Chỉ Ngoại Khóa & Mã QR ISO/IEC 18004**: Bảo toàn cơ chế 20 giờ = 4.0 tín chỉ (80 ĐRL) và xuất chứng nhận số chống giả mạo.
+  - **4. Kiểm Thử Toàn Diện**: Quick Gate (`verify:quick`) **PASS 100%** (283/283 tests, 2.2s).
 - **Hoàn Tất Khắc Phục Toàn Diện Các Lỗi Tiềm Ẩn (Bug Hunt & Production Fixes)**:
   - **1. Khử triệt để Glassmorphism**: Xóa bỏ `backdrop-blur-xs` còn sót lại trong modal `SiteDetailPage.jsx`, chuyển sang solid high-contrast background `bg-black/60`.
   - **2. Bổ sung WCAG Accessibility CSS Utilities**: Thêm `:focus-visible` ring `#0d6f64`, `@utility skip-link`, `@utility touch-target` (min 44px) vào `index.css`.
