@@ -5,19 +5,19 @@
 ---
 
 ## 🎯 1. Trọng Tâm Hoạt Động Hiện Tại (Active Operational State)
-- **Chuẩn Hóa Hợp Đồng Dữ Liệu API (API Contract & Normalization SSOT - `.agents/rules/api-data-contract-normalization.md`)**:
-  - Ban hành Invariant 12: Frontend cấm đoán schema; chuẩn hóa toàn bộ API client layer (`request.js`, `staff-api.js`, `public-api.js`, `admin-api.js`, `useApiData.js`).
-  - Toàn bộ collections được unwrap qua `normalizeList(res)` đảm bảo luôn trả về `Array.isArray` `[]` an toàn, chấm dứt hoàn toàn các lỗi runtime `.slice is not a function` hay `.map is not a function`.
-  - Bổ sung Trap 0.10 vào `BUG_MEMORY.md` và đưa vào SSOT Matrix.
-- **Quy Tắc Kiểm Thử Theo Giá Trị Nghiệp Vụ (Business-Value Testing - `.agents/rules/business-value-testing-rules.md`)**:
-  - Ban hành Invariant 13: Ưu tiên test theo giá trị nghiệp vụ thực tế, cấm chạy theo số lượng hay vanity coverage.
-  - Phân tầng 5 lớp: Unit (Business logic/Rules), Integration (API+DB+RBAC), Contract (Shape response), E2E (P0 Journeys), UI (Behavior > Markup).
-- **Quy tắc Phát Triển (Local DB First SSOT - `.agents/rules/local-db-first-development.md`)**:
-  - Toàn bộ backend và frontend chạy 100% trên Local SQLite (`app/prisma/dev.db`). Khi hoàn thiện toàn diện hệ thống sẽ tiến hành sync Cloudflare D1 Production.
-  - Số liệu KPI đồng bộ chính xác với `COUNT(*)` từ SQLite (Sites: 37, High risk: 14, Monitoring: 26, Stable: 5).
-  - Phân trang động dựa trên `Math.ceil(totalSitesCount / limit)` (5 trang cho 37 bản ghi).
+- **Hoàn Tất 10 Vertical Slices Backend Thật & D1/SQLite Persistence (Zero-Mock E2E)**:
+  - **Slice 1: Công trình (`/staff/sites` & `/staff/sites/:id`)**: CRUD hoàn chỉnh, Edit Site modal, D1 queries thật, OpenStreetMap tương tác theo toạ độ thực.
+  - **Slice 2: Quan trắc (`/staff/monitoring`)**: Real-time aggregation D1, SVG timeline, abnormal stations list, trigger alert logic.
+  - **Slice 3: Cảnh báo (`/staff/alerts`)**: Atomic transaction chuyển Alert thành Case, chống duplicate 409, KPI count `?? 0`.
+  - **Slice 4: Hồ sơ vụ việc (`/staff/cases` & `/staff/cases/:id`)**: 6 Tabs đầy đủ (Thông tin, Ảnh Before/After, Quy trình 7 bước DAG, Khảo sát thực địa, Kế hoạch khắc phục, Quyết định xử phạt), phân công cán bộ và duyệt đóng hồ sơ trực tiếp vào CSDL D1.
+  - **Slice 5: Minh chứng (`Evidence & R2 Storage`)**: Mã băm SHA-256 Web Crypto, đối chứng Trước/Sau, lưu trữ an toàn.
+  - **Slice 6: Nhiệm vụ (`/staff/tasks`)**: Tạo nhiệm vụ D1, phân công, đánh dấu hoàn tất, lọc động và phân trang.
+  - **Slice 7: Bảng điều khiển (`/staff`)**: `GET /dashboard/summary` tổng hợp 100% dữ liệu thực tế từ D1 SQLite (KPIs, Việc cần làm, Cảnh báo mới, Hồ sơ gần đây).
+  - **Slice 8: Báo cáo (`/staff/reports`)**: Tạo báo cáo, quản lý lịch gửi `report_schedules`, xuất CSV và in A4 PDF.
+  - **Slice 9: Thông báo (`/staff/notifications`)**: Đánh dấu đã đọc đơn lẻ/tất cả, tắt nhắc nhở, lọc khẩn cấp từ bảng `notifications`.
+  - **Slice 10: Cài đặt (`/staff/settings`)**: Lưu và nạp cấu hình ngưỡng PM2.5/PM10, SLA 48h, thông báo vào bảng `system_settings` D1.
 - **Sức khỏe Mã nguồn**:
-  - `npm --prefix app run verify:quick`: **279/279 tests PASS 100%** (28 test files + 4 UI smoke tests, ~3.4s).
+  - `npm --prefix app run verify:quick`: **279/279 tests PASS 100%** (28 test files + 4 UI smoke tests, ~2.8s).
 
 ---
 
