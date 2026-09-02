@@ -1,11 +1,21 @@
 # ACTIVE CONTEXT — DUSTGUARD VN
 
-> **Trạng thái**: Hoàn tất Biến Các Module Quản Lý Thành Feature Thật (Real Working Features trên D1 SQLite SSOT) | **Branch**: `master` | **Cập nhật**: 2026-09-02
+> **Trạng thái**: Hoàn tất Khắc phục Toàn Diện Các Lỗi Tiềm Ẩn & Vượt Qua Full Release Gate 100% | **Branch**: `master` | **Cập nhật**: 2026-09-02
 
 ---
 
 ## 🎯 1. Trọng Tâm Hoạt Động Hiện Tại (Active Operational State)
-- **Hoàn Tất Biến Các Module Quản Lý Thành Feature Thật (Real Working Features)**:
+- **Hoàn Tất Khắc Phục Toàn Diện Các Lỗi Tiềm Ẩn (Bug Hunt & Production Fixes)**:
+  - **1. Khử triệt để Glassmorphism**: Xóa bỏ `backdrop-blur-xs` còn sót lại trong modal `SiteDetailPage.jsx`, chuyển sang solid high-contrast background `bg-black/60`.
+  - **2. Bổ sung WCAG Accessibility CSS Utilities**: Thêm `:focus-visible` ring `#0d6f64`, `@utility skip-link`, `@utility touch-target` (min 44px) vào `index.css`.
+  - **3. Chuẩn hóa Breadcrumbs Landmark**: Bổ sung `nav aria-label="Đường dẫn trang"` trong `PageHeader` (`PageTemplate.jsx`).
+  - **4. Bảo vệ An Toàn Dữ Liệu Chế Độ Khách (Guest Read-Only Guard)**: Sửa `request.js` để chặn toàn bộ mutations khi `isGuestSession()`, ném lỗi `GUEST_READ_ONLY` 403 chuẩn xác thay vì bắn request lỗi mạng.
+  - **5. Bổ sung Endpoint CSR trên Edge Worker**: Thêm `GET /api/csr/sponsorships` và `GET /api/csr/impact-reports/:id` vào Worker Router `csr.routes.js`.
+  - **6. Sửa Lỗi Đường Dẫn SQLite `dev.db`**: Sửa lỗi hardcode path `app/prisma/dev.db` trong `staff-alerts.js` bằng danh sách candidate paths an toàn.
+  - **7. Chuẩn hóa Mobile Bottom Sheet & Escape Key Listener**: Thêm listener phím Escape và class `items-end sm:items-center pb-safe` cho Create Modal trong `StaffCases.jsx`.
+  - **8. Phân Tách Test Server / DB Concurrency**: Điều chuyển các test telemetry mở socket sang nhóm `database` chạy tuần tự để tránh race condition và khóa database.
+  - **9. Kết Quả Kiểm Thử**: Full Release Gate (`npm run verify`) **PASS 100%** (Toàn bộ 125 test suites, 560+ assertions).
+
   - **1. Hồ sơ Vụ việc (Case Management & 7-Step Workflow)**:
     * Endpoint `GET /api/cases/:id` & `GET /api/staff/cases/:id/detail`: Hợp nhất aggregate toàn diện (`case`, `site`, `report`, `assignment`, `tasks`, `evidence`, `remediation`, `timeline`, `nextAction`, `currentStep`, `currentStepNumber`).
     * Endpoint `POST /api/cases/:id/assign`: Phân công cán bộ thật từ `users`, cập nhật case, tự động tạo task trong `tasks`, ghi lịch sử `case_timelines`, tạo thông báo trong `notifications`.

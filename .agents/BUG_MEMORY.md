@@ -82,6 +82,23 @@
   - **Body / Data Handling**: Tự động chuyển đổi `body` plain object sang JSON string trong `request(path, options)`, bảo toàn `FormData`, `Blob`, `ArrayBuffer`, `URLSearchParams`.
   - **Civic Vietnamese Error Copy**: Chuẩn hóa RFC 7807 problem details handler và chuyển toàn bộ thông điệp lỗi sang tiếng Việt civic văn minh, rõ ràng, dễ hiểu qua `formatCivicErrorMessage(rawMsg, status, code)`. Toast notifications và Error States bắt buộc hiển thị tiếng Việt, có thể hành động được (Thử lại / Kiểm tra kết nối mạng).
 
+### 📌 Invariant -1.14: Guest Session Isolation vs Mutation Guards
+- **Nguyên nhân**: Điều kiện kiểm tra Guest mode bỏ sót một số path hoặc kiểm tra phức tạp, dẫn đến phiên khách (Guest session) gửi request ghi đè/mutate lên server thật hoặc gặp lỗi mạng không mong muốn.
+- **Quy tắc chuẩn**:
+  - Khi `isGuestSession()` đang bật, mọi thao tác mutation (`POST`, `PUT`, `PATCH`, `DELETE`) trong `request.js` bắt buộc ném `createReadOnlyGuestError()` (`GUEST_READ_ONLY`, 403), không bao giờ gửi request sửa đổi lên server D1.
+
+### 📌 Invariant -1.15: Mobile Bottom Sheet & Escape Key Listener Contract
+- **Nguyên nhân**: Modal tương tác trên desktop render bình thường nhưng trên mobile bị co cụm ở giữa màn hình khó chạm ngón cái, hoặc người dùng ấn phím `Escape` không đóng được modal.
+- **Quy tắc chuẩn**:
+  - Modal overlay: `items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60 overflow-y-auto pb-safe`.
+  - Modal content: `rounded-t-2xl sm:rounded-2xl max-h-[92vh] overflow-y-auto`.
+  - Bắt buộc gắn listener `window.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); })`.
+
+### 📌 Invariant -1.16: Test Isolation & Server Port / SQLite Lock Concurrency
+- **Nguyên nhân**: Các test file khởi động Express server (`http.createServer(app)`) và ghi/xóa dữ liệu Prisma SQLite trực tiếp chạy song song với `os.availableParallelism()` làm xung đột port và khóa database (`SQLITE_BUSY`).
+- **Quy tắc chuẩn**:
+  - Mọi test file có mở server socket hoặc thực hiện Prisma SQLite mutations trực tiếp phải được xếp vào nhóm `database` trong `test-groups.js` để chạy tuần tự an toàn.
+
 ---
 
 ## 🌐 0. API Request & Network Traps
