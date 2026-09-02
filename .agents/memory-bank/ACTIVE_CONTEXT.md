@@ -1,15 +1,22 @@
 # ACTIVE CONTEXT — DUSTGUARD VN
 
-> **Trạng thái**: Hoàn tất Khôi Phục & Đồng Bộ Toàn Bộ Tài Liệu Mới + Dọn Dẹp Screenshot Rác | **Branch**: `master` | **Cập nhật**: 2026-09-02
+> **Trạng thái**: Hoàn tất Product Consistency Audit 35 Màn Hình & Đồng Bộ Toàn Bộ File SSOT trong .agents | **Branch**: `master` | **Cập nhật**: 2026-09-02
 
 ---
 
 ## 🎯 1. Trọng Tâm Hoạt Động Hiện Tại (Active Operational State)
-- **Bảo Toàn Toàn Bộ Tài Liệu Mới & Đồng Bộ 3 File Mới Nhất**:
-  - Đã khôi phục toàn bộ các tài liệu đặc tả chuẩn mới: `docs/product/screens/` (39 files), `docs/product/` (toàn bộ specs, consistency audit, scorecard, language), `docs/ui/HUMAN_CENTRIC_31_PAGE_AUDIT.md`, `docs/architecture/` và `presentation/` pitch & spec.
-  - Đã sao chép và đồng bộ 3 file mới nhất từ Downloads: `PRODUCT_CONSISTENCY_AUDIT.md`, `PRODUCT_CONSISTENCY_SCORECARD.md`, `PRODUCT_LANGUAGE.md`.
-  - Đã dọn dẹp sạch sẽ 24 ảnh screenshot rác `staff_*.png` ở root và các file rác cũ/trùng lặp.
-  - Toàn bộ Quick Gate (`verify:quick`) đạt 100% PASS (279/279 tests).
+- **Hoàn Tất Product Consistency Audit Toàn Diện & Đồng Bộ Hệ Thống SSOT (.agents)**:
+  - **1. Thiết lập 3 Tài liệu Sản phẩm Chuẩn hóa**:
+    * [`docs/product/PRODUCT_LANGUAGE.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/docs/product/PRODUCT_LANGUAGE.md): Canonical Product Vocabulary, chuẩn hóa trạng thái vòng đời, quy tắc hiển thị mức ưu tiên và ranh giới 5 vai trò.
+    * [`docs/product/PRODUCT_CONSISTENCY_AUDIT.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/docs/product/PRODUCT_CONSISTENCY_AUDIT.md): Báo cáo audit ma trận 35 màn hình, phân loại xuất hiện của Risk Score (Nhóm A->F), bảng đối chiếu Traceability và kịch bản Golden Case duy nhất `#DG-2026-0842`.
+    * [`docs/product/PRODUCT_CONSISTENCY_SCORECARD.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/docs/product/PRODUCT_CONSISTENCY_SCORECARD.md): Bảng điểm QA nội bộ 7 tiêu chí x 35 màn hình.
+  - **2. Đồng Bộ & Cập Nhật Toàn Bộ Tài Liệu SSOT Lỗi Thời trong `.agents/`**:
+    * Đã cập nhật [`.agents/ssot/ROUTES.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/ROUTES.md) chuẩn hóa 5 phân hệ app và loại bỏ mapping legacy `/community`.
+    * Đã cập nhật [`.agents/ssot/USER_FLOWS.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/USER_FLOWS.md) theo chuỗi 7 bước North Star mới.
+    * Đã cập nhật [`.agents/ssot/CIVIC_UI_DESIGN_SPEC.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/CIVIC_UI_DESIGN_SPEC.md) với định vị Action & Outcome v2.1.
+    * Đã làm mới [`.agents/memory-bank/KNOWN_ISSUES.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/memory-bank/KNOWN_ISSUES.md), [`.agents/memory-bank/IMPLEMENTATION_GAPS.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/memory-bank/IMPLEMENTATION_GAPS.md), [`.agents/memory-bank/NEXT_ACTIONS.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/memory-bank/NEXT_ACTIONS.md) theo lộ trình 7 giai đoạn.
+  - **3. Kiểm thử Toàn vẹn Hệ thống**: `verify:quick` tiếp tục đạt **279/279 tests PASS 100%**.
+
 
   - **1. Hoàn tất 39 tài liệu chuẩn tại `docs/product/screens/`**:
     * 31 File Screen Specs: Tinh gọn (120-200 dòng), chuẩn hóa 21 mục, phân định 4 trạng thái `CURRENT / PARTIAL / PROPOSED / UNKNOWN`, loại bỏ toàn bộ boilerplate CLI/testing dài dòng.
