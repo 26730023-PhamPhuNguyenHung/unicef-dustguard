@@ -58,6 +58,20 @@
   - Bảng `audit_logs` là **chỉ ghi thêm (Append-Only)**, khóa toàn bộ lệnh `UPDATE`/`DELETE` ở cấp D1 SQLite schema, gắn kèm mã băm SHA-256 `logHash` xâu chuỗi thời gian thực.
 
 ### 📌 Invariant -1.13: Regex Global Dot Escape & Dual AST Normalization (Tiptap vs Legal AST)
+- **Nguyên nhân**: Khi parse placeholder tài liệu, dùng `key.replace('.', '\\.')` chỉ escape dấu chấm đầu tiên gây vỡ regex với key lồng nhau `case.site.name`; hoặc ép trực tiếp Tiptap JSON vào DOCX mà không qua Legal AST làm mất cấu trúc văn bản hành chính NĐ 30/2020.
+- **Quy tắc chuẩn**: Luôn dùng `key.replace(/\./g, '\\.')` và chuẩn hóa qua `document-generator.js`.
+
+### 📌 Invariant -1.16: D1 Cases Schema Column Alignment (Cấm dùng `closedAt` giả định)
+- **Nguyên nhân**: Router `staff-cases.js` giả định bảng `cases` có cột `closedAt` và thực thi câu lệnh `UPDATE cases SET status = 'CLOSED', closedAt = ?` dẫn đến `SqliteError: no such column: closedAt` khi duyệt đóng hồ sơ.
+- **Quy tắc chuẩn**:
+  - Bảng `cases` trong SQLite/D1 quản lý tiến trình bằng `status` ('OPEN', 'IN_PROGRESS', 'REPORTING', 'CLOSED', 'COMPLETED'), `currentStep` ('INTAKE', 'VERIFY', 'INSPECTION', 'DECISION', 'CONTRACTOR', 'VERIFICATION', 'CLOSED'), `updatedAt` và `case_timelines`.
+  - Khi đóng hồ sơ, cập nhật `status = 'CLOSED'`, `currentStep = 'CLOSED'`, `updatedAt = ?` và ghi sự kiện vào `case_timelines`.
+
+### 📌 Invariant -1.17: Route Isolation & Screen 24 Task Detail Contract
+- **Nguyên nhân**: Trong `routes.jsx`, route `/staff/tasks/:id` bị map nhầm vào `TasksListPage`, khiến người dùng bấm vào một nhiệm vụ nhưng chỉ thấy lại danh sách, các nút "Mở", "Sửa", "Đổi hạn" bị gắn `alert(...)` tạm thời thay vì mở Task Detail và cập nhật database.
+- **Quy tắc chuẩn**:
+  - Màn hình 24 (`/staff/tasks/:id`) bắt buộc có component chuyên biệt `TaskDetailPage.jsx` kết nối đầy đủ Checklist 10 tiêu chí QCVN 18:2021/BXD, upload minh chứng Before/After kèm mã băm SHA-256 (Web Crypto), đếm ngược SLA 48h và nút Hoàn tất nhiệm vụ tự động đồng bộ tiến độ Hồ sơ Vụ việc.
+
 - **Nguyên nhân**:
   1. Dùng `key.replace('.', '\\.')` chỉ thay thế dấu chấm đầu tiên trong placeholder (`{{site.manager.phone}}` -> chỉ escape dấu chấm thứ nhất, làm regex bị lỗi cú pháp khi match nested keys).
   2. AST của Tiptap Editor (`{ type: 'doc', content: [...] }`) khác với Legal AST chuẩn của GovTech (`{ header, title, subtitle, sections, signatures, recipients }`). Nếu render trực tiếp Tiptap AST vào renderer A4/DOCX mà không qua adapter chuẩn hóa, các thuộc tính `ast.header.agency` sẽ bị `undefined` gây crash ứng dụng.

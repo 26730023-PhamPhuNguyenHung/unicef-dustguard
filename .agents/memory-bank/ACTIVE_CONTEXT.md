@@ -5,11 +5,47 @@
 ---
 
 ## 🎯 1. Trọng Tâm Hoạt Động Hiện Tại (Active Operational State)
-- **Hoàn Tất Nâng Cấp Phân Hệ Community & Youth (Thanh Niên & Tín Chỉ Xanh)**:
-  - **1. Đồng Bộ Điều Hướng Cổng Công Dân ↔ Góc Thanh Niên**: Thêm tab "Tín chỉ Thanh niên" (`/youth`) trên `CitizenLayout.jsx` và Banner kêu gọi hành động Đoàn - Hội trên `CitizenHomePage.jsx`.
-  - **2. Tác Nghiệp Khảo Sát Thực Địa (Mission Pre-fill)**: Tích hợp `missionCode` query param vào `ReportNewPage.jsx`, tự động điền thông tin khảo sát khi sinh viên nhận nhiệm vụ từ `/youth`.
-  - **3. Quy Đổi Chuẩn Tín Chỉ Ngoại Khóa & Mã QR ISO/IEC 18004**: Bảo toàn cơ chế 20 giờ = 4.0 tín chỉ (80 ĐRL) và xuất chứng nhận số chống giả mạo.
-  - **4. Kiểm Thử Toàn Diện**: Quick Gate (`verify:quick`) **PASS 100%** (283/283 tests, 2.2s).
+- **Hoàn Tất Audit & Củng Cố Nhóm 6: STAFF PORTAL - CASE MANAGEMENT & TASKS WORKFLOW (Màn hình 21 - 24)**:
+  - **1. Màn hình 21 (`/staff/cases` - `CasesListPage.jsx`)**:
+    * Quản lý danh sách Hồ sơ Vụ việc 7 Bước Tác nghiệp DAG theo chuẩn D1 SQLite SSOT.
+    * 4 dải KPI chỉ số (Hồ sơ mở, Gần đến hạn/Gấp, Chờ khảo sát, Chờ thẩm định), 6 tab lọc danh mục (Tất cả, Mới tạo, Đang xử lý, Chờ nhà thầu, Chờ nghiệm thu, Đã đóng).
+    * Bảng danh sách 7 cột đầy đủ thông tin, bảo đảm Zero Text Truncation trên các thực thể quan trọng, khối bên phải "Hồ sơ ưu tiên hôm nay" và Modal Tạo hồ sơ kết nối D1 API.
+  - **2. Màn hình 22 (`/staff/cases/:id` - `CaseDetailPage.jsx`)**:
+    * Chi tiết Hồ sơ Vụ việc với Thanh thông tin điều hành (Metadata bar), Tiến trình 7 bước DAG (`RECORDED` -> `VERIFIED` -> `NOTICE_SENT` -> `INSPECTION` -> `ACTION_PROPOSED` -> `REMEDIATION` -> `COMPLETED`).
+    * 6 Tabs tác nghiệp: Tổng quan vụ việc, Minh chứng Đối chứng Before/After (SafeImage + SHA-256), Tiến trình lịch sử D1, Khảo sát 10 tiêu chí QCVN 18:2021/BXD, Khắc phục & Nghiệm thu, Hồ sơ pháp lý & In ấn biên bản A4.
+    * Đã bổ sung đầy đủ các endpoint backend trong `staff-cases.js`: `POST /:id/evidences`, `POST /:id/inspection`, `GET /:id/timeline`, fix lỗi query cột `closedAt` sang `status = 'CLOSED'` & `currentStep = 'CLOSED'`.
+  - **3. Màn hình 23 (`/staff/tasks` - `TasksListPage.jsx`)**:
+    * Danh sách Nhiệm vụ Hiện trường với 4 thẻ KPI (Việc hôm nay, Gần đến hạn, Quá hạn, Đã xong), 5 tab lọc (Tất cả, Hôm nay, Gần đến hạn, Quá hạn, Đã xong).
+    * Layout 75% Bảng nhiệm vụ 7 cột + 25% Khối "Lịch hôm nay", Modal Tạo nhiệm vụ mới vào D1 CSDL.
+    * Sửa nút "Mở" liên kết trực tiếp sang Màn hình 24 (`/staff/tasks/:id`), bổ sung Modal Sửa nhiệm vụ và Modal Đổi thời hạn SLA kết nối API.
+  - **4. Màn hình 24 (`/staff/tasks/:id` - `TaskDetailPage.jsx`)**:
+    * Tạo mới toàn diện màn hình Chi tiết Nhiệm vụ Hiện trường theo chuẩn Civic Tech sáng màu, high-contrast, zero glassmorphism, touch targets $\ge 44$px.
+    * Khối thông tin nhiệm vụ, thời hạn SLA 48h đếm ngược, liên kết 2 chiều với Hồ sơ Vụ việc (`/staff/cases/:caseId`) và Công trình (`/staff/sites/:siteId`).
+    * Bảng Checklist 10 Tiêu chí QCVN 18:2021/BXD & QĐ 48/2021/QĐ-UBND (Hàng rào, Cầu rửa xe, Phun sương dập bụi, Che bãi vật liệu rời, Che phủ thùng xe, Vệ sinh mặt đường, Trạm quan trắc PM2.5, Quản lý phế thải, Giờ thi công, Biển báo hotline) với các nút Đạt / Cải thiện / Chưa đạt và lưu biên bản vào CSDL D1.
+    * Khối Minh chứng Before & After đối chứng song song kèm mã băm cryptographic SHA-256 kiểm định tính toàn vẹn (Anti-Tampering).
+    * Tích hợp chức năng Hoàn tất nhiệm vụ, tự động đồng bộ trạng thái sang `COMPLETED` và cập nhật bước tác nghiệp của Hồ sơ vụ việc liên quan.
+    * Đã đăng ký route `tasks/:id` vào `app/src/apps/staff/routes.jsx`.
+  - **5. Kiểm Thử Toàn Diện**:
+    * Tạo bài test toàn diện `app/tests/staff-cases-tasks-workflow-group6.test.js`: **5/5 tests PASS (39ms)**.
+    * Chạy `node --test app/tests/case-enforcement-dag-7steps.test.js app/tests/staff-cases-mockup6-7.test.js app/tests/staff-mockups8-9-10.test.js`: **20/20 tests PASS**.
+    * Chạy `npm --prefix app run build`: **Build thành công không lỗi (2.82s)**.
+    * Quick Gate Level 3 `npm --prefix app run verify:quick`: **283/283 tests PASS 100% (2.6s)**.
+  - **1. Màn hình 25 (`/staff/monitoring` & `/staff/alerts`)**:
+    * Biểu đồ chuỗi thời gian 24h đối chiếu QCVN 05:2023 (PM2.5: 50 µg/m³, PM10: 100 µg/m³), nhúng bản đồ GIS OSM WGS-84 phân bố điểm đo.
+    * Hệ thống cảnh báo tự động lọc top rủi ro, chuyển đổi 1-Click sang Vụ việc điều hành 7 bước (`/staff/cases`), phân công cán bộ, cập nhật ngưỡng đo.
+  - **2. Màn hình 26 (`/staff/reports`)**:
+    * Xuất báo cáo văn bản Word DOCX chuẩn Nghị định 30/2020/NĐ-CP, xuất số liệu CSV, xem trước & in ấn thể thức A4 hành chính đầy đủ 5 thành phần.
+    * Tích hợp cấu hình chu kỳ gửi báo cáo tự động (Thứ 2 / Hàng ngày), chia sẻ liên kết báo cáo trực tiếp với clipboard toast feedback.
+  - **3. Màn hình 27 (`/staff/profile` & `/staff/settings`)**:
+    * Quản lý hồ sơ định danh cán bộ D1, đổi mật khẩu 2 lớp, cấu hình kênh thông báo và ngưỡng kỹ thuật QCVN 05:2023/BTNMT & SLA 48h.
+    * Đồng bộ endpoint Cloudflare Worker `/api/staff/settings` & `/api/v1/staff/settings` (GET, POST, PUT, PATCH) trên cả Express và Worker.
+  - **4. Màn hình 28 (`/staff/notifications`, `/staff/activity`, `/staff/help`)**:
+    * Trung tâm thông báo chia tab (Chưa đọc, Hôm nay, Hệ thống, Hồ sơ), chuyển đổi tức thì từ thông báo sang tạo việc cán bộ (`/staff/tasks?title=...`).
+    * Nhật ký thao tác minh bạch (biên bản A4, xử phạt, cảnh báo, thay đổi trạng thái), cẩm nang 7 bước tác nghiệp & hotline 24/7.
+  - **5. Kiểm Thử Toàn Diện**:
+    * Chạy targeted test `node --test app/tests/staff-monitoring-d1-api.test.js`: **7/7 tests PASS (72ms)**.
+    * Chạy `node --test app/tests/staff-worker-d1-api.test.js app/tests/worker-full-edge-routes.test.js`: **20/20 tests PASS**.
+    * Quick Gate Level 3 `npm --prefix app run verify:quick`: **283/283 tests PASS 100% (3.5s)**.
 - **Hoàn Tất Khắc Phục Toàn Diện Các Lỗi Tiềm Ẩn (Bug Hunt & Production Fixes)**:
   - **1. Khử triệt để Glassmorphism**: Xóa bỏ `backdrop-blur-xs` còn sót lại trong modal `SiteDetailPage.jsx`, chuyển sang solid high-contrast background `bg-black/60`.
   - **2. Bổ sung WCAG Accessibility CSS Utilities**: Thêm `:focus-visible` ring `#0d6f64`, `@utility skip-link`, `@utility touch-target` (min 44px) vào `index.css`.
