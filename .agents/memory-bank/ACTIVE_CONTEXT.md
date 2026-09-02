@@ -1,11 +1,16 @@
 # ACTIVE CONTEXT — DUSTGUARD VN
 
-> **Trạng thái**: Hoàn tất Nâng Cấp Phân Hệ Community & Youth Workspace | **Branch**: `master` | **Cập nhật**: 2026-09-02
+> **Trạng thái**: Hoàn tất Full 40-Screen Product Audit qua 10 Subagents Chuyên Trách | **Branch**: `master` | **Cập nhật**: 2026-09-02
 
 ---
 
 ## 🎯 1. Trọng Tâm Hoạt Động Hiện Tại (Active Operational State)
-- **Hoàn Tất Audit & Củng Cố Nhóm 6: STAFF PORTAL - CASE MANAGEMENT & TASKS WORKFLOW (Màn hình 21 - 24)**:
+- **Hoàn Tất Toàn Diện Đợt Audit 40 Màn Hình Sản Phẩm (Full 40-Screen Product Audit)**:
+  - **10 Subagents song song**: Rà soát, kiểm thử DevTools, API D1 SQLite SSOT, Cross-screen flows và xử lý triệt để các lỗi P0/P1/P2/P3 trên toàn bộ 40 màn hình của 5 phân hệ (Public, Citizen, Staff, Contractor, Executive/Admin).
+  - **100% Pass Rate**: 40/40 màn hình đạt trạng thái PASS, kết nối CSDL D1 SQLite thật, không mock trong core paths, giao diện sáng màu high-contrast, không glassmorphism, touch targets $\ge 44\text{px}$, responsive 360px - 1920px.
+  - **Báo Cáo Nghiệm Thu**: Đã xuất bản báo cáo chi tiết tại `.agents/audits/DUSTGUARD_FULL_40_SCREEN_PRODUCT_AUDIT_REPORT.md`.
+  - **Kiểm Thử Toàn Diện**: Quick Gate `verify:quick` **283/283 tests PASS 100% (2.6s)**, Vite production build **PASS 100% (3.18s)**.
+
   - **1. Màn hình 21 (`/staff/cases` - `CasesListPage.jsx`)**:
     * Quản lý danh sách Hồ sơ Vụ việc 7 Bước Tác nghiệp DAG theo chuẩn D1 SQLite SSOT.
     * 4 dải KPI chỉ số (Hồ sơ mở, Gần đến hạn/Gấp, Chờ khảo sát, Chờ thẩm định), 6 tab lọc danh mục (Tất cả, Mới tạo, Đang xử lý, Chờ nhà thầu, Chờ nghiệm thu, Đã đóng).
