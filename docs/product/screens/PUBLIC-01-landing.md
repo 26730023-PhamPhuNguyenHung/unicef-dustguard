@@ -98,9 +98,26 @@ Truy cập trang chủ /
 ### Section 7: Live Workspace Sandbox (Không gian tương tác thực tế)
 - Trực quan hóa mockup màn hình Staff Dashboard và Citizen Report để người dùng hình dung trải nghiệm thực tế.
 
-### Section 8: Impact, Pilot & Final CTA
+### Section 8: Pilot Roadmap & Impact Numbers (Lộ trình 3 giai đoạn)
 - Thống kê kết quả thử nghiệm thực tế tại Đà Nẵng & Hà Nội.
-- Nút CTA lớn kêu gọi tham gia mạng lưới công dân số.
+
+### Section 9: Đồng Hành Cùng DustGuard (Pilot Community & Civic Manifesto) — [TÁCH RIÊNG]
+- **Eyebrow**: `ĐỒNG HÀNH CÙNG DUSTGUARD`
+- **Headline**: `Pilot DustGuard tại khu vực của bạn`
+- **Subhead**: `DustGuard đang tìm kiếm các CLB sinh viên, nhóm cộng đồng, trường đại học và đơn vị địa phương muốn thử nghiệm mô hình giám sát bụi theo hướng cộng đồng có trách nhiệm.`
+- **4 Yêu cầu điều kiện cơ bản (4 Core Conditions)**:
+  1. *Một khu vực thử nghiệm cụ thể*
+  2. *Một nhóm vận hành nhỏ (5–10 người)*
+  3. *Một đầu mối phối hợp địa phương*
+  4. *Quy trình phản ánh & tái kiểm thống nhất*
+- **Tuyên ngôn hành động vì khí hậu (Civic Action Manifesto)**:
+  - *“Một vấn đề được nhìn thấy không nên trở thành một vấn đề bị lãng quên.”*
+  - *Từ tín hiệu đầu tiên đến hành động cuối cùng.*
+  - **Chuỗi hành động khép kín**: `OBSERVE → VERIFY → ACT → FOLLOW UP → IMPACT`
+- **Action Buttons**: `Đăng ký pilot` (mở Modal), `Trao đổi với DustGuard` (mailto), `Xem bản demo` (`/demo`).
+
+### Section 10: Global Footer
+- Điều hướng hệ thống, danh bạ hỗ trợ và bản quyền.
 
 ---
 
