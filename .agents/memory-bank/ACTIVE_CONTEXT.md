@@ -1,23 +1,20 @@
 # ACTIVE CONTEXT — DUSTGUARD VN
 
-> **Trạng thái**: Local DB First (100% SQLite SSOT) & Verified | **Branch**: `master` | **Cập nhật**: 2026-09-02
+> **Trạng thái**: dev.db Real Data Integration & Staff Dashboard 100% SSOT | **Branch**: `master` | **Cập nhật**: 2026-09-02
 
 ---
 
 ## 🎯 1. Trọng Tâm Hoạt Động Hiện Tại (Active Operational State)
-- **Hoàn Tất 10 Vertical Slices Backend Thật & D1/SQLite Persistence (Zero-Mock E2E)**:
-  - **Slice 1: Công trình (`/staff/sites` & `/staff/sites/:id`)**: CRUD hoàn chỉnh, Edit Site modal, D1 queries thật, OpenStreetMap tương tác theo toạ độ thực.
-  - **Slice 2: Quan trắc (`/staff/monitoring`)**: Real-time aggregation D1, SVG timeline, abnormal stations list, trigger alert logic.
-  - **Slice 3: Cảnh báo (`/staff/alerts`)**: Atomic transaction chuyển Alert thành Case, chống duplicate 409, KPI count `?? 0`.
-  - **Slice 4: Hồ sơ vụ việc (`/staff/cases` & `/staff/cases/:id`)**: 6 Tabs đầy đủ (Thông tin, Ảnh Before/After, Quy trình 7 bước DAG, Khảo sát thực địa, Kế hoạch khắc phục, Quyết định xử phạt), phân công cán bộ và duyệt đóng hồ sơ trực tiếp vào CSDL D1.
-  - **Slice 5: Minh chứng (`Evidence & R2 Storage`)**: Mã băm SHA-256 Web Crypto, đối chứng Trước/Sau, lưu trữ an toàn.
-  - **Slice 6: Nhiệm vụ (`/staff/tasks`)**: Tạo nhiệm vụ D1, phân công, đánh dấu hoàn tất, lọc động và phân trang.
-  - **Slice 7: Bảng điều khiển (`/staff`)**: `GET /dashboard/summary` tổng hợp 100% dữ liệu thực tế từ D1 SQLite (KPIs, Việc cần làm, Cảnh báo mới, Hồ sơ gần đây).
-  - **Slice 8: Báo cáo (`/staff/reports`)**: Tạo báo cáo, quản lý lịch gửi `report_schedules`, xuất CSV và in A4 PDF.
-  - **Slice 9: Thông báo (`/staff/notifications`)**: Đánh dấu đã đọc đơn lẻ/tất cả, tắt nhắc nhở, lọc khẩn cấp từ bảng `notifications`.
-  - **Slice 10: Cài đặt (`/staff/settings`)**: Lưu và nạp cấu hình ngưỡng PM2.5/PM10, SLA 48h, thông báo vào bảng `system_settings` D1.
+- **Staff Dashboard Thực dev.db (dev.db -> Pure SQL Query -> API Endpoint -> UI)**:
+  - `dev.db` (`app/prisma/dev.db`, 36MB) là nguồn dữ liệu chuẩn duy nhất (38 sites, 23 alerts, 21 cases, 24 tasks).
+  - Tích hợp `staff-dashboard.service.js` thực hiện SQL aggregations & JOINs trực tiếp trên SQLite/D1.
+  - Endpoint `GET /api/staff/dashboard` và `GET /api/dashboard/summary` trả về Data Contract sạch: `stats`, `nextActions`, `latestAlerts`, `recentCases`.
+  - Frontend `/staff` (StaffDashboardPage) render đầy đủ 4 trạng thái (Loading, Success data, Empty state, Error retry), mật độ dữ liệu thực tế cao (Hàng 1: 4 KPI cards, Hàng 2: Việc cần làm ~42%, Cảnh báo mới ~30%, Hồ sơ gần đây ~28%).
+  - Role header và User initials phản ánh đúng vai trò thực tế từ Auth session.
+  - Tài liệu kiểm toán `docs/DEV_DB_AUDIT.md` được lập đầy đủ cho 9 phân hệ sidebar.
 - **Sức khỏe Mã nguồn**:
   - `npm --prefix app run verify:quick`: **279/279 tests PASS 100%** (28 test files + 4 UI smoke tests, ~2.8s).
+  - `staff-dashboard-real-devdb.test.js`: **7/7 PASS 100%** (69ms).
 
 ---
 
