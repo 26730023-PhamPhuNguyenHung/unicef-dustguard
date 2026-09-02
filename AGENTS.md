@@ -32,6 +32,7 @@ You are maintaining **DustGuard VN** — A CivicTech platform empowering Youth C
 
 | Phân hệ / Tác vụ | Tài liệu SSOT cần đọc | Targeted Test (< 0.5s) | Ghi chú cốt lõi |
 |---|---|---|---|
+| **4-Step Product Loop** | [`product-4step-development-loop.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/rules/product-4step-development-loop.md) | `node --test app/tests/<file>.test.js` | SPEC -> FRONTEND/UX -> BACKEND/DATA -> DEVTOOLS/QC |
 | **Business-Value Testing** | [`business-value-testing-rules.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/rules/business-value-testing-rules.md) | `node --test app/tests/<file>.test.js` | Test theo 5 tầng giá trị, zero vanity coverage, zero over-mock |
 | **API Contract & Normalization** | [`api-data-contract-normalization.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/rules/api-data-contract-normalization.md) | `node --test app/tests/worker-full-edge-routes.test.js` | Normalize collection `[]`, unwrap `{ data: { items } }`, no guess shape |
 | **UI Text & Responsive Rules** | [`UI_RULES.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/rules/UI_RULES.md) | `node --test app/tests/design-system-tokens.test.js` | Zero truncate tên công trình/hồ sơ, min-w-0 flex, copy ngắn |
