@@ -12,6 +12,15 @@
   - **SSOT Services & Utils**: Tạo `app/src/shared/services/contractor-token.service.js` và `app/src/shared/utils/geofence.js`.
   - **UI Standard Parity**: Nâng cấp `ContractorReportsPage.jsx` (Bảng 10 tiêu chí tuân thủ QCVN 05/QCVN 18/NĐ 45) và `ContractorCasesPage.jsx` (Structured Dossier & Điểm tích hợp 1022).
   - **Kiểm thử**: Viết test suite `contractor-remediation-loop-audit.test.js` (7/7 tests PASS, 69ms); Toàn bộ Quick Gate (279/279 tests) PASS 100%.
+- **Hoàn Tất Tài Liệu Hóa Chuẩn SSOT 8 Phần Cho 4 Màn Hình Tác Nghiệp Thực Địa, Báo Cáo NĐ 30/2020 & Kiểm Toán Công Vụ (Subagent 8 - Tasks, Reports & Audit)**:
+  - `STAFF-06-tasks-list.md` (STF-06): Quản lý nhiệm vụ ca trực & khảo sát hiện trường, phân luồng 4 loại nhiệm vụ thực địa (khảo sát ban đầu, tái kiểm sau 24h, bổ sung ảnh thiếu, đo PM10/PM2.5 QCVN 05:2023), bố cục Split Layout ~75% bảng danh sách / ~25% Lịch hôm nay 310px, D1 tasks contracts & quick actions.
+  - `STAFF-09-reports.md` (STF-09): Trung tâm báo cáo, thống kê & xuất bản điều hành chuẩn **Nghị định 30/2020/NĐ-CP** (Quốc hiệu, Tiêu ngữ, Số ký hiệu, Mẫu tờ trình UBND Quận, xuất file Word `.DOCX` / In ấn `PDF A4` kèm mã băm `docHash`), biểu đồ so sánh 4 tuần, AI soạn nháp và tự động gửi email 08:00 Thứ Hai.
+  - `STAFF-10-profile.md` (STF-10): Hồ sơ cán bộ & định danh công tác, mã số Thẻ thanh tra viên (`staffCode` font-mono), đơn vị công tác, SĐT khẩn cấp nhận cảnh báo vượt ngưỡng, đổi mật khẩu bảo mật tài khoản và tự động đồng bộ vào mục Người lập biên bản NĐ 30/2020.
+  - `STAFF-11-activity.md` (STF-11): Nhật ký công vụ bất biến & lưu vết kiểm toán tác nghiệp (Append-Only Audit Trail), chuẩn ISO-8601, mã băm sự kiện `logHash` SHA-256 chống chối bỏ, trực quan hóa timeline 7 bước DAG.
+- **Hoàn Tất Tài Liệu Hóa Chuẩn SSOT 8 Phần Cho 3 Màn Hình Phân Hệ Quản Trị Hệ Thống (Subagent 10 - Admin & Infrastructure)**:
+  - `ADMIN-01-dashboard.md` (ADM-01): Bảng điều khiển quản trị hạ tầng D1 & giám sát hệ thống, hợp nhất 4 chỉ số CSDL D1/R2, quản lý 46 bảng quan hệ SQLite, theo dõi sức khỏe cổng liên ngành (1022, iHanoi).
+  - `ADMIN-02-users.md` (ADM-02): Quản trị danh bạ người dùng & ma trận phân quyền RBAC 5 cấp (`citizen`, `community`, `staff`, `contractor`, `executive`/`admin`), hỗ trợ đổi quyền tại chỗ tức thì (In-Place Role Switching) và chống leo thang đặc quyền.
+  - `ADMIN-03-settings.md` (ADM-03): Cấu hình tham số quy chuẩn môi trường QCVN 05:2023/BTNMT, chính sách cam kết thời hạn giải quyết SLA 48h, Geofence $\le 50\text{m}$, trạng thái tích hợp cổng dịch vụ đô thị và động cơ tự động hóa Cron.
 - **Hoàn Tất Tài Liệu Hóa Chuẩn SSOT 8 Phần Cho 3 Màn Hình Cốt Lõi Phân Hệ Staff**:
   - `STAFF-01-dashboard.md` (STF-01): Bàn làm việc cán bộ điều hành & tác nghiệp, 4 KPI động, cụm 3 cột tác nghiệp thông minh (~42% Việc cần làm, ~30% Cảnh báo mới, ~28% Hồ sơ gần đây), Zero Truncate, D1 dev.db SSOT.
   - `STAFF-07-monitoring.md` (STF-07): Ma trận giám sát & quan trắc bụi công trình thời gian thực, chuỗi thời gian 24h đối chiếu QCVN 05:2023, nhúng bản đồ GIS, danh sách trạm bất thường và bảng phân trang D1.

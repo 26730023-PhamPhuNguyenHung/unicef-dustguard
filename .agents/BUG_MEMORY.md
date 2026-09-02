@@ -44,6 +44,19 @@
   - Mọi dữ liệu mẫu phục vụ UI (10 Mockups) bắt buộc phải seed vào DB qua script (`app/scripts/seed-mockups-canonical-d1.mjs`).
   - Frontend React UI chỉ gọi API endpoints chuẩn (`/api/staff/...`). Nếu API lỗi, hiển thị `ErrorState` kèm nút thử lại; nếu rỗng, hiển thị `EmptyState` chân thực từ hệ thống. Cấm tuyệt đối chèn fake fallback objects trong component client.
 
+### 📌 Invariant -1.8: Thể Thức Hành Chính NĐ 30/2020/NĐ-CP & Cấm Render Mộc Đỏ Ảo
+- **Nguyên nhân**: Render con dấu mộc đỏ đồ họa ảo trên file PDF/văn bản web vi phạm nghiêm trọng quy định pháp luật quản lý con dấu của Bộ Công an, gây rủi ro giả mạo văn bản hành chính nhà nước.
+- **Quy tắc chuẩn**:
+  - Toàn bộ văn bản in ấn A4 (Biên bản kiểm tra, Tờ trình xử phạt, Báo cáo tổng hợp) tuân thủ nghiêm ngặt **Nghị định 30/2020/NĐ-CP** (Quốc hiệu, Tiêu ngữ, Số ký hiệu, Căn cứ pháp lý, Nơi nhận).
+  - **Tuyệt đối không render hình ảnh con dấu mộc đỏ đồ họa**. Chỉ để khung ký tên và đóng dấu thực tế bằng mộc tươi trên bản in giấy.
+  - Tích hợp mã băm an toàn `docHash` (SHA-256 Web Crypto) ở chân trang để đối soát toàn vẹn dữ liệu gốc trong CSDL Cloudflare D1.
+
+### 📌 Invariant -1.9: CSV Export UTF-8 BOM & Sổ Lưu Vết Kiểm Toán Append-Only
+- **Nguyên nhân**: Xuất file CSV tiếng Việt không có Byte Order Mark làm Microsoft Excel trên Windows bị lỗi font ký tự có dấu (Unicode Mojibake); hoặc cho phép sửa/xóa nhật ký công tác làm mất tính toàn vẹn kiểm toán.
+- **Quy tắc chuẩn**:
+  - Endpoint xuất CSV (`/export-csv`) bắt buộc ghi mã **UTF-8 BOM (`\uFEFF`)** vào đầu stream trước khi gửi dữ liệu.
+  - Bảng `audit_logs` là **chỉ ghi thêm (Append-Only)**, khóa toàn bộ lệnh `UPDATE`/`DELETE` ở cấp D1 SQLite schema, gắn kèm mã băm SHA-256 `logHash` xâu chuỗi thời gian thực.
+
 ---
 
 ## 🌐 0. API Request & Network Traps
