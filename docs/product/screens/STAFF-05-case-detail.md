@@ -1,8 +1,7 @@
 # STF-05 — Chi Tiết Quy Trình 7 Bước Vụ Việc (Case Detail DAG)
 
 ## 1. Screen identity
-- **Role**: Staff / Inspector / Legal Officer
-- **Role Permissions**: Staff có quyền duyệt bước, chuyển trạng thái, giao nhiệm vụ và xuất quyết định xử phạt.
+- **Role**: Staff / Thanh tra môi trường / Pháp chế
 - **Route**: `/staff/cases/:id`
 - **Component**: `src/apps/staff/pages/cases/CaseDetailPage.jsx`
 - **Layout**: `src/apps/staff/layout/StaffLayout.jsx`
@@ -23,6 +22,16 @@
 
 ---
 
-## 3. Primary action
-- **Primary action**: `[Chuyển bước tiếp theo]` hoặc `[Phê duyệt nghiệm thu]`
-- **Secondary**: `[Giao nhiệm vụ cho nhà thầu]`, `[Xuất biên bản A4]`, `[Yêu cầu khắc phục lại]`
+## 3. 7-Step Transition Rules & Verification
+- `INTAKE ightarrow SURVEYED`: Yêu cầu có biên bản khảo sát hiện trường hoặc ảnh xác minh.
+- `SURVEYED ightarrow PROPOSED`: Yêu cầu điền biện pháp xử lý và mức phạt đề xuất (nếu có).
+- `PROPOSED ightarrow APPROVED`: Yêu cầu chữ ký duyệt của Lãnh đạo.
+- `APPROVED ightarrow REMEDIATED`: Tự động kích hoạt khi nhà thầu nộp ảnh Before/After hợp lệ trong Geofence $le 50	ext{m}$.
+- `REMEDIATED ightarrow VERIFIED`: Cán bộ thanh tra bấm "Nghiệm thu đạt yêu cầu".
+- `VERIFIED ightarrow CLOSED`: Đóng hồ sơ, hoàn tất lưu trữ.
+
+---
+
+## 4. Primary action
+- **Primary action**: `[Chuyển bước tiếp theo]` hoặc `[Nghiệm thu khắc phục]`
+- **Secondary**: `[Giao nhiệm vụ cho nhà thầu]`, `[Xuất văn bản A4]`, `[Yêu cầu làm lại]`

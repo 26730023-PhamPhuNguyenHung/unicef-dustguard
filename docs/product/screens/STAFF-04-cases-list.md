@@ -8,27 +8,35 @@
 - **Navigation entry**: Sidebar Staff ("Hồ sơ vụ việc")
 - **Current implementation status**: ACTIVE (Level 5 Production Coherent)
 
-**Purpose**: Quản lý toàn bộ hồ sơ vụ việc xử lý vi phạm theo chu trình 7 bước (DAG), phân loại theo giai đoạn tác nghiệp và theo dõi hạn chót SLA 48 giờ để chống tồn đọng hồ sơ.
+**Purpose**: Quản lý và theo dõi toàn bộ hồ sơ vụ việc xử lý vi phạm môi trường theo chu trình 7 bước (DAG), phân loại theo giai đoạn tác nghiệp và cảnh báo thời hạn xử lý SLA 48 giờ.
 
 ---
 
-## 2. 7-Step DAG Pipeline Stages
-1. `INTAKE`: Tiếp nhận phản ánh ban đầu.
-2. `SURVEYED`: Đã khảo sát hiện trường & lập biên bản.
-3. `PROPOSED`: Đã đề xuất biện pháp xử lý / mức phạt.
-4. `APPROVED`: Lãnh đạo đã phê duyệt quyết định.
-5. `REMEDIATED`: Nhà thầu đã nộp minh chứng khắc phục $le 50	ext{m}$.
-6. `VERIFIED`: Cán bộ đã nghiệm thu hiện trường đạt yêu cầu.
-7. `CLOSED`: Đóng hồ sơ vụ việc & lưu trữ kiểm toán.
+## 2. 7-Step DAG Pipeline Filter Tabs
+- **Tất cả (All)**: Toàn bộ hồ sơ trong hệ thống.
+- **1. Tiếp nhận (`INTAKE`)**: Phản ánh mới được duyệt thành vụ việc.
+- **2. Khảo sát (`SURVEYED`)**: Đã kiểm tra thực địa và lập biên bản.
+- **3. Đề xuất (`PROPOSED`)**: Đã lập phương án xử lý / mức phạt.
+- **4. Phê duyệt (`APPROVED`)**: Lãnh đạo đã ký duyệt quyết định.
+- **5. Khắc phục (`REMEDIATED`)**: Nhà thầu đã nộp ảnh Before/After $le 50	ext{m}$.
+- **6. Nghiệm thu (`VERIFIED`)**: Thanh tra đã xác nhận đạt yêu cầu.
+- **7. Hoàn tất (`CLOSED`)**: Đóng hồ sơ và lưu trữ kiểm toán.
 
 ---
 
 ## 3. Table specification
-| Cột | Ý nghĩa | Badge / Format |
-|---|---|---|
-| **Mã vụ việc** | Định danh duy nhất (VD: `CASE-2026-0042`) | Text nổi bật |
-| **Công trình** | Tên công trình liên quan | Zero truncate |
-| **Giai đoạn (Stage)** | 1 trong 7 bước DAG | Badge màu theo bước |
-| **Điểm rủi ro** | Mức độ nghiêm trọng của vụ việc | 4 Cấp màu |
-| **Hạn chót SLA** | Thời gian còn lại (VD: `Còn 14h`, `Quá hạn 2h`) | Đỏ nếu quá hạn |
-| **Cán bộ thụ lý** | Người chịu trách nhiệm chính | Text |
+| Cột | Ý nghĩa | Định dạng / Badge | Sắp xếp |
+|---|---|---|:---:|
+| **Mã vụ việc** | Mã số hồ sơ (VD: `CASE-2026-0042`) | Phông Monospace | Có |
+| **Công trình** | Tên công trình vi phạm | Zero Truncate, break-words | Có |
+| **Giai đoạn (Stage)** | 1 trong 7 bước DAG | Badge màu theo bước | Có |
+| **Điểm rủi ro** | Mức độ nghiêm trọng của vi phạm | 4 Màu chuẩn hóa | Có |
+| **Thời hạn SLA** | Đếm ngược 48 giờ xử lý | Đỏ nếu quá hạn, Vàng nếu $le 12	ext{h}$ | Có (Default) |
+| **Người thụ lý** | Cán bộ chịu trách nhiệm | Text | Không |
+| **Thao tác** | Nút mở hồ sơ | Nút `[Xem chi tiết]` | Không |
+
+---
+
+## 4. Primary action
+- **Primary action**: Bấm vào dòng hồ sơ vụ việc $ightarrow$ Chuyển sang `/staff/cases/:id`
+- **Secondary**: `[Lọc theo bước DAG]`, `[Lọc hồ sơ quá hạn SLA]`
