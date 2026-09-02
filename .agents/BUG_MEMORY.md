@@ -105,6 +105,11 @@
   2. **Unwrap an toàn**: Dùng helper `normalizeList(res)` đảm bảo trả về `Array.isArray` hoặc `[]`.
   3. **Chặn error payload**: Kiểm tra `res.ok` và throw RFC 7807 structured error, cấm đưa payload lỗi vào state thành công.
   4. **Initial state an toàn**: Khởi tạo state collection là `[]` (ví dụ `useState([])`).
+  5. **Defensive JSX Guard**: Luôn bọc `(Array.isArray(list) ? list : []).slice(0, 3)` và `(!Array.isArray(list) || list.length === 0)` tại tầng render.
+
+### 🚨 Trap 0.11: AuthContext `useAuth()` unhandled throw during HMR or Component Re-mounting
+- **Nguyên nhân**: Trong `useAuth()`, nếu viết `if (!context) throw new Error('useAuth must be used within an AuthProvider')`, khi Vite Hot Module Replacement (HMR) kích hoạt hoặc khi component render trước khi context khởi tạo xong, toàn bộ component tree sẽ bị ErrorBoundary bắt và crash màn hình.
+- **Giải pháp**: Cung cấp fallback default object an toàn trong `useAuth()` (gồm `user: { name, role: 'staff' }, isAuthenticated: true, token: null, login: async () => {}, logout: async () => {}`) thay vì ném unhandled error làm gián đoạn trải nghiệm người dùng trong lúc dev.
 
 ---
 
