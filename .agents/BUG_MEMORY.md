@@ -94,6 +94,18 @@
   1. Quy chuẩn toàn bộ `.btn`, `.tab-btn`, `.badge`, `.chip` có `white-space: nowrap; shrink-0`.
   2. Bổ sung script tự động kiểm tra `npm run audit:buttons` để quét qua 7 viewports và toàn bộ routes, đo `getClientRects()` từng dòng text của nút để bắt lỗi và hiển thị log sửa tức thì.
 
+### 🚨 Trap 0.10: API Data Contract Shape Mismatch (`.slice()` / `.map() is not a function`, `Cannot read properties of undefined`)
+- **Nguyên nhân**:
+  1. Frontend gọi API nhưng tự đoán response shape mà không kiểm tra backend route handler thực tế.
+  2. Backend trả về `{ data: [...] }` hoặc `{ data: { items: [...] } }` hoặc RFC 7807 error payload `{ error: "..." }`, nhưng frontend gán thẳng vào state collection mà không unwrap/normalize.
+  3. `staffApi.getSites()` hoặc API method trả về `undefined` khi `res.data` là array khiến gọi `.slice(0, 5)` hoặc `.map()` bị crash runtime.
+  4. Lạm dụng `as Type[]` trong TS hoặc optional chaining `?.` để che đậy mismatch runtime mà không sửa contract tại nguồn API client.
+- **Giải pháp**:
+  1. **Layered Architecture SSOT**: `Backend` $\to$ `API Client (request.js / *api.js normalize)` $\to$ `Component`.
+  2. **Unwrap an toàn**: Dùng helper `normalizeList(res)` đảm bảo trả về `Array.isArray` hoặc `[]`.
+  3. **Chặn error payload**: Kiểm tra `res.ok` và throw RFC 7807 structured error, cấm đưa payload lỗi vào state thành công.
+  4. **Initial state an toàn**: Khởi tạo state collection là `[]` (ví dụ `useState([])`).
+
 ---
 
 ## 🗄️ 1. D1 SQLite & Database Traps

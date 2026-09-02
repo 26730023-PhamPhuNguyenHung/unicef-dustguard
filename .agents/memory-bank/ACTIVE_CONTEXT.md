@@ -5,19 +5,19 @@
 ---
 
 ## 🎯 1. Trọng Tâm Hoạt Động Hiện Tại (Active Operational State)
-- **Quy tắc Phát Triển Mới (Local DB First SSOT - `.agents/rules/local-db-first-development.md`)**:
+- **Chuẩn Hóa Hợp Đồng Dữ Liệu API (API Contract & Normalization SSOT - `.agents/rules/api-data-contract-normalization.md`)**:
+  - Ban hành Invariant 12: Frontend cấm đoán schema; chuẩn hóa toàn bộ API client layer (`request.js`, `staff-api.js`, `public-api.js`, `admin-api.js`, `useApiData.js`).
+  - Toàn bộ collections được unwrap qua `normalizeList(res)` đảm bảo luôn trả về `Array.isArray` `[]` an toàn, chấm dứt hoàn toàn các lỗi runtime `.slice is not a function` hay `.map is not a function`.
+  - Bổ sung Trap 0.10 vào `BUG_MEMORY.md` và đưa vào SSOT Matrix.
+- **Quy Tắc Kiểm Thử Theo Giá Trị Nghiệp Vụ (Business-Value Testing - `.agents/rules/business-value-testing-rules.md`)**:
+  - Ban hành Invariant 13: Ưu tiên test theo giá trị nghiệp vụ thực tế, cấm chạy theo số lượng hay vanity coverage.
+  - Phân tầng 5 lớp: Unit (Business logic/Rules), Integration (API+DB+RBAC), Contract (Shape response), E2E (P0 Journeys), UI (Behavior > Markup).
+- **Quy tắc Phát Triển (Local DB First SSOT - `.agents/rules/local-db-first-development.md`)**:
   - Toàn bộ backend và frontend chạy 100% trên Local SQLite (`app/prisma/dev.db`). Khi hoàn thiện toàn diện hệ thống sẽ tiến hành sync Cloudflare D1 Production.
   - Số liệu KPI đồng bộ chính xác với `COUNT(*)` từ SQLite (Sites: 37, High risk: 14, Monitoring: 26, Stable: 5).
   - Phân trang động dựa trên `Math.ceil(totalSitesCount / limit)` (5 trang cho 37 bản ghi).
-- **Hoàn Tất Khắc Phục UI Rớt Chữ & Nối Dữ Liệu Thực Tế (`SitesListPage.jsx`)**:
-  - Đã bổ sung `whitespace-nowrap`, căn chỉnh `min-w-[...]` cho toàn bộ 9 cột tiêu đề bảng (Mã, Công trình, Khu vực, Điểm rủi ro, Trạm đo, Hồ sơ mở, Phụ trách, Trạng thái, Thao tác).
-  - Input tìm kiếm ngắn gọn, sắc nét; Dropdown Phường/Xã tự động nạp danh sách phường/xã thực tế từ DB qua `/api/staff/sites/wards`.
-  - Thiết kế lại 4 KPI cards trên cùng và Panel "Cần chú ý - Top 3 ưu tiên" với badge trạm đo, số case mở và điểm rủi ro lớn.
-- **Backend Worker Operational Endpoints (`staff.routes.js`)**:
-  - Đã mount toàn bộ 10 phân hệ Staff vào Worker Hono app (`app/server/app.js`), tương thích 100% Local SQLite.
 - **Sức khỏe Mã nguồn**:
-  - `node --test app/tests/staff-worker-d1-api.test.js`: **8/8 tests PASS 100%**.
-  - `npm --prefix app run verify:quick`: **287/287 tests PASS 100%** (29 test files + 42 UI smoke tests, ~4.5s).
+  - `npm --prefix app run verify:quick`: **279/279 tests PASS 100%** (28 test files + 4 UI smoke tests, ~3.4s).
 
 ---
 

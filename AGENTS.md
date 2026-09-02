@@ -17,6 +17,14 @@ You are maintaining **DustGuard VN** — A CivicTech platform empowering Youth C
 9. **Proactive PowerShell CLI & Live DevTools**: Tự động chạy lệnh CLI trực tiếp qua PowerShell và dùng Chrome DevTools MCP duyệt trang thật, bắt lỗi runtime và sửa code ngay lập tức (không thụ động chờ user nhắc).
 10. **Natural Civic Copy & Zero Jargon**: Ngôn từ Ngắn — Rõ — Dễ hành động — Phù hợp thực tế. Cấm thuật ngữ kỹ thuật (DAG, SHA-256, HMAC, SLA, telemetry...) trên UI người dùng phổ thông.
 11. **Responsive 14-Inch Desktop & Mobile SSOT**: Bắt buộc tương thích hoàn hảo tại 1366x768, 1440x900, 1536x864, 1920x1080 và Mobile 360-430px (zero header menu wrap, zero button wrap, zero horizontal scroll vô lý).
+12. **API Data Contract & Collection Normalization**: Frontend cấm đoán response shape; API client layer (`*api.js`, `request.js`) bắt buộc unwrap & normalize collection về array `[]` và object về safe default trước khi đưa vào React component. Cấm nhét payload lỗi vào state thành công.
+13. **Business-Value Testing (Trọng Giá Trị Thực, Không Chạy Theo Số Lượng)**:
+    - **Unit test**: Business logic, utils, validators, risk/scoring engines.
+    - **Integration test**: API + SQLite/D1 thật + Auth + RBAC permissions.
+    - **Contract test**: Frontend/Backend response shape unwrap.
+    - **E2E**: Chỉ các luồng sống còn (P0 User Journeys).
+    - **UI test**: Hành vi quan trọng (Behavior > Markup/CSS brittle lock).
+    - Cấm tạo test chỉ để tăng coverage, cấm duplicate assertions, cấm over-mocking.
 
 ---
 
@@ -24,6 +32,8 @@ You are maintaining **DustGuard VN** — A CivicTech platform empowering Youth C
 
 | Phân hệ / Tác vụ | Tài liệu SSOT cần đọc | Targeted Test (< 0.5s) | Ghi chú cốt lõi |
 |---|---|---|---|
+| **Business-Value Testing** | [`business-value-testing-rules.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/rules/business-value-testing-rules.md) | `node --test app/tests/<file>.test.js` | Test theo 5 tầng giá trị, zero vanity coverage, zero over-mock |
+| **API Contract & Normalization** | [`api-data-contract-normalization.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/rules/api-data-contract-normalization.md) | `node --test app/tests/worker-full-edge-routes.test.js` | Normalize collection `[]`, unwrap `{ data: { items } }`, no guess shape |
 | **UI Text & Responsive Rules** | [`UI_RULES.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/rules/UI_RULES.md) | `node --test app/tests/design-system-tokens.test.js` | Zero truncate tên công trình/hồ sơ, min-w-0 flex, copy ngắn |
 | **Staff 12-Table Schema SSOT** | [`STAFF_SCHEMA_SSOT.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/ssot/STAFF_SCHEMA_SSOT.md) | `node --test app/tests/staff-monitoring-d1-api.test.js` | 12 Bảng nghiệp vụ tối thiểu, zero table for cards/widgets |
 | **Vertical Slice Contract** | [`VERTICAL_SLICE_CONTRACT.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/rules/VERTICAL_SLICE_CONTRACT.md) | `node --test app/tests/staff-monitoring-d1-api.test.js` | UI -> API thật -> D1 thật -> DevTools Verify |
