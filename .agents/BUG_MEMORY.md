@@ -245,6 +245,10 @@
   };
   ```
 
+### 🚨 Trap 1.22: SQLite `datetime('now')` chuỗi có khoảng trắng nhỏ hơn ISO string `'...T...Z'` trong so sánh chuỗi ORDER BY
+- **Nguyên nhân**: Khi chèn bản ghi mới bằng SQLite `datetime('now')`, giá trị sinh ra có dạng `'2026-09-02 05:21:29'`. Trong khi đó các bản ghi thực tế được tạo từ JavaScript `new Date().toISOString()` lưu dạng `'2026-09-02T05:21:29.652Z'`. Do ký tự khoảng trắng `' '` (ASCII 32) nhỏ hơn `'T'` (ASCII 84), câu lệnh `ORDER BY createdAt DESC LIMIT 5` sẽ luôn xếp bản ghi mới chèn dùng `datetime('now')` đứng sau các bản ghi ISO, gây lỗi assert trong test khi kiểm tra bản ghi mới nhất.
+- **Giải pháp**: Luôn sử dụng `new Date().toISOString()` khi chèn hoặc cập nhật mốc thời gian timestamp trong toàn bộ ứng dụng và file test để đồng bộ 100% định dạng ISO-8601 UTC.
+
 ### 🚨 Trap 1.4: Gán tọa độ trung tâm giả khi người dùng từ chối cấp quyền GPS
 - **Nguyên nhân**: Khi `navigator.geolocation` trả về lỗi (User denied geolocation), code fallback tự ý gán tọa độ trung tâm `21.033333, 105.800000` hoặc `DEFAULT_CENTER`. Điều này làm sai lệch toàn bộ bản đồ, tập trung mọi phản ánh ở khắp nơi vào một điểm duy nhất, tạo điểm nóng giả lập và làm hỏng tính toàn vẹn của bằng chứng số.
 - **Giải pháp**: Nếu không lấy được GPS, luôn gán `lat: null, lng: null` và cung cấp component `GeoLocationPicker` cho phép người dùng tự tra cứu địa chỉ bằng OpenStreetMap hoặc tự ghim vị trí. Tuyệt đối không bao giờ tự động gán tọa độ giả.
@@ -596,5 +600,18 @@
 ### 🚨 Trap 15.5: D1 Column/Table Mismatch trong Worker Routes làm rơi vào Mock Fallback
 - **Nguyên nhân**: Viết SQL sai tên cột (`c.deadline` thay vì `c.slaDeadline`, `actorName` thay vì `actor_name`) khiến D1 query ném lỗi và khối `.catch()` nuốt lỗi rơi vào dữ liệu mock tĩnh.
 - **Giải pháp**: Đồng bộ 100% tên cột với `d1-schema.sql` và `schema-healer.js`.
+
+### 🚨 Trap 15.6: `btoa` crash runtime khi mã hóa Quick Token chứa chuỗi tiếng Việt (UTF-8 Latin1 Range Error)
+- **Nguyên nhân**: Trong `app/server/routes/worker/contractor.routes.js`, `generateContractorToken` sử dụng trực tiếp `btoa(JSON.stringify(data))`. Khi payload chứa ký tự Unicode tiếng Việt có dấu (tên nhà thầu, ghi chú dập bụi, địa chỉ), `btoa` ném exception `InvalidCharacterError` làm sập endpoint `POST /api/contractor/quick-token` với mã lỗi HTTP 500.
+- **Giải pháp**: Viết helper chuyển đổi base64url an toàn UTF-8 sử dụng `Buffer.from(str, 'utf8').toString('base64url')` hoặc `TextEncoder` kết hợp byte mapping, giải mã an toàn bằng `TextDecoder`.
+
+### 🚨 Trap 15.7: Hono Worker Route bỏ qua FormData multipart trong endpoint Upload Minh chứng Nhà thầu
+- **Nguyên nhân**: Endpoint `POST /api/contractor/actions/:id/evidence` và `POST /api/contractor/quick-submit` trong Worker edge route chỉ gọi `c.req.json()`. Khi client tải lên tệp ảnh nhị phân bằng `FormData` (`multipart/form-data`), `c.req.json()` ném lỗi và catch block trả về body rỗng `{}`, dẫn đến lỗi `400: Đường dẫn minh chứng (URL hoặc File tải lên) là bắt buộc`.
+- **Giải pháp**: Kiểm tra `content-type`: Nếu là `multipart/form-data` hoặc `application/x-www-form-urlencoded`, sử dụng `await c.req.parseBody()` để trích xuất file, sha256, caption, vị trí GPS và token.
+
+### 🚨 Trap 15.8: Lỗ hổng gán `valid: true` khi GPS rỗng trong `ContractorService.addEvidence` (Geofence Bypass Trap)
+- **Nguyên nhân**: Trong `contractor.service.js`, khi `lat`/`lng` là `NaN` hoặc `null` (nộp từ văn phòng không có GPS), hệ thống gán `valid: true` với `matchStatus: 'OFFICE_SUBMITTED'`. Điều này làm bypass cơ chế kiểm soát vị trí thực địa 50m của công trình.
+- **Giải pháp**: Khi tọa độ GPS bị khuyết hoặc không hợp lệ, luôn đặt `valid: false`, `within50m: false`, `distanceMeters: null`, `matchStatus: 'NO_GPS'` để hệ thống không ghi nhận nhầm là hợp lệ trong buffer 50m.
+
 
 
