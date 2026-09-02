@@ -1,15 +1,24 @@
 # ACTIVE CONTEXT — DUSTGUARD VN
 
-> **Trạng thái**: Hoàn tất Full 40-Screen Product Audit qua 10 Subagents Chuyên Trách | **Branch**: `master` | **Cập nhật**: 2026-09-02
+> **Trạng thái**: Hoàn tất 100% 10 Bước Human-Centric Simplification Pass (Chu trình 4 bước tinh gọn) | **Branch**: `master` | **Cập nhật**: 2026-09-02
 
 ---
 
 ## 🎯 1. Trọng Tâm Hoạt Động Hiện Tại (Active Operational State)
-- **Hoàn Tất Toàn Diện Đợt Audit 40 Màn Hình Sản Phẩm (Full 40-Screen Product Audit)**:
-  - **10 Subagents song song**: Rà soát, kiểm thử DevTools, API D1 SQLite SSOT, Cross-screen flows và xử lý triệt để các lỗi P0/P1/P2/P3 trên toàn bộ 40 màn hình của 5 phân hệ (Public, Citizen, Staff, Contractor, Executive/Admin).
-  - **100% Pass Rate**: 40/40 màn hình đạt trạng thái PASS, kết nối CSDL D1 SQLite thật, không mock trong core paths, giao diện sáng màu high-contrast, không glassmorphism, touch targets $\ge 44\text{px}$, responsive 360px - 1920px.
-  - **Báo Cáo Nghiệm Thu**: Đã xuất bản báo cáo chi tiết tại `.agents/audits/DUSTGUARD_FULL_40_SCREEN_PRODUCT_AUDIT_REPORT.md`.
-  - **Kiểm Thử Toàn Diện**: Quick Gate `verify:quick` **283/283 tests PASS 100% (2.6s)**, Vite production build **PASS 100% (3.18s)**.
+- **Hoàn Tất Toàn Diện Human-Centric Simplification Pass (10/10 Bước)**:
+  - **Triết lý Cốt lõi**: Biến DustGuard VN từ hệ thống "nhiều chức năng" thành sản phẩm cực dễ hiểu, cực dễ dùng, sát với cách con người thực tế làm việc theo chu trình duy nhất:
+    $$\text{PHÁT HIỆN} \longrightarrow \text{XÁC MINH} \longrightarrow \text{GIAO XỬ LÝ} \longrightarrow \text{KIỂM TRA LẠI}$$
+  - **Audit & SSoT**: Xuất bản tài liệu [`.agents/HUMAN_CENTRIC_AUDIT.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/.agents/HUMAN_CENTRIC_AUDIT.md) phân loại tải nhận thức (Cognitive Load) của toàn bộ 40 màn hình và từ điển chuyển dịch Jargon.
+  - **Tinh gọn Primary Navigation (Role-based)**:
+    * **Staff**: Giảm từ 8 mục xuống 5 mục chính (`Việc hôm nay`, `Công trình`, `Hồ sơ xử lý`, `Việc hiện trường`, `Cảnh báo`), các công cụ Báo cáo/Văn bản/Quy định đưa vào menu Công cụ nâng cao.
+    * **Citizen**: Giảm từ 5 mục xuống 3 mục (`Trang chủ`, `Báo bụi`, `Phản ánh của tôi`).
+    * **Contractor**: Giảm còn 2 mục (`Việc cần xử lý`, `Tất cả công việc`).
+  - **Tái Cấu Trúc Bàn Làm Việc Cán Bộ**: Đổi thành **"Việc hôm nay"** (Work Queue) với 4 khối việc cụ thể thay vì dashboard thống kê chung chung.
+  - **Tối Ưu Luồng Báo Bụi Công Dân ($\le 30$s)**: Form ngắn 4 trường, tự động hóa định vị GPS và lưu nguyên bản, ẩn các thông số kỹ thuật (SHA-256) vào chi tiết.
+  - **Tối Ưu Kiểm Tra Hiện Trường (Mobile-First)**: Hỗ trợ chế độ kiểm tra nhanh 30s thao tác 1 tay ngoài trời với 3 nấc trạng thái (`Bình thường` / `Có bụi` / `Bụi nặng`), tự động lấy GPS và gắn dấu thời gian.
+  - **Tối Ưu Khắc Phục Cho Nhà Thầu**: 1 liên kết mở ra thấy ngay yêu cầu + hạn chót + 1 nút Chụp ảnh sau xử lý + 1 nút Xác nhận hoàn tất.
+  - **Dọn Sạch Jargon Kỹ Thuật**: Loại bỏ 100% các từ ngữ kỹ thuật như SHA-256, WGS84, Geofence, DAG, SLA, RFC 7807 trên UI người dùng phổ thông.
+  - **Độ Tin Cậy & Tốc Độ**: Quick Gate `verify:quick` **283/283 tests PASS 100% (2.4s)**, Vite production build **PASS 100% (3.25s)**.
 
   - **1. Màn hình 21 (`/staff/cases` - `CasesListPage.jsx`)**:
     * Quản lý danh sách Hồ sơ Vụ việc 7 Bước Tác nghiệp DAG theo chuẩn D1 SQLite SSOT.
