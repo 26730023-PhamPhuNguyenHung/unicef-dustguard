@@ -57,6 +57,14 @@
   - Endpoint xuất CSV (`/export-csv`) bắt buộc ghi mã **UTF-8 BOM (`\uFEFF`)** vào đầu stream trước khi gửi dữ liệu.
   - Bảng `audit_logs` là **chỉ ghi thêm (Append-Only)**, khóa toàn bộ lệnh `UPDATE`/`DELETE` ở cấp D1 SQLite schema, gắn kèm mã băm SHA-256 `logHash` xâu chuỗi thời gian thực.
 
+### 📌 Invariant -1.10: Staff Monitoring, Alerts 1-Click Case Creation & Zero-Failure Optional IoT
+- **Nguyên nhân**: Thiết kế biểu đồ thời gian thực (24h trend chart) bị lỗi divide-by-zero hoặc crash khi 0 cảm biến kết nối; hoặc bản đồ GIS OpenStreetMap tràn ra ngoài khung nhìn trên mobile; hoặc chức năng chuyển đổi cảnh báo sang hồ sơ bắt cán bộ nhập lại toàn bộ thông tin.
+- **Quy tắc chuẩn**:
+  - **Optional IoT Zero-Crash**: Biểu đồ SVG 24h trend chart luôn kiểm tra độ dài mảng points và render fallback UI trung tính ("Chưa có đủ chuỗi đo 24h") an toàn khi chưa có dữ liệu cảm biến.
+  - **Embedded GIS Bounds**: Frame OpenStreetMap đặt trong container `w-full h-[180px] sm:h-[200px] overflow-hidden` có viền bo tròn sạch sẽ, không tràn ngang layout.
+  - **1-Click Case Creation**: Nút `+ Tạo hồ sơ` tự động thực hiện Atomic D1 transaction (`POST /api/staff/alerts/:id/convert-to-case`), khởi tạo Case với mã hồ sơ chuẩn, chuyển trạng thái Alert sang `IN_PROGRESS` và kế thừa tọa độ/dữ liệu bụi.
+  - **75/25 Fixed Priority Panel**: Cột "Ưu tiên hôm nay" (Top 3 cảnh báo khẩn cấp) cố định 310px trên desktop (`xl:w-[310px]`) và chuyển xuống dưới trên màn hình nhỏ.
+
 ---
 
 ## 🌐 0. API Request & Network Traps
@@ -123,6 +131,17 @@
 ### 🚨 Trap 0.11: AuthContext `useAuth()` unhandled throw during HMR or Component Re-mounting
 - **Nguyên nhân**: Trong `useAuth()`, nếu viết `if (!context) throw new Error('useAuth must be used within an AuthProvider')`, khi Vite Hot Module Replacement (HMR) kích hoạt hoặc khi component render trước khi context khởi tạo xong, toàn bộ component tree sẽ bị ErrorBoundary bắt và crash màn hình.
 - **Giải pháp**: Cung cấp fallback default object an toàn trong `useAuth()` (gồm `user: { name, role: 'staff' }, isAuthenticated: true, token: null, login: async () => {}, logout: async () => {}`) thay vì ném unhandled error làm gián đoạn trải nghiệm người dùng trong lúc dev.
+
+### 🚨 Trap 0.12: Bố cục Staff Dashboard vỡ layout trên màn hình 14-inch & Cắt cụt tên công trình (Zero Truncate Violation)
+- **Nguyên nhân**:
+  1. Sử dụng class `truncate` trên tên công trình hoặc mã hồ sơ khiến các dự án có tên dài (ví dụ: "Dự án Nâng cấp Đường Vành đai 3 - Đoạn qua Quận Thanh Xuân") bị biến thành "Dự án Nâng..." làm cán bộ không thể nhận diện được địa bàn.
+  2. Bố cục 2 cột cứng không co giãn tốt trên màn hình 1366x768 / 1440x900 (Windows scale 125%), khiến bảng danh sách bị bóp nghẹt.
+  3. Thiếu các modal tác nghiệp trực tiếp (Giao việc/Phân công nhanh, Xem ảnh minh chứng phóng to) khiến cán bộ phải rời bàn làm việc.
+- **Giải pháp**:
+  1. **Bố cục 3 Cột Chuẩn SSoT**: Cột 1 Việc cần làm (~42% `xl:col-span-5`), Cột 2 Cảnh báo mới (~30% `xl:col-span-4`), Cột 3 Hồ sơ đang theo dõi (~28% `xl:col-span-3`).
+  2. **Zero Truncate**: Toàn bộ tên công trình và tiêu đề hồ sơ sử dụng `break-words min-w-0 flex-1 font-bold leading-snug`.
+  3. **3 Modals Tương Tác**: Tích hợp Modal Tạo hồ sơ (tự điền từ Alert), Modal Giao việc/Phân công nhanh (chọn cán bộ, thời hạn, ghi chú), Modal Xem ảnh minh chứng phóng to (hiển thị trạm đo, nồng độ PM2.5, đối soát SHA-256).
+  4. **Backend SSOT**: Đảm bảo các route `/api/staff/overview`, `/api/staff/dashboard`, `/api/staff/tasks`, `/api/staff/sites` truy vấn trực tiếp từ CSDL D1/SQLite và auto-heal đầy đủ các cột bảng `alerts` trong `schema-healer.js`.
 
 ---
 

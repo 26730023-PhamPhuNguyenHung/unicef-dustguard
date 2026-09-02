@@ -1,11 +1,23 @@
 # ACTIVE CONTEXT — DUSTGUARD VN
 
-> **Trạng thái**: Hoàn tất Product Consistency Audit 35 Màn Hình & Đồng Bộ Toàn Bộ File SSOT trong .agents | **Branch**: `master` | **Cập nhật**: 2026-09-02
+> **Trạng thái**: Hoàn tất Rà soát & Củng cố Phân hệ Staff Monitoring, Alerts & Optional IoT (Subagent 5) | **Branch**: `master` | **Cập nhật**: 2026-09-02
 
 ---
 
 ## 🎯 1. Trọng Tâm Hoạt Động Hiện Tại (Active Operational State)
-- **Hoàn Tất Product Consistency Audit Toàn Diện & Đồng Bộ Hệ Thống SSOT (.agents)**:
+- **Hoàn Tất Rà Soát & Củng Cố Phân Hệ Staff Monitoring, Alerts & IoT Sensor Network (Subagent 5)**:
+  - **1. Quan trắc & Chuỗi đo 24h (`StaffMonitoringPage.jsx`)**:
+    * Biểu đồ đường SVG trực quan hóa chuỗi thời gian 24h đối chiếu ngưỡng QCVN 05:2023/BTNMT (PM2.5: 50/75 µg/m³, PM10: 100/150 µg/m³), xử lý an toàn khi 0 cảm biến (Optional IoT zero-crash).
+    * Nhúng bản đồ OpenStreetMap GIS tỷ lệ chuẩn `w-full h-[180px] sm:h-[200px] overflow-hidden` không gây tràn layout.
+    * Bảng danh sách trạm quan trắc kết nối D1 SQLite với phân trang `Hiển thị 1 đến ...`, bộ lọc quận huyện (Thanh Xuân, Cầu Giấy, Ba Đình, Hoàng Mai...).
+    * Nút tác nghiệp và tương tác đạt chuẩn touch targets $\ge 44\text{px}$, zero glassmorphism.
+  - **2. Xử lý Cảnh báo & Chuyển đổi 1-Click sang Vụ việc (`StaffAlertsPage.jsx`)**:
+    * Bố cục 75/25 chuẩn mực với cột cố định 310px (`xl:w-[310px]`) cho panel "Ưu tiên hôm nay" (Top 3 cảnh báo khẩn cấp).
+    * Chức năng 1-Click `+ Tạo hồ sơ` (`handleConvertToCase`) tự động gọi Atomic D1 transaction (`POST /api/staff/alerts/:id/convert-to-case`), khởi tạo vụ việc mới, chuyển trạng thái Alert sang `IN_PROGRESS`.
+    * Toàn bộ buttons và inputs đạt chuẩn $\ge 44\text{px}$.
+  - **3. Kiểm thử & Độ tin cậy**:
+    * Chạy `node --test app/tests/staff-monitoring-d1-api.test.js` & `node --test app/tests/staff-screens-7-11-audit.test.js`: **12/12 tests PASS 100%**.
+    * Chạy `npm --prefix app run verify:quick`: **279/279 tests PASS 100%**.
   - **1. Thiết lập 3 Tài liệu Sản phẩm Chuẩn hóa**:
     * [`docs/product/PRODUCT_LANGUAGE.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/docs/product/PRODUCT_LANGUAGE.md): Canonical Product Vocabulary, chuẩn hóa trạng thái vòng đời, quy tắc hiển thị mức ưu tiên và ranh giới 5 vai trò.
     * [`docs/product/PRODUCT_CONSISTENCY_AUDIT.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/docs/product/PRODUCT_CONSISTENCY_AUDIT.md): Báo cáo audit ma trận 35 màn hình, phân loại xuất hiện của Risk Score (Nhóm A->F), bảng đối chiếu Traceability và kịch bản Golden Case duy nhất `#DG-2026-0842`.
