@@ -14,6 +14,20 @@
   - `server/routes/worker/*.routes.js`: Domain routers độc lập (100–400 dòng/file).
 - **Tuyệt đối không biến thành Microservices**: Không chia thành 5–10 Worker riêng biệt để tránh phức tạp hóa distributed infrastructure.
 
+### 📌 Invariant -1.14: Đồng Nhất Tên Cột D1 SQLite Schema (slaDeadline vs deadline & case_timelines)
+- **Nguyên nhân**: Sử dụng tùy tiện tên cột trong câu lệnh SQL (`c.deadline` thay vì `c.slaDeadline`; `step, title, description` thay vì `eventType, eventTitle, eventDescription` trong `case_timelines`) làm SQLite ném ngoại lệ `no such column` khiến API sập và trả mã lỗi 500.
+- **Quy tắc chuẩn**:
+  - Trong bảng `cases`, cột hạn chót SLA duy nhất là **`slaDeadline`** (Cấm query `c.deadline`).
+  - Trong bảng `case_timelines`, các cột bắt buộc là: `(id, caseId, eventTitle, eventDescription, eventType, actorName, actorRole, createdAt)`. Cấm dùng `step, title, description`.
+  - Luôn kiểm tra `PRAGMA table_info(<table>)` trước khi viết truy vấn raw SQL trong router.
+
+### 📌 Invariant -1.15: Cấu Hình Proxy Preview Chia Sẻ Với Dev Server (Vite Preview Proxy)
+- **Nguyên nhân**: Chỉ cấu hình `proxy` trong `server: { proxy }` của `vite.config.js` mà quên `preview: { proxy }`. Khi kiểm thử Playwright tự động qua `vite preview`, toàn bộ request `/api/*` bị trả về 502/404 hoặc HTML fallback làm sập client state.
+- **Quy tắc chuẩn**:
+  - Định nghĩa `const proxyConfig = { ... }` dùng chung cho cả `server.proxy` và `preview.proxy` trong `vite.config.js`.
+  - Kiểm tra kết nối mạng qua probe fetch trước khi cho crawler duyệt trang.
+
+
 ### 📌 Invariant -1.2: Nguyên Tắc Vàng "Move, Don't Rewrite"
 - **Nguyên tắc**: Mỗi commit chỉ được phép thay đổi vị trí code HOẶC thay đổi behavior, **không được làm cả hai cùng một lúc**.
 - Khi tách file từ God File sang Domain Router: Giữ nguyên 100% logic, SQL query, response shape, auth và status codes. Sau khi test pass 100% mới refactor logic nội bộ nếu cần.

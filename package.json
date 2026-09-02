@@ -1,7 +1,7 @@
 {
   "name": "unicef-dustguard-root",
   "version": "1.0.0",
-  "private": true,
+  "type": "module",
   "scripts": {
     "dev": "npm --prefix app run dev",
     "dev:web": "npm --prefix app run dev:web",
@@ -14,7 +14,14 @@
     "verify:runtime": "npm --prefix app run verify:runtime",
     "sensor:simulate": "npm --prefix app run sensor:simulate",
     "simulate:sensor": "npm --prefix app run simulate:sensor",
-    "demo:reset": "npm --prefix app run demo:reset"
+    "demo:reset": "npm --prefix app run demo:reset",
+    "harness": "node scripts/harness.js",
+    "harness:audit": "node scripts/harness.js audit",
+    "harness:spec": "node scripts/harness.js spec",
+    "harness:verify": "node scripts/harness.js verify",
+    "harness:review": "node scripts/harness.js review",
+    "harness:journey": "node scripts/harness.js journey",
+    "harness:release-check": "node scripts/harness.js release-check"
   },
   "devDependencies": {
     "wrangler": "^4.125.0"
