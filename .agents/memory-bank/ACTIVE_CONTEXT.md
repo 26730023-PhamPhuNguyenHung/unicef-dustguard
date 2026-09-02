@@ -37,13 +37,12 @@
   - **Backend Worker Routes & Schema**: Chuẩn hóa snake_case trên `audit_logs`, `draft_documents`, `evidences`, `contractor_explanations`.
   - **AI & Telemetry Engine**: Thêm `AbortSignal.timeout(10000)` chống treo worker, vá prompt injection XML `<user_query>`, sửa `Number(null) === 0` trong flatline detection.
   - **Security & DAG Engine**: Whitelist MIME types raster, CSP sandbox cho storage upload, từ chối unsigned JWT tại production, HMAC token nhà thầu, tối ưu N+1 batch queries trong automation cron sweep.
-- **Landing Page 10-Second Screen & Copy Streamline Refactoring**:
-  - **Hero Section**: Tinh gọn cực mạnh text above-the-fold, xóa info box thừa ("Không chỉ dừng ở một phản ánh đã gửi..."), giảm còn đúng 2 CTA chính (`Phản ánh` trỏ tới `/citizen/report/new` và `Xem demo` trỏ tới `/demo`).
-  - **Interactive Case Preview Card**: Loại bỏ SHA-256 raw hash, xóa người phụ trách và timestamp rườm rà, chỉ giữ 6 điểm dữ liệu cốt lõi (Mã hồ sơ `#DG-2026-0842`, Địa điểm `Vành đai 3 · Dịch Vọng Hậu`, Trạng thái `Đang xử lý` / `Đã khắc phục`, Tiến trình 5 bước, Mức ưu tiên `85/100 · Cao`, PM2.5 `142 µg/m³`, 1 câu ghi nhận ngắn).
-  - **LandingNav**: Đồng bộ tái sử dụng `BrandLogo` SSOT (`src/shared/components/BrandLogo.jsx`), rút gọn desktop navbar từ 8 xuống đúng 5 mục chính (`Bản đồ`, `Vấn đề`, `Giải pháp`, `Quy trình`, `Pilot`), bảo đảm touch targets $\ge 44\text{px}$ và không wrap line trên laptop 1366x768.
-  - **Typography & Responsive**: Áp dụng `text-wrap: balance` cho headings, `text-wrap: pretty` cho subheads, `overflow-wrap: break-word`, zero glassmorphism.
+- **Hoàn Tất 100% Bộ 31 Màn Hình Đặc Tả Sản Phẩm Chuẩn Civic Tech & Nghiệp Vụ Việt Nam**:
+  - Triệu tập 10 Subagent Chuyên gia viết lại toàn bộ 31 tài liệu màn hình trong `docs/product/screens/` + khởi tạo Master Index [`docs/product/screens/INDEX.md`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/docs/product/screens/INDEX.md).
+  - **Bối cảnh thực tế Việt Nam**: Địa bàn Hà Nội/TP.HCM (Vành đai 3, An Phú, Mễ Trì, Dịch Vọng Hậu...), các quy chuẩn **QCVN 05:2023/BTNMT**, **QCVN 18:2021/BXD**, chế tài xử phạt **Nghị định 45/2022/NĐ-CP**, thể thức hành chính in ấn A4 **Nghị định 30/2020/NĐ-CP**, liên kết Cổng 1022 & iHanoi, quy đổi 20h = 4.0 tín chỉ/ĐRL Đoàn - Hội, bảng linh kiện trạm đo 500k chợ Nhật Tảo/chợ Trời.
+  - **Cấu trúc 8 phần chi tiết cho từng màn hình**: Screen Identity, Mục đích & Giá trị thực tế, User Journey & Step-by-Step Scenario, Wireframe ASCII trực quan, D1 Database Contract, Bảng nút bấm CTAs ($\ge 44\text{px}$), Quy chuẩn UI/UX & Responsive (Zero Glassmorphism), Edge Cases & Kiểm thử.
 - **Sức khỏe Mã nguồn**:
-  - `npm --prefix app run verify:quick`: **279/279 tests PASS 100%** (28 test files + 4 UI smoke tests, 2.7s).
+  - `npm --prefix app run verify:quick`: **279/279 tests PASS 100%** (28 test files + 4 UI smoke tests, 2.6s).
   - `npm --prefix app run build`: **Vite build thành công 100%** (2.7s).
 
 ---
