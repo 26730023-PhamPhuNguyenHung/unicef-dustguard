@@ -8,8 +8,8 @@
 
 | Thời gian | Mã Commit | Thông điệp Commit | Kết quả & Phạm vi tác động |
 |---|:---:|---|---|
-| **2026-09-02** | `HEAD` | `feat(apps): enhance citizen profile actions and contractor direct task links` | Hỗ trợ truy cập trực tiếp nhiệm vụ nhà thầu qua URL `/contractor/tasks/:id` từ tin nhắn thông báo (tự động nhận dạng và mở bảng đối chứng hiện trường) và đồng bộ pointer submodule. |
-| **2026-09-02** | `3139c50` | `docs(timeline): update timeline with prompt library milestone` | Cập nhật bộ 10 prompt chuẩn SSOT Master OS. |
+| **2026-09-02** | `HEAD` | `feat(os): upgrade AGENTS.md to 8-stage loop and modularize .agents with DEFINITION_OF_DONE and WORKFLOW` | Nâng cấp toàn diện Agent Operating System theo các tiêu chuẩn thực hành mới nhất tháng 8/2026: Tinh gọn `AGENTS.md` (65 dòng cốt lõi), thiết lập quy trình `SPEC → IMPLEMENT → VERIFY → OBSERVE → REVIEW → FIX → COMMIT → NEXT`, ban hành `DEFINITION_OF_DONE.md` (16 tiêu chí máy đo được) và `WORKFLOW.md`. |
+| **2026-09-02** | `bbcef3c` | `feat(apps): enhance citizen profile actions and contractor direct task links` | Hỗ trợ truy cập trực tiếp nhiệm vụ nhà thầu qua URL `/contractor/tasks/:id` từ tin nhắn thông báo (tự động nhận dạng và mở bảng đối chứng hiện trường) và đồng bộ pointer submodule. |
 | **2026-09-02** | `chore-db` | `chore(db): audit and verify D1/SQLite schema integrity and remove favicon.png` | Audit toàn diện 59 bảng CSDL trong `prisma/dev.db` (55/55 checks passed 100%), kiểm tra toàn vẹn khóa ngoại 0 orphans, chuẩn hóa RBAC enum và xóa `favicon.png` thừa. |
 | **2026-09-02** | `e1520bb` | `chore(cleanup): remove incorrect logo.svg and logo-dark.svg` | Xóa bỏ 2 tệp logo vector không chuẩn trong `public/images/logo/`, đồng bộ hóa duy nhất logo thương hiệu SSOT `dustguard-shield-logo.webp`. |
 
