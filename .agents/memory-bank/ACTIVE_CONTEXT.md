@@ -1,14 +1,28 @@
 # ACTIVE CONTEXT — DUSTGUARD VN
 
-> **Trạng thái**: Hoàn tất Rà soát & Củng cố Toàn diện Phân Hệ Citizen Observation & Evidence Pipeline (Subagent 1) | **Branch**: `master` | **Cập nhật**: 2026-09-02
+> **Trạng thái**: Hoàn tất Biến Các Module Quản Lý Thành Feature Thật (Real Working Features trên D1 SQLite SSOT) | **Branch**: `master` | **Cập nhật**: 2026-09-02
 
 ---
 
 ## 🎯 1. Trọng Tâm Hoạt Động Hiện Tại (Active Operational State)
-- **Hoàn Tất Rà Soát & Củng Cố Toàn Diện Phân Hệ Citizen Observation & Evidence Pipeline (Subagent 1)**:
-  - **1. Nối Ống Dữ Liệu Thực Tế (Data Plumbing SSOT)**:
+- **Hoàn Tất Biến Các Module Quản Lý Thành Feature Thật (Real Working Features)**:
+  - **1. Hồ sơ Vụ việc (Case Management & 7-Step Workflow)**:
+    * Endpoint `GET /api/cases/:id` & `GET /api/staff/cases/:id/detail`: Hợp nhất aggregate toàn diện (`case`, `site`, `report`, `assignment`, `tasks`, `evidence`, `remediation`, `timeline`, `nextAction`, `currentStep`, `currentStepNumber`).
+    * Endpoint `POST /api/cases/:id/assign`: Phân công cán bộ thật từ `users`, cập nhật case, tự động tạo task trong `tasks`, ghi lịch sử `case_timelines`, tạo thông báo trong `notifications`.
+    * Endpoint `POST /api/cases/:id/inspection`: Lưu biên bản 10 tiêu chí QCVN 18:2021/BXD & QĐ 48/2021/QĐ-UBND vào `inspections`, tự động hoàn thành task và chuyển bước hồ sơ.
+    * Endpoint `POST /api/cases/:id/evidences`: Upload ảnh minh chứng, lưu trữ mã băm SHA-256 đối chứng toàn vẹn.
+    * Endpoint `POST /api/cases/:id/close`: Hoàn tất và đóng hồ sơ, ghi audit log, tạo thông báo kết quả.
+  - **2. Nhiệm vụ Cán bộ (Staff Tasks)**:
+    * Endpoint `/staff/tasks/summary`, `/staff/tasks/list`, `/staff/tasks/create` truy vấn và lưu trữ trực tiếp vào CSDL D1/SQLite.
+  - **3. Trạm Quan trắc, Báo cáo & Thông báo**:
+    * Endpoint `/staff/monitoring/stations`, `/staff/monitoring/summary`, `/staff/reports/*`, `/staff/notifications/*` vận hành 100% dữ liệu thật, không mock fake.
+  - **4. Kiểm Thử Nghiệm Thu**:
+    * `app/tests/management-features-e2e.test.js`: **8/8 tests PASS 100% (103ms)**.
+    * `npm --prefix app run verify:quick`: **241/241 tests PASS 100% (2.0s)**.
+    * Đã tạo báo cáo nghiệm thu chi tiết tại `docs/REAL_FEATURE_COMPLETION.md`.
+  - **5. Nối Ống Dữ Liệu Thực Tế (Data Plumbing SSOT)**:
     * Kiểm tra và củng cố toàn bộ luồng: Form ghi nhận của người dân/thanh niên (`CreateObservation.jsx`, `CitizenReport.jsx`, `ReportNewPage.jsx`, `UploadZone.jsx`) -> Nén ảnh tự động < 300KB & khử metadata nhạy cảm EXIF (`image-compressor.js`) -> Tạo mã băm cryptographic SHA-256 Web Crypto (`image-integrity.js`) -> Lưu trữ D1/SQLite bảng `complaints`, `evidences`, `observations`, `observation_evidence` -> API normalization/unwrap -> Hiển thị chi tiết và dòng thời gian xử lý (`ObservationDetail.jsx`, `ReportDetailPage.jsx`, `ReportsListPage.jsx`).
-  - **2. Đồng Bộ Ngoại Tuyến (Offline Mode & Resilient Drafts)**:
+  - **6. Đồng Bộ Ngoại Tuyến (Offline Mode & Resilient Drafts)**:
     * Thống nhất hàng đợi lưu nháp ngoại tuyến giữa Citizen Portal và Community Portal qua `saveOfflineDraft` và `setupAutoSync` trong `offline-drafts.js`.
     * Tự động đồng bộ các bản ghi nhận nháp lên máy chủ D1 ngay khi kết nối mạng được phục hồi (`online` event listener).
     * Hạn chế rủi ro vượt hạn mức localStorage quota bằng cơ chế cắt tỉa thông minh (QuotaExceededError protection).
