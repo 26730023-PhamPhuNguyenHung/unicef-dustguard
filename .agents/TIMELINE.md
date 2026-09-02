@@ -8,7 +8,9 @@
 
 | Thời gian | Mã Commit | Thông điệp Commit | Kết quả & Phạm vi tác động |
 |---|:---:|---|---|
-| **2026-09-02** | `HEAD` | `chore(cleanup): remove incorrect logo.svg and logo-dark.svg` | Xóa bỏ 2 tệp logo vector không chuẩn trong `public/images/logo/`, đồng bộ hóa duy nhất logo thương hiệu SSOT `dustguard-shield-logo.webp`. |
+| **2026-09-02** | `HEAD` | `chore(db): audit and verify D1/SQLite schema integrity and remove favicon.png` | Audit toàn diện 59 bảng CSDL trong `prisma/dev.db` (55/55 checks passed 100%), kiểm tra toàn vẹn khóa ngoại 0 orphans, chuẩn hóa RBAC enum và xóa `favicon.png` thừa. |
+| **2026-09-02** | `e1520bb` | `chore(cleanup): remove incorrect logo.svg and logo-dark.svg` | Xóa bỏ 2 tệp logo vector không chuẩn trong `public/images/logo/`, đồng bộ hóa duy nhất logo thương hiệu SSOT `dustguard-shield-logo.webp`. |
+
 | **2026-09-02** | `17125be` | `chore(cleanup): purge 58 unused svg icons in app/src/icons` | Xóa sạch toàn bộ thư mục `app/src/icons` (58 tệp SVG/TS thừa), chuyển sang dùng trực tiếp Lucide Icons và SVG vector inline chuẩn hóa. |
 
 | **2026-09-02** | `bde0d83` | `chore(cleanup): purge 300+ unused landing assets and prune redundant public images` | Xóa sạch 301 tệp ảnh tĩnh/preview rác (~7.55 MB) trong `app/public/assets/landing`, gỡ bỏ `landingAssets.js`, dọn dẹp ảnh dư thừa trong `images/` và chuẩn hóa logo thương hiệu về `images/logo/dustguard-shield-logo.webp` (giúp tốc độ build Vite tăng từ 3.28s xuống 1.90s). |
