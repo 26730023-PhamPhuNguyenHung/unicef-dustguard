@@ -1,271 +1,213 @@
-# STF-11 — Nhật Ký Công Vụ Bất Biến & Lưu Vết Kiểm Toán Tác Nghiệp (Staff Activity & Immutable Audit Trail)
+# STF-11 — Sổ Nhật Ký Công Tác & Lịch Sử Tác Nghiệp (Lưu Vết Công Vụ Minh Bạch)
 
-> **Tài liệu đặc tả màn hình chuẩn SSOT (Single Source of Truth) — DustGuard VN CivicTech Platform**  
-> Sổ lưu vết công vụ điện tử bất biến (Immutable Audit Trail) ghi nhận toàn diện từng giây phút và từng hành động nghiệp vụ của cán bộ thanh tra môi trường, giám sát viên địa bàn và đội hình thanh niên tình nguyện: lưu vết chuyển trạng thái hồ sơ 7 bước DAG, xuất bản biên bản A4 chuẩn **Nghị định 30/2020/NĐ-CP**, giao nhiệm vụ dập bụi cho nhà thầu, xác minh phản ánh cộng đồng với mã băm toàn vẹn SHA-256 chống chối bỏ.
+> **Tài liệu hướng dẫn & đặc tả màn hình — Hệ thống DustGuard VN**  
+> Sổ công tác điện tử ghi nhận trung thực mọi việc cán bộ đã làm theo đúng giờ phút thực tế: từ tiếp nhận phản ánh, khảo sát hiện trường, lập biên bản kiểm tra, giao việc dập bụi cho nhà thầu đến phê duyệt giờ tình nguyện cho thanh niên. Dữ liệu chỉ ghi thêm và không thể sửa xóa gian lận, phục vụ thanh tra và giải trình khi cần.
 
 ---
 
-## 1. Screen Identity
+## 1. Thông Tin Màn Hình (Screen Identity)
 
-| Thuộc tính | Giá trị SSOT | Ghi chú kỹ thuật |
+| Mục | Nội dung | Giải thích dễ hiểu |
 |---|---|---|
-| **Mã màn hình** | `STF-11` | Mã định danh chuẩn trong Design System |
-| **Tên tiếng Việt** | Lịch sử hoạt động cán bộ & Nhật ký kiểm toán | Nhãn hiển thị chính thức trên hệ thống |
-| **Tên tiếng Anh** | Staff Activity & Immutable Audit Trail | Tên tiếng Anh đối ngoại & API Contract |
-| **Đường dẫn (Route)** | `/staff/activity` | Canonical Route (Truy cập từ User Dropdown hoặc Sidebar) |
-| **Component Path** | [`app/src/apps/staff/pages/activity/StaffActivityPage.jsx`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/app/src/apps/staff/pages/activity/StaffActivityPage.jsx) | React 19 Client Component |
-| **Backend Service / Route** | [`app/server/routes/api/audit-logs.js`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/app/server/routes/api/audit-logs.js) | Express / Worker Hono Audit Controller |
-| **API Client** | [`app/src/lib/api/request.js`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/app/src/lib/api/request.js) | Hàm gọi: `request('/audit-logs?limit=20')` |
-| **Layout bọc** | [`app/src/apps/staff/layout/StaffLayout.jsx`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/app/src/apps/staff/layout/StaffLayout.jsx) | Sidebar 8 mục nghiệp vụ điều hành Staff |
-| **Vai trò truy cập (Role)** | `staff`, `executive`, `admin` | Cán bộ Thanh tra, Ban Giám sát Tuân thủ, Quản trị viên |
-| **Trạng thái thực thi** | **ACTIVE (Level 5 Production Coherent)** | Kết nối 100% CSDL D1 thật, Zero-Mock |
+| **Mã màn hình** | `STF-11` | Mã viết tắt để tra cứu nhanh trong tài liệu |
+| **Tên tiếng Việt** | **Sổ nhật ký công tác & lịch sử tác nghiệp** | Tên gọi hiển thị trên thanh menu |
+| **Tên tiếng Anh** | Staff Activity & Audit Log | Tên dùng khi kết nối kỹ thuật |
+| **Đường dẫn (URL)** | `/staff/activity` | Địa chỉ trang web trên trình duyệt |
+| **File giao diện** | [`app/src/apps/staff/pages/activity/StaffActivityPage.jsx`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/app/src/apps/staff/pages/activity/StaffActivityPage.jsx) | File mã nguồn hiển thị giao diện |
+| **File xử lý dữ liệu** | [`app/server/routes/api/audit-logs.js`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/app/server/routes/api/audit-logs.js) | File máy chủ ghi nhận và đọc nhật ký |
+| **Ai được dùng?** | Cán bộ thanh tra, người trực ca, đoàn kiểm tra, lãnh đạo | Để xem lại lịch sử các công việc đã thực hiện |
+| **Tình trạng kết nối** | **Đang hoạt động tốt** | Đọc dữ liệu thật từ hệ thống lưu trữ |
 
 ---
 
-## 2. Mục Đích & Giá Trị Thực Tế
+## 2. Mục Đích & Nghiệp Vụ Thực Tế
 
-### 2.1. Mục đích thiết kế
-Màn hình **STF-11** là "Sổ công tác số bất biến" phục vụ công tác thanh tra công vụ, kiểm toán trách nhiệm và giám sát quy trình xử lý ô nhiễm bụi công trình. Màn hình đảm nhận 4 nhiệm vụ sống còn:
-1. *Lưu vết minh bạch và chống chối bỏ (Non-repudiation)*: Ghi nhận chính xác mốc thời gian chuẩn ISO-8601 đến từng giây (`HH:mm:ss DD/MM/YYYY`), định danh cán bộ (`actorId`, `staffCode`), địa chỉ IP và hành động thực hiện.
-2. *Theo dõi chuỗi 7 bước tác nghiệp DAG của hồ sơ*: Ghi nhận các mốc chuyển tiếp trạng thái trọng yếu như: *Tiếp nhận phản ánh $\rightarrow$ Khảo sát hiện trường $\rightarrow$ Lập biên bản VPHC $\rightarrow$ Giao nhà thầu dập bụi $\rightarrow$ Nghiệm thu sau 24h $\rightarrow$ Đóng hồ sơ*.
-3. *Phục vụ hậu kiểm và giải trình thanh tra cấp trên*: Cung cấp chuỗi bằng chứng điện tử toàn vẹn khi có đoàn thanh tra của Sở TN&MT hoặc khiếu nại tranh chấp từ phía Chủ đầu tư/Nhà thầu.
-4. *Đối soát hoạt động cấp tín chỉ thanh niên*: Ghi nhận các quyết định phê duyệt giờ tình nguyện (20 giờ = 4.0 tín chỉ) cho sinh viên và đoàn viên tham gia hỗ trợ khảo sát thực địa.
+### 2.1. Cán bộ dùng màn hình này để làm gì?
+Màn hình đóng vai trò là "Sổ ghi chép công tác điện tử" minh bạch, giúp:
+1. **Lưu lại đầy đủ mọi việc đã làm trong ngày**:
+   - Ghi nhận chính xác từng giây phút: Ai đã làm gì, vào lúc mấy giờ, trên công trình nào.
+   - Ví dụ: Cán bộ Nguyễn Minh An chuyển trạng thái hồ sơ lúc 14:35, lập biên bản vi phạm lúc 11:15, giao việc dập bụi lúc 09:00.
+2. **Theo dõi tiến độ xử lý hồ sơ qua từng bước**:
+   - Từ lúc tiếp nhận tin báo $\rightarrow$ Đi kiểm tra hiện trường $\rightarrow$ Lập biên bản $\rightarrow$ Giao nhà thầu che bạt dập bụi $\rightarrow$ Nghiệm thu sau 24h $\rightarrow$ Đóng hồ sơ.
+3. **Phục vụ giải trình và thanh tra cấp trên**:
+   - Khi có khiếu nại từ nhà thầu hoặc đoàn thanh tra kiểm tra đột xuất, cán bộ mở màn hình này ra để đối chiếu toàn bộ tiến trình xử lý minh bạch từ đầu đến cuối.
+4. **Theo dõi việc duyệt giờ tình nguyện cho thanh niên**:
+   - Ghi lại các lần phê duyệt giờ tình nguyện (ví dụ: hoàn thành 20 giờ khảo sát = 4.0 tín chỉ rèn luyện) cho sinh viên và đoàn viên.
 
-### 2.2. Giá trị thực tế & Thay thế cách làm cũ (Civic Value)
-- **Xóa bỏ tình trạng "sửa nhật ký lùi ngày"**: Trước đây, nhật ký công tác trên sổ giấy dễ bị ghi bù hoặc chỉnh sửa thời gian sau khi xảy ra sự cố. Tại DustGuard VN, mọi bản ghi nhật ký trong bảng `audit_logs` của Cloudflare D1 là **chỉ ghi thêm (Append-Only)**, cấm sửa xóa (`UPDATE`/`DELETE` bị khóa ở cấp cơ sở dữ liệu).
-- **Mã băm an toàn `logHash` (SHA-256 Web Crypto)**: Mỗi sự kiện được băm kết hợp với hash của sự kiện liền trước (tương tự Merkle Hash Chain), đảm bảo phát hiện ngay lập tức nếu dữ liệu trong DB bị can thiệp trái phép.
-- **Trực quan hóa Timeline phong cách Civic Tech High-Contrast**: Sử dụng trục đứng màu xám `#E7E5E4`, điểm chấm tròn đỏ son `#B91C1C` viền trắng $3.5\text{px}$, phông chữ Mono cho mốc thời gian và định dạng chữ to rõ, không lạm dụng hiệu ứng làm mờ kính.
+### 2.2. Giá trị thực tế thay thế cách làm cũ
+- **Không thể ghi bù lùi ngày**: Trước đây ghi sổ tay dễ bị viết bù sau khi xảy ra sự cố. Trong hệ thống này, máy tính tự ghi nhận thời gian thực và **tuyệt đối không cho phép ai sửa hoặc xóa nhật ký**.
+- **Có mã an toàn chống làm giả**: Mỗi dòng nhật ký đều có một đoạn mã an toàn kèm theo, nếu ai đó cố tình can thiệp vào dữ liệu máy chủ thì hệ thống sẽ phát hiện ra ngay lập tức.
+- **Dòng thời gian dễ nhìn**: Trục thời gian dạng cây dọc với chấm tròn đỏ nổi bật, xem lướt qua là hiểu ngay diễn biến công việc trong ngày.
 
 ---
 
-## 3. Đối Tượng Người Dùng & Hành Trình Thao Tác (User Journey)
+## 3. Đối Tượng Người Dùng & Các Bước Thực Hiện
 
-### 3.1. Đối tượng sử dụng
-- **Cán bộ thanh tra viên**: Rà soát lại toàn bộ công việc mình đã thực hiện trong ca trực để đối chiếu trước khi kết thúc ngày làm việc.
-- **Lãnh đạo Đội Thanh tra / Trưởng Phòng TN&MT**: Kiểm tra sự tuân thủ quy trình nghiệp vụ và tốc độ phản ứng của từng cán bộ trong tổ công tác.
-- **Thanh tra viên Sở / Kiểm toán viên độc lập**: Trích xuất log kiểm toán phục vụ công tác thanh tra công vụ định kỳ.
+### 3.1. Ai sử dụng màn hình này?
+- **Cán bộ thanh tra viên**: Xem lại các việc mình đã hoàn thành trong ca trực trước khi bàn giao ca.
+- **Tổ trưởng ca trực / Lãnh đạo**: Kiểm tra xem cấp dưới đã xử lý các tin báo ô nhiễm nhanh hay chậm.
+- **Đoàn thanh tra kiểm tra công vụ**: Trích xuất lịch sử xử lý các vụ việc để kiểm tra tính tuân thủ quy trình.
 
-### 3.2. Sơ đồ hành trình tác nghiệp (Sequence Diagram & Core Flow)
+### 3.2. Sơ đồ các bước xử lý hàng ngày
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor Staff as Cán bộ Thanh tra / Lãnh đạo
-    participant UI as StaffActivityPage (STF-11)
-    participant API as Server API (/api/audit-logs)
-    participant DB as Cloudflare D1 (audit_logs)
+    actor CB as Cán bộ / Lãnh đạo
+    participant MH as Màn hình STF-11
+    participant SV as Máy chủ hệ thống
+    participant DB as CSDL Lưu trữ
 
-    Staff->>UI: Truy cập /staff/activity từ Menu cá nhân hoặc Sidebar
-    UI->>API: GET /api/audit-logs?limit=20&page=1
-    API->>DB: SELECT * FROM audit_logs ORDER BY created_at DESC LIMIT 20
-    DB-->>API: Trả về 20 bản ghi sự kiện mới nhất
-    API-->>UI: Normalized Array Items [{ id, action, target, details, createdAt, logHash }]
-    UI-->>Staff: Hiển thị Dòng thời gian trực quan (Vertical Activity Timeline)
+    CB->>MH: Mở trang Nhật ký hoạt động (/staff/activity)
+    MH->>SV: Lấy 20 sự kiện công việc mới nhất
+    SV->>DB: Đọc bảng nhật ký công tác
+    DB-->>SV: Trả về danh sách sự kiện theo thứ tự thời gian
+    SV-->>MH: Gửi dữ liệu về hiển thị
+    MH-->>CB: Hiện dòng thời gian các công việc đã làm
 
-    alt Kịch bản 1: Xem chi tiết sự kiện lập biên bản vi phạm
-        Staff->>UI: Quan sát mốc "LẬP BIÊN BẢN KIỂM TRA A4"
-        UI-->>Staff: Hiển thị tên công trình, số hiệu biên bản BB-0420 và thời gian 11:15:00 02/09/2026
-    else Kịch bản 2: Lọc sự kiện theo đối tượng hồ sơ cụ thể
-        Staff->>UI: Nhập mã hồ sơ "HS-26-00101" vào ô tìm kiếm
-        UI->>API: GET /api/audit-logs?search=HS-26-00101
-        API->>DB: SELECT * FROM audit_logs WHERE target LIKE '%HS-26-00101%'
-        DB-->>API: Trả về chuỗi lịch sử xử lý của hồ sơ
-        API-->>UI: Cập nhật dòng thời gian riêng của hồ sơ
+    alt Trường hợp 1: Xem chi tiết vụ việc từ dòng nhật ký
+        CB->>MH: Bấm vào tên công trình hoặc mã hồ sơ
+        MH-->>CB: Chuyển thẳng sang trang chi tiết vụ việc đó
+    else Trường hợp 2: Tìm kiếm theo mã hồ sơ
+        CB->>MH: Nhập mã "HS-26-00101" vào ô tìm kiếm
+        MH->>SV: Lọc các sự kiện liên quan đến mã hồ sơ này
+        SV-->>MH: Trả về lịch sử riêng của hồ sơ
+        MH-->>CB: Hiện toàn bộ các bước đã xử lý hồ sơ đó
+    else Trường hợp 3: Tải thêm các việc cũ hơn
+        CB->>MH: Bấm nút [Tải thêm lịch sử cũ hơn]
+        MH->>SV: Lấy tiếp 20 sự kiện tiếp theo
+        SV-->>MH: Trả về dữ liệu nối dài
+        MH-->>CB: Hiện thêm các dòng nhật ký phía dưới
     end
 ```
 
 ---
 
-## 4. Bố Cục Giao Diện & Phân Cấp Thông Tin (Information Hierarchy)
+## 4. Bố Cục Giao Diện & Hình Minh Họa Dễ Hiểu (Wireframe)
 
-### 4.1. Khung dây giao diện tổng thể (ASCII Wireframe)
+### 4.1. Khung nhìn tổng thể trên màn hình máy tính (14 inch trở lên)
 
 ```text
 +--------------------------------------------------------------------------------------------------------------------+
-| [Staff Layout Header] Trang chính / Nhật ký hoạt động                              (🔔 8) [Cán bộ: Nguyễn Minh An] |
+| [THANH TIÊU ĐỀ TRÊN CÙNG]                                                          (🔔 8) [Cán bộ: Nguyễn Minh An] |
 +--------------------------------------------------------------------------------------------------------------------+
 |                                                                                                                    |
 |  +--------------------------------------------------------------------------------------------------------------+  |
 |  | Lịch Sử Hoạt Động Cán Bộ & Nhật Ký Kiểm Toán                                                                 |  |
-|  | Sổ lưu vết điện tử bất biến ghi nhận mọi thao tác lập hồ sơ, phân công và xử lý ô nhiễm bụi trên hệ thống.   |  |
+|  | Sổ ghi chép điện tử lưu lại mọi thao tác lập hồ sơ, phân công và xử lý ô nhiễm bụi trên hệ thống.             |  |
 |  +--------------------------------------------------------------------------------------------------------------+  |
 |                                                                                                                    |
 |  +--------------------------------------------------------------------------------------------------------------+  |
-|  | DÒNG THỜI GIAN CÔNG VỤ (CHỈ GHI THÊM - APPEND-ONLY TIMELINE)                                                 |  |
+|  | DÒNG THỜI GIAN CÔNG TÁC (TỰ ĐỘNG GHI NHẬN - KHÔNG THỂ SỬA XÓA)                                                |  |
 |  +--------------------------------------------------------------------------------------------------------------+  |
 |  |                                                                                                              |  |
 |  |   |                                                                                                          |  |
-|  |  (•) CẬP NHẬT TRẠNG THÁI VỤ VIỆC (7 BƯỚC DAG)                              14:35:12 02/09/2026 (Font Mono)  |  |
+|  |  (•) CẬP NHẬT TIẾN ĐỘ HỒ SƠ VỤ VIỆC                                         14:35:12 02/09/2026 (Giờ thực)   |  |
 |  |   |  🎯 Vụ việc HS-26-00101 — Dự án Khu đô thị Starlake Tây Hồ Tây                                           |  |
-|  |   |  📝 Chuyển trạng thái từ [2. Khảo sát thực địa] sang [3. Đang xử lý che chắn bạt]                        |  |
-|  |   |  🔒 SHA-256 Hash: `3a7f8e...9d12` · Thực hiện bởi: Cán bộ Nguyễn Minh An                                 |  |
+|  |   |  📝 Chuyển trạng thái: Từ [Khảo sát thực địa] sang [Đang xử lý che chắn bạt]                             |  |
+|  |   |  🔒 Mã kiểm tra: `3a7f8e...9d12` · Người thực hiện: Cán bộ Nguyễn Minh An                                |  |
 |  |   |                                                                                                          |  |
-|  |  (•) XUẤT BẢN BIÊN BẢN KIỂM TRA HIỆN TRƯỜNG A4 (NĐ 30/2020)                11:15:00 02/09/2026              |  |
-|  |   |  🎯 Công trình Tổ hợp Rivera Park, 69 Vũ Trọng Phụng                                                     |  |
-|  |   |  📝 Ban hành Biên bản kiểm tra số 23/BB-TTXD vi phạm nồng độ bụi PM10 vượt 185 µg/m³                     |  |
-|  |   |  🔒 docHash: `8f9b2c...a9b1` · Người lập: Cán bộ Nguyễn Minh An                                          |  |
+|  |  (•) BAN HÀNH BIÊN BẢN KIỂM TRA HIỆN TRƯỜNG A4                             11:15:00 02/09/2026              |  |
+|  |   |  🎯 Công trình: Tổ hợp Thương mại Rivera Park, 69 Vũ Trọng Phụng                                         |  |
+|  |   |  📝 Đã lập Biên bản kiểm tra số 23/BB-TTXD vi phạm nồng độ bụi PM10 vượt 185 µg/m³                       |  |
+|  |   |  🔒 Mã kiểm tra: `8f9b2c...a9b1` · Người lập: Cán bộ Nguyễn Minh An                                      |  |
 |  |   |                                                                                                          |  |
-|  |  (•) GIAO NHIỆM VỤ KHẮC PHỤC KHẨN CẤP                                      09:00:24 02/09/2026              |  |
-|  |   |  🎯 Nhà thầu thi công: Ban Chỉ huy Công trường Coteccons                                                 |  |
-|  |   |  📝 Yêu cầu quét dọn bùn đất rơi vãi và bật vòi phun sương dập bụi trong vòng 24 giờ                      |  |
-|  |   |  🔒 SLA Hạn chót: 09:00 03/09/2026 · Phân công: Trưởng ca Lê Hùng                                        |  |
+|  |  (•) GIAO NHIỆM VỤ KHẮC PHỤC DẬP BỤI CHO NHÀ THẦU                           09:00:24 02/09/2026              |  |
+|  |   |  🎯 Đơn vị nhận: Ban Chỉ huy Công trường Coteccons                                                       |  |
+|  |   |  📝 Yêu cầu quét dọn bùn đất rơi vãi và bật vòi phun nước dập bụi trong vòng 24 giờ                      |  |
+|  |   |  🔒 Hạn chót: 09:00 ngày 03/09/2026 · Phân công bởi: Trưởng ca Lê Hùng                                   |  |
 |  |   |                                                                                                          |  |
-|  |  (•) PHÊ DUYỆT TÍN CHỈ TÌNH NGUYỆN VIÊN                                    17:45:10 01/09/2026              |  |
-|  |   |  🎯 Đoàn viên tình nguyện: Trần Thị Lan (CLB Môi trường ĐH Xây dựng)                                     |  |
-|  |   |  📝 Xác nhận hoàn thành 20 giờ khảo sát hiện trường = Cấp chứng nhận 4.0 Tín chỉ rèn luyện                |  |
-|  |   |  🔒 Mã chứng nhận QR: `YOUTH-CREDIT-2026-4412`                                                           |  |
+|  |  (•) DUYỆT TÍN CHỈ TÌNH NGUYỆN CHO THANH NIÊN                               17:45:10 01/09/2026              |  |
+|  |   |  🎯 Tình nguyện viên: Trần Thị Lan (CLB Môi trường Sinh viên)                                            |  |
+|  |   |  📝 Xác nhận hoàn thành 20 giờ khảo sát = Cấp giấy chứng nhận 4.0 Tín chỉ rèn luyện                      |  |
+|  |   |  🔒 Mã chứng nhận: `YOUTH-CREDIT-2026-4412`                                                              |  |
 |  |   |                                                                                                          |  |
 |  +--------------------------------------------------------------------------------------------------------------+  |
-|  | Hiển thị 20 sự kiện công vụ gần nhất                          [ Tải thêm lịch sử cũ hơn ]                    |  |
+|  | Đang xem 20 sự kiện gần nhất                                  [ Tải thêm lịch sử cũ hơn ]                    |  |
+|  +--------------------------------------------------------------------------------------------------------------+  |
 +--------------------------------------------------------------------------------------------------------------------+
 ```
 
-### 4.2. Chi tiết phân cấp thông tin giao diện
-1. **Header Khối Nhật Ký**:
-   - Tiêu đề cấp 1: "Lịch Sử Hoạt Động Cán Bộ & Nhật Ký Kiểm Toán" (Font Black `#1C1917`, $24\text{px}$).
-   - Mô tả ngắn gọn: "Sổ lưu vết điện tử bất biến ghi nhận mọi thao tác lập hồ sơ, phân công và xử lý ô nhiễm bụi trên hệ thống."
-2. **Trục Dọc Thời Gian (Vertical Timeline Spine)**:
-   - Đường kẻ trục đứng: Viền xám liền mạch `border-l-2 border-[#E7E5E4]`, nằm cách lề trái $24\text{px}$.
-   - Nốt chấm sự kiện (`Timeline Dot`): Hình tròn đường kính $14\text{px}$ màu đỏ son `#B91C1C` viền trắng $2\text{px}$, nổi bật trên nền xám.
-3. **Thẻ Chi Tiết Sự Kiện (Event Card Block)**:
-   - **Tên hành động (`action`)**: In hoa, đậm nét (`font-black text-xs uppercase tracking-wide`), màu đen mực `#1C1917`.
-   - **Mốc thời gian (`createdAt`)**: Phông chữ Mono định dạng chuẩn Việt Nam (`14:35:12 02/09/2026`), hiển thị góc trên bên phải.
-   - **Đối tượng mục tiêu (`target`)**: Nổi bật với màu đỏ son `#B91C1C` in đậm (VD: `Vụ việc HS-26-00101`, `Công trình Rivera Park`).
-   - **Mô tả chi tiết nội dung (`details`)**: Màu xám đậm `#57534E`, miêu tả rõ nội dung biến động trước và sau khi thao tác.
-   - **Mã kiểm toán (`logHash` / `docHash`)**: Hiển thị chuỗi mã băm an toàn font-mono thu gọn kèm thông tin người thực hiện.
-4. **Trạng Thái Rỗng (Empty State)**:
-   - Khi chưa có nhật ký: Hiển thị minh họa hộp thư sạch sẽ với thông điệp: *"Chưa có nhật ký hoạt động — Các thao tác tác nghiệp của bạn sẽ được ghi nhận tự động tại đây."*
+### 4.2. Giải thích chi tiết các thành phần giao diện
+1. **Trục dọc thời gian ở giữa**:
+   - Trục đường kẻ màu xám nối liền các mốc thời gian.
+   - Mỗi việc làm là một chấm tròn đỏ son `#B91C1C` viền trắng nổi bật.
+2. **Nội dung từng dòng nhật ký**:
+   - **Tên hành động**: In hoa đậm nét (ví dụ: `CẬP NHẬT TIẾN ĐỘ HỒ SƠ`, `BAN HÀNH BIÊN BẢN`).
+   - **Giờ phút thực hiện**: Hiển thị góc trên bên phải theo giờ Việt Nam (`14:35:12 02/09/2026`).
+   - **Công trình / Vụ việc liên quan**: Tên dự án có màu đỏ son in đậm, bấm vào để mở xem chi tiết.
+   - **Mô tả hành động**: Nói rõ nội dung đã làm (ví dụ: đã yêu cầu dập bụi trong 24h).
+   - **Người thực hiện & Mã an toàn**: Tên cán bộ đã làm và mã tra cứu an toàn.
+3. **Khi chưa có nhật ký nào**:
+   - Hiện khung thông báo: *"Chưa có nhật ký hoạt động — Mọi thao tác xử lý của bạn sẽ được tự động ghi nhận tại đây."*
 
 ---
 
-## 5. Dữ Liệu & Hợp Đồng API / CSDL D1 (Data Contract)
+## 5. Dữ Liệu & Liên Kết Hệ Thống
 
-### 5.1. Endpoints API Nhật Ký Kiểm Toán
+### 5.1. Các đường liên kết dữ liệu phục vụ màn hình
 
-#### Lấy danh sách sự kiện kiểm toán công vụ
-```http
-GET /api/audit-logs?limit=20&page=1&search=
-Authorization: Bearer <staff_jwt_token>
-```
-**Response JSON SSOT**:
-```json
-{
-  "success": true,
-  "data": {
-    "items": [
-      {
-        "id": "log_01jk9aa1",
-        "action": "CẬP NHẬT TRẠNG THÁI VỤ VIỆC (7 BƯỚC DAG)",
-        "target": "Vụ việc HS-26-00101 — Dự án Starlake Tây Hồ Tây",
-        "details": "Chuyển trạng thái từ [Khảo sát thực địa] sang [Đang xử lý che chắn bạt]",
-        "entityType": "CASE",
-        "entityId": "case_hn_101",
-        "actorId": "usr_staff_01",
-        "actorName": "Nguyễn Minh An",
-        "createdAt": "2026-09-02T07:35:12.000Z",
-        "logHash": "3a7f8e12b4c567890abcdef1234567890abcdef1234567890abcdef12345678"
-      },
-      {
-        "id": "log_01jk9aa2",
-        "action": "XUẤT BẢN BIÊN BẢN KIỂM TRA HIỆN TRƯỜNG A4 (NĐ 30/2020)",
-        "target": "Công trình Tổ hợp Rivera Park, 69 Vũ Trọng Phụng",
-        "details": "Ban hành Biên bản kiểm tra số 23/BB-TTXD vi phạm nồng độ bụi PM10 vượt 185 µg/m³",
-        "entityType": "DOCUMENT",
-        "entityId": "doc_bb_0420",
-        "actorId": "usr_staff_01",
-        "actorName": "Nguyễn Minh An",
-        "createdAt": "2026-09-02T04:15:00.000Z",
-        "logHash": "8f9b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b"
-      }
-    ],
-    "pagination": {
-      "page": 1,
-      "limit": 20,
-      "total": 1420
-    }
-  },
-  "message": "Danh sách nhật ký kiểm toán"
-}
-```
+| Lệnh | Đường dẫn hệ thống | Mục đích sử dụng |
+|---|---|---|
+| `GET` | `/api/audit-logs?limit=20&page=1` | Lấy danh sách 20 sự kiện công việc mới nhất |
+| `GET` | `/api/audit-logs?search=...` | Tìm kiếm sự kiện theo tên cán bộ hoặc mã hồ sơ |
 
-### 5.2. Các bảng D1 SQLite tham gia truy vấn (SSOT Schema)
-
-```sql
--- 1. Bảng lưu vết kiểm toán bất biến (audit_logs)
-CREATE TABLE IF NOT EXISTS audit_logs (
-  id TEXT PRIMARY KEY,
-  action TEXT NOT NULL,
-  entity_type TEXT NOT NULL,       -- 'CASE', 'SITE', 'TASK', 'DOCUMENT', 'USER', 'CREDIT'
-  entity_id TEXT NOT NULL,
-  target TEXT NOT NULL,            -- Tiêu đề ngắn gọn hiển thị UI
-  details TEXT NOT NULL,           -- Mô tả chi tiết hành động
-  actor_id TEXT REFERENCES users(id),
-  actor_name TEXT NOT NULL,
-  ip_address TEXT,
-  user_agent TEXT,
-  log_hash TEXT NOT NULL,          -- SHA-256 Hash toàn vẹn
-  previous_hash TEXT,              -- Hash xâu chuỗi Merkle
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL
-);
-
--- Chỉ mục tối ưu hóa tốc độ tải Timeline (< 0.02s)
-CREATE INDEX IF NOT EXISTS idx_audit_logs_created_at ON audit_logs(created_at DESC);
-CREATE INDEX IF NOT EXISTS idx_audit_logs_actor ON audit_logs(actor_id, created_at DESC);
-CREATE INDEX IF NOT EXISTS idx_audit_logs_entity ON audit_logs(entity_type, entity_id);
-```
+### 5.2. Các bảng lưu trữ trong hệ thống
+1. **`audit_logs`**: Bảng lưu trữ nhật ký công tác (Mã sự kiện, tên việc làm, tên công trình, chi tiết hành động, người thực hiện, giờ làm, mã an toàn chống làm giả).
+2. **Nguyên tắc kỹ thuật**: Bảng này được cài đặt chế độ **chỉ ghi thêm**, máy chủ từ chối mọi lệnh sửa (`UPDATE`) hoặc xóa (`DELETE`).
 
 ---
 
-## 6. Hành Động Cốt Lõi (CTAs & Interactions)
+## 6. Danh Sách Nút Bấm & Thao Tác Thường Dùng
 
-| Hành động (CTA) | Vị trí kích hoạt | Màu sắc & Định dạng | Hành vi & Phản hồi hệ thống | Phân quyền (RBAC) |
-|---|---|---|---|:---:|
-| **`[Mở đối tượng liên kết]`** | Bấm vào dòng `target` sự kiện | Chữ đỏ son `#B91C1C` gạch chân khi hover | Điều hướng trực tiếp tới màn hình chi tiết hồ sơ `/staff/cases/:id` hoặc công trình `/staff/sites/:id`. | `staff`, `admin` |
-| **`[Tải thêm lịch sử]`** | Chân trang Timeline | Nền trắng viền `#E7E5E4`, chữ đen đậm | Gửi request `GET /api/audit-logs?page=N+1` để nối tiếp các sự kiện cũ hơn vào cuối danh sách. | `staff`, `admin` |
-| **`[Sao chép mã kiểm toán]`** | Nút icon copy cạnh `logHash` | Icon xám nhỏ, hover đen | Sao chép chuỗi mã băm SHA-256 vào Clipboard kèm thông báo tooltip *"Đã sao chép mã kiểm toán"*. | `staff`, `admin` |
-
----
-
-## 7. Quy Chuẩn UI/UX & Responsive (Design System Tokens)
-
-### 7.1. Bảng màu Civic Tech High-Contrast (Không Glassmorphism)
-- **Nền trang chính**: `#FAFAF9` (Stone-50 — Màu kem sáng chuyên dụng).
-- **Nền Card Container**: `#FFFFFF` nguyên khối, viền `#E7E5E4` (Stone-200), bóng đổ nhẹ `shadow-xs`.
-- **Màu văn bản chính**: `#1C1917` (Stone-900 — Đen mực in sắc nét, độ tương phản $\ge 7:1$).
-- **Màu trục & Điểm thời gian**: Trục kẻ `#E7E5E4` (Stone-200), Điểm tròn đỏ son `#B91C1C` viền trắng $2\text{px}$.
-- **Màu mốc thời gian**: `#78716C` (Stone-500) phông chữ Mono dễ đọc.
-
-### 7.2. Chuẩn hiển thị Responsive Đa Màn Hình
-- **Laptop 14-inch (1366x768, 1440x900, 1536x864 scale 125%)**:
-  - Container trung tâm giới hạn bề rộng hợp lý `max-w-4xl mx-auto` để mắt người đọc không bị mỏi khi nhìn ngang.
-  - Hàng tiêu đề hành động và mốc thời gian bố trí dàn ngang 2 đầu (`flex justify-between items-center`).
-- **Tablet (768px - 1024px)**:
-  - Khung Timeline mở rộng tối đa theo lề trang với khoảng đệm an toàn `px-6`.
-- **Mobile (360px - 430px)**:
-  - Tiêu đề hành động và mốc thời gian tự động xếp chồng dọc (`flex-col items-start gap-1`).
-  - Khoảng thụt lề trục đứng điều chỉnh `pl-4` để tiết kiệm diện tích bề ngang cho nội dung văn bản.
+| Nút bấm / Thao tác | Vị trí trên màn hình | Hành vi khi bấm | Ai được bấm? |
+|---|---|---|:---:|
+| **Bấm vào tên công trình / mã hồ sơ** | Trên từng dòng sự kiện | Mở ngay trang chi tiết hồ sơ hoặc công trình đó. | Mọi cán bộ |
+| **`[Tải thêm lịch sử cũ hơn]`** | Dưới cùng của dòng thời gian | Tải tiếp 20 sự kiện cũ hơn để xem tiếp. | Mọi cán bộ |
+| **Sao chép mã an toàn** | Cạnh đoạn mã tra cứu | Tự động chép mã an toàn vào bộ nhớ để gửi đối chiếu khi cần. | Mọi cán bộ |
 
 ---
 
-## 8. Bẫy Lỗi Thường Gặp & Hướng Dẫn Kiểm Thử (Verification)
+## 7. Quy Chuẩn Trình Bày & Trải Nghiệm Người Dùng (UI/UX)
 
-### 8.1. Các bẫy lỗi tiềm ẩn & Cơ chế phòng ngừa
-1. **Lỗi Parse Array khi API trả về Object lỗi**: Khi API lỗi 500 hoặc rỗng, frontend có thể bị crash do gọi hàm `.map()` trên giá trị `null/undefined`.
-   - *Khắc phục*: Bắt buộc dùng `normalizeList(res)` trong `request.js` để luôn đảm bảo giá trị đưa vào state là mảng an toàn `[]`.
-2. **Lỗi format ngày tháng không đúng ngôn ngữ Việt Nam**: Mốc thời gian bị hiển thị theo định dạng Mỹ `MM/DD/YYYY` gây nhầm lẫn ngày tháng.
-   - *Khắc phục*: Luôn sử dụng hàm `.toLocaleString('vi-VN')` hoặc `Intl.DateTimeFormat('vi-VN')`.
-3. **Lỗi rò rỉ thông tin nhạy cảm trong `details`**: Nhật ký có thể chứa mật khẩu hoặc mã token của người dùng.
-   - *Khắc phục*: Service ghi log ở Backend bắt buộc áp dụng hàm lọc sạch (Sanitization) loại bỏ các key nhạy cảm (`password`, `token`, `secret`) trước khi ghi vào D1.
+### 7.1. Màu sắc rõ ràng, dễ nhìn (Không làm mờ kính)
+- **Nền trang**: Màu kem sáng `#FAFAF9`, sạch sẽ, nhìn rõ từng dòng chữ.
+- **Nền các khung sự kiện**: Màu trắng sáng `#FFFFFF`, viền xám nhạt `#E7E5E4`.
+- **Trục kẻ & Chấm tròn**: Trục xám nhạt, chấm tròn màu đỏ son `#B91C1C`.
+- **Giờ phút**: Chữ màu xám đậm `#78716C`, phông chữ số to rõ, dễ nhìn.
 
-### 8.2. Bộ lệnh kiểm thử nhanh PowerShell CLI (< 0.5s)
+### 7.2. Tương thích trên máy tính xách tay và điện thoại
+- **Máy tính xách tay (14 inch - 1366x768 / 1440x900)**:
+  - Khung nhật ký đặt ở giữa màn hình với bề rộng vừa tầm mắt để đọc không bị mỏi.
+  - Tiêu đề hành động và giờ thực hiện nằm ở 2 bên thẳng hàng.
+- **Điện thoại di động (Màn hình nhỏ)**:
+  - Giờ thực hiện tự động xuống dưới tên hành động để không bị ép chữ.
+  - Lề trục thời gian thu gọn lại để chừa diện tích hiển thị nội dung tiếng Việt đầy đủ.
+
+---
+
+## 8. Những Lỗi Cần Tránh & Cách Kiểm Tra Nhanh
+
+### 8.1. Những bẫy lỗi cần lưu ý
+1. **Lỗi trắng màn hình khi chưa có dữ liệu**: Nhật ký đang trống làm sập giao diện.
+   - *Cách tránh*: Khi chưa có dòng nào, hệ thống tự hiện khung thông báo rỗng thân thiện.
+2. **Hiển thị giờ kiểu Mỹ gây hiểu lầm ngày tháng**: Mốc thời gian bị hiển thị theo kiểu Tháng/Ngày/Năm.
+   - *Cách tránh*: Luôn hiển thị theo chuẩn tiếng Việt: Giờ:Phút:Giây Ngày/Tháng/Năm (`14:35:12 02/09/2026`).
+3. **Lộ mật khẩu trong nhật ký**: Nhật ký vô tình ghi lại mật khẩu lúc cán bộ đổi mật khẩu.
+   - *Cách tránh*: Hệ thống tự động lọc bỏ toàn bộ các thông tin nhạy cảm trước khi lưu vào nhật ký.
+
+### 8.2. Lệnh kiểm tra nhanh trên máy tính
 
 ```powershell
-# 1. Kiểm thử tính toàn vẹn Audit Log & SHA-256 Hash
+# 1. Kiểm tra lưu và đọc nhật ký công tác
 node --test app/tests/admin-executive-rbac-penetration.test.js
 
-# 2. Kiểm thử xác thực chuỗi hành động kiểm toán
+# 2. Kiểm tra chuỗi các hành động tác nghiệp thực tế
 node --test app/tests/field-operations-inspection-qa.test.js
 
-# 3. Kiểm thử Design System Tokens & Responsive Timeline
+# 3. Kiểm tra giao diện và màu sắc hiển thị
 node --test app/tests/design-system-tokens.test.js
+
+# 4. Kiểm tra toàn bộ chức năng nhanh
+npm --prefix app run verify:quick
 ```

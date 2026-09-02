@@ -1,80 +1,76 @@
-# CIT-05 — Hồ Sơ Cá Nhân & Đóng Góp Môi Trường Đoàn - Hội (Citizen Profile)
+# CIT-05 — Trang Cá Nhân Công Dân Tích Cực & Đóng Góp Môi Trường (Citizen Profile)
 
-## 1. Screen Identity (Định Danh Màn Hình)
+## 1. Định Danh Màn Hình (Screen Identity)
 - **Mã màn hình**: `CIT-05`
-- **Tên màn hình (Tiếng Việt)**: Hồ Sơ Cá Nhân & Đóng Góp Môi Trường Đoàn - Hội
+- **Tên màn hình (Tiếng Việt)**: Trang Cá Nhân Công Dân Tích Cực & Đóng Góp Môi Trường
 - **Tên màn hình (Tiếng Anh)**: Citizen Profile, Volunteer Impact & Youth Recognition
-- **Tuyến đường (Route URL)**: `/citizen/profile`
-  - *Tuyến đường tương thích & chuyển hướng*: `/citizen/credits`
-- **Đường dẫn Component**: [`app/src/apps/citizen/pages/profile/CitizenProfilePage.jsx`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/app/src/apps/citizen/pages/profile/CitizenProfilePage.jsx)
-- **Khung giao diện (Layout)**: [`app/src/apps/citizen/layout/CitizenLayout.jsx`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/app/src/apps/citizen/layout/CitizenLayout.jsx)
-  - *Desktop*: Top Header cố định gồm Logo DustGuard, Huy hiệu vai trò `CỘNG ĐỒNG`, Navigation Tabs và Menu Tài khoản.
-  - *Mobile (Viewport < 640px)*: Bottom Navigation Bar cố định đáy màn hình với 4 nút chạm kích thước lớn $\ge 44\text{px}$ (`Trang chủ`, `Phản ánh`, `Bản đồ`, `Hồ sơ [Active]`).
-- **Phân quyền người dùng (Role / RBAC)**: `citizen`, `youth`, `student`, `community` (Đoàn viên thanh niên, sinh viên đại học hoặc công dân đã đăng nhập).
-- **Trạng thái triển khai**: `ACTIVE` (Production Level 5 — Tích hợp hệ thống xác thực AuthContext, tính toán giờ tình nguyện theo thời gian thực từ CSDL D1 SQLite).
+- **Đường dẫn (Route URL)**: `/citizen/profile`
+  - Tuyến chuyển hướng tương thích: `/citizen/credits`
+- **Tệp mã nguồn Component**: [`app/src/apps/citizen/pages/profile/CitizenProfilePage.jsx`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/app/src/apps/citizen/pages/profile/CitizenProfilePage.jsx)
+- **Khung giao diện chung (Layout)**: [`app/src/apps/citizen/layout/CitizenLayout.jsx`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/app/src/apps/citizen/layout/CitizenLayout.jsx)
+  - **Máy tính (Desktop)**: Thanh menu trên cùng, khung nội dung `max-w-4xl` căn giữa.
+  - **Điện thoại (Mobile)**: Thanh 4 nút bấm cố định đáy màn hình với tab `Tài khoản` đang kích hoạt.
+- **Ai được sử dụng**: Mọi người dân, đoàn viên thanh niên, sinh viên các trường đại học (Đã đăng nhập hoặc ở chế độ công dân giám sát).
+- **Trạng thái thực tế**: Đang hoạt động ổn định, tự động tính giờ tình nguyện thực tế và tín chỉ môi trường.
 
 ---
 
-## 2. Mục Đích & Giá Trị Thực Tế
+## 2. Mục Đích & Bối Cảnh Thực Tế (Why & Purpose)
 
-1. **Ghi nhận & Tôn vinh cống hiến vì môi trường đô thị**:
-   - Màn hình tổng kết thành quả hoạt động xã hội của công dân và sinh viên tình nguyện.
-   - Thể hiện rõ 3 chỉ số tác động xã hội thực tế:
-     - **Tín chỉ ngoại khóa đề xuất (Extracurricular Credits)**: Tỷ lệ quy đổi chuẩn học thuật ($20.0\text{h} = 4.0\text{ Tín chỉ}$).
-     - **Số phản ánh đã được khắc phục (Resolved Cases)**: Số lượng điểm nóng ô nhiễm môi trường do cá nhân trực tiếp đóng góp giải quyết thành công.
-     - **Tổng số giờ tình nguyện thực địa (Verified Volunteer Hours)**: Thời lượng khảo sát, đo đạc và tái kiểm định hiện trường được hệ thống thẩm định.
+### 2.1. Tôn vinh những đóng góp thực tế vì cộng đồng
+- Màn hình `CIT-05` là nơi tổng kết thành quả đóng góp của mỗi công dân và sinh viên tình nguyện trong việc giữ gìn bầu không khí trong lành của khu dân cư.
+- Thể hiện rõ ràng **3 con số đóng góp thực tế**:
+  1. **Tín chỉ ngoại khóa đề xuất**: Tỷ lệ quy đổi chuẩn học thuật (**20 giờ tình nguyện = 4.0 tín chỉ**).
+  2. **Số phản ánh đã được khắc phục**: Số lượng điểm nóng ô nhiễm môi trường do bạn phát hiện và đã được dọn dẹp sạch sẽ.
+  3. **Tổng số giờ tình nguyện thực địa**: Thời lượng đi khảo sát, ghi nhận hiện trường thực tế được hệ thống tự động ghi nhận.
 
-2. **Cầu nối sang Cổng Tín Chỉ & Chứng Nhận Điện Tử (`/youth`)**:
-   - Cung cấp nút liên kết một chạm sang phân hệ cấp Giấy chứng nhận hoạt động môi trường chuẩn khổ A4, có chữ ký số HMAC-SHA256, dấu mộc đỏ số hóa và mã QR Vector ISO/IEC 18004 để sinh viên nộp cho Ban Chấp hành Đoàn trường / Hội Sinh viên xét Điểm rèn luyện (ĐRL).
-
-3. **Định danh minh bạch & Quản lý phiên làm việc**:
-   - Hiển thị tư cách người dùng ("Công dân tích cực" / "Tình nguyện viên Đội Sinh viên Tình nguyện"), đảm bảo độ tin cậy của các phản ánh được gửi lên hệ thống.
-   - Hỗ trợ nút đăng xuất an toàn trên các thiết bị công cộng hoặc máy tính dùng chung tại trường học.
+### 2.2. Lợi ích cho Sinh viên & Đoàn viên
+- **Nút xem Giấy chứng nhận điện tử**: Chuyển thẳng sang trang cấp Giấy chứng nhận hoạt động môi trường khổ A4 có mã QR và dấu chứng thực điện tử để nộp cho Đoàn trường / Hội Sinh viên xét **Điểm rèn luyện (ĐRL)**.
+- **Quản lý tài khoản an toàn**: Có nút Đăng xuất nhanh chóng khi sử dụng máy tính công cộng tại trường học hoặc quán internet.
+- **Mở được cả khi chưa đăng nhập**: Nếu là người dùng vãng lai, hệ thống tự động hiển thị chế độ *"Tài Khoản Công Dân"* thân thiện, không bao giờ bị khóa trang.
 
 ---
 
-## 3. Đối Tượng Người Dùng & Hành Trình Thao Tác (User Journey & Core Flow)
+## 3. Người Dùng & Các Bước Sử Dụng (User Flow & Steps)
 
-### 3.1. Đối tượng người dùng
-- **Sinh viên các trường Đại học tại Hà Nội** (ĐHQG Hà Nội, ĐH Bách Khoa, ĐH Xây dựng, ĐH Kinh tế Quốc dân, ĐH Giao thông Vận tải...): Cần xem tổng kết số giờ và tín chỉ đã tích lũy trong học kỳ để hoàn thiện hồ sơ sinh viên.
-- **Đoàn viên thanh niên & Tình nguyện viên CLB Môi trường**: Theo dõi tiến độ tham gia các chiến dịch dập bụi đô thị.
-- **Công dân tích cực**: Quản lý thông tin tài khoản và xem lại đóng góp cải thiện không khí khu dân cư.
+### 3.1. Ai là người sử dụng chính?
+- **Sinh viên các trường Đại học** (ĐHQG Hà Nội, Bách Khoa, Xây dựng, Kinh tế Quốc dân...): Xem tổng kết số giờ và tín chỉ ngoại khóa đã tích lũy trong học kỳ.
+- **Đoàn viên thanh niên & Tình nguyện viên**: Theo dõi kết quả các đợt ra quân khảo sát cuối tuần.
+- **Công dân tích cực**: Xem lại những đóng góp của mình đã giúp làm sạch bao nhiêu tuyến đường.
 
-### 3.2. Sơ đồ luồng thao tác cốt lõi (Core User Flow)
+### 3.2. Sơ đồ các bước sử dụng
 
 ```mermaid
 flowchart TD
-    A[Mở Cổng Công Dân /citizen] --> B[Bấm vào tab 'Hồ sơ' trên Header hoặc Bottom Nav]
-    B --> C[Truy cập màn hình CIT-05: /citizen/profile]
-    C --> D[Tải dữ liệu định danh từ useAuth và gọi GET /api/complaints]
-    D --> E[Tính toán giờ tình nguyện bằng hàm calculateVolunteerHours]
-    E --> F[Render Thẻ Định Danh Cá Nhân: Avatar chữ cái + Tên + Email + Badge 'Công dân tích cực']
-    F --> G[Render Lưới 3 Chỉ Số Tác Động Môi Trường]
-    G --> H{Thao tác tiếp theo của người dùng}
-    H -->|Bấm 'Xem hồ sơ chứng nhận →'| I[Điều hướng sang PUBLIC-03: /public/youth-credits hoặc /youth]
-    H -->|Bấm nút 'Đăng xuất'| J[Kích hoạt hàm logout, xóa token và chuyển về /login]
+    A[Mở Cổng Công Dân /citizen] --> B[Bấm vào tab 'Tài khoản' trên menu]
+    B --> C[Mở màn hình CIT-05: /citizen/profile]
+    C --> D[Hệ thống tự động tải thông tin cá nhân và tính giờ tình nguyện]
+    D --> E[Xem thẻ tên + Email + Huy hiệu 'Công dân tích cực']
+    E --> F[Xem 3 ô số liệu: Tín chỉ | Vụ việc đã xử lý | Giờ tình nguyện]
+    F --> G{Thao tác tiếp theo}
+    G -->|Muốn lấy chứng nhận| H[Bấm 'Xem hồ sơ chứng nhận →' để lấy giấy chứng nhận]
+    G -->|Dùng xong máy chung| I[Bấm nút 'Đăng xuất' an toàn]
 ```
 
 ---
 
-## 4. Bố Cục Giao Diện & Phân Cấp Thông Tin (Information Hierarchy & Wireframe)
+## 4. Bố Cục Giao Diện & Khung Dây ASCII (Layout & Wireframes)
 
-### 4.1. Phân cấp thị giác theo thứ tự ưu tiên (Visual Hierarchy)
-1. **Thẻ Định Danh Cá Nhân (User Identity Banner)**:
-   - Avatar hình tròn lớn ($56\text{px} \times 56\text{px}$) màu xanh ngọc `#0d6f64`, in hoa chữ cái đầu tiên của Họ tên người dùng.
-   - Họ và tên đầy đủ (Font chữ đen đậm `#1C1917`, kích cỡ 20px).
-   - Địa chỉ Email hoặc nhãn "Chế độ công dân giám sát".
-   - Huy hiệu `Công dân tích cực` (Nền xanh lục nhạt `#ECFDF5`, viền `#A7F3D0`, chữ `#065F46`).
-   - Nút hành động phụ: `[Đăng xuất]` (Nền kem `#FAFAF9`, viền `#E7E5E4`, chiều cao tối thiểu $\ge 44\text{px}$).
-2. **Thẻ Thống Kê Đóng Góp Môi Trường (Environmental Contribution Card)**:
-   - Tiêu đề khối: `ĐÓNG GÓP BẢO VỆ MÔI TRƯỜNG` (Chữ hoa in đậm, màu xám đậm `#57534E`).
-   - Nút chuyển tiếp góc phải: `Xem hồ sơ chứng nhận →` (Màu xanh ngọc `#0d6f64`, gạch chân khi hover).
-   - Lưới 3 cột chỉ số đo lường (3-Column Metric Grid):
-     - **Cột 1 — Tín chỉ ngoại khóa đề xuất**: Số lượng lớn (VD: `4.0`), màu đen đậm `#1C1917`, nhãn "Tín chỉ ngoại khóa đề xuất".
-     - **Cột 2 — Phản ánh đã được khắc phục**: Số lượng lớn (VD: `12`), màu xanh ngọc `#0d6f64`, nhãn "Phản ánh đã được khắc phục".
-     - **Cột 3 — Giờ hoạt động tình nguyện**: Số lượng lớn (VD: `20h`), màu hổ phách đậm `text-amber-700`, nhãn "Giờ hoạt động tình nguyện".
+### 4.1. Cách sắp xếp thông tin trên màn hình
+1. **Khung thông tin cá nhân (User Identity Banner)**:
+   - Avatar chữ cái đầu to tròn màu xanh ngọc `#0d6f64`.
+   - Họ và tên đầy đủ (in đậm to rõ).
+   - Địa chỉ Email (hoặc nhãn *"Chế độ công dân giám sát"*).
+   - Huy hiệu `Công dân tích cực` màu xanh lá nhạt.
+   - Nút `[ Đăng xuất ]` nền kem viền xám ở góc phải.
+2. **Khung đóng góp bảo vệ môi trường**:
+   - Tiêu đề khối: `ĐÓNG GÓP BẢO VỆ MÔI TRƯỜNG` + Liên kết `Xem hồ sơ chứng nhận →`.
+   - **Lưới 3 ô số liệu**:
+     - **Ô 1 — Tín chỉ ngoại khóa đề xuất**: Số lớn (VD: `4.0`), màu đen than đậm.
+     - **Ô 2 — Phản ánh đã được khắc phục**: Số lớn (VD: `12`), màu xanh ngọc.
+     - **Ô 3 — Giờ hoạt động tình nguyện**: Số lớn (VD: `20.0h`), màu vàng hổ phách ấm.
 
-### 4.2. Khung dây giao diện trực quan (ASCII Wireframe)
+### 4.2. Khung hình giao diện trực quan (ASCII Wireframe)
 
 ```text
 +----------------------------------------------------------------------------------------------------+
@@ -98,99 +94,72 @@ flowchart TD
 |  +----------------------------------------------------------------------------------------------+  |
 |                                                                                                    |
 +----------------------------------------------------------------------------------------------------+
-| [Mobile Bottom Nav (≤ 640px)]:   (🏠 Trang chủ)   (📋 Phản ánh)   (🗺️ Bản đồ)   (👤 Hồ sơ [*])     |
+| [Menu đáy trên điện thoại]:        (🏠 Trang chủ)   (📋 Phản ánh)   (🗺️ Bản đồ)   (👤 Hồ sơ [*])     |
 +----------------------------------------------------------------------------------------------------+
 ```
 
 ---
 
-## 5. Dữ Liệu & API / D1 Database Contract
+## 5. Dữ Liệu & Nguồn Thông Tin (Data & API Summary)
 
-### 5.1. Nguồn dữ liệu & CSDL D1 SQLite
-- **Context Authentication (`useAuth`)**: Trích xuất `user.fullName`, `user.email`, `user.role`, `user.studentId`, `user.university`.
-- **Bảng `users`**: Thông tin hồ sơ tài khoản trong CSDL D1.
-- **Bảng `complaints`**: Trích xuất toàn bộ danh sách phản ánh do người dùng gửi để tính toán khối lượng công việc hoàn thành.
-- **Thuật toán tính toán Tín chỉ & Giờ tình nguyện (`app/src/lib/youth-credits.js`)**:
-  - Mỗi phản ánh gửi lên: Mặc định $1.5\text{h}$ cơ sở.
-  - Có đính kèm ảnh hiện trường: Thưởng $+0.5\text{h}$.
-  - Có liên kết tọa độ công trình chính xác: Thưởng $+0.5\text{h}$.
-  - Trạng thái `RESOLVED`: Nhân hệ số $1.0$ (Đạt trọn vẹn $2.5\text{h}$).
-  - Trạng thái đang xử lý (`IN_PROGRESS` / `PENDING`): Nhân hệ số $0.5$ ($1.25\text{h}$ tạm tính).
-  - Tín chỉ ngoại khóa quy đổi: `extracurricularCredits = Number((verifiedHours / 5).toFixed(1))` (Chuẩn $20\text{h} = 4.0\text{ Tín chỉ}$).
+### 5.1. Nguồn dữ liệu
+- **Thông tin tài khoản**: Tên, email, trường đại học (nếu có).
+- **Danh sách phản ánh**: Lấy từ hệ thống để tính toán chính xác khối lượng đóng góp.
 
-### 5.2. API Contract liên quan
-- **Endpoint**: `GET /api/complaints`
-- **Response Format**:
-  ```json
-  {
-    "status": "success",
-    "data": {
-      "items": [
-        {
-          "id": "cmp_01",
-          "code": "DG-2026-F54A",
-          "status": "RESOLVED",
-          "evidences": [{ "url": "https://..." }]
-        }
-      ]
-    }
-  }
-  ```
+### 5.2. Cách tính giờ tình nguyện & tín chỉ đơn giản, thực tế
+- Mỗi phản ánh gửi lên: **1.5 giờ** cơ bản.
+- Có ảnh hiện trường rõ ràng: Thưởng thêm **+0.5 giờ**.
+- Có vị trí địa chỉ chính xác: Thưởng thêm **+0.5 giờ**.
+- Khi nhà thầu đã xử lý xong (`Đã khắc phục`): Đạt trọn vẹn **2.5 giờ / vụ việc**.
+- **Quy đổi tín chỉ ngoại khóa**: Cứ **5 giờ tình nguyện = 1.0 tín chỉ** (Chuẩn 20 giờ = 4.0 tín chỉ).
 
 ---
 
-## 6. Bảng Nút Bấm & Hành Động Cốt Lõi (CTAs & Interactions)
+## 6. Danh Sách Nút Bấm & Thao Tác (Buttons & Actions)
 
-| Tên Nút / Thành Phần UI | Vị Trí / Bố Cục | Hành Vi Tương Tác & Phản Hồi | Quyền Hạn | Điều Hướng / Thay Đổi State |
-|---|---|---|---|---|
-| **[Đăng xuất]** | Góc phải Thẻ Profile | Hover chuyển `#F5F5F4`, bấm kích hoạt hàm `logout()` | Citizen / Youth | Xóa phiên đăng nhập và chuyển hướng về `/login` |
-| **[Xem hồ sơ chứng nhận →]** | Tiêu đề Khối Đóng góp | Hover đổi màu xanh đậm, gạch chân liên kết | Citizen / Youth | Điều hướng sang `/public/youth-credits` hoặc `/youth` |
-| **Thẻ Chỉ Số Tín Chỉ** | Cột 1 Lưới Thống kê | Hiển thị số tín chỉ lớn, hover viền chuyển xanh nhẹ | Citizen / Youth | Nhấp xem cơ chế quy đổi tín chỉ |
-| **Thẻ Chỉ Số Vụ Việc** | Cột 2 Lưới Thống kê | Hiển thị số vụ việc đã giải quyết xong | Citizen / Youth | Nhấp xem danh sách các phản ánh đã nghiệm thu |
-| **Thẻ Giờ Tình Nguyện** | Cột 3 Lưới Thống kê | Hiển thị số giờ tình nguyện màu hổ phách | Citizen / Youth | Nhấp xem nhật ký giờ thực địa |
+| Tên Nút / Thao Tác | Vị Trí | Bấm vào sẽ làm gì? | Kích Thước Bấm |
+|---|---|---|---|
+| **[Đăng xuất]** | Góc phải khung thông tin cá nhân | Đăng xuất an toàn và chuyển về trang đăng nhập | Cao 44px |
+| **[Xem hồ sơ chứng nhận →]** | Góc phải khối đóng góp | Mở trang Giấy chứng nhận điện tử có mã QR | Dễ bấm |
+| **Chạm vào các ô số liệu** | Lưới 3 ô thống kê | Xem chi tiết giải thích cách tính giờ và tín chỉ | Bấm trên toàn ô |
 
 ---
 
-## 7. Quy Chuẩn UI/UX, In Ấn & Responsive (Design System Tokens)
+## 7. Quy Chuẩn Trình Bày & Màu Sắc (UI/UX & Responsive)
 
-### 7.1. Bảng màu Civic High-Contrast
-- **Nền trang**: Màu kem sáng `#FDFBF7`.
-- **Nền thẻ card**: Màu trắng tinh `#FFFFFF`, viền `#E7E5E4`, bo tròn `rounded-3xl`.
-- **Màu đại diện Avatar**: Xanh ngọc `#0d6f64` (Teal thương hiệu), chữ trắng in hoa to rõ.
-- **Màu huy hiệu tích cực**: Nền xanh ngọc nhạt `#ECFDF5`, viền `#A7F3D0`, chữ `#065F46`.
-- **Màu số liệu Tín chỉ**: Đen mực `#1C1917` (kích cỡ 24px - 28px, font black).
-- **Màu số liệu Vụ việc đã xử lý**: Xanh ngọc `#0d6f64`.
-- **Màu số liệu Giờ hoạt động**: Vàng hổ phách `text-amber-700` (`#B45309`).
-- **Tuyệt đối cấm**: Nền mờ kính thủy tinh `backdrop-blur-*` (Glassmorphism).
+### 7.1. Màu sắc sáng rõ, tương phản cao
+- **Nền trang**: Màu kem sáng `#FDFBF7`, dịu mắt khi nhìn lâu.
+- **Nền các khung thẻ**: Trắng tinh `#FFFFFF`, viền xám mềm `#E7E5E4`, bo tròn góc hiện đại.
+- **Avatar đại diện**: Màu xanh ngọc `#0d6f64`, in hoa chữ cái đầu màu trắng nổi bật.
+- **Huy hiệu công dân tích cực**: Nền xanh lá nhạt, chữ xanh đậm `#065F46`.
+- **Màu các con số thống kê**:
+  - Số tín chỉ: Đen than `#1C1917` (in đậm kích thước 24px - 28px).
+  - Số vụ việc đã xử lý: Xanh ngọc `#0d6f64`.
+  - Số giờ hoạt động: Vàng hổ phách `#B45309`.
+- **Tuyệt đối không dùng kính mờ (glassmorphism)**: Giữ cho các số liệu luôn sắc nét, không bị nhòe.
 
-### 7.2. Responsive SSOT
-- **Mobile Viewport (360px — 430px)**:
-  - Thẻ định danh người dùng: Avatar và thông tin xếp dọc hoặc dàn ngang nhỏ gọn, nút đăng xuất bố trí hợp lý.
-  - Lưới 3 chỉ số: Tự động xếp chồng thành 1 cột dọc (`grid-cols-1`) hoặc 3 thẻ ngang dễ đọc trên màn hình di động.
-  - Chiều cao vùng chạm đạt chuẩn tối thiểu $\ge 44\text{px}$.
-- **Desktop (1024px — 1920px)**:
-  - Lưới 3 chỉ số dàn ngang 3 cột đối xứng (`sm:grid-cols-3`).
-  - Độ rộng trang giới hạn `max-w-4xl` căn giữa màn hình.
+### 7.2. Tương thích mọi màn hình
+- **Điện thoại (360px — 430px)**: 3 ô số liệu tự động xếp dọc hoặc xếp dạng lưới mini vừa vặn màn hình, nút bấm cao tối thiểu 44px dễ bấm bằng ngón tay cái.
+- **Máy tính (1024px — 1920px)**: 3 ô số liệu dàn ngang 3 cột đối xứng, trang web căn giữa gọn gàng `max-w-4xl`.
 
 ---
 
-## 8. Bẫy Lỗi Thường Gặp & Hướng Dẫn Kiểm Thử (Gotchas & Verification Commands)
+## 8. Tình Huống Thường Gặp & Cách Kiểm Tra (Edge Cases & Fast Test CLI)
 
-### 8.1. Bẫy lập trình & Quy tắc an toàn (Gotchas)
+### 8.1. Các tình huống thường gặp & Cách xử lý tự động
+1. **Người dùng chưa đăng nhập tài khoản (Khách vãng lai)**: Màn hình tự động hiển thị tên *"Tài Khoản Công Dân"* và nhãn *"Chế độ công dân giám sát"*, không bao giờ bị lỗi hay trắng trang.
+2. **Người mới chưa có giờ tình nguyện**: Số liệu tự động hiển thị `0.0h` và `0.0` tín chỉ chứ không bị hiển thị lỗi rỗng hay lỗi số học.
+3. **Vừa gửi thêm phản ánh mới**: Khi quay lại trang cá nhân, số giờ và số vụ việc được tự động cập nhật ngay lập tức.
 
-> [!TIP]
-> 1. **Khách vãng lai / Phiên chưa đăng nhập (Guest Fallback)**: Khi người dùng truy cập trang ở chế độ chưa đăng nhập, đối tượng `user` trong `useAuth()` sẽ là `null`. Component phải có fallback an toàn: `user?.fullName || 'Tài Khoản Công Dân'`, `user?.email || 'Chế độ công dân giám sát'` để tránh crash giao diện màn hình trắng.
-> 2. **Lỗi chia cho 0 hoặc NaN khi tính tín chỉ**: Khi người dùng chưa có giờ tình nguyện (`verifiedHours = 0`), công thức phải trả về `0.0` thay vì `NaN` hoặc `undefined`.
-> 3. **Đồng bộ dữ liệu đa thiết bị**: Khi người dùng gửi thêm phản ánh mới trên điện thoại, số liệu thống kê trong Profile phải tự động cập nhật ngay khi tải lại trang mà không bị cache cũ đè lên.
-
-### 8.2. Lệnh kiểm thử nhanh một dòng qua PowerShell (< 0.5s)
+### 8.2. Lệnh kiểm tra nhanh hệ thống (Chạy bằng PowerShell)
 
 ```powershell
-node --test app/tests/auth-user-management-audit.test.js app/tests/citizen-youth-ux.test.js
-```
+# Kiểm tra phân quyền và hồ sơ người dùng (< 0.5s)
+node --test app/tests/auth-user-management-audit.test.js
 
-### 8.3. Tiêu chí nghiệm thu (Pass Criteria 100%)
-1. **Hiển Thị Đúng Định Danh**: Hiển thị chính xác tên, email và avatar ký tự đầu từ phiên người dùng.
-2. **Tính Toán Giờ & Tín Chỉ Chuẩn Xác**: Tự động tính đúng số tín chỉ đề xuất theo công thức $20\text{h} = 4.0\text{ Tín chỉ}$.
-3. **Đăng Xuất An Toàn**: Bấm "Đăng xuất" xóa sạch token và điều hướng tức thì về `/login`.
-4. **Không Lỗi Console / Runtime**: Hoạt động mượt mà cả khi chưa đăng nhập (chế độ Guest).
+# Kiểm tra tính toán giờ tình nguyện và trải nghiệm thanh niên (< 0.5s)
+node --test app/tests/citizen-youth-ux.test.js
+
+# Xác thực nhanh toàn hệ thống trước khi bàn giao (< 7s)
+npm --prefix app run verify:quick
+```

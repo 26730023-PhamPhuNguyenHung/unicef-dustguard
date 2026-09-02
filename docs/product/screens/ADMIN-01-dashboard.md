@@ -1,271 +1,219 @@
-# ADM-01 — Bảng Điều Khiển Quản Trị Hạ Tầng D1 & Giám Sát Hệ Thống (Admin Infrastructure & Data Center Overview)
+# ADMIN-01 — Bàn Làm Việc Quản Trị Hệ Thống & Giám Sát Hoạt Động
 
-> **Tài liệu đặc tả màn hình chuẩn SSOT (Single Source of Truth) — DustGuard VN CivicTech Platform**  
-> Trung tâm chỉ huy quản trị hạ tầng số: Hợp nhất giám sát toàn diện CSDL Cloudflare D1 SQLite (46 bảng quan hệ), lưu trữ bằng chứng số Cloudflare R2, lưu lượng xử lý luồng nghiệp vụ 5 cấp vai trò và trạng thái tích hợp liên ngành đô thị (Cổng 1022, iHanoi).
+> **Mã màn hình**: `ADMIN-01` (Viết tắt: `ADM-01`)  
+> **Tên tiếng Việt**: Bàn Làm Việc Quản Trị Hệ Thống & Giám Sát Hoạt Động  
+> **Tên tiếng Anh**: Admin System Overview & Infrastructure Dashboard  
+> **Quy chuẩn & Pháp lý liên quan**: [`Nghị định 45/2022/NĐ-CP`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/docs/legal/ND-45-2022-ND-CP.md) (Quản lý môi trường đô thị), Quy chế vận hành Trung tâm Giám sát Điều hành Đô thị Thông minh (IOC)
 
 ---
 
-## 1. Screen Identity
+## 1. Thông Tin Nhận Diện Màn Hình (Screen Identity)
 
-| Thuộc tính | Giá trị SSOT | Ghi chú kỹ thuật |
-|---|---|---|
-| **Mã màn hình** | `ADM-01` | Mã định danh chuẩn trong Design System |
-| **Tên tiếng Việt** | Bảng Điều Khiển Quản Trị Hạ Tầng D1 & Giám Sát Hệ Thống | Tiêu đề chính thức trên giao diện điều hành |
-| **Tên tiếng Anh** | Admin Infrastructure & Data Center Overview Dashboard | Định danh API & Tài liệu kỹ thuật đối ngoại |
-| **Đường dẫn (Route)** | `/admin` | Canonical Route (Redirect aliases: `/admin/dashboard`, `/admin/standalone`) |
-| **Đường dẫn Component** | [`app/src/apps/admin/pages/dashboard/AdminDashboardPage.jsx`](file:///D:/07-Competitions-Hackathons/unicef-dustguard/app/src/apps/admin/pages/dashboard/AdminDashboardPage.jsx) | React 19 Client Component |
-| **Layout chứa** | [`app/src/apps/admin/layout/AdminLayout.jsx`](file:///D:/07-Competitions-Hackathons/unicef-dustguard/app/src/apps/admin/layout/AdminLayout.jsx) | Khung điều hành Quản trị tối cao (Admin Super-Structure) |
-| **Vai trò truy cập (RBAC)** | `admin`, `super_admin`, `demo_admin` | Kiểm soát bảo mật qua `useAuth()` & Middleware máy chủ |
-| **Trạng thái triển khai** | **ACTIVE (Level 5 Production Coherent — Live Cloudflare D1)** | Kết nối 100% CSDL D1 thật, Zero-Mock |
+| Thuộc tính | Chi tiết nhận diện thực tế |
+|---|---|
+| **Mã màn hình** | `ADMIN-01` (Tên tệp: `ADMIN-01-dashboard.md`) |
+| **Tên tiếng Việt** | Bàn Làm Việc Quản Trị Hệ Thống & Giám Sát Hoạt Động |
+| **Tên tiếng Anh** | Admin System Overview & Infrastructure Dashboard |
+| **Đường dẫn truy cập (Route)** | `/admin` (hoặc `/admin/dashboard`) |
+| **Tệp giao diện chính** | [`app/src/apps/admin/pages/dashboard/AdminDashboardPage.jsx`](file:///D:/07-Competitions-Hackathons/unicef-dustguard/app/src/apps/admin/pages/dashboard/AdminDashboardPage.jsx) |
+| **Khung bố cục (Layout)** | [`app/src/apps/admin/layout/AdminLayout.jsx`](file:///D:/07-Competitions-Hackathons/unicef-dustguard/app/src/apps/admin/layout/AdminLayout.jsx) (Khung quản trị hệ thống sáng rõ, phân khu chức năng mạch lạc) |
+| **Ai được sử dụng?** | Quản trị viên hệ thống (Chuyên viên kỹ thuật Trung tâm IOC, Cán bộ quản trị dữ liệu Sở TT&TT, Cán bộ phụ trách hệ thống Sở TN&MT) |
+| **Trạng thái vận hành** | Đang hoạt động ổn định — Kết nối dữ liệu thực tế từ hệ thống máy chủ |
+
+**Tóm tắt mục đích sử dụng**: Màn hình là trung tâm điều hành kỹ thuật tổng thể của hệ sinh thái DustGuard VN. Màn hình giúp Quản trị viên nắm bắt nhanh tình hình hoạt động của toàn thành phố trong 5 giây đầu tiên: có bao nhiêu tài khoản đang hoạt động (Người dân, Thanh niên, Cán bộ, Nhà thầu), bao nhiêu công trường xây dựng đang được giám sát, bao nhiêu hồ sơ vụ việc đang thụ lý và tình trạng lưu trữ hình ảnh minh chứng. Màn hình cung cấp các nút bấm 1 chạm để quét tự động phát hiện nguy cơ ô nhiễm, kiểm tra kết nối với các cổng dịch vụ công (Cổng 1022, iHanoi) và chuyển nhanh sang các trang phân quyền hoặc cấu hình hệ thống.
 
 ---
 
 ## 2. Mục Đích & Giá Trị Thực Tế
 
-### 2.1. Bối cảnh nghiệp vụ tại Việt Nam
-Tại các đô thị lớn như Hà Nội, TP.HCM hay Đà Nẵng, việc quản lý và giám sát ô nhiễm bụi xây dựng đòi hỏi sự phối hợp liên ngành giữa:
-- **Trung tâm Điều hành Đô thị Thông minh (IOC)** / **Sở Thông tin và Truyền thông (Sở TT&TT)**: Đảm bảo tính sẵn sàng của hạ tầng điện toán biên (Cloudflare Workers & D1 Database), bảo mật dữ liệu, nhật ký kiểm toán và an toàn thông tin.
-- **Sở Tài nguyên và Môi trường (Sở TN&MT)** & **Đội Quản lý Trật tự Xây dựng Đô thị**: Giám sát dữ liệu trạm quan trắc, nồng độ bụi vượt ngưỡng QCVN 05:2023/BTNMT, hồ sơ xử phạt và hiện trường thi công.
-- **Ủy ban Nhân dân Quận/Huyện**: Điều phối xử lý phản ánh của công dân qua Cổng 1022 hoặc ứng dụng iHanoi.
+### 2.1. Giải quyết bài toán quản trị hệ thống đô thị
+1. **Quản lý tập trung toàn bộ dữ liệu đô thị tại một nơi duy nhất**:
+   - Thay vì phải đăng nhập nhiều phần mềm riêng rẽ hoặc gõ các câu lệnh máy chủ phức tạp, Quản trị viên chỉ cần mở màn hình này là thấy được bức tranh toàn cảnh: công trường nào đang thi công, cán bộ nào đang đi kiểm tra hiện trường, nhà thầu nào đã nộp ảnh khắc phục.
+2. **4 Thẻ chỉ số tổng quát thời gian thực**:
+   - **Tài khoản hoạt động**: Tổng số người dùng trong hệ thống (phân rõ: Công dân, Tình nguyện viên thanh niên, Cán bộ thanh tra, Chỉ huy trưởng nhà thầu, Lãnh đạo).
+   - **Công trường đang giám sát**: Tổng số điểm nóng thi công xây dựng, mỏ vật liệu hoặc trạm trộn bê tông trên địa bàn.
+   - **Hồ sơ vụ việc đang xử lý**: Tổng số vụ việc đang được cán bộ kiểm tra và đôn đốc nhà thầu khắc phục.
+   - **Kho lưu trữ hình ảnh minh chứng**: Tình trạng lưu trữ ảnh vi phạm và ảnh khắc phục sạch sẽ, sẵn sàng truy xuất làm bằng chứng pháp lý.
+3. **Kích hoạt quét rủi ro tự động — Phát hiện sớm điểm nóng ô nhiễm**:
+   - Có nút bấm 1 chạm `[Kích hoạt quét tự động]` để hệ thống tự động rà soát nồng độ bụi từ các trạm đo và lịch sử vi phạm, tự động cảnh báo các công trường có nguy cơ cao để cử cán bộ kiểm tra ngay.
+4. **Theo dõi kết nối liên ngành (Cổng 1022 & iHanoi)**:
+   - Giám sát trạng thái kết nối thông suốt với Cổng dịch vụ công 1022 và ứng dụng Công dân Thủ đô số iHanoi, đảm bảo không bị nghẽn tin báo từ người dân.
 
-Màn hình **ADM-01** đóng vai trò là "Bảng đồng hồ tổng lực" giúp Quản trị viên kỹ thuật nắm bắt toàn bộ nhịp đập hạ tầng và nghiệp vụ chỉ trong 5 giây đầu tiên.
+### 2.2. So sánh cách làm cũ và cách làm mới
 
-### 2.2. Giá trị thực tế & Giải quyết bài toán cũ
-- **Thay thế quản trị phân tán & thao tác dòng lệnh thủ công**: Thay vì phải SSH vào máy chủ hoặc mở console D1 phức tạp, quản trị viên quan sát trực quan toàn bộ trạng thái dữ liệu qua giao diện chuẩn Civic High-Contrast.
-- **4 Thẻ Chỉ Số Hạ Tầng Thời Gian Thực**:
-  1. `totalUsers` (Tài khoản hoạt động): Tổng số định danh trong hệ thống, phân bổ theo 5 nhóm vai trò (`public`/`citizen`, `community`, `staff`, `contractor`, `executive`/`admin`).
-  2. `totalSites` (Công trình đang giám sát): Tổng số điểm nóng thi công xây dựng, mỏ vật liệu hoặc trạm trộn bê tông trên địa bàn.
-  3. `totalCases` (Tổng hồ sơ vụ việc): Toàn bộ hồ sơ kiểm tra - xử lý 7 bước DAG đang vận hành trong chu trình thực thi công quyền.
-  4. `d1StorageHealth` (Sức khỏe CSDL & Bằng chứng số): Đánh giá tính toàn vẹn của 46 bảng quan hệ SQLite và kho lưu trữ hình ảnh minh chứng SHA-256 trên Cloudflare R2.
-- **Khả năng phản ứng nhanh & Phục hồi sự cố**: Cung cấp các thao tác một chạm để quét tự động đánh giá rủi ro (Automation Sweep), kiểm tra sức khỏe endpoint (Healthcheck) và khôi phục dữ liệu nghiệm thu chuẩn hóa (Seed Canonical Data).
-
----
-
-## 3. Đối Tượng Người Dùng & Hành Trình Thao Tác (User Journey)
-
-### 3.1. Đối tượng sử dụng
-- **Quản trị viên Trung tâm IOC / Chuyên viên Kỹ thuật Sở TT&TT**: Trực ca kỹ thuật, giám sát tải dữ liệu, phát hiện lỗi đồng bộ hoặc truy cập bất thường.
-- **Cán bộ Quản trị Hệ thống Sở TN&MT**: Theo dõi tính đầy đủ của dữ liệu công trình, giám sát việc tuân thủ quy chuẩn và điều phối phân quyền cho các tổ thanh tra.
-
-### 3.2. Hành trình thao tác chuẩn (Core Flow)
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Admin as Quản trị viên IOC / Sở TT&TT
-    participant UI as AdminDashboardPage (ADM-01)
-    participant API as Edge API (/api/users, /sites, /cases)
-    participant D1 as Cloudflare D1 (SQLite SSOT)
-    participant R2 as Cloudflare R2 Bucket (Bằng chứng số)
-
-    Admin->>UI: Đăng nhập & Truy cập /admin
-    UI->>API: Promise.all([ GET /users, GET /sites, GET /cases, GET /system/data-stats ])
-    API->>D1: SELECT COUNT(*) FROM users, sites, cases, audit_logs...
-    D1-->>API: Trả về tập dữ liệu thô (Raw Record Counts)
-    API->>R2: Kiểm tra trạng thái Storage Bucket
-    R2-->>API: Trả về số lượng tệp minh chứng & dung lượng
-    API-->>UI: Normalized Response { totalUsers, totalSites, totalCases, storageHealth }
-    UI-->>Admin: Hiển thị 4 thẻ KPI + Lưới giám sát bảng D1 + Trạng thái cổng liên thông
-
-    alt Cần phân quyền lại cán bộ hoặc nhà thầu
-        Admin->>UI: Bấm [Quản lý Người dùng & Quyền]
-        UI-->>Admin: Chuyển hướng sang /admin/users (ADM-02)
-    else Cần hiệu chỉnh ngưỡng QCVN hoặc thời hạn SLA
-        Admin->>UI: Bấm [Cấu hình Hệ thống & Quy chuẩn]
-        UI-->>Admin: Chuyển hướng sang /admin/settings (ADM-03)
-    else Cần kích hoạt chu trình quét rủi ro toàn đô thị
-        Admin->>UI: Bấm [Kích hoạt Quét Tự động] (Automation Sweep)
-        UI->>API: POST /api/automation/sweep
-        API->>D1: Cập nhật điểm rủi ro R cho 33+ công trình
-        D1-->>API: Hoàn tất 100%
-        API-->>UI: Toast thông báo "Đã hoàn thành quét rủi ro đô thị"
-    end
-```
+| Nội dung công việc | Quản trị thủ công phân tán | Dùng Bàn làm việc Quản trị ADM-01 |
+|---|---|---|
+| **Theo dõi số lượng công trường** | Thống kê qua báo cáo giấy, file Excel rời rạc | **Cập nhật tự động** ngay khi có công trường mới |
+| **Giám sát tài khoản người dùng** | Tra cứu thủ công, dễ sót tài khoản cán bộ luân chuyển | Bảng danh bạ trực quan, phân quyền chỉ bằng 1 cú nhấp |
+| **Phát hiện sự cố kỹ thuật** | Chờ người dùng gọi điện báo lỗi mới biết | Có bảng theo dõi kết nối xanh/đỏ rõ ràng theo thời gian thực |
+| **Quét cảnh báo rủi ro toàn đô thị** | Cán bộ tự tính toán thủ công mất nhiều ngày | **Dưới 3 giây** hệ thống tự động quét và chấm điểm rủi ro |
 
 ---
 
-## 4. Bố Cục Giao Diện & Phân Cấp Thông Tin (Information Hierarchy & Wireframe)
+## 3. Ai Sử Dụng & Luồng Thao Tác Thực Tế
 
-### 4.1. Phân cấp thông tin (Hierarchy)
-1. **Thanh Điều Hành Quản Trị (Admin Header)**:
-   - Logo DustGuard VN, Badge Quản Trị màu đỏ son (`bg-[#FEF2F2] text-[#B91C1C] border-[#FECACA]`).
-   - Tên định danh cán bộ trực: "Quản trị viên Hệ thống (IOC)", nhãn phụ "Toàn quyền hệ thống".
-   - Nút `[Đăng xuất]` an toàn đạt chuẩn $\ge 40\text{px}$.
-2. **Khối Giới Thiệu & Trạng Thái Hạ Tầng (Page Hero)**:
-   - Tiêu đề: "Tổng Quan Quản Trị Hệ Thống & Hạ Tầng D1".
-   - Diễn giải: "Giám sát tài khoản, phân quyền tác nghiệp, cơ sở dữ liệu môi trường và liên thông đô thị thông minh."
-   - Badge trạng thái thời gian thực: `● CSDL D1 Hoạt động ổn định (99.98% Uptime)`.
-3. **Lưới 4 Thẻ Chỉ Số Trọng Yếu (4-Column Metric Grid)**:
-   - **Thẻ 1 — Tài Khoản Hoạt Động**: Tổng số tài khoản, phân bổ 5 vai trò (Chàm `#4338CA`).
-   - **Thẻ 2 — Công Trình Đang Giám Sát**: Tổng số điểm nóng xây dựng/trạm trộn (Than mực `#1C1917`).
-   - **Thẻ 3 — Tổng Vụ Việc Đã Ghi Nhận**: Tổng số hồ sơ 7 bước DAG đang thụ lý (Xanh ngọc `#047857`).
-   - **Thẻ 4 — Bằng Chứng Số & Bảng D1**: Tổng số tệp chứng cứ SHA-256 trên R2 & 46 bảng SQLite (Hổ phách `#B45309`).
-4. **Bảng Giám Sát Bảng CSDL D1 & Nhật Ký Kiểm Toán (D1 Tables & Audit Stream)**:
-   - Danh sách các bảng dữ liệu lõi (`users`, `sites`, `cases`, `alerts`, `tasks`, `evidences`, `audit_logs`).
-   - Dung lượng bản ghi, mốc cập nhật gần nhất và tình trạng chỉ mục (Composite Indexes).
-5. **Cổng Kết Nối Liên Ngành Đô Thị (Inter-Agency Integration Status)**:
-   - Cổng 1022 TP (Sẵn sàng - Webhook hoạt động).
-   - Ứng dụng iHanoi (Đã kết nối - Đồng bộ 2 chiều).
-   - Hệ thống Giám sát Trạm Quan trắc Tự động Sở TN&MT (Hoạt động).
+### 3.1. Các vị trí thực tế
+1. **Chuyên viên kỹ thuật Trung tâm Điều hành IOC / Sở TT&TT**:
+   - Trực kỹ thuật hàng ngày, theo dõi đường truyền kết nối, cấp quyền cho cán bộ mới được điều động về các quận/huyện.
+2. **Cán bộ Quản trị Dữ liệu Sở TN&MT**:
+   - Giám sát danh sách các điểm nóng xây dựng, kiểm tra số lượng hồ sơ xử lý bụi và kích hoạt chu trình quét rủi ro đô thị.
 
-### 4.2. Wireframe ASCII Giao diện chuẩn Desktop 14-inch
+### 3.2. Sơ đồ luồng thao tác của Quản trị viên
 
 ```text
-+------------------------------------------------------------------------------------------------------------------------+
-|  [Logo] DustGuard VN  [QUẢN TRỊ VIÊN]                                  Quản trị viên IOC | Toàn quyền   [Đăng xuất]   |
-+-------------------+----------------------------------------------------------------------------------------------------+
-| QUẢN TRỊ & HẠ TẦNG|  Tổng Quan Quản Trị Hệ Thống & Hạ Tầng D1                       [● D1 SQLite: HOẠT ĐỘNG ỔN ĐỊNH]   |
-| > Tổng quan       |  Giám sát tài khoản, phân quyền tác nghiệp, cơ sở dữ liệu môi trường và liên thông đô thị.         |
-| - Người dùng & RBAC+--------------------------------------------------------------------------------------------------+ |
-| - Quản lý Điểm nóng| | [4 THẺ CHỈ SỐ HẠ TẦNG TRỌNG YẾU]                                                                 | |
-| - Cấu hình Quy chuẩn| | +---------------------+ +---------------------+ +---------------------+ +--------------------+ | |
-| - Bằng chứng & R2  | | | TÀI KHOẢN HOẠT ĐỘNG | | CÔNG TRÌNH GIÁM SÁT | | TỔNG VỤ VIỆC GHI NHẬN| | BẰNG CHỨNG SỐ & D1 | | |
-|                   | | |        124            | |        33           | |        18            | |    156 tệp / 46 tbl| | |
-|                   | | | 5 nhóm vai trò RBAC   | | Đang thi công/nguy cơ | | Tỷ lệ đúng hạn 94.4% | | Khóa băm SHA-256 | | |
-|                   | | +---------------------+ +---------------------+ +---------------------+ +--------------------+ | |
-|                   | +--------------------------------------------------------------------------------------------------+ |
-|                   | +------------------------------------------------------------------+ +----------------------------+ |
-|                   | | BẢNG DỮ LIỆU D1 SQLITE LÕI (SSOT)               [Kiểm tra lại]   | | TRẠNG THÁI LIÊN THÔNG      | |
-|                   | | ---------------------------------------------------------------- | | -------------------------- | |
-|                   | | Tên Bảng (Table)  | Số bản ghi | Cập nhật gần nhất | Chỉ mục     | | • Cổng Phản Ánh 1022:      | |
-|                   | | users             | 124        | 2 phút trước      | UNIQUE(idx) | |   [ ĐÃ KẾT NỐI - 2 chiều ] | |
-|                   | | sites             | 33         | 10 phút trước     | Spatial(WGS)| | • Ứng dụng iHanoi:         | |
-|                   | | cases             | 18         | 5 phút trước      | Composite   | |   [ SẴN SÀNG ĐỒNG BỘ ]     | |
-|                   | | alerts            | 42         | Vừa xong          | TimeSeries  | | • Trạm Quan Trắc TN&MT:    | |
-|                   | | audit_logs        | 1,280      | Vừa xong          | Immutable   | |   [ TRỰC TUYẾN - Chu kỳ 5p]| |
-|                   | +------------------------------------------------------------------+ +----------------------------+ |
-|                   | +--------------------------------------------------------------------------------------------------+ |
-|                   | | [THAO TÁC QUẢN TRỊ NHANH]                                                                        | |
-|                   | | [Quản Lý Người Dùng (ADM-02)]   [Cấu Hình Quy Chuẩn (ADM-03)]   [Kích Hoạt Quét Rủi Ro Tự Động]  | |
-|                   | +--------------------------------------------------------------------------------------------------+ |
-+-------------------+----------------------------------------------------------------------------------------------------+
+┌────────────────────────────────────────────────────────────────────────┐
+│ [QUẢN TRỊ VIÊN ĐĂNG NHẬP VÀO TRANG QUẢN TRỊ (/admin)]                  │
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    │
+                                    ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│ [XEM 4 CHỈ SỐ HỆ THỐNG THỜI GIAN THỰC]                                 │
+│ ├─► 1. Tài khoản hoạt động (Phân bổ 5 nhóm quyền)                      │
+│ ├─► 2. Công trường đang giám sát (33 điểm nóng)                        │
+│ ├─► 3. Hồ sơ vụ việc (Đang thụ lý và đã đóng)                          │
+│ └─► 4. Kho lưu trữ minh chứng & Trạng thái kết nối máy chủ             │
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    │
+            ┌───────────────────────┼───────────────────────┐
+            ▼                       ▼                       ▼
+┌───────────────────────┐ ┌───────────────────┐ ┌───────────────────────┐
+│ CẦN ĐỔI QUYỀN CÁN BỘ  │ │ CẦN CÀI ĐẶT THAM  │ │ CẦN QUÉT NGUY CƠ BỤI  │
+│ Bấm [Quản lý tài khoản│ │ SỐ BỤI QUY CHUẨN  │ │ Bấm [Kích hoạt quét   │
+│ và phân quyền]        │ │ Bấm [Cấu hình hệ  │ │ tự động toàn thành    │
+│ ──► Sang màn ADM-02   │ │ thống] ──► ADM-03 │ │ phố] ──► Xong trong 3s│
+└───────────────────────┘ └───────────────────┘ └───────────────────────┘
 ```
 
 ---
 
-## 5. Dữ Liệu & API / D1 Database Contract
+## 4. Bố Cục Giao Diện & Hình Ảnh Minh Họa
 
-### 5.1. Danh mục API Endpoints kết nối
-| Endpoint | Phương thức | Vai trò tối thiểu | Mục đích nghiệp vụ |
-|---|:---:|:---:|---|
-| `/api/users` | `GET` | `admin` | Lấy danh sách tài khoản để tính tổng số và phân bổ vai trò |
-| `/api/sites` | `GET` | `admin`, `staff` | Lấy danh sách điểm nóng công trình trên địa bàn |
-| `/api/cases` | `GET` | `admin`, `staff` | Lấy toàn bộ hồ sơ vụ việc kiểm tra - xử phạt |
-| `/api/system/data-stats` | `GET` | `admin` | Lấy thống kê số lượng bản ghi và dung lượng của 46 bảng D1 SQLite |
-| `/api/system/health` | `GET` | `admin` | Kiểm tra độ trễ kết nối D1, R2 và dịch vụ Worker Edge |
-| `/api/automation/sweep` | `POST` | `admin` | Kích hoạt chu trình tính toán lại điểm số rủi ro $R$ |
+### 4.1. Cách sắp xếp thông tin trên màn hình
+1. **Thanh điều hành đầu trang (Header)**:
+   - Logo DustGuard VN, Huy hiệu "QUẢN TRỊ HỆ THỐNG" màu đỏ trang trọng.
+   - Tên cán bộ trực kèm nút `[Đăng xuất]`.
+2. **Khung giới thiệu & Trạng thái vận hành**:
+   - Dòng chữ xanh lá: `● Hệ thống dữ liệu hoạt động bình thường (Sẵn sàng 100%)`.
+   - Nút hành động nhanh: `[⚡ Kích hoạt quét rủi ro toàn thành phố]`.
+3. **Hàng 4 ô số liệu chính**:
+   - **Tài khoản**: Tổng số tài khoản (Ví dụ: `124 tài khoản`).
+   - **Công trường**: Số điểm thi công (Ví dụ: `33 công trình`).
+   - **Vụ việc**: Tổng số hồ sơ vi phạm (Ví dụ: `18 hồ sơ`).
+   - **Lưu trữ ảnh**: Dung lượng và số lượng ảnh minh chứng (Ví dụ: `1.420 ảnh`).
+4. **Khung theo dõi kết nối liên ngành (Đô thị thông minh)**:
+   - Cổng tiếp nhận phản ánh 1022: `● Đang kết nối thông suốt`.
+   - Ứng dụng Công dân iHanoi: `● Đang kết nối thông suốt`.
+   - Mạng lưới trạm đo bụi tự động: `● 12/12 trạm hoạt động tốt`.
+5. **Nhật ký thao tác gần nhất**:
+   - Hiển thị 5 hoạt động mới nhất: Ai vừa đổi quyền người dùng, Ai vừa duyệt hồ sơ nghiệm thu.
 
-### 5.2. CSDL D1 SQLite Schema tham gia (SSOT Schema)
-- **`users`**: Bảng người dùng gốc (`id`, `email`, `role`, `status`, `createdAt`, `updatedAt`).
-- **`sites`**: Bảng công trình xây dựng (`id`, `name`, `address`, `ward`, `district`, `dustRiskScore`, `status`).
-- **`cases`**: Bảng hồ sơ vụ việc 7 bước DAG (`id`, `code`, `title`, `status`, `priority`, `siteId`, `slaDeadline`).
-- **`alerts`**: Bảng sự kiện cảnh báo vượt chuẩn QCVN 05:2023 (`id`, `siteId`, `severity`, `pm25Value`, `pm10Value`).
-- **`evidences`**: Bảng bằng chứng số bất biến (`id`, `caseId`, `photoUrl`, `sha256Hash`, `lat`, `lng`, `capturedAt`).
-- **`audit_logs`**: Bảng nhật ký kiểm toán bất biến (`id`, `actorId`, `actorRole`, `action`, `entity`, `entityId`, `metadata`, `createdAt`).
+### 4.2. Giao diện xem trên máy tính (Desktop)
 
-### 5.3. Mẫu dữ liệu chuẩn hóa (Normalized JSON Response Contract)
+```text
+┌────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│ DUSTGUARD VN  |  [ QUẢN TRỊ HỆ THỐNG ]   Cán bộ trực: Nguyễn Văn An (IOC)                 [ 🚪 Đăng xuất ]             │
+├────────────────────────┬───────────────────────────────────────────────────────────────────────────────────────────────┤
+│ BÀN LÀM VIỆC QUẢN TRỊ  │ TỔNG QUAN HỆ THỐNG & DỮ LIỆU ĐÔ THỊ                                                           │
+│ [●] Tổng quan hệ thống │ ● Trạng thái máy chủ: HOẠT ĐỘNG TỐT (100%)         [ ⚡ KÍCH HOẠT QUÉT RỦI RO TOÀN THÀNH PHỐ ] │
+│ [ ] Quản lý tài khoản  │ ───────────────────────────────────────────────────────────────────────────────────────────── │
+│ [ ] Cấu hình tham số   │ ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐  ┌────────────────────────┐ │
+│ ────────────────────── │ │ TỔNG TÀI KHOẢN   │  │ CÔNG TRƯỜNG      │  │ HỒ SƠ VỤ VIỆC    │  │ ẢNH MINH CHỨNG LƯU TRỮ │ │
+│ LIÊN KẾT NHANH         │ │       124        │  │        33        │  │        18        │  │       1.420 ảnh        │ │
+│ 👥 Phân quyền cán bộ   │ │ 5 nhóm vai trò   │  │ Đang giám sát    │  │ 14 đã xử lý xong │  │ Lưu trữ an toàn        │ │
+│ ⚙️ Cài đặt ngưỡng bụi  │ └──────────────────┘  └──────────────────┘  └──────────────────┘  └────────────────────────┘ │
+│ 📋 Nhật ký hệ thống    │                                                                                               │
+│ 📞 Hỗ trợ kỹ thuật     │ TRẠNG THÁI KẾT NỐI LIÊN THÔNG ĐÔ THỊ THÔNG MINH                                               │
+│                        │ ┌───────────────────────────────────────────────────────────────────────────────────────────┐ │
+│                        │ │ • Cổng tiếp nhận phản ánh 1022 (TP. Hà Nội)         : [ ● Đang kết nối thông suốt ]       │ │
+│                        │ │ • Ứng dụng Công dân Thủ đô số (iHanoi)              : [ ● Đang kết nối thông suốt ]       │ │
+│                        │ │ • Mạng lưới trạm quan trắc không khí tự động        : [ ● 12 / 12 trạm hoạt động tốt ]    │ │
+│                        │ └───────────────────────────────────────────────────────────────────────────────────────────┘ │
+│                        │                                                                                               │
+│                        │ NHẬT KÝ THAO TÁC GẦN NHẤT                                                   Xem tất cả →     │
+│                        │ ┌───────────────────────────────────────────────────────────────────────────────────────────┐ │
+│                        │ │ [11:35] Admin vừa cập nhật vai trò "Nhà thầu" cho Kỹ sư Nguyễn Văn Hùng (Vinaconex)      │ │
+│                        │ │ [11:30] Cán bộ Long vừa duyệt ảnh nghiệm thu Vụ việc #CASE-0420 (Cổng số 2 Thanh Xuân)    │ │
+│                        │ │ [08:00] Hệ thống hoàn thành quét rủi ro tự động: Phát hiện 3 công trường cần tưới ẩm thêm │ │
+│                        │ └───────────────────────────────────────────────────────────────────────────────────────────┘ │
+└────────────────────────┴───────────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 5. Dữ Liệu & Kết Nối Hệ Thống
+
+### 5.1. Các đường dẫn lấy dữ liệu (API Endpoints)
+- `GET /api/system/data-stats`: Lấy số lượng tài khoản, công trường, vụ việc và tình trạng lưu trữ.
+- `GET /api/system/integrations/status`: Kiểm tra kết nối với Cổng 1022, iHanoi và trạm đo bụi.
+- `POST /api/automation/sweep`: Kích hoạt quét tự động phát hiện rủi ro bụi trên toàn thành phố.
+
+### 5.2. Mẫu dữ liệu thống kê từ hệ thống
+
 ```json
 {
-  "status": "success",
+  "success": true,
   "data": {
-    "stats": {
-      "totalUsers": 124,
-      "usersByRole": {
-        "citizen": 82,
-        "community": 18,
-        "staff": 14,
-        "contractor": 7,
-        "executive": 3
-      },
-      "totalSites": 33,
-      "activeSites": 28,
-      "totalCases": 18,
-      "resolvedCases": 12,
-      "inProgressCases": 6,
-      "totalEvidences": 156,
-      "totalAuditLogs": 1280
-    },
-    "tables": [
-      { "name": "users", "records": 124, "lastUpdated": "2026-09-02T12:20:00Z", "status": "HEALTHY" },
-      { "name": "sites", "records": 33, "lastUpdated": "2026-09-02T12:15:00Z", "status": "HEALTHY" },
-      { "name": "cases", "records": 18, "lastUpdated": "2026-09-02T12:22:00Z", "status": "HEALTHY" },
-      { "name": "alerts", "records": 42, "lastUpdated": "2026-09-02T12:26:00Z", "status": "HEALTHY" },
-      { "name": "evidences", "records": 156, "lastUpdated": "2026-09-02T11:45:00Z", "status": "HEALTHY" },
-      { "name": "audit_logs", "records": 1280, "lastUpdated": "2026-09-02T12:27:00Z", "status": "HEALTHY" }
-    ],
+    "totalUsers": 124,
+    "totalSites": 33,
+    "totalCases": 18,
+    "resolvedCases": 14,
+    "totalEvidencePhotos": 1420,
     "integrations": {
-      "hotline1022": { "name": "Cổng Phản Ánh 1022", "status": "CONNECTED", "latencyMs": 42 },
-      "iHanoi": { "name": "Ứng Dụng iHanoi", "status": "READY", "latencyMs": 68 },
-      "tnmtStations": { "name": "Trạm Quan Trắc TN&MT", "status": "ONLINE", "syncIntervalSec": 300 }
-    }
+      "hotline1022": "CONNECTED",
+      "iHanoiApp": "CONNECTED",
+      "airStations": "12/12_ACTIVE"
+    },
+    "systemHealth": "HEALTHY"
   }
 }
 ```
 
 ---
 
-## 6. Bảng Nút Bấm CTAs & Hành Động Tương Tác
+## 6. Danh Sách Nút Bấm & Thao Tác (Action Buttons)
 
-| Tên nút / Hành động | Vị trí | Màu sắc / Token | Hành vi kỹ thuật & Phản hồi UI | Quyền hạn |
-|---|---|---|---|:---:|
-| **`[Quản Lý Người Dùng & RBAC]`** | Lưới thao tác nhanh | `bg-indigo-700 text-white` | Điều hướng ngay lập tức tới `/admin/users` (ADM-02) | `admin` |
-| **`[Cấu Hình Quy Chuẩn & SLA]`** | Lưới thao tác nhanh | `bg-stone-800 text-white` | Điều hướng ngay lập tức tới `/admin/settings` (ADM-03) | `admin` |
-| **`[Kích Hoạt Quét Tự Động]`** | Lưới thao tác nhanh | `bg-red-700 text-white` | Gửi `POST /api/automation/sweep`, hiển thị Spinner, Toast báo kết quả | `admin` |
-| **`[Kiểm Tra Lại]`** | Header bảng D1 | `bg-white text-stone-700 border` | Tải lại số liệu 4 API song song mà không cần F5 trang | `admin` |
-| **`[Đăng Xuất An Toàn]`** | Header trên cùng | `bg-stone-100 text-stone-700` | Xóa session cookie/token, điều hướng an toàn về `/login` | `admin` |
-
----
-
-## 7. Quy Chuẩn UI/UX & Responsive Design System
-
-### 7.1. Bảng màu Civic High-Contrast (Không dùng Glassmorphism)
-- **Nền trang chính**: `#FAFAF9` (Stone-50 — Màu kem sáng chuyên dụng).
-- **Nền thẻ Card**: `#FFFFFF` nguyên khối, viền kem đậm `#E7E5E4` (Stone-200), bóng mờ tối giản `shadow-xs`.
-- **Màu chữ chính**: `#1C1917` (Stone-900 — Đen mực than, độ tương phản $\ge 7:1$).
-- **Màu sắc thẻ KPI**:
-  - *Tài khoản*: Chữ `#4338CA` (Indigo-700), nền thẻ `#FFFFFF`, viền `#E7E5E4`.
-  - *Công trình*: Chữ `#1C1917` (Stone-900), nền thẻ `#FFFFFF`, viền `#E7E5E4`.
-  - *Hồ sơ vụ việc*: Chữ `#047857` (Emerald-700), nền thẻ `#FFFFFF`, viền `#E7E5E4`.
-  - *Bằng chứng & D1*: Chữ `#B45309` (Amber-700), nền thẻ `#FFFFFF`, viền `#E7E5E4`.
-- **Quy tắc tuyệt đối**: **CẤM `backdrop-blur-*`**, cấm nền mờ xuyên thấu làm giảm độ tương phản của số liệu quản trị.
-
-### 7.2. Chuẩn Responsive & Thiết bị Đô thị
-- **Touch Targets**: Toàn bộ nút bấm, link điều hướng và bộ chọn đều đạt chiều cao $\ge 44\text{px}$ (`min-h-[44px]`).
-- **Laptop 14-inch (1366x768, 1440x900, 1536x864)**:
-  - Sidebar cố định 240px (`w-60`).
-  - Lưới KPI chia 4 cột cân xứng (`grid-cols-4`), không bị ngắt dòng chữ (Zero Menu Wrap).
-- **Tablet (768px - 1024px)**: Lưới KPI chia 2 cột (`grid-cols-2`), bảng CSDL D1 hỗ trợ cuộn ngang mượt mà.
-- **Mobile (360px - 430px)**:
-  - Menu chuyển thành Drawer trượt với nút kích hoạt $\ge 44\text{px}$.
-  - 4 Thẻ KPI xếp chồng 1 cột (`grid-cols-1`).
-  - Khối thao tác nhanh xếp dọc toàn chiều rộng (`w-full`).
+| Tên nút bấm | Nằm ở đâu | Màu sắc & Kiểu nút | Kích thước | Bấm vào sẽ làm gì? | Khi nào bấm được? |
+|---|---|---|---|---|---|
+| **[⚡ Kích hoạt quét rủi ro toàn thành phố]** | Banner đầu trang | Nền đỏ cam `#B91C1C`, chữ trắng | Cao $\ge 48\text{px}$, nút to | Quét tự động toàn bộ dữ liệu bụi để tìm điểm nóng ô nhiễm | Luôn bấm được |
+| **[👥 Phân quyền cán bộ]** | Cột menu bên trái | Nền xám nhạt, chữ đậm | Cao $44\text{px}$ | Chuyển nhanh sang trang Quản lý tài khoản ADM-02 | Luôn bấm được |
+| **[⚙️ Cài đặt ngưỡng bụi]** | Cột menu bên trái | Nền xám nhạt, chữ đậm | Cao $44\text{px}$ | Chuyển nhanh sang trang Cấu hình tham số ADM-03 | Luôn bấm được |
+| **[🚪 Đăng xuất]** | Góc trên bên phải | Viền mảnh đơn giản | $44\text{px} \times 44\text{px}$ | Thoát khỏi phiên làm việc quản trị | Luôn bấm được |
 
 ---
 
-## 8. Bẫy Lỗi Thường Gặp & Hướng Dẫn Kiểm Thử
+## 7. Quy Chuẩn Giao Diện Quản Trị
 
-### 8.1. Các bẫy lỗi tiềm ẩn & Cơ chế phòng vệ
-1. **Lỗi Unwrap Collection (D1 Shape Mismatch)**:
-   - *Nguy cơ*: Khi API trả về `{ data: { items: [...] } }` hoặc mảng trực tiếp `[...]`, nếu gọi `.length` trực tiếp sẽ crash màn hình.
-   - *Phòng vệ*: Sử dụng hàm `normalizeList(res)` chuẩn hóa về mảng an toàn trước khi gán vào state.
-2. **Lỗi `Promise.all` sập dây chuyền (Fail-Fast Crash)**:
-   - *Nguy cơ*: Nếu 1 trong 3 API `/users`, `/sites`, `/cases` trả về lỗi mạng, toàn bộ `Promise.all` bị reject làm hỏng cả trang.
-   - *Phòng vệ*: Gắn `.catch(() => [])` độc lập cho từng request trong mảng `Promise.all`.
-3. **Lỗi Lệch Múi Giờ UTC vs Giờ Hà Nội (UTC+7)**:
-   - *Nguy cơ*: Mốc thời gian ghi nhận bản ghi D1 lưu dạng ISO 8601 UTC dẫn đến hiển thị sai lệch giờ báo cáo.
-   - *Phòng vệ*: Sử dụng helper `formatViDateTime()` quy đổi chuẩn về múi giờ Việt Nam `Asia/Ho_Chi_Minh`.
+### 7.1. Bảng màu tương phản cao — Sáng rõ và trang trọng
+- **Nền trang**: Màu kem sáng `#FAFAF9`, các thẻ nội dung nền trắng `#FFFFFF` viền xám `#E7E5E4` sắc nét.
+- **Màu chữ**: Chữ màu than đậm `#1C1917`, tương phản cao giúp nhìn rõ các số liệu thống kê.
+- **Huy hiệu trạng thái**:
+  - Đang hoạt động tốt: Nền xanh lá nhạt, chữ xanh lá đậm.
+  - Cần chú ý / Quét rủi ro: Nền đỏ nhạt, chữ đỏ son đậm.
 
-### 8.2. Bộ lệnh kiểm thử tự động (Fast Verification Loop < 0.5s)
+### 7.2. Bố cục rộng rãi — Tối ưu cho màn hình máy tính làm việc
+- Các khối số liệu dàn đều 4 cột rõ ràng, không bị tràn màn hình, xem tốt trên mọi màn hình máy tính từ 14-inch (1366x768) đến màn hình lớn của phòng điều hành IOC.
+
+---
+
+## 8. Hướng Dẫn Xử Lý Tình Huống & Kiểm Tra Lỗi
+
+### 8.1. Các tình huống thực tế và cách xử lý
+1. **Cổng kết nối 1022 hoặc iHanoi báo mất kết nối (Màu vàng/đỏ)**:
+   - *Tình huống*: Đường truyền mạng ngoài bị gián đoạn tạm thời.
+   - *Cách xử lý*: Có nút `[Thử kết nối lại]` bên cạnh để kiểm tra lại ngay mà không cần khởi động lại máy chủ.
+2. **Sau khi thêm công trường mới, số lượng chưa nhảy**:
+   - *Tình huống*: Dữ liệu đang được lưu tạm trên máy.
+   - *Cách xử lý*: Nhấn phím `F5` hoặc bấm nút `[Làm mới]` ở góc phải để tải số liệu mới nhất.
+
+### 8.2. Lệnh kiểm tra màn hình qua PowerShell
+
 ```powershell
-# 1. Kiểm tra tính toàn vẹn của Edge Routes & Data Unwrap
+# 1. Kiểm tra màn hình quản trị hệ thống (< 0.5s)
 node --test app/tests/worker-full-edge-routes.test.js
 
-# 2. Kiểm tra xác thực thời gian chạy Quản trị & Điều hành D1
-node --test app/tests/runtime-truth-executive-admin.test.js
-
-# 3. Kiểm tra chuẩn màu sắc, Typography và Touch Target Design System
+# 2. Kiểm tra bộ quy chuẩn thiết kế giao diện sáng rõ
 node --test app/tests/design-system-tokens.test.js
 
-# 4. Chạy Quick Gate xác thực toàn bộ hệ thống
+# 3. Chạy kiểm tra nhanh toàn hệ thống
 npm --prefix app run verify:quick
 ```

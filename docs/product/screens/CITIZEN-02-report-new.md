@@ -1,128 +1,104 @@
 # CIT-02 — Gửi Phản Ánh Hiện Trường 30 Giây (Report New Observation)
 
-## 1. Screen Identity (Định Danh Màn Hình)
+## 1. Định Danh Màn Hình (Screen Identity)
 - **Mã màn hình**: `CIT-02`
-- **Tên màn hình (VN)**: Gửi Phản Ánh Hiện Trường 30 Giây / Tạo Ghi Nhận Ô Nhiễm Mới
-- **Tên màn hình (EN)**: Rapid Environmental Observation Submission (30-Second Citizen Flow)
-- **Tuyến đường (Route)**: `/citizen/report/new`
-  - Tuyến đường chuyển hướng tương thích (Aliases & Redirects): `/citizen/report`
-- **Đường dẫn Component**: [`app/src/apps/citizen/pages/report-new/ReportNewPage.jsx`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/app/src/apps/citizen/pages/report-new/ReportNewPage.jsx)
-- **Khung giao diện (Layout)**: [`app/src/apps/citizen/layout/CitizenLayout.jsx`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/app/src/apps/citizen/layout/CitizenLayout.jsx)
-  - Desktop: Khung hiển thị trung tâm dạng thẻ tinh gọn `max-w-2xl` hoặc chia 2 cột logic trực quan.
-  - Mobile: Giao diện biểu mẫu cuộn mượt mà, tối ưu thao tác bằng một tay ngón cái, nút gửi cố định hoặc ở cuối form với chiều cao $48\text{px}$.
-- **Phân quyền người dùng (Role / RBAC)**: `public`, `citizen`, `youth` (Cho phép gửi phản ánh ẩn danh không cần đăng nhập — Zero Login Friction).
-- **Trạng thái triển khai**: `ACTIVE` (Production Level 5 — Tích hợp xử lý nén ảnh HTML5 Canvas $<300\text{KB}$, mã băm SHA-256 Web Crypto, gỡ Exif bảo mật và lưu nháp ngoại tuyến khi mất sóng 4G).
+- **Tên màn hình (Tiếng Việt)**: Gửi Phản Ánh Hiện Trường 30 Giây / Báo Cáo Vi Phạm Bụi
+- **Tên màn hình (Tiếng Anh)**: Rapid Environmental Observation Submission (30-Second Citizen Flow)
+- **Đường dẫn (Route URL)**: `/citizen/report/new`
+  - Tuyến chuyển hướng tương thích: `/citizen/report`
+- **Tệp mã nguồn Component**: [`app/src/apps/citizen/pages/report-new/ReportNewPage.jsx`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/app/src/apps/citizen/pages/report-new/ReportNewPage.jsx)
+- **Khung giao diện chung (Layout)**: [`app/src/apps/citizen/layout/CitizenLayout.jsx`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/app/src/apps/citizen/layout/CitizenLayout.jsx)
+  - **Máy tính (Desktop)**: Form nhập liệu 2 cột trực quan hoặc dạng thẻ tập trung `max-w-2xl` căn giữa.
+  - **Điện thoại (Mobile)**: Biểu mẫu cuộn mượt mà, tối ưu thao tác bằng một ngón tay cái, nút gửi đỏ son to rõ ở cuối trang.
+- **Ai được sử dụng**: Mọi người dân (Gửi ẩn danh tức thì, không cần đăng nhập tài khoản).
+- **Trạng thái thực tế**: Đang hoạt động ổn định, tự động nén ảnh nhẹ gửi siêu nhanh, tự gỡ thông tin cá nhân trên ảnh và tự lưu nháp khi mất mạng 4G.
 
 ---
 
-## 2. Mục Đích & Bối Cảnh Nghiệp Vụ Thực Tế Đậm Chất Việt Nam
+## 2. Mục Đích & Bối Cảnh Thực Tế (Why & Purpose)
 
-### 2.1. Nỗi đau thực tế từ các kênh tiếp nhận phản ánh truyền thống
-- **Rào cản thủ tục phức tạp**: Các cổng dịch vụ công thông thường yêu cầu người dân phải đăng nhập tài khoản định danh VNeID, điền biểu mẫu hành chính hơn 15-20 trường dữ liệu rườm rà (họ tên, CCCD, ngày cấp, địa chỉ thường trú, cơ quan tiếp nhận...).
-- **Nghẽn mạng khi tải ảnh dung lượng lớn**: Điện thoại thông minh hiện đại (iPhone, Samsung Galaxy, Xiaomi) chụp ảnh dung lượng từ $5\text{MB} - 18\text{MB}$. Khi người dân đứng ngoài đường với sóng $3\text{G}/4\text{G}$ yếu hoặc chập chờn, việc tải ảnh lên máy chủ thường bị đơ, quay vòng tròn và báo lỗi timeout thất bại.
-- **Mất dấu vết và thiếu minh bạch**: Người dân gửi phản ánh xong không biết thông tin đi đâu, có được xử lý hay bị "chìm xuồng", dẫn đến tâm lý chán nản, không muốn tham gia giám sát cộng đồng.
-- **Nguy cơ lộ lọt thông tin cá nhân & tranh chấp pháp lý**: Ảnh chụp từ điện thoại chứa siêu dữ liệu Exif (tọa độ nhà riêng, mã định danh thiết bị IMEI/serial) có thể làm lộ danh tính người phản ánh; ngược lại, ảnh không có chữ ký băm dễ bị nghi ngờ cắt ghép, chỉnh sửa vu khống doanh nghiệp.
+### 2.1. Nỗi vất vả khi gửi phản ánh theo cách cũ
+- **Thủ tục đăng nhập rườm rà**: Nhiều ứng dụng dịch vụ công bắt người dân phải đăng nhập tài khoản phức tạp, điền hàng chục ô thông tin hành chính (CCCD, ngày cấp, quê quán...) khiến người dân nản lòng và bỏ cuộc.
+- **Ảnh nặng hay bị nghẽn mạng**: Điện thoại đời mới chụp ảnh dung lượng lớn từ 5MB đến 15MB. Khi đứng ngoài đường với sóng 3G/4G yếu, việc tải ảnh lên thường bị đơ, quay tròn mãi rồi báo lỗi.
+- **Lo ngại lộ thông tin cá nhân**: Người dân sợ bị lộ danh tính khi ảnh chụp có dính thông tin máy điện thoại hoặc vị trí nhà riêng; đồng thời sợ bị nhà thầu phản bác cho rằng ảnh cắt ghép.
+- **Mất sóng là mất sạch dữ liệu**: Đang điền dở thì mất sóng hoặc vô tình đóng ứng dụng khiến người dân phải nhập lại từ đầu.
 
-### 2.2. Giải pháp Đột Phá 30 Giây của DustGuard VN
-Màn hình `CIT-02` được thiết kế đặc thù cho điều kiện hiện trường tại Việt Nam với 5 trụ cột công nghệ:
-1. **4 Danh mục vi phạm sát sườn đời sống**:
-   - **Bụi phát tán từ công trình** (`CONSTRUCTION_DUST`): Thi công đào móng, đập phá nhà cũ, cắt đá mài bê tông không quây bạt lưới chắn bụi hoặc không có vòi phun sương.
-   - **Xe tải chở đất cát không phủ bạt** (`UNCOVERED_TRANSPORT`): Xe ben cơi nới thành thùng, bạt che rách nát làm rơi vãi đất đá ra lòng đường gây nguy hiểm cho người đi xe máy.
-   - **Bùn đất vương vãi ra lòng đường** (`DIRT_SPILLAGE`): Xe tải từ công trường chạy thẳng ra phố không qua cầu xịt rửa lốp, kéo vệt bùn dài trơn trượt.
-   - **Đốt rác, phế thải xây dựng** (`BURNING_WASTE`): Đốt vỏ bao xi măng, gỗ cốp pha, xốp nhựa phế thải tại các bãi đất trống bốc khói độc khét lẹt.
-2. **Nén ảnh tự động trên trình duyệt client (< 300KB trong 150ms)**:
-   - Sử dụng HTML5 Canvas API ([`app/src/lib/image-compressor.js`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/app/src/lib/image-compressor.js)) tự động co kích thước tối đa 1280px - 1600px và nén lặp giảm chất lượng JPEG để đưa tệp ảnh từ $10\text{MB}$ xuống nghiêm ngặt dưới **$300\text{KB}$** trực tiếp trên RAM thiết bị trước khi truyền tải qua mạng.
-3. **Mã băm SHA-256 Web Crypto (Tamper-Evident Proof)**:
-   - Kích hoạt Web Crypto API chuẩn (`crypto.subtle.digest('SHA-256')` trong [`app/src/lib/image-integrity.js`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/app/src/lib/image-integrity.js)) để sinh mã băm 64 ký tự hex trực tiếp trên client. Mã hash này gắn chặt với hình ảnh hiện trường, đảm bảo tính pháp lý chống chỉnh sửa photoshop hoặc tráo đổi bằng chứng.
-4. **Bảo vệ quyền riêng tư người dân (Privacy Sanitizer)**:
-   - Tự động bóc tách và xóa toàn bộ phân đoạn Exif APP1 (`0xFFE1`) khỏi luồng nhị phân ảnh JPEG, loại bỏ dấu vết dòng máy và thông tin cá nhân của người dân trước khi đưa lên đám mây.
-5. **Định vị thông minh & Mã tra cứu quốc gia**:
-   - Tự động nhận diện GPS hoặc chọn nhanh theo Phường/Xã từ danh mục hành chính Việt Nam.
-   - Trả về ngay mã tra cứu chuẩn hóa cấp quốc gia định dạng **`DG-HN-2026-0842`** (Hà Nội), `DG-HCM-2026-XXXX` (TP.HCM)...
-6. **Lưu nháp ngoại tuyến kiên cố (Offline Draft Resilience)**:
-   - Tự động lưu bản nháp đang nhập dở vào `dg_citizen_report_new_draft`.
-   - Nếu mất mạng $4\text{G}$ đúng lúc bấm gửi, hệ thống tự động lưu vào hàng đợi `dg_offline_drafts` và cấp mã tạm `OFFLINE-XXXX`, thông báo cho người dân yên tâm cất điện thoại.
+### 2.2. Giải pháp 30 giây vượt trội của DustGuard VN
+1. **4 Hiện tượng vi phạm thường gặp nhất**:
+   - **Bụi phát tán từ công trình**: Đào móng, đập phá nhà cửa, cắt đá mài tường không che bạt hoặc không phun nước dập bụi.
+   - **Xe tải chở đất cát không phủ bạt**: Xe ben chở vật liệu làm rơi vãi đất đá ra lòng đường, gây nguy hiểm cho người đi xe máy.
+   - **Bùn đất vương vãi ra lòng đường**: Xe công trường chạy thẳng ra phố không qua cầu xịt rửa lốp, kéo vệt bùn dài trơn trượt.
+   - **Đốt rác, phế thải xây dựng**: Đốt vỏ bao xi măng, gỗ cốp pha tại các bãi đất trống bốc khói cay mắt và khét lẹt.
+2. **Tự động nén ảnh nhẹ gửi siêu nhanh**: Tự động co nhỏ và nén dung lượng ảnh từ 10MB xuống dưới **300KB** ngay trên điện thoại trong 0.1 giây, giúp gửi ảnh vù vù ngay cả khi sóng 4G chỉ có 1 vạch.
+3. **Gỡ thông tin cá nhân trên ảnh**: Tự động bóc tách và xóa sạch vị trí nhà riêng cùng thông tin máy ảnh trên tệp chụp trước khi gửi đi, bảo đảm tuyệt đối quyền riêng tư cho người dân.
+4. **Mã nhận dạng ảnh chống chỉnh sửa**: Tự động tạo một mã bảo mật gắn liền với bức ảnh, chứng minh bức ảnh là nguyên bản thực tế, không bị can thiệp photoshop.
+5. **Tự lưu nháp khi mất mạng 4G**:
+   - Từng câu chữ bạn gõ được máy tự động lưu lại, lỡ tắt app mở lại vẫn nguyên vẹn.
+   - Nếu bấm gửi đúng lúc mất mạng, máy tự lưu an toàn, cấp mã tạm `OFFLINE-XXXX` và tự động gửi đi ngay khi có sóng trở lại.
+6. **Mã tra cứu dễ nhớ**: Nhận ngay mã số chuẩn hóa theo tỉnh thành như `DG-HN-2026-0842` để tiện tra cứu tiến độ.
 
 ---
 
-## 3. User Journey & Luồng Thao Tác 30 Giây Thần Tốc (Core Flow & Step-by-Step)
+## 3. Người Dùng & Các Bước Sử Dụng (User Flow & Steps)
 
-### 3.1. Phân bổ thời gian thực tế 30 giây (Timeline Breakdown)
+### 3.1. 4 Bước thao tác nhanh trong 30 giây
 ```text
-[0s ─── 5s]   Bước 1: Chạm chọn 1 trong 4 danh mục vi phạm nổi bật.
-[6s ─── 15s]  Bước 2: Bấm nút Máy ảnh -> Chụp ảnh hiện trường -> Trình duyệt tự nén <300KB + Băm SHA-256 + Gỡ Exif.
-[16s ── 22s]  Bước 3: Vị trí tự nhận diện hoặc gõ nhanh số nhà/tên đường + chọn Phường/Xã.
-[23s ── 27s]  Bước 4: Nhập 1 câu mô tả ngắn gọn (hoặc để mặc định theo danh mục).
+[0s ─── 5s]   Bước 1: Chạm chọn 1 trong 4 hiện tượng vi phạm (Bụi / Xe tải / Bùn đất / Đốt rác).
+[6s ─── 15s]  Bước 2: Bấm chụp ảnh hiện trường (máy tự động nén nhẹ và gỡ thông tin cá nhân).
+[16s ── 22s]  Bước 3: Nhập địa chỉ cụ thể (số nhà, tên đường) và chọn Phường/Xã.
+[23s ── 27s]  Bước 4: Gõ 1 câu mô tả ngắn (hoặc dùng gợi ý có sẵn).
 [28s ── 30s]  Bấm nút [GỬI PHẢN ÁNH NGAY (30 GIÂY)] -> Nhận mã tra cứu DG-HN-2026-0842.
 ```
 
-### 3.2. Sơ đồ xử lý kỹ thuật đầu cuối (Mermaid Flowchart)
+### 3.2. Sơ đồ các bước gửi phản ánh
+
 ```mermaid
 flowchart TD
-    Start[Mở màn hình CIT-02 /citizen/report/new] --> SelectCat[1. Chọn danh mục vi phạm: Bụi/Xe tải/Bùn đất/Đốt rác]
+    Start[Mở màn hình CIT-02 /citizen/report/new] --> SelectCat[1. Chọn hiện tượng vi phạm]
     
     SelectCat --> PhotoChoice{2. Chụp ảnh hiện trường}
-    PhotoChoice -->|Bấm chụp ảnh| Camera[Mở Camera thiết bị qua capture='environment']
-    Camera --> CanvasCompress[HTML5 Canvas: Tự co kích thước + Nén JPEG < 300KB]
-    CanvasCompress --> CryptoHash[Web Crypto: Sinh mã băm SHA-256 64 ký tự hex]
-    CryptoHash --> ExifStrip[Privacy Sanitizer: Gỡ sạch phân đoạn Exif APP1 nhạy cảm]
-    ExifStrip --> PreviewImg[Hiển thị ảnh xem trước + Nút xóa ✕]
+    PhotoChoice -->|Bấm chụp ảnh| Camera[Mở máy ảnh điện thoại]
+    Camera --> Compress[Tự động nén ảnh nhẹ < 300KB + Gỡ thông tin cá nhân]
+    Compress --> PreviewImg[Hiển thị ảnh xem trước + Nút xóa]
     
-    PreviewImg --> InputLoc[3. Nhập vị trí: Số nhà, tên đường + Phường/Xã]
-    InputLoc --> InputDesc[4. Nhập mô tả thêm tình trạng]
+    PreviewImg --> InputLoc[3. Nhập số nhà, tên đường + Phường/Xã]
+    InputLoc --> InputDesc[4. Gõ thêm mô tả ngắn]
     
     InputDesc --> SubmitBtn[Bấm 'GỬI PHẢN ÁNH NGAY (30 GIÂY)']
-    SubmitBtn --> ValidateForm{Kiểm tra dữ liệu bắt buộc}
+    SubmitBtn --> CheckNet{Kiểm tra sóng mạng}
     
-    ValidateForm -->|Thiếu địa chỉ & mô tả| ShowErr[Cảnh báo yêu cầu bổ sung vị trí]
-    ValidateForm -->|Hợp lệ| CheckNet{Kiểm tra kết nối mạng}
+    CheckNet -->|Có mạng bình thường| SuccessOnline[Hiện thông báo Thành công: Cấp mã DG-HN-2026-0842]
+    CheckNet -->|Mất sóng 4G| SaveOffline[Tự lưu nháp vào máy: Cấp mã tạm OFFLINE-XXXX]
     
-    CheckNet -->|Có mạng 4G/Wifi| PostAPI[Gọi POST /api/complaints]
-    PostAPI -->|201 Created| SuccessOnline[Hiển thị Màn hình Thành công: Cấp mã DG-HN-2026-0842]
-    
-    CheckNet -->|Mất sóng/Lỗi mạng| SaveOffline[Lưu vào hàng đợi LocalStorage dg_offline_drafts]
-    SaveOffline --> SuccessOffline[Hiển thị Màn hình Lưu nháp ngoại tuyến: Cấp mã OFFLINE-XXXX]
-    
-    SuccessOnline --> NextAction{Hành động tiếp theo}
-    SuccessOffline --> NextAction
-    NextAction -->|Xem kết quả| TrackPage[Điều hướng /citizen/reports]
-    NextAction -->|Gửi tiếp| ResetForm[Xóa form cũ và mở biểu mẫu mới]
+    SuccessOnline --> NextAction{Bạn muốn làm gì tiếp theo?}
+    SaveOffline --> NextAction
+    NextAction -->|Xem kết quả| TrackPage[Chuyển sang theo dõi tiến độ]
+    NextAction -->|Gửi tiếp| ResetForm[Mở biểu mẫu mới gửi phản ánh khác]
 ```
 
 ---
 
-## 4. Bố Cục Giao Diện & Wireframe ASCII Chi Tiết (Information Hierarchy & Wireframes)
+## 4. Bố Cục Giao Diện & Khung Dây ASCII (Layout & Wireframes)
 
-### 4.1. Phân cấp thông tin thị giác (Information Hierarchy)
-1. **Tiêu đề trang & Lời cam kết bảo mật**:
-   - Tiêu đề H1: `Gửi Phản Ánh Bụi Môi Trường`
-   - Phụ đề trấn an: `Thông tin phản ánh của bạn sẽ được bảo mật và chuyển trực tiếp đến cán bộ phụ trách.`
-2. **Bước 1 — Chọn hiện tượng bạn phát hiện (Category Selector)**:
-   - Lưới 4 thẻ danh mục với biểu tượng và nút radio tùy biến:
-     - Thẻ 1: `Bụi phát tán từ công trình`
-     - Thẻ 2: `Xe tải chở đất cát không phủ bạt`
-     - Thẻ 3: `Bùn đất vương vãi ra lòng đường`
-     - Thẻ 4: `Đốt rác, phế thải xây dựng`
-3. **Bước 2 — Hình ảnh hiện trường (Photo Upload & Camera Zone)**:
-   - Khung viền nét đứt (dashed) thân thiện với biểu tượng máy ảnh màu đỏ son.
-   - Nút `[Chọn tệp ảnh]` kích hoạt camera sau của smartphone (`capture="environment"`).
-   - Khung xem trước ảnh (Preview) kèm huy hiệu `Đã bảo mật Exif & Nén tối ưu` và nút xóa `[✕]` góc trên.
-4. **Bước 3 — Địa chỉ & Khu vực (Location Fields)**:
-   - Trường bắt buộc: `Địa chỉ / Vị trí cụ thể *` (Placeholder: *VD: Trước số nhà 128 đường Nguyễn Trãi...*).
-   - Trường khu vực: `Khu vực / Phường xã` (Dropdown chọn nhanh hoặc gõ text: *Phường Thanh Xuân Trung*).
-5. **Bước 4 — Mô tả thêm tình trạng (Description Field)**:
-   - Textarea 3 dòng hỗ trợ gõ nhanh (Placeholder: *VD: Xe tải chở đất cát không rửa lốp làm bùn đất kéo dài 100m, bụi mù mịt khi xe chạy qua...*).
-6. **Nút gửi phản ánh chính (Primary Submit CTA)**:
-   - Nút kích thước lớn, chiều cao $48\text{px}$, màu đỏ son cứu hộ `#B91C1C`, chữ in hoa đậm: `GỬI PHẢN ÁNH NGAY (30 GIÂY)`.
+### 4.1. Cách sắp xếp thông tin trên màn hình
+1. **Tiêu đề & Lời nhắn an tâm**:
+   - Tiêu đề to rõ: `Gửi Phản Ánh Bụi Môi Trường`
+   - Dòng phụ: `Thông tin phản ánh của bạn được bảo mật và chuyển trực tiếp đến cán bộ phụ trách địa bàn.`
+2. **Bước 1 — Chọn hiện tượng bạn phát hiện**: 4 ô lựa chọn to rõ (Bụi công trình, Xe tải không phủ bạt, Bùn đất ra đường, Đốt rác phế thải).
+3. **Bước 2 — Hình ảnh hiện trường**: Khung viền nét đứt thân thiện, nút bấm `[ 📸 CHỌN TỆP ẢNH / CHỤP ẢNH ]` to rõ, có ảnh xem trước kèm nút xóa `[✕]`.
+4. **Bước 3 — Địa chỉ & Phường xã**: Ô nhập số nhà, tên đường kèm danh sách chọn nhanh Phường/Xã.
+5. **Bước 4 — Mô tả thêm tình trạng**: Ô nhập 2-3 dòng chữ ngắn gọn.
+6. **Nút gửi chính**: Nút màu đỏ son cứu hộ `#B91C1C` nổi bật ở cuối trang: `GỬI PHẢN ÁNH NGAY (30 GIÂY)`.
 
-### 4.2. Wireframe Giao Diện Nhập Liệu Mobile (Viewport 360px — 430px)
+### 4.2. Khung hình giao diện nhập liệu trên điện thoại (Mobile)
+
 ```text
 +-------------------------------------------------------------+
 | [🛡️ DustGuard VN] [CỘNG ĐỒNG]                 [🟢 Trực tuyến] |
 +-------------------------------------------------------------+
 |                                                             |
 |  GỬI PHẢN ÁNH BỤI MÔI TRƯỜNG                                 |
-|  Thông tin phản ánh của bạn sẽ được bảo mật và chuyển...    |
+|  Thông tin phản ánh của bạn sẽ được chuyển đến cán bộ...     |
 |                                                             |
 |  1. HIỆN TƯỢNG BẠN PHÁT HIỆN *                              |
 |  +-------------------------------------------------------+  |
@@ -143,8 +119,8 @@ flowchart TD
 |  |                      [ 📷 ]                           |  |
 |  |           Chụp ảnh hoặc chọn ảnh từ thiết bị           |  |
 |  |                                                       |  |
-|  |       [ 📸 CHỌN TỆP ẢNH / CHỤP ẢNH ] (Cao 44px)        |  |
-|  |  (Tự động nén <300KB & Gỡ Exif bảo vệ riêng tư)       |  |
+|  |       [ 📸 CHỌN TỆP ẢNH / CHỤP ẢNH ] (Nút to rõ)        |  |
+|  |     (Tự động nén ảnh nhẹ & gỡ thông tin cá nhân)      |  |
 |  + - - - - - - - - - - - - - - - - - - - - - - - - - - - +  |
 |                                                             |
 |  3. ĐỊA CHỈ / VỊ TRÍ CỤ THỂ *                               |
@@ -159,7 +135,7 @@ flowchart TD
 |                                                             |
 |  +-------------------------------------------------------+  |
 |  |    [ 🚀 GỬI PHẢN ÁNH NGAY (30 GIÂY) ]                 |  |
-|  |    (Cao 48px, Màu đỏ son #B91C1C, Chữ trắng đậm)      |  |
+|  |    (Màu đỏ son nổi bật, cao 48px, bấm vừa ngón cái)    |  |
 |  +-------------------------------------------------------+  |
 |                                                             |
 +-------------------------------------------------------------+
@@ -167,68 +143,70 @@ flowchart TD
 +-------------------------------------------------------------+
 ```
 
-### 4.3. Wireframe Màn Hình Thành Công Online (Success State)
+### 4.3. Khung hình thông báo gửi thành công (Khi có mạng)
+
 ```text
 +-------------------------------------------------------------+
 |                                                             |
 |  +-------------------------------------------------------+  |
 |  |                     [  ✅  ]                          |  |
-|  |             (Hình tròn Xanh ngọc lục bảo)              |  |
+|  |             (Biểu tượng xanh ngọc sáng)               |  |
 |  |                                                       |  |
 |  |           GỬI PHẢN ÁNH THÀNH CÔNG!                    |  |
-|  |   Hệ thống đã tiếp nhận thông tin và chuyển tới tổ    |  |
-|  |   công tác giám sát địa bàn.                          |  |
+|  |   Thông tin đã được tiếp nhận và chuyển tới tổ công   |  |
+|  |   tác giám sát địa bàn để yêu cầu xử lý.              |  |
 |  |                                                       |  |
 |  |   +-----------------------------------------------+   |  |
 |  |   | Mã tra cứu phản ánh:                          |   |  |
 |  |   | DG-HN-2026-0842                               |   |  |
-|  |   | (Font mono lớn, màu đỏ son #B91C1C, in đậm)   |   |  |
+|  |   | (Mã số in đậm, dùng để theo dõi tiến độ)      |   |  |
 |  |   +-----------------------------------------------+   |  |
 |  |                                                       |  |
-|  |   [ 📋 Theo dõi kết quả xử lý ]  (Cao 44px, Nút đỏ)   |  |
+|  |   [ 📋 Theo dõi kết quả xử lý ]  (Nút màu đỏ son)     |  |
 |  |                                                       |  |
-|  |   [ ➕ Gửi thêm phản ánh khác ]  (Cao 44px, Nút kem)  |  |
+|  |   [ ➕ Gửi thêm phản ánh khác ]  (Nền kem viền xám)   |  |
 |  +-------------------------------------------------------+  |
 |                                                             |
 +-------------------------------------------------------------+
 ```
 
-### 4.4. Wireframe Màn Hình Lưu Nháp Ngoại Tuyến (Offline State khi mất sóng 4G)
+### 4.4. Khung hình tự lưu nháp (Khi mất sóng 4G)
+
 ```text
 +-------------------------------------------------------------+
 |                                                             |
 |  +-------------------------------------------------------+  |
-|  |                     [  📡⚠️  ]                         |  |
-|  |             (Hình tròn Màu vàng hổ phách)             |  |
+|  |                     [  📡  ]                          |  |
+|  |              (Biểu tượng màu vàng ấm)                 |  |
 |  |                                                       |  |
-|  |          ĐÃ LƯU NHÁP NGOẠI TUYẾN!                     |  |
-|  |   Thiết bị đang mất kết nối mạng 4G. Hồ sơ đã được    |  |
-|  |   lưu an toàn trên điện thoại và sẽ tự động gửi       |  |
-|  |   khi khôi phục kết nối.                              |  |
+|  |          ĐÃ TỰ LƯU NHÁP VÀO MÁY!                      |  |
+|  |   Điện thoại của bạn đang mất mạng 4G. Thông tin đã   |  |
+|  |   được lưu an toàn và sẽ tự động gửi đi khi có sóng.  |  |
 |  |                                                       |  |
 |  |   +-----------------------------------------------+   |  |
 |  |   | Mã hồ sơ tạm thời:                            |   |  |
-|  |   | OFFLINE-L9X8K2M1                              |   |  |
+|  |   | OFFLINE-HN-0842                               |   |  |
 |  |   +-----------------------------------------------+   |  |
 |  |                                                       |  |
-|  |   [ 📋 Xem danh sách phản ánh ] (Cao 44px, Nút chính) |  |
-|  |   [ ➕ Tạo thêm phản ánh khác ] (Cao 44px, Nút phụ)   |  |
+|  |   [ 📋 Xem danh sách phản ánh ] (Nút màu đỏ)          |  |
+|  |   [ ➕ Tạo thêm phản ánh khác ] (Nền kem)             |  |
 |  +-------------------------------------------------------+  |
 |                                                             |
 +-------------------------------------------------------------+
 ```
 
-### 4.5. Wireframe Desktop 2 Cột (Viewport 1366px — 1920px)
+### 4.5. Khung hình giao diện trên máy tính (Desktop)
+
 ```text
 +----------------------------------------------------------------------------------------------------+
 | [🛡️ DustGuard VN] [CỘNG ĐỒNG]      [Trang chủ]   [Gửi phản ánh]   [Phản ánh của tôi]   [👤 Tài khoản]|
 +----------------------------------------------------------------------------------------------------+
 |                                                                                                    |
 |  GỬI PHẢN ÁNH BỤI MÔI TRƯỜNG                                                                       |
-|  Thông tin phản ánh của bạn sẽ được bảo mật và chuyển trực tiếp đến cán bộ phụ trách.              |
+|  Thông tin phản ánh của bạn sẽ được chuyển trực tiếp đến cán bộ phụ trách địa bàn.                 |
 |                                                                                                    |
 |  +------------------------------------------+  +------------------------------------------------+  |
-|  | CỘT TRÁI: HIỆN TƯỢNG & HÌNH ẢNH          |  | CỘT PHẢI: VỊ TRÍ & MÔ TẢ CHI TIẾT              |  |
+|  | CỘT 1: HIỆN TƯỢNG & HÌNH ẢNH             |  | CỘT 2: VỊ TRÍ & MÔ TẢ CHI TIẾT                 |  |
 |  |                                          |  |                                                |  |
 |  | 1. Hiện tượng bạn phát hiện *            |  | 3. Địa chỉ / Vị trí cụ thể *                   |  |
 |  | +--------------------------------------+ |  | [ Trước số nhà 128 đường Nguyễn Trãi...      ] |  |
@@ -242,7 +220,7 @@ flowchart TD
 |  | + - - - - - - - - - - - - - - - - - -  + |  |                                                |  |
 |  | |           [ 📷 Máy ảnh ]            | |  | +--------------------------------------------+ |  |
 |  | |     Chụp hoặc chọn ảnh từ máy        | |  | |  [ 🚀 GỬI PHẢN ÁNH NGAY (30 GIÂY) ]        | |  |
-|  | |      [ 📸 Chọn tệp ảnh ]             | |  | |  (Màu đỏ son #B91C1C, Chiều cao 48px)      | |  |
+|  | |      [ 📸 Chọn tệp ảnh ]             | |  | |  (Nút màu đỏ son, bấm gửi tức thì)          | |  |
 |  | + - - - - - - - - - - - - - - - - - -  + |  | +--------------------------------------------+ |  |
 |  +------------------------------------------+  +------------------------------------------------+  |
 |                                                                                                    |
@@ -251,157 +229,71 @@ flowchart TD
 
 ---
 
-## 5. Dữ Liệu, API & D1 Database Contract
+## 5. Dữ Liệu & Nguồn Thông Tin (Data & API Summary)
 
-### 5.1. API Endpoint
-- **Gửi bản ghi phản ánh mới**:
-  - `POST /api/complaints` (Edge Worker Route) hoặc `/complaints`
-  - Method: `POST`
-  - Headers:
-    ```http
-    Content-Type: application/json
-    Accept: application/json
-    ```
+### 5.1. Nguồn dữ liệu gửi đi
+- **Gửi phản ánh**: Gọi `POST /api/complaints`.
+- **Tự động lưu nháp**: Từng trường thông tin nhập dở được tự động lưu tạm trên bộ nhớ máy điện thoại.
 
-### 5.2. Payload Gửi Yêu Cầu (Request Payload Contract)
-```json
-{
-  "category": "UNCOVERED_TRANSPORT",
-  "address": "Trước số nhà 128 Nguyễn Trãi",
-  "ward": "Phường Thanh Xuân Trung",
-  "district": "Quận Thanh Xuân",
-  "province": "Hà Nội",
-  "description": "Xe ben chở đất cát không phủ bạt làm rơi vãi mù mịt trên đường",
-  "reporterName": "Người dân ẩn danh",
-  "reporterPhone": "",
-  "evidences": [
-    {
-      "url": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD...",
-      "sha256": "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b",
-      "type": "photo",
-      "sizeKB": 218.4,
-      "exifStripped": true
-    }
-  ],
-  "evidenceUrls": [
-    "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
-  ],
-  "sha256": "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b"
-}
-```
+### 5.2. Các thông tin chính gửi đi
+| Trường thông tin | Ý nghĩa dễ hiểu | Ví dụ thực tế |
+|---|---|---|
+| `category` | Loại vi phạm | `UNCOVERED_TRANSPORT` (Xe tải không phủ bạt) |
+| `address` | Vị trí phát hiện | Trước số nhà 128 Nguyễn Trãi |
+| `ward` | Phường / Xã | Phường Thanh Xuân Trung |
+| `description` | Mô tả tình trạng | Xe chở cát không phủ bạt làm rơi vãi ra đường |
+| `evidenceUrls` | Ảnh hiện trường | Ảnh đã nén dưới 300KB và gỡ thông tin cá nhân |
 
-### 5.3. Payload Phản Hồi Thành Công (Response Contract 201 Created)
-```json
-{
-  "status": "success",
-  "data": {
-    "id": "cmp_9f81a2b3c4d5",
-    "code": "DG-HN-2026-0842",
-    "category": "UNCOVERED_TRANSPORT",
-    "address": "Trước số nhà 128 Nguyễn Trãi",
-    "ward": "Phường Thanh Xuân Trung",
-    "description": "Xe ben chở đất cát không phủ bạt làm rơi vãi mù mịt trên đường",
-    "status": "PENDING",
-    "sha256": "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b",
-    "createdAt": "2026-09-02T05:27:00.000Z"
-  }
-}
-```
+---
 
-### 5.4. Schema Bảng D1 SQLite (`complaints` & `evidences`)
-| Tên Cột | Kiểu Dữ Liệu | Ràng Buộc | Mô Tả Nghiệp Vụ |
+## 6. Danh Sách Nút Bấm & Thao Tác (Buttons & Actions)
+
+| Tên Nút / Thao Tác | Vị Trí | Bấm vào sẽ làm gì? | Kích Thước Bấm |
 |---|---|---|---|
-| `id` | `TEXT` | `PRIMARY KEY` | Khóa chính dạng chuỗi UUID |
-| `code` | `TEXT` | `NOT NULL UNIQUE` | Mã tra cứu cấp quốc gia `DG-HN-2026-XXXX` |
-| `category` | `TEXT` | `NOT NULL` | 1 trong 4 danh mục vi phạm môi trường |
-| `address` | `TEXT` | `NOT NULL` | Địa chỉ hiện trường phát hiện |
-| `ward` | `TEXT` | `NOT NULL` | Phường/Xã phụ trách địa bàn |
-| `district` | `TEXT` | `NULL` | Quận/Huyện/Thị xã |
-| `province` | `TEXT` | `DEFAULT 'Hà Nội'` | Tỉnh/Thành phố |
-| `description` | `TEXT` | `NOT NULL` | Chi tiết mô tả hiện trường vi phạm |
-| `reporter_name` | `TEXT` | `NULL` | Tên người phản ánh (mặc định 'Người dân') |
-| `reporter_phone` | `TEXT` | `NULL` | Số điện thoại liên hệ (tùy chọn) |
-| `evidence_urls` | `TEXT` | `NULL` | Mảng JSON chứa đường dẫn/base64 hình ảnh |
-| `sha256` | `TEXT` | `NULL` | Mã băm SHA-256 đối chứng bằng chứng |
-| `status` | `TEXT` | `DEFAULT 'PENDING'` | Trạng thái ban đầu: `PENDING` |
-| `created_at` | `DATETIME` | `DEFAULT CURRENT_TIMESTAMP` | Thời điểm ghi nhận vào CSDL |
-
-### 5.5. Cấu Trúc Khóa Lưu Nháp Trình Duyệt (LocalStorage / IndexedDB Keys)
-- `dg_citizen_report_new_draft`: Lưu tự động dữ liệu form người dân đang nhập dở (Category, Address, Ward, Description, Base64 preview, SHA-256 hash). Xóa sạch khi gửi thành công.
-- `dg_offline_drafts`: Mảng chứa các bản ghi phản ánh đã bấm gửi nhưng mất sóng 4G, tự động đồng bộ khi có mạng trở lại.
-- `dg_submission_history`: Lịch sử các lần gửi gần nhất để kiểm soát chống spam (Rate Limit Client).
+| **4 Ô chọn hiện tượng** | Bước 1 | Chạm chọn loại vi phạm (đổi viền đỏ nổi bật) | Cao 48px, dễ chạm |
+| **[📸 Chọn tệp ảnh / Chụp ảnh]** | Bước 2 | Mở camera chụp ảnh; máy tự nén nhẹ và gỡ thông tin cá nhân | Cao 44px |
+| **[✕] Xóa ảnh xem trước** | Góc trên ảnh | Xóa ảnh vừa chụp nếu muốn chụp lại ảnh khác | Vùng bấm 32px |
+| **[🚀 GỬI PHẢN ÁNH NGAY (30 GIÂY)]** | Cuối form | Gửi phản ánh lên hệ thống và nhận mã tra cứu | Cao 48px, to rõ |
+| **[📋 Theo dõi kết quả xử lý]** | Màn hình thành công | Mở danh sách theo dõi tiến độ xử lý | Cao 44px |
+| **[➕ Gửi thêm phản ánh khác]** | Màn hình thành công | Mở biểu mẫu trắng để gửi thêm phản ánh mới | Cao 44px |
 
 ---
 
-## 6. Bảng Nút Bấm & Hành Động Cốt Lõi (CTAs & Interactions)
+## 7. Quy Chuẩn Trình Bày & Màu Sắc (UI/UX & Responsive)
 
-| Tên Nút / Thao Tác | Vị Trí | Hành Vi Kích Hoạt | Logic Xử Lý Kỹ Thuật | Kích Thước Vùng Chạm | Phản Hồi Giao Diện |
-|---|---|---|---|---|---|
-| **Thẻ danh mục (4 thẻ)** | Bước 1 | Click / Tap | Cập nhật `form.category` | Chiều cao $\ge 48\text{px}$ | Đổi viền sang đỏ son `#B91C1C`, nền hồng `#FEF2F2`, radio active |
-| **[📸 Chọn tệp ảnh / Chụp ảnh]** | Bước 2 | Tap vào vùng upload | Mở Camera OS qua `capture="environment"` | Vùng bấm $\ge 44\text{px}$ | Kích hoạt bộ nén Canvas $<300\text{KB}$, tính hash SHA-256 và hiển thị ảnh xem trước |
-| **[✕] Xóa ảnh xem trước** | Góc trên ảnh | Click / Tap | Xóa `imageFile`, `imagePreview`, `imageHash` | Vùng chạm $32\text{px} \times 32\text{px}$ | Khung upload trở lại trạng thái ban đầu để chụp lại |
-| **[🚀 GỬI PHẢN ÁNH NGAY (30 GIÂY)]** | Cuối form | Click / Submit | Validate $\rightarrow$ `setSubmitting(true)` $\rightarrow$ `POST /complaints` | Chiều cao $48\text{px}$, Full width | Nút đổi sang `Đang gửi phản ánh...`, vô hiệu hóa chống click đúp |
-| **[📋 Theo dõi kết quả xử lý]** | Màn hình thành công | Click / Tap | Điều hướng sang `/citizen/reports` | Chiều cao $\ge 44\text{px}$ | Chuyển ngay đến danh sách phản ánh cá nhân |
-| **[➕ Gửi thêm phản ánh khác]** | Màn hình thành công | Click / Tap | Đặt lại form về mặc định, xóa `successResult` | Chiều cao $\ge 44\text{px}$ | Form trắng mới sẵn sàng gửi phản ánh tiếp theo |
+### 7.1. Màu sắc sáng rõ, dễ nhìn ngoài trời
+- **Nền trang**: Màu kem sáng `#FAFAF9` (hoặc `#FDFBF7`), dịu mắt khi đứng ngoài trời nắng.
+- **Nền biểu mẫu**: Trắng tinh `#FFFFFF`, viền xám mềm `#E7E5E4`.
+- **Màu chữ**: Chữ đen than `#1C1917` tương phản cao trên nền trắng, chữ mô tả xám đậm `#57534E`.
+- **Màu nút gửi**: Đỏ son cứu hộ `#B91C1C`, chữ in hoa trắng đậm.
+- **Không dùng kính mờ (glassmorphism)**: Giúp trang phản hồi nhanh, mượt mà trên mọi loại máy điện thoại cũ hay mới.
 
----
-
-## 7. Quy Chuẩn UI/UX, Typography, Responsive & Khả Năng Tiếp Cận (A11y)
-
-### 7.1. Nguyên tắc màu sắc Civic High-Contrast (Zero Glassmorphism)
-- **Màu nền form**: Trắng tinh khiết `#FFFFFF` nổi bật trên nền trang kem sáng `#FAFAF9` (hoặc `#FDFBF7`).
-- **Màu viền & đường ngăn cách**: Xám mềm `#E7E5E4` (khi focus/active chuyển sang viền đỏ son `#B91C1C`).
-- **Màu chữ chính**: Đen than `#1C1917` (High Contrast $7:1$ so với nền trắng), chữ mô tả `#57534E`, chữ phụ `#78716C`.
-- **Màu nút hành động chính**: Đỏ son cứu hộ `#B91C1C` (Hover: `#991B1B`, Active: `#7F1D1D`), chữ trắng in hoa đậm.
-- **Tuyệt đối cấm**:
-  - Không sử dụng hiệu ứng làm mờ nền `backdrop-blur-*` (Glassmorphism) để đảm bảo tốc độ phản hồi 60fps mượt mà trên các dòng điện thoại thông minh phổ thông.
-  - Không dùng font chữ xám mờ trên nền sáng.
-
-### 7.2. Kích thước vùng chạm & Chống Auto-Zoom trên iOS
-- **Touch Target $\ge 44\text{px}$ - $48\text{px}$**: Toàn bộ ô nhập liệu, thẻ danh mục và nút submit đều đạt kích thước tiêu chuẩn, dễ dàng bấm chính xác bằng ngón tay cái khi đang di chuyển trên đường.
-- **Font-size Input $\ge 16\text{px}$**: Toàn bộ các thẻ `<input>` và `<textarea>` có cỡ chữ tối thiểu $16\text{px}$ trên thiết bị di động để ngăn chặn trình duyệt Safari trên iOS tự động zoom phóng to màn hình làm vỡ bố cục giao diện.
-- **Focus Ring rõ ràng**: Khi người dùng chọn vào ô nhập liệu, hiển thị vòng bao nét mảnh `focus:ring-2 focus:ring-[#B91C1C]/20 focus:border-[#B91C1C]` hỗ trợ người khiếm thị và thao tác bàn phím.
-
-### 7.3. Đáp ứng đa màn hình (Responsive Matrix)
-- **Mobile (360px — 430px)**: Bố cục 1 cột dọc, khoảng cách lề $16\text{px}$, các nút bấm giãn `w-full`, danh mục xếp chồng dọc hoặc 2 cột mini.
-- **Tablet & Desktop (640px — 1920px)**: Danh mục chia 2 cột cân đối, trường Địa chỉ & Phường xã dàn hàng ngang `grid-cols-2`, form gói gọn trong container `max-w-2xl` căn giữa giúp mắt không bị mỏi khi nhìn màn hình rộng.
+### 7.2. Chống phóng to màn hình vô lý trên điện thoại
+- Cỡ chữ trong các ô nhập liệu luôn từ 16px trở lên để bàn phím điện thoại mở lên mà không làm nhảy hoặc phóng to trang web.
+- Vùng chạm các nút bấm và ô lựa chọn luôn cao từ 44px đến 48px, dễ dàng bấm chính xác bằng một ngón tay cái khi đang đi lại.
 
 ---
 
-## 8. Bẫy Lỗi Thường Gặp & Cơ Chế Phòng Vệ Ngoại Tuyến (Edge Cases & Recovery)
+## 8. Tình Huống Thường Gặp & Cách Kiểm Tra (Edge Cases & Fast Test CLI)
 
-### 8.1. Các tình huống lỗi hiện trường & Cơ chế tự phục hồi
-1. **Mất sóng 4G đột ngột khi đang bấm nút Gửi**:
-   - *Tình huống*: Người dân đang ở khu vực vùng ven hoặc tầng hầm không có sóng Internet.
-   - *Cơ chế phục hồi*: Bắt lỗi `catch (err)` trong `handleSubmit`, tự động đóng gói payload đưa vào `localStorage.getItem('dg_offline_drafts')`, sinh mã tạm `OFFLINE-XXXX`, chuyển sang màn hình thông báo đã lưu nháp an toàn. Khi người dân có mạng trở lại, hệ thống sẽ tự động đồng bộ nền.
-2. **Double Submission (Người dân bấm liên tục do sốt ruột)**:
-   - *Tình huống*: Mạng chậm $1-2\text{s}$, người dân ấn nút gửi nhiều lần liên tiếp gây trùng lặp bản ghi.
-   - *Cơ chế phục hồi*: Biến trạng thái `submitting` lập tức khóa nút bấm (`disabled={submitting}`), hiển thị nhãn `Đang gửi phản ánh...` và áp dụng cờ chặn logic.
-3. **Ảnh chụp camera độ phân giải cực cao (48MP, 20MB) gây tràn bộ nhớ**:
-   - *Tình huống*: Smartphone đời mới chụp ảnh tệp quá lớn làm đơ trình duyệt.
-   - *Cơ chế phục hồi*: Bộ nén `compressImage` giới hạn kích thước Canvas tối đa 1600px, vẽ ảnh với nền trắng và lặp nén JPEG chất lượng giảm dần từ 0.85 xuống 0.5 cho đến khi tệp nhỏ hơn $300\text{KB}$, giải phóng bộ nhớ ngay sau khi xuất chuỗi Base64.
-4. **Trình duyệt từ chối quyền truy cập GPS**:
-   - *Tình huống*: Người dân tắt định vị hoặc từ chối cấp quyền Geolocation.
-   - *Cơ chế phục hồi*: Hệ thống không chặn quy trình gửi, cho phép nhập địa chỉ bằng tay và chọn nhanh Phường/Xã từ danh sách gợi ý.
-5. **Dữ liệu đang nhập dở bị mất do vô tình tắt trình duyệt**:
-   - *Tình huống*: Đang gõ địa chỉ thì có cuộc gọi đến hoặc vô tình đóng tab.
-   - *Cơ chế phục hồi*: `useEffect` tự động lắng nghe và lưu từng ký tự vào `dg_citizen_report_new_draft`. Khi mở lại trang, dữ liệu cũ được khôi phục 100%.
+### 8.1. Các tình huống thường gặp & Cách xử lý tự động
+1. **Mất sóng 4G đúng lúc bấm gửi**: Máy tự động lưu bản nháp an toàn, cấp mã tạm `OFFLINE-XXXX` và thông báo để người dân yên tâm cất điện thoại.
+2. **Bấm gửi liên tục nhiều lần do sốt ruột**: Nút gửi lập tức đổi sang *"Đang gửi phản ánh..."* và khóa lại trong 2 giây, tránh gửi trùng nhiều lần.
+3. **Ảnh chụp máy xịn dung lượng 20MB**: Máy tự động co nhỏ kích thước và nén nhẹ xuống dưới 300KB trong 0.1 giây, không làm đơ hay nóng máy.
+4. **Vô tình tắt trình duyệt khi đang gõ dở**: Mở lại trang web, toàn bộ nội dung và ảnh đang chọn trước đó sẽ tự động khôi phục lại 100%.
 
-### 8.2. Lệnh kiểm thử tự động phân tầng (PowerShell CLI)
+### 8.2. Lệnh kiểm tra nhanh hệ thống (Chạy bằng PowerShell)
 
 ```powershell
-# [Level 0] Kiểm tra quy tắc nghiệp vụ và xác thực biểu mẫu phản ánh (< 0.5s)
+# Kiểm tra logic biểu mẫu phản ánh (< 0.5s)
 node --test app/tests/complaint-rules.test.js
 
-# [Level 0] Kiểm tra nén ảnh Canvas <300KB và tính mã băm SHA-256 (< 0.5s)
+# Kiểm tra chức năng tự nén ảnh và tạo mã bảo vệ (< 0.5s)
 node --test app/tests/evidence-r2-verification.test.js
 
-# [Level 0] Kiểm tra toàn diện luồng giao diện công dân (< 0.5s)
+# Kiểm tra toàn diện luồng gửi phản ánh (< 0.5s)
 node --test app/tests/citizen-full-functional.test.js
 
-# [Level 1] Kiểm tra API Edge Worker tiếp nhận phản ánh D1 SQLite (< 3s)
-node --test app/tests/worker-full-edge-routes.test.js
-
-# [Level 3 Gate] Xác thực nhanh toàn hệ thống trước khi commit (< 7s)
+# Xác thực nhanh toàn hệ thống trước khi bàn giao (< 7s)
 npm --prefix app run verify:quick
 ```

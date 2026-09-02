@@ -1,91 +1,76 @@
-# CIT-03 — Danh Sách Phản Ánh Môi Trường & Theo Dõi Tiến Độ Thực Địa (Citizen Reports List)
+# CIT-03 — Danh Sách & Theo Dõi Tiến Độ Phản Ánh (Citizen Reports List)
 
-## 1. Screen Identity (Định Danh Màn Hình)
+## 1. Định Danh Màn Hình (Screen Identity)
 - **Mã màn hình**: `CIT-03`
-- **Tên màn hình (Tiếng Việt)**: Danh Sách Phản Ánh Môi Trường & Theo Dõi Tiến Độ Thực Địa
+- **Tên màn hình (Tiếng Việt)**: Danh Sách & Theo Dõi Tiến Độ Phản Ánh
 - **Tên màn hình (Tiếng Anh)**: Citizen Environmental Reports Tracking List
-- **Tuyến đường (Route URL)**: `/citizen/reports`
-  - *Tuyến đường tương thích & chuyển hướng*: `/citizen/track`, `/citizen/missions`
-- **Đường dẫn Component**: [`app/src/apps/citizen/pages/reports/ReportsListPage.jsx`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/app/src/apps/citizen/pages/reports/ReportsListPage.jsx)
-- **Khung giao diện (Layout)**: [`app/src/apps/citizen/layout/CitizenLayout.jsx`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/app/src/apps/citizen/layout/CitizenLayout.jsx)
-  - *Desktop*: Top Header cố định gồm Logo DustGuard, Huy hiệu vai trò `CỘNG ĐỒNG`, Navigation Tabs và Menu Tài khoản.
-  - *Mobile (Viewport < 640px)*: Bottom Navigation Bar cố định đáy màn hình với 4 nút chạm kích thước lớn $\ge 44\text{px}$ (`Trang chủ`, `Phản ánh [Active]`, `Bản đồ`, `Hồ sơ`).
-- **Phân quyền người dùng (Role / RBAC)**: `citizen`, `youth`, `community`, `public` (Công dân đã đăng nhập hoặc người dùng vãng lai tra cứu theo phiên).
-- **Trạng thái triển khai**: `ACTIVE` (Production Level 5 — Kết nối trực tiếp Cloudflare D1 SQLite, cơ chế API unwrap chống sập trang, hỗ trợ lọc đa trạng thái và tối ưu hóa trải nghiệm thực địa).
+- **Đường dẫn (Route URL)**: `/citizen/reports`
+  - Tuyến chuyển hướng tương thích: `/citizen/track`
+- **Tệp mã nguồn Component**: [`app/src/apps/citizen/pages/reports/ReportsListPage.jsx`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/app/src/apps/citizen/pages/reports/ReportsListPage.jsx)
+- **Khung giao diện chung (Layout)**: [`app/src/apps/citizen/layout/CitizenLayout.jsx`](file:///d:/07-Competitions-Hackathons/unicef-dustguard/app/src/apps/citizen/layout/CitizenLayout.jsx)
+  - **Máy tính (Desktop)**: Thanh menu trên cùng, danh sách thẻ phản ánh căn giữa gọn gàng `max-w-4xl`.
+  - **Điện thoại (Mobile)**: Thanh 4 nút bấm cố định đáy màn hình, danh sách cuộn mượt mà bằng ngón tay cái.
+- **Ai được sử dụng**: Mọi người dân, đoàn viên thanh niên, tình nguyện viên môi trường.
+- **Trạng thái thực tế**: Đang hoạt động ổn định, kết nối cơ sở dữ liệu thật, chuyển tab lọc trạng thái nhanh trong tích tắc.
 
 ---
 
-## 2. Mục Đích & Giá Trị Thực Tế
+## 2. Mục Đích & Bối Cảnh Thực Tế (Why & Purpose)
 
-1. **Xóa bỏ tình trạng "đơn từ rơi vào im lặng" (No Black Box)**:
-   - Cung cấp cho công dân và sinh viên tình nguyện một trung tâm theo dõi minh bạch thời gian thực về toàn bộ các phản ánh môi trường đô thị (bụi đất công trình, xe tải không che bạt, bùn đất vương vãi, trạm rửa xe không hoạt động).
-   - Mỗi hồ sơ được cấp một **Mã định danh tra cứu duy nhất** (Ví dụ: `DG-2026-F54A`, `DG-2026-E88B`) có thể đối soát chéo với các cổng thông tin công ích đô thị (Tổng đài 1022, Ứng dụng Công dân Thủ đô số iHanoi).
+### 2.1. Nỗi lo "gửi đơn rồi rơi vào im lặng"
+- Trước đây, khi người dân phản ánh về xe chở đất làm rơi vãi hoặc công trình bụi bặm, người dân thường không biết tin báo của mình gửi đi đâu, có ai tiếp nhận không, hay bị bỏ quên.
+- Màn hình `CIT-03` mang lại sự **minh bạch 100%**: Toàn bộ phản ánh đều được cấp **Mã tra cứu công khai** (như `DG-2026-F54A`, `DG-2026-E88B`), ai cũng có thể theo dõi tiến độ từng giờ từng ngày.
 
-2. **Giám sát cam kết trách nhiệm thời hạn xử lý (SLA 48h)**:
-   - Thể hiện rõ ràng mốc thời gian cam kết tiếp nhận và chỉ đạo khắc phục trong vòng 48 giờ làm việc từ chính quyền địa phương (UBND Phường/Xã, Đội Thanh tra Giao thông - Đô thị) và Chỉ huy trưởng ban điều hành dự án.
-
-3. **Cơ sở dữ liệu tích lũy Tín chỉ Tình nguyện Đoàn - Hội**:
-   - Mỗi phản ánh hiện trường được thẩm tra xác thực và có kết quả khắc phục (`RESOLVED`) là căn cứ dữ liệu gốc để tự động tính thưởng **+2.5 giờ tình nguyện thực địa** và **+10 Điểm rèn luyện (ĐRL)** cho Đoàn viên - Sinh viên thuộc mạng lưới các trường Đại học (ĐHQG Hà Nội, ĐH Bách Khoa, ĐH Xây dựng, ĐH Kinh tế Quốc dân...).
-
-4. **Trải nghiệm thực tế một chạm (High Friction Reduction)**:
-   - Giúp người dân thao tác nhanh chóng ngoài đường phố nắng gió: chuyển tab tức thì dưới 10ms, mở trực tiếp hồ sơ đối chứng ảnh Trước / Sau hoặc tạo phản ánh mới chỉ bằng một nút bấm lớn màu đỏ son.
+### 2.2. Lợi ích thiết thực cho người dân và thanh niên
+1. **Cam kết xử lý trong 48 giờ**: Người dân biết rõ tiến độ từ lúc tiếp nhận đến khi tổ công tác yêu cầu nhà thầu dọn dẹp xong.
+2. **Lọc nhanh 4 trạng thái chỉ bằng 1 chạm**:
+   - `Tất cả`: Xem toàn bộ các phản ánh trên địa bàn.
+   - `Mới gửi`: Các phản ánh vừa gửi lên, đang chờ tổ công tác tiếp nhận.
+   - `Đang xử lý`: Tổ công tác đang kiểm tra hiện trường và đôn đốc nhà thầu quét dọn, che bạt.
+   - `Đã khắc phục`: Nhà thầu đã rửa đường, dọn bùn đất sạch sẽ và nộp ảnh đối chứng.
+3. **Tích lũy giờ tình nguyện cho Đoàn viên - Sinh viên**: Mỗi phản ánh hiện trường được xác thực và xử lý xong (`Đã khắc phục`) là căn cứ cộng giờ tình nguyện thực tế và điểm rèn luyện cho sinh viên.
+4. **Mở xem ảnh đối chứng siêu tốc**: Chạm vào bất kỳ thẻ phản ánh nào để mở ngay màn hình xem ảnh Trước - Sau.
 
 ---
 
-## 3. Đối Tượng Người Dùng & Hành Trình Thao Tác (User Journey & Core Flow)
+## 3. Người Dùng & Các Bước Sử Dụng (User Flow & Steps)
 
-### 3.1. Đối tượng người dùng chính
-- **Người dân sinh sống cạnh công trình xây dựng**: Cần theo dõi xem kiến nghị về xe chở vật liệu làm vương vãi bùn đất đã được phường kiểm tra và nhà thầu quét dọn chưa.
-- **Đoàn viên, Sinh viên Tình nguyện (Youth Volunteers & CLB Môi trường)**: Kiểm tra trạng thái các phản ánh mà Đội/CLB của mình đã ghi nhận trong đợt ra quân khảo sát cuối tuần để tích lũy đủ mốc 20 giờ nhận Giấy chứng nhận điện tử.
-- **Cán bộ Tổ dân phố & Ban Công tác Mặt trận**: Nắm bắt nhanh các điểm nóng ô nhiễm không khí trên địa bàn phường để phối hợp đôn đốc các chủ đầu tư.
+### 3.1. Ai là người sử dụng chính?
+- **Người dân theo dõi kết quả**: Muốn xem phản ánh của mình về xe tải làm rơi đất cát đã được phường kiểm tra và nhà thầu quét dọn chưa.
+- **Đoàn viên thanh niên & Tình nguyện viên**: Kiểm tra danh sách các điểm nóng mà nhóm mình đã ghi nhận trong đợt ra quân cuối tuần để tích lũy giờ tình nguyện.
+- **Tổ trưởng tổ dân phố**: Nắm bắt nhanh các điểm ô nhiễm trên địa bàn phường để nhắc nhở các công trình thi công.
 
-### 3.2. Sơ đồ luồng thao tác cốt lõi (Core User Flow)
+### 3.2. Sơ đồ các bước sử dụng
 
 ```mermaid
 flowchart TD
-    A[Mở Cổng Công Dân /citizen] --> B[Bấm Tab 'Phản Ánh' hoặc Nút 'Theo dõi tiến độ' từ CIT-01]
-    B --> C[Truy cập màn hình CIT-03: /citizen/reports]
-    C --> D[Gọi GET /api/complaints]
-    D --> E{API trả về kết quả?}
-    E -->|Đang tải| F[Hiển thị LoadingState xương mờ Skeleton]
-    E -->|Lỗi kết nối| G[Hiển thị ErrorState + Nút 'Thử lại']
-    E -->|Thành công| H[Unwrap normalizeList trả về Array an toàn]
-    H --> I{Số lượng bản ghi?}
-    I -->|Mảng rỗng []| J[Hiển thị EmptyState 'Chưa có phản ánh nào' + Nút 'Gửi phản ánh ngay']
-    I -->|Có dữ liệu| K[Render danh sách Thẻ Phản Ánh trực quan]
-    K --> L[Chọn Tab Chip Lọc: Tất cả | Mới gửi | Đang xử lý | Đã khắc phục]
-    L --> M[Lọc Client-side mượt mà < 10ms]
-    M --> N{Thao tác tiếp theo}
-    N -->|Bấm vào Thẻ Phản Ánh| O[Điều hướng sang CIT-04: /citizen/reports/:id]
-    N -->|Bấm '+ Gửi phản ánh mới'| P[Điều hướng sang CIT-02: /citizen/report/new]
+    A[Mở Cổng Công Dân /citizen] --> B[Bấm nút 'Theo dõi tiến độ' hoặc tab 'Phản ánh']
+    B --> C[Mở màn hình danh sách CIT-03: /citizen/reports]
+    C --> D{Danh sách phản ánh}
+    D -->|Chưa có phản ánh nào| E[Hiện ô thông báo thân thiện + Nút 'Gửi phản ánh ngay']
+    D -->|Có dữ liệu| F[Hiển thị các thẻ phản ánh trực quan]
+    F --> G[Chạm chọn nút lọc: Tất cả | Mới gửi | Đang xử lý | Đã khắc phục]
+    G --> H[Danh sách lọc ngay trong chớp mắt]
+    H --> I{Thao tác tiếp theo}
+    I -->|Bấm vào 1 phản ánh| J[Mở màn hình CIT-04 xem chi tiết ảnh Trước - Sau]
+    I -->|Bấm '+ Gửi phản ánh mới'| K[Mở màn hình CIT-02 gửi phản ánh khác]
 ```
 
 ---
 
-## 4. Bố Cục Giao Diện & Phân Cấp Thông Tin (Information Hierarchy & Wireframe)
+## 4. Bố Cục Giao Diện & Khung Dây ASCII (Layout & Wireframes)
 
-### 4.1. Phân cấp thị giác (Visual Hierarchy)
-1. **Header Thẻ Tiêu Đề (Title Banner Card)**:
-   - Tiêu đề H1: `Theo Dõi Phản Ánh Môi Trường` (Font chữ đen mực `#1C1917`, in đậm sắc nét).
-   - Mô tả phụ: `Xem tiến độ xử lý và kết quả khắc phục của đơn vị thi công.`
-   - Nút hành động chính (Primary CTA): `[+ Gửi phản ánh mới]` (Màu đỏ son ấn triện `#B91C1C`, hover `#991B1B`, chiều cao chuẩn $\ge 44\text{px}$).
-2. **Thanh Phân Loại Trạng Thái Dạng Chip (Status Filter Chips)**:
-   - Dãy 4 nút chip cuộn ngang linh hoạt:
-     - `Tất cả` (`ALL`): Hiển thị toàn bộ hồ sơ ghi nhận.
-     - `Mới gửi` (`PENDING`): Gồm các trạng thái `PENDING`, `SUBMITTED`, `RECORDED`.
-     - `Đang xử lý` (`IN_PROGRESS`): Gồm `PROCESSING`, `INVESTIGATING`, `VERIFIED`, `ON_SITE`, `APPRAISING`.
-     - `Đã khắc phục` (`RESOLVED`): Gồm `RESOLVED`, `CLOSED`, `COMPLETED`, `SANCTION_ISSUED`.
-   - Nút được chọn nổi bật trên nền đỏ son `#B91C1C`, chữ trắng tương phản tuyệt đối.
-3. **Danh Sách Thẻ Phản Ánh Thực Địa (Reports Feed)**:
-   - Mỗi thẻ card gồm:
-     - Dòng 1: Mã tra cứu hồ sơ định dạng monospace (`DG-2026-XXXX`) + Huy hiệu trạng thái màu sắc (`StatusBadge`) + Thời gian gửi chuẩn Việt Nam (`dd/mm/yyyy`).
-     - Dòng 2: Nội dung tóm tắt vi phạm/phát hiện (font đậm 14px, không cắt cụt làm mất nghĩa).
-     - Dòng 3: Biểu tượng ghim định vị GPS + Địa chỉ cụ thể và Tên Phường/Quận.
-     - Nút xem chi tiết: `Xem tiến độ →` căn phải nổi bật.
-4. **Khối Trạng Thái Rỗng Thân Thiện (Empty State)**:
-   - Biểu tượng thư mục mở, thông điệp hướng dẫn rõ ràng và nút bấm kêu gọi `[Gửi phản ánh ngay]` kích thích người dùng hành động.
+### 4.1. Cách sắp xếp thông tin trên màn hình
+1. **Khung tiêu đề đầu trang**:
+   - Tiêu đề to rõ: `Theo Dõi Phản Ánh Môi Trường`
+   - Lời dẫn: `Xem tiến độ xử lý và kết quả khắc phục của đơn vị thi công.`
+   - Nút hành động chính: `[ + Gửi phản ánh mới ]` (Màu đỏ son nổi bật).
+2. **Dãy nút lọc trạng thái**: 4 nút dạng chip (`Tất cả`, `Mới gửi`, `Đang xử lý`, `Đã khắc phục`), nút đang chọn có màu đỏ son nổi bật.
+3. **Danh sách các thẻ phản ánh**:
+   - Mỗi thẻ gồm: Mã tra cứu (`DG-2026-F54A`), Nhãn trạng thái màu sắc, Ngày gửi, Nội dung tóm tắt vi phạm, Địa chỉ cụ thể và nút `Xem tiến độ →`.
+4. **Khung thông báo khi chưa có dữ liệu**: Biểu tượng thân thiện và nút `[Gửi phản ánh ngay]`.
 
-### 4.2. Khung dây giao diện trực quan (ASCII Wireframe)
+### 4.2. Khung hình giao diện trực quan (ASCII Wireframe)
 
 ```text
 +----------------------------------------------------------------------------------------------------+
@@ -100,13 +85,13 @@ flowchart TD
 |  [ Tất cả (4) ]   [ Mới gửi (1) ]   [ Đang xử lý (1) ]   [ Đã khắc phục (2) ]                     |
 |                                                                                                    |
 |  +----------------------------------------------------------------------------------------------+  |
-|  | DG-2026-F54A   [ ĐÃ KHẮC PHỤC (Xanh ngọc) ]   • 25/07/2026                                   |  |
+|  | DG-2026-F54A   [ ĐÃ KHẮC PHỤC (Xanh lá) ]     • 25/07/2026                                    |  |
 |  | Phát hiện xe tải chở đất đá rơi vãi gây ô nhiễm bụi nghiêm trọng tại ô đất E9 Phường Yên Hòa  |  |
 |  | 📍 Số 18 Phạm Hùng, Phường Yên Hòa, Cầu Giấy                                  Xem tiến độ →  |  |
 |  +----------------------------------------------------------------------------------------------+  |
 |                                                                                                    |
 |  +----------------------------------------------------------------------------------------------+  |
-|  | DG-2026-E88B   [ ĐÃ KHẮC PHỤC (Xanh ngọc) ]   • 27/07/2026                                   |  |
+|  | DG-2026-E88B   [ ĐÃ KHẮC PHỤC (Xanh lá) ]     • 27/07/2026                                    |  |
 |  | Công trường thi công không bật phun sương dập bụi bãi vật liệu vào giờ cao điểm             |  |
 |  | 📍 Đường Nguyễn Văn Lộc, Phường Mộ Lao, Hà Đông                               Xem tiến độ →  |  |
 |  +----------------------------------------------------------------------------------------------+  |
@@ -118,151 +103,85 @@ flowchart TD
 |  +----------------------------------------------------------------------------------------------+  |
 |                                                                                                    |
 |  +----------------------------------------------------------------------------------------------+  |
-|  | DG-2026-K419   [ MỚI GỬI (Xám trung tính) ]   • 02/09/2026                                   |  |
+|  | DG-2026-K419   [ MỚI GỬI (Xanh lam nhạt) ]    • 02/09/2026                                   |  |
 |  | Xe bồn trộn bê tông xả nước rửa chứa bùn xi măng ra cống thoát nước đường gom               |  |
 |  | 📍 Đường Trần Thái Tông, Phường Dịch Vọng Hậu, Cầu Giấy                      Xem tiến độ →  |  |
 |  +----------------------------------------------------------------------------------------------+  |
 |                                                                                                    |
 +----------------------------------------------------------------------------------------------------+
-| [Mobile Bottom Nav (≤ 640px)]:   (🏠 Trang chủ)   (📋 Phản ánh [*])   (🗺️ Bản đồ)   (👤 Hồ sơ)     |
+| [Menu đáy trên điện thoại]:        (🏠 Trang chủ)   (📋 Phản ánh [*])   (🗺️ Bản đồ)   (👤 Hồ sơ)     |
 +----------------------------------------------------------------------------------------------------+
 ```
 
 ---
 
-## 5. Dữ Liệu & API / D1 Database Contract
+## 5. Dữ Liệu & Nguồn Thông Tin (Data & API Summary)
 
-### 5.1. Bảng CSDL D1 SQLite liên quan (Schema SSOT)
-- **Bảng `complaints`**:
-  ```sql
-  CREATE TABLE IF NOT EXISTS complaints (
-    id TEXT PRIMARY KEY,
-    code TEXT NOT NULL UNIQUE,
-    site_id TEXT,
-    ward TEXT NOT NULL,
-    address TEXT NOT NULL,
-    description TEXT NOT NULL,
-    reporter_name TEXT,
-    reporter_phone TEXT,
-    status TEXT NOT NULL DEFAULT 'PENDING',
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  );
-  CREATE INDEX IF NOT EXISTS idx_complaints_status ON complaints(status);
-  CREATE INDEX IF NOT EXISTS idx_complaints_created ON complaints(created_at DESC);
-  ```
-- **Bảng `evidences`**: Lưu ảnh hiện trường gốc do công dân tải lên và ảnh đối chứng do nhà thầu nộp kèm mã băm SHA-256.
+### 5.1. Nguồn dữ liệu
+- **Lấy danh sách phản ánh**: Gọi `GET /api/complaints`.
+- **Hiển thị an toàn**: Dù hệ thống có nhiều hay ít phản ánh, trang web luôn tự động xếp danh sách ngăn nắp, không bao giờ bị đơ máy.
 
-### 5.2. API Contract chi tiết
-- **Endpoint**: `GET /api/complaints` (Hỗ trợ alias fallback `GET /complaints`)
-- **Headers**:
-  ```http
-  Accept: application/json
-  Authorization: Bearer <session_token> (Tùy chọn cho công dân đã đăng nhập)
-  ```
-- **Query Parameters**:
-  - `limit`: Số bản ghi tối đa (mặc định 50).
-  - `offset`: Phân trang.
-  - `status`: Lọc theo trạng thái nghiệp vụ.
-- **Cấu trúc JSON phản hồi thành công (HTTP 200)**:
-  ```json
-  {
-    "status": "success",
-    "data": {
-      "items": [
-        {
-          "id": "cmp_88f91a2b3c4d",
-          "code": "DG-2026-F54A",
-          "ward": "Phường Yên Hòa",
-          "address": "Số 18 Phạm Hùng, Phường Yên Hòa",
-          "description": "Phát hiện xe tải chở đất đá rơi vãi gây ô nhiễm bụi nghiêm trọng tại ô đất E9",
-          "status": "RESOLVED",
-          "reporterName": null,
-          "reporterPhone": null,
-          "createdAt": "2026-07-25T08:30:00.000Z",
-          "updatedAt": "2026-07-26T10:00:00.000Z",
-          "evidences": [
-            {
-              "id": "evi_before_01",
-              "url": "https://images.unsplash.com/photo-1541888946425-d0fbb186a5b3",
-              "type": "BEFORE",
-              "sha256": "8a9c012f45bd67e89012345678abcdef0123456789abcdef0123456789abcdef"
-            }
-          ]
-        }
-      ],
-      "pagination": {
-        "limit": 50,
-        "offset": 0,
-        "total": 1
-      }
-    }
-  }
-  ```
-- **Chuẩn hóa Client Layer (Data Normalization Invariant)**:
-  - Bắt buộc dùng `normalizeList(res)` từ `app/src/lib/api/request.js`.
-  - Không bao giờ giả định response luôn là array. Bóc tách `{ data: { items } }`, `{ data: [] }` hoặc `[]` để luôn trả về Array an toàn `[]`, loại trừ 100% rủi ro `TypeError: reports.filter is not a function`.
+### 5.2. Các thông tin chính trên mỗi thẻ phản ánh
+| Thông tin | Ý nghĩa dễ hiểu | Ví dụ thực tế |
+|---|---|---|
+| `code` | Mã tra cứu phản ánh | `DG-2026-F54A` |
+| `status` | Trạng thái xử lý | `Đã khắc phục`, `Đang xử lý`, `Mới gửi` |
+| `description` | Tóm tắt vi phạm | Xe tải chở đất đá rơi vãi ra đường |
+| `address` | Địa chỉ cụ thể | Số 18 Phạm Hùng, Phường Yên Hòa |
+| `createdAt` | Ngày gửi phản ánh | 25/07/2026 |
 
 ---
 
-## 6. Bảng Nút Bấm & Hành Động Cốt Lõi (CTAs & Interactions)
+## 6. Danh Sách Nút Bấm & Thao Tác (Buttons & Actions)
 
-| Tên Nút / Thành Phần UI | Vị Trí / Bố Cục | Hành Vi Tương Tác & Phản Hồi | Quyền Hạn | Điều Hướng / Thay Đổi State |
-|---|---|---|---|---|
-| **[+ Gửi phản ánh mới]** | Góc phải Thẻ Header | Hover chuyển `#991B1B`, active nén nhẹ 98%, touch target $44\text{px}$ | Public / Citizen / Youth | Điều hướng ngay sang `CIT-02` (`/citizen/report/new`) |
-| **Tab Bộ Lọc Trạng Thái** | Dãy chip đầu trang | Bấm đổi màu nền sang đỏ son `#B91C1C`, chữ trắng, shadow nhẹ | Tất cả | Cập nhật `filter` state, lọc danh sách tức thì (< 10ms) |
-| **Thẻ Bản Ghi Phản Ánh** | Thân danh sách Feed | Hover viền đổi đỏ nhạt `#FECACA`, con trỏ chuột `pointer` | Tất cả | Bấm vào bất kỳ đâu trên thẻ chuyển sang `CIT-04` (`/citizen/reports/:id`) |
-| **[Xem tiến độ →]** | Góc phải mỗi thẻ | Chữ xám đậm, hover gạch chân, biểu tượng mũi tên dịch chuyển nhẹ | Tất cả | Mở chi tiết đối chứng tiến độ của hồ sơ tương ứng |
-| **[Gửi phản ánh ngay]** | Khối EmptyState | Nền đỏ son, bo góc 12px, chiều cao $\ge 44\text{px}$ | Tất cả | Điều hướng sang `CIT-02` khi chưa có dữ liệu |
-| **[Thử lại]** | Khối ErrorState | Nền trắng, viền `#E7E5E4`, hover `#F5F5F4` | Tất cả | Kích hoạt lại hàm `loadReports()` gọi lại API |
-| **Bottom Navigation Bar** | Cố định đáy Mobile | Active icon chuyển sang đỏ son `#B91C1C` kèm nhãn nổi bật | Public / Citizen | Chuyển đổi giữa 4 phân hệ chính trên di động |
-
----
-
-## 7. Quy Chuẩn UI/UX, In Ấn & Responsive (Design System Tokens)
-
-### 7.1. Bảng màu & Tương phản Civic Tech (High-Contrast Rules)
-- **Nền trang**: Màu kem sáng nhạt `#FDFBF7` (Dịu mắt, chống lóa khi sử dụng ngoài trời).
-- **Nền thẻ card**: Màu trắng tinh `#FFFFFF`, viền mảnh `#E7E5E4` (Stone-200), bo tròn góc `rounded-2xl` hoặc `rounded-3xl`.
-- **Chữ chính**: Màu mực đậm `#1C1917` (Độ tương phản $\ge 7:1$ so với nền trắng).
-- **Chữ phụ & Mã tra cứu**: `#57534E` / `#78716C` (Độ tương phản $\ge 4.5:1$ theo chuẩn WCAG AA).
-- **Màu hành động khẩn cấp (Primary CTA)**: Đỏ son ấn triện `#B91C1C` (Hover `#991B1B`, Active `#7F1D1D`).
-- **Màu xanh ngọc thành công (Resolved)**: Xanh ngọc `#065F46` trên nền xanh nhạt `#ECFDF5` có viền `#A7F3D0`.
-- **Màu vàng hổ phách xử lý (In Progress)**: Vàng hổ phách `#92400E` trên nền vàng nhạt `#FEF3C7`.
-- **Tuyệt đối cấm**:
-  - Không sử dụng hiệu ứng kính mờ `backdrop-blur-*` (Glassmorphism).
-  - Không dùng chữ xám nhạt trên nền trắng gây mỏi mắt cho người cao tuổi hoặc người đi đường.
-
-### 7.2. Responsive SSOT & Touch Targets
-- **Mobile Viewport (360px — 430px)**:
-  - Thanh tab filter hỗ trợ cuộn ngang ngón tay cái (`overflow-x-auto pb-1`).
-  - Thẻ phản ánh bố cục 1 cột dọc; mã hồ sơ, ngày gửi và huy hiệu trạng thái tự động co dãn không tràn viền (`min-w-0 flex`).
-  - Toàn bộ vùng chạm trên thẻ và nút bấm đảm bảo chiều cao tối thiểu $\ge 44\text{px}$.
-  - Hiển thị thanh Bottom Navigation Bar cố định đáy với `z-index: 50`.
-- **Tablet (640px — 1024px)**:
-  - Thẻ phản ánh chuyển sang dạng dàn ngang (Flex Row), thông tin căn trái, nút "Xem tiến độ →" căn phải thẳng hàng.
-- **Desktop (1024px — 1920px)**:
-  - Bố cục giới hạn độ rộng tối đa `max-w-4xl` căn giữa màn hình, giữ nhịp thị giác chặt chẽ, không bị loãng thông tin trên màn hình lớn.
+| Tên Nút / Thao Tác | Vị Trí | Bấm vào sẽ làm gì? | Kích Thước Bấm |
+|---|---|---|---|
+| **[+ Gửi phản ánh mới]** | Góc phải tiêu đề | Mở màn hình tạo phản ánh mới (`/citizen/report/new`) | Cao 44px, nút đỏ son |
+| **Các nút lọc trạng thái** | Dãy chip đầu danh sách | Lọc nhanh danh sách theo trạng thái mong muốn | Cao 40px, chạm nhẹ ngón tay |
+| **Chạm vào thẻ phản ánh** | Toàn bộ thân thẻ | Mở màn hình chi tiết đối chứng ảnh Trước - Sau (`/citizen/reports/:id`) | Cả thẻ bấm được |
+| **[Xem tiến độ →]** | Góc phải mỗi thẻ | Mở chi tiết tiến độ vụ việc | Dễ bấm trên di động |
+| **[Gửi phản ánh ngay]** | Khung khi chưa có dữ liệu | Mở biểu mẫu tạo phản ánh mới | Cao 44px |
+| **[Thử lại]** | Khung khi mạng lỗi | Tải lại danh sách phản ánh | Cao 44px |
 
 ---
 
-## 8. Bẫy Lỗi Thường Gặp & Hướng Dẫn Kiểm Thử (Gotchas & Verification Commands)
+## 7. Quy Chuẩn Trình Bày & Màu Sắc (UI/UX & Responsive)
 
-### 8.1. Bẫy lập trình & Quy tắc an toàn (Gotchas)
+### 7.1. Màu sắc sáng rõ, độ tương phản cao
+- **Nền trang**: Màu kem sáng nhạt `#FDFBF7`, dịu mắt khi sử dụng ngoài trời.
+- **Nền thẻ phản ánh**: Trắng tinh `#FFFFFF`, viền xám mềm `#E7E5E4`, bo tròn góc dễ nhìn.
+- **Màu chữ chính**: Đen than `#1C1917`, chữ phụ và mã số `#57534E`.
+- **Màu trạng thái rõ ràng**:
+  - `Đã khắc phục`: Chữ xanh lá đậm trên nền xanh nhạt viền xanh.
+  - `Đang xử lý`: Chữ vàng cam trên nền vàng nhạt viền vàng.
+  - `Mới gửi`: Chữ xanh lam trên nền xanh nhạt.
+- **Không dùng kính mờ (glassmorphism)**: Giữ cho chữ và thông tin luôn sắc nét.
 
-> [!CAUTION]
-> 1. **Collection Normalization Crash**: API Edge Worker trả về `{ status: 'success', data: { items: [...] } }`. Nếu component trực tiếp gán `setReports(res.data)` hoặc `res.data.items` mà không bọc lớp bảo vệ `normalizeList(res)`, khi mạng chập chờn hoặc API trả về `{ error }` sẽ làm nổ ứng dụng (`TypeError: reports.filter is not a function`).
-> 2. **Xung đột State giữa Offline và Cloud D1**: Người dùng gửi phản ánh khi offline có thể lưu tạm trong `localStorage`. Component cần hòa nhập khéo léo giữa dữ liệu D1 thật và bản ghi đệm cục bộ mà không sinh mã trùng lặp.
-> 3. **Lỗi che khuất thông tin (Zero Truncate on Critical Entities)**: Tuyệt đối không dùng class `truncate` cứng trên địa chỉ và mã tra cứu; chỉ dùng `line-clamp-1` cho tiêu đề mô tả ngắn trên danh sách tổng quan, toàn bộ chi tiết phải đọc được đầy đủ trong `CIT-04`.
+### 7.2. Tương thích mọi màn hình
+- **Điện thoại (360px — 430px)**:
+  - Dãy nút lọc hỗ trợ vuốt ngang nhẹ nhàng bằng ngón tay.
+  - Thẻ phản ánh tự co dãn gọn gàng, không bị tràn mép hay vỡ chữ.
+  - Chiều cao các nút bấm và thẻ tối thiểu 44px, dễ bấm trúng khi đang đi lại.
+- **Máy tính (1024px — 1920px)**: Danh sách giới hạn độ rộng `max-w-4xl` căn giữa màn hình, dễ đọc, không bị dàn trải quá rộng.
 
-### 8.2. Lệnh kiểm thử nhanh một dòng qua PowerShell (< 0.5s)
+---
+
+## 8. Tình Huống Thường Gặp & Cách Kiểm Tra (Edge Cases & Fast Test CLI)
+
+### 8.1. Các tình huống thường gặp & Cách xử lý tự động
+1. **Chưa có phản ánh nào trên địa bàn**: Màn hình hiện thông báo thân thiện kèm nút bấm *"Gửi phản ánh ngay"* để khuyến khích người dân ghi nhận.
+2. **Mạng 4G yếu hoặc chập chờn**: Màn hình hiển thị nút *"Thử lại"* để người dân bấm tải lại dữ liệu mà không cần tải lại toàn bộ trang web.
+3. **Mô tả phản ánh dài**: Chữ tự động xuống dòng tự nhiên, không che mất mã số hay nút bấm xem tiến độ.
+
+### 8.2. Lệnh kiểm tra nhanh hệ thống (Chạy bằng PowerShell)
 
 ```powershell
-node --test app/tests/citizen-full-functional.test.js app/tests/citizen-youth-ux.test.js
-```
+# Kiểm tra chức năng danh sách phản ánh công dân (< 0.5s)
+node --test app/tests/citizen-full-functional.test.js
 
-### 8.3. Tiêu chí nghiệm thu (Pass Criteria 100%)
-1. **API Fallback An Toàn**: Màn hình hiển thị `EmptyState` chuẩn mực khi API trả về rỗng hoặc lỗi mạng mà không làm phát sinh lỗi console.
-2. **Lọc Tab Tức Thì**: Chuyển đổi giữa 4 tab `Tất cả`, `Mới gửi`, `Đang xử lý`, `Đã khắc phục` có thời gian phản hồi $< 10\text{ms}$.
-3. **Điều Hướng Chính Xác**: Bấm vào thẻ phản ánh bất kỳ chuyển đúng route `/citizen/reports/:id` kèm mã định danh tương ứng.
-4. **Chuẩn Touch Target & Không Tràn Giao Diện**: Không phát sinh thanh cuộn ngang trang (horizontal overflow) trên màn hình 360px.
+# Kiểm tra trải nghiệm thực tế công dân & thanh niên (< 0.5s)
+node --test app/tests/citizen-youth-ux.test.js
+
+# Xác thực nhanh toàn hệ thống trước khi bàn giao (< 7s)
+npm --prefix app run verify:quick
+```

@@ -1,125 +1,100 @@
-# PUB-08 — Trang Báo Lỗi 404 & Cổng Phục Hồi Thông Minh (404 Not Found & Recovery)
+# PUB-08 — Trang Báo Lỗi Đường Dẫn (404) & Nút Quay Về Trang Chủ
 
 ---
 
-## 1. Screen Identity
+## 1. Thông Tin Màn Hình
 
-| Thuộc tính | Giá trị SSOT |
+| Thuộc tính | Chi tiết |
 |---|---|
 | **Mã màn hình** | `PUB-08` |
-| **Tên tiếng Việt** | Trang Không Tìm Thấy (Lỗi 404) & Cổng Phục Hồi Điều Hướng Thông Minh |
-| **Tên tiếng Anh** | 404 Page Not Found & Role-Aware Smart Recovery Gateway |
-| **Route URL** | `*` (Catch-all Fallback Route cho mọi đường dẫn không hợp lệ) |
-| **Component Path** | `app/src/modules/public/NotFound.jsx` |
-| **Layout** | Public Centered Card Layout (Thẻ căn giữa chiều dọc và ngang `min-h-[70vh]`, không gây vỡ giao diện chung) |
-| **Quyền truy cập (Role)** | Mọi đối tượng (Khách vãng lai, Công dân, Cán bộ, Nhà thầu, Lãnh đạo) |
-| **Trạng thái Production** | **ACTIVE** (Level 5 Production Coherent — Điều hướng thông minh theo Auth Role, Sáng màu không Glassmorphism) |
+| **Tên màn hình** | Trang Báo Lỗi Đường Dẫn (404) & Nút Quay Về Trang Chủ |
+| **Đường dẫn (URL)** | `*` (Tự động hiển thị khi người dùng vào bất kỳ đường dẫn nào không tồn tại) |
+| **Tệp mã nguồn** | `app/src/modules/public/NotFound.jsx` |
+| **Kiểu bố cục** | Thẻ thông báo căn giữa màn hình, gọn gàng và dễ nhìn |
+| **Ai được dùng** | Mọi người (Khách xem, Người dân, Cán bộ, Nhà thầu, Lãnh đạo) |
+| **Trạng thái hoạt động** | **Đang hoạt động tốt** (Tự nhận biết vai trò để đưa người dùng về đúng trang làm việc) |
 
 ---
 
-## 2. Mục Đích & Giá Trị Thực Tế tại Đô Thị Việt Nam
+## 2. Mục Đích & Ý Nghĩa Thực Tế
 
-### 2.1. Giải quyết bài toán gì trong bối cảnh thực tế Việt Nam?
-Trong quá trình vận hành hệ thống thông tin dân sự tại các đô thị như **Hà Nội** và **TP. Hồ Chí Minh**, người dân và cán bộ thường xuyên chia sẻ các liên kết hồ sơ qua các kênh:
-- Nhóm Zalo khu dân cư / Ban quản trị chung cư (Vành đai 3, KĐT Ngoại Giao Đoàn, KĐT An Phú).
-- Tin nhắn SMS thông báo tiến độ từ Cổng 1022 hoặc ứng dụng Công dân Thủ đô số iHanoi.
-- Các đường dẫn rút gọn đính kèm trong biên bản kiểm tra hiện trường hoặc mã QR trên biển báo công trình.
+### 2.1. Giải quyết vấn đề gì ngoài đời thực?
+Trong quá trình sử dụng hàng ngày tại đô thị, người dân và cán bộ thường nhấp vào các đường link được chia sẻ qua nhóm Zalo khu dân cư, tin nhắn SMS hoặc quét mã QR trên biển báo công trường:
+- Có thể đường dẫn bị sao chép thiếu ký tự.
+- Có thể liên kết cũ đã hết hạn hoặc được đổi tên.
+- Hoặc người dùng gõ nhầm địa chỉ trên điện thoại khi đang ở ngoài đường nắng gió.
 
-**Các rủi ro thường gặp**:
-1. **Rơi vào "ngõ cụt" (Dead End)**: Người dùng nhấp vào link cũ đã hết hạn, gõ sai địa chỉ URL trên điện thoại khi đang ở ngoài hiện trường nắng gió, hoặc phiên làm việc của cán bộ bị chuyển đổi.
-2. **Mất dấu không gian làm việc**: Các trang 404 thông thường chỉ có một nút duy nhất là "Về trang chủ" `/`. Điều này gây ức chế lớn cho Cán bộ thanh tra hoặc Chỉ huy trưởng công trường, vì họ phải đăng nhập lại hoặc mất công bấm qua nhiều tầng menu để tìm lại bảng điều khiển tác nghiệp của mình.
-3. **Thiếu lối thoát cứu hộ khẩn cấp**: Người dân đang muốn gửi phản ánh gấp về một vụ việc xe ben gây bụi mù mịt nhưng gặp lỗi 404 sẽ dễ dàng từ bỏ nếu không có đường dẫn khẩn cấp đưa họ vào ngay màn hình chụp ảnh camera.
-
-### 2.2. Giá trị đột phá của Trang 404 DustGuard VN
-- **Phục hồi thông minh theo vai trò (Role-Aware Recovery)**: Kiểm tra trạng thái xác thực `useAuth()` trong thời gian thực. Khi người dùng bấm `[Quay về trang chính]`, hệ thống tự động nhận diện quyền hạn:
-  - Nếu là **Cán bộ thanh tra (`staff`)** $\rightarrow$ Đưa ngay về `/staff` (Bảng quản lý vụ việc).
-  - Nếu là **Lãnh đạo / Ban Quản trị (`executive` / `admin`)** $\rightarrow$ Đưa về `/executive` (Trung tâm điều hành).
-  - Nếu là **Nhà thầu xây dựng (`contractor`)** $\rightarrow$ Đưa về `/contractor` (Nhiệm vụ khắc phục).
-  - Nếu là **Người dân (`citizen`)** $\rightarrow$ Đưa về `/citizen` (Cổng thông tin công dân).
-  - Nếu là **Khách vãng lai chưa đăng nhập** $\rightarrow$ Đưa về Trang chủ `/`.
-- **Cung cấp 3 lối tắt cứu hộ dân sự thiết thực nhất**: Cổng thông tin công dân, Gửi phản ánh khẩn cấp kèm định vị GPS và Tài liệu tiêu chuẩn kỹ thuật thiết bị IoT.
-- **Thiết kế Civic High-Contrast thân thiện**: Nền kem sáng `#FDFBF7`, chữ đen mực rõ nét, biểu tượng tam giác cảnh báo màu đỏ son `#9F241F`, tuyệt đối không dùng glassmorphism gây lóa mắt ngoài trời.
-
-### 2.3. Bảng so sánh Trang 404 thông thường vs DustGuard VN
-| Tiêu chí | Trang 404 thông thường (Cũ) | Trang 404 của DustGuard VN (Mới & Đột phá) |
-|---|---|---|
-| **Điều hướng quay về** | Chỉ có 1 nút "Về trang chủ" `/` chung chung | Tự động phân tích Role để đưa về đúng Workspace tác nghiệp |
-| **Gợi ý liên kết** | Để trống hoặc hiển thị dòng mã lỗi kỹ thuật khó hiểu | Gợi ý 3 liên kết dân sự thiết thực (Cổng dân, Báo cáo gấp, Hướng dẫn IoT) |
-| **Cứu hộ khẩn cấp** | Không hỗ trợ gửi phản ánh | Nút tắt 1-chạm mở ngay Form phản ánh hiện trường 30s |
-| **Giao diện & Tương phản** | Dễ bị nền tối/mờ làm khó đọc trên di động | Sáng màu, tương phản cao, thẻ bo góc 24px sang trọng, zero blur |
-
-### 2.4. Quy tắc 10 Giây (10-Second Screen Rule)
-Trong 10 giây đầu tiên:
-1. Người dùng nhận biết ngay trạng thái: `404 Not Found` — `Không tìm thấy trang yêu cầu`.
-2. Đọc nhanh 3 liên kết gợi ý trong khung kem nhạt.
-3. Bấm ngay nút nổi bật `[Quay về trang chính]` để tiếp tục công việc của mình mà không bị gián đoạn.
+**Trang PUB-08 giúp người dùng không bao giờ bị bối rối hay mắc kẹt:**
+1. **Quay về đúng không gian làm việc**: Khi bấm **[Quay về trang chính]**, hệ thống tự nhận biết người bấm là ai để đưa về đúng chỗ:
+   - Cán bộ thanh tra $\rightarrow$ Đưa ngay về Bàn làm việc cán bộ (`/staff`).
+   - Lãnh đạo / Quản trị $\rightarrow$ Đưa về Trung tâm điều hành (`/executive`).
+   - Nhà thầu xây dựng $\rightarrow$ Đưa về Bàn làm việc nhà thầu (`/contractor`).
+   - Người dân $\rightarrow$ Đưa về Cổng công dân (`/citizen`).
+   - Khách xem chưa đăng nhập $\rightarrow$ Đưa về Trang chủ (`/`).
+2. **Gợi ý sẵn 3 lối đi thiết thực nhất**: Cung cấp sẵn các đường dẫn hữu ích để người dân có thể gửi phản ánh khẩn cấp ngay mà không cần tìm kiếm lại từ đầu.
+3. **Giao diện sáng rõ, thân thiện**: Sử dụng màu sắc sáng sủa, biểu tượng cảnh báo rõ ràng, chữ đậm nét dễ đọc ngoài trời nắng, tuyệt đối không dùng hiệu ứng mờ gây lóa mắt.
 
 ---
 
-## 3. Đối Tượng Người Dùng & Hành Trình Thao Tác (User Journey)
-
-### 3.1. Chân dung người dùng gặp lỗi 404
-1. **Chị Hoàng Mai (Cư dân KĐT An Phú, TP. Thủ Đức)**: Nhấp vào một liên kết chia sẻ trong nhóm Zalo cư dân nhưng đường dẫn bị thiếu ký tự $\rightarrow$ Màn hình 404 hiện ra $\rightarrow$ Bấm liên kết *"Gửi phản ánh khẩn cấp"* để mở form báo cáo vi phạm bụi ngay lập tức.
-2. **Đồng chí Nguyễn Văn Tuấn (Cán bộ Thanh tra Môi trường Quận Cầu Giấy)**: Đang dùng máy tính bảng kiểm tra hiện trường tại đường Nguyễn Văn Huyên, mở link lưu tạm bị sai route $\rightarrow$ Bấm `[Quay về trang chính]` $\rightarrow$ Hệ thống tự động chuyển về `/staff` để đồng chí tiếp tục lập biên bản.
-
-### 3.2. Sơ đồ luồng hành trình phục hồi thông minh (Recovery Journey Flow)
+## 3. Hành Trình Người Dùng Thao Tác
 
 ```text
-[Người dùng truy cập đường dẫn không tồn tại (VD: /unknown-site-url)]
-                                 │
-                                 ▼
-                [Màn hình 404 Not Found hiển thị]
-                                 │
-         ┌───────────────────────┼───────────────────────┐
-         │                       │                       │
-         ▼                       ▼                       ▼
- [Bấm "Quay về trang chính"]    [Bấm "Cổng công dân"]  [Bấm 1 trong 3 liên kết gợi ý]
-         │                       │                       ├──> Cổng thông tin công dân (/citizen)
-         ▼                       ▼                       ├──> Gửi phản ánh khẩn cấp (/citizen/report)
-   Hệ thống kiểm tra             Chuyển tới /citizen     └──> Hướng dẫn thiết bị IoT (/docs/sensor-guide)
-   User Role hiện tại:
-         ├── Chưa đăng nhập (Guest) ───> Về Trang chủ (/)
-         ├── Staff (Cán bộ) ───────────> Về Cổng Cán bộ (/staff)
-         ├── Executive / Admin ────────> Về Trung tâm Điều hành (/executive)
-         ├── Contractor (Nhà thầu) ────> Về Không gian Nhà thầu (/contractor)
-         └── Citizen (Công dân) ───────> Về Cổng Công dân (/citizen)
+[Người dùng truy cập vào một đường link không tồn tại]
+                         │
+                         ▼
+        [Trang Báo Lỗi 404 hiển thị giữa màn hình]
+                         │
+         ┌───────────────┼───────────────┐
+         │               │               │
+         ▼               ▼               ▼
+ [Bấm "Quay về     [Bấm "Cổng      [Bấm 1 trong 3
+  trang chính"]     công dân"]      liên kết gợi ý]
+         │               │               ├──> Mở Cổng công dân (/citizen)
+         ▼               ▼               ├──> Gửi phản ánh gấp (/citizen/report)
+  Hệ thống kiểm tra     Chuyển sang      └──> Xem hướng dẫn thiết bị (/guide)
+  người đang dùng:      Cổng công dân
+   • Chưa đăng nhập ──> Về Trang chủ (/)
+   • Cán bộ ──────────> Về Bàn làm việc cán bộ (/staff)
+   • Lãnh đạo ────────> Về Trung tâm điều hành (/executive)
+   • Nhà thầu ────────> Về Bàn làm việc nhà thầu (/contractor)
+   • Người dân ───────> Về Cổng công dân (/citizen)
 ```
 
 ---
 
-## 4. Bố Cục Giao Diện & Wireframe ASCII Chi Tiết Từng Khối
+## 4. Bố Cục Giao Diện & Mô Phỏng Wireframe
 
 ```text
 ┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-│ MAIN CONTAINER (min-h-[70vh] flex items-center justify-center px-4 py-12)                        │
+│ KHUNG CHÍNH CĂN GIỮA MÀN HÌNH                                                                    │
 │                                                                                                  │
 │   ┌────────────────────────────────────────────────────────────────────────────────────────┐     │
-│   │ THẺ TRUNG TÂM (w-full max-w-lg rounded-3xl border border-ink-900/10 bg-white p-6 sm:p-8)│     │
+│   │ THẺ THÔNG BÁO TRUNG TÂM (Nền trắng, viền xám nhạt, bo tròn góc 24px)                   │     │
 │   │                                                                                        │     │
 │   │                       ┌───────────────────────┐                                        │     │
-│   │                       │  [ ▲ Icon Cảnh Báo ]  │  (h-20 w-20 rounded-full bg-seal-50)   │     │
-│   │                       │   Màu đỏ son #9F241F  │                                        │     │
+│   │                       │  [ ▲ Biểu Tượng ]     │  (Hình tròn nền phớt đỏ,               │     │
+│   │                       │   Màu đỏ son nổi bật  │   biểu tượng cảnh báo tam giác)        │     │
 │   │                       └───────────────────────┘                                        │     │
 │   │                                                                                        │     │
-│   │                   [ 404 NOT FOUND ] (Pill badge đỏ son)                                │     │
+│   │                         [ 404 — KHÔNG TÌM THẤY ]                                       │     │
 │   │                                                                                        │     │
 │   │                   Không tìm thấy trang yêu cầu                                         │     │
 │   │                                                                                        │     │
 │   │         Đường dẫn bạn vừa truy cập không tồn tại hoặc đã được                          │     │
-│   │         thay đổi cấu trúc trong hệ thống DustGuard VN.                                 │     │
+│   │         thay đổi trong hệ thống DustGuard VN.                                          │     │
 │   │                                                                                        │     │
 │   │       ┌────────────────────────────────────────────────────────────────────────┐       │     │
-│   │       │ KHUNG GỢI Ý LIÊN KẾT NHANH (bg-cream-50 rounded-2xl p-4 border)        │       │     │
-│   │       │ Gợi ý liên kết nhanh:                                                  │       │     │
-│   │       │ • Cổng thông tin công dân - Tra cứu & gửi phản ánh                     │       │     │
-│   │       │ • Gửi phản ánh khẩn cấp - Kèm tọa độ GIS & ảnh hiện trường             │       │     │
-│   │       │ • Hướng dẫn thiết bị IoT - Cảm biến & tiêu chuẩn chống gian lận        │       │     │
+│   │       │ KHUNG GỢI Ý LIÊN KẾT NHANH (Nền kem sáng, bo góc nhẹ)                  │       │     │
+│   │       │ Gợi ý liên kết hữu ích:                                                │       │     │
+│   │       │ • Cổng thông tin công dân — Tra cứu và theo dõi xử lý                  │       │     │
+│   │       │ • Gửi phản ánh khẩn cấp — Báo cáo bụi kèm ảnh chụp hiện trường         │       │     │
+│   │       │ • Hướng dẫn thiết bị đo — Tiêu chuẩn trạm đo ngoài trời                │       │     │
 │   │       └────────────────────────────────────────────────────────────────────────┘       │     │
 │   │                                                                                        │     │
 │   │       ┌────────────────────────────────────┬───────────────────────────────────┐       │     │
 │   │       │ [ Quay về trang chính ]            │ [ Cổng công dân ]                 │       │     │
-│   │       │ (Nền đen mực #231B14, chữ trắng)   │ (Nền trắng viền xám, chữ đen mực) │       │     │
-│   │       │ Min height: 44px                   │ Min height: 44px                  │       │     │
+│   │       │ (Nền đen mực, chữ trắng đậm)       │ (Nền trắng viền xám, chữ đen)     │       │     │
+│   │       │ Chiều cao 44px                     │ Chiều cao 44px                    │       │     │
 │   │       └────────────────────────────────────┴───────────────────────────────────┘       │     │
 │   │                                                                                        │     │
 │   └────────────────────────────────────────────────────────────────────────────────────────┘     │
@@ -129,99 +104,69 @@ Trong 10 giây đầu tiên:
 
 ---
 
-## 5. Dữ Liệu & State / API Contract
+## 5. Dữ Liệu & Kết Nối Hệ Thống
 
-### 5.1. Context & Hook Dependencies
-```javascript
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-```
+### 5.1. Cách thức nhận diện vai trò
+- Khi người dùng bấm nút **[Quay về trang chính]**, hệ thống kiểm tra nhanh trạng thái tài khoản đang đăng nhập:
+  - Nếu là khách chưa đăng nhập: Chuyển về Trang chủ `/`.
+  - Nếu đã đăng nhập: Chuyển thẳng về trang làm việc đúng vai trò.
 
-### 5.2. Logic Phục Hồi Thông Minh Theo Vai Trò (`handleGoHome`)
-```javascript
-const NotFound = () => {
-  const { user } = useAuth();
-  const navigate = useNavigate();
-
-  const handleGoHome = () => {
-    // Trường hợp 1: Khách vãng lai chưa đăng nhập -> Về Landing Page
-    if (!user) {
-      navigate('/');
-      return;
-    }
-
-    // Trường hợp 2: Người dùng đã đăng nhập -> Điều hướng theo phân quyền RBAC
-    const role = user.role;
-    if (role === 'staff') {
-      navigate('/staff');
-    } else if (role === 'executive' || role === 'admin' || role === 'demo_admin') {
-      navigate('/executive');
-    } else if (role === 'contractor') {
-      navigate('/contractor');
-    } else {
-      navigate('/citizen');
-    }
-  };
-
-  // ...
-};
-```
-
-### 5.3. Định Tuyến SSOT & Fallback Route
-Trong tệp cấu hình định tuyến hệ thống (`routes.jsx`):
-- Tuyến đường `path: "*"` được đặt ở cuối cùng của danh sách routes để bắt tất cả các request không khớp và render component `NotFound.jsx`.
-- Link `/docs/sensor-guide` được tự động chuyển hướng (Redirect) về `/guide` thông qua router SSOT, ngăn chặn tình trạng đứt gãy liên kết tài liệu.
+### 5.2. Chuyển hướng an toàn cho các liên kết cũ
+- Hệ thống tự động chuyển các liên kết tài liệu cũ (như `/docs/sensor-guide`) về đúng trang hướng dẫn mới (`/guide`), không để người xem bị lỗi trang.
 
 ---
 
-## 6. Hành Động Cốt Lõi (Core Actions & Interactions)
+## 6. Danh Sách Nút Bấm & Thao Tác
 
-| Đối tượng giao diện | Nhãn nút / Liên kết | Màu sắc & Token | Kích thước Touch Target | Hành vi thực thi | Phân quyền |
-|---|---|---|:---:|---|---|
-| **Primary Action** | `[Quay về trang chính]` | Nền đen mực `bg-ink-900`, `!text-white`, bo góc `rounded-xl` | Chiều cao min $44\text{px}$, px-6, flex-1 | Kích hoạt `handleGoHome()` chuyển tới Workspace theo Role | Mọi đối tượng |
-| **Secondary Action** | `[Cổng công dân]` | Nền trắng `bg-white`, viền xám `border-ink-900/15`, chữ đen mực | Chiều cao min $44\text{px}$, px-6, flex-1 | Điều hướng trực tiếp tới `/citizen` | Mọi đối tượng |
-| **Gợi ý 1** | Link "Cổng thông tin công dân" | Chữ xanh `text-accent-700 hover:text-accent-900`, gạch chân | Chiều cao dòng chuẩn, dễ chạm | Điều hướng tới `/citizen` | Mọi đối tượng |
-| **Gợi ý 2** | Link "Gửi phản ánh khẩn cấp" | Chữ xanh `text-accent-700 hover:text-accent-900`, gạch chân | Chiều cao dòng chuẩn, dễ chạm | Điều hướng tới `/citizen/report` | Mọi đối tượng |
-| **Gợi ý 3** | Link "Hướng dẫn thiết bị IoT" | Chữ xanh `text-accent-700 hover:text-accent-900`, gạch chân | Chiều cao dòng chuẩn, dễ chạm | Điều hướng tới `/docs/sensor-guide` (tự động redirect `/guide`) | Mọi đối tượng |
-
----
-
-## 7. Quy Chuẩn UI/UX & Responsive (Civic High-Contrast)
-
-### 7.1. Bảng màu & Kiểu dáng (High-Contrast Civic Tech)
-- **Nền tổng thể**: `#FDFBF7` (Màu kem công vụ sáng, dịu mắt ngoài trời).
-- **Thẻ Card nội dung**: Nền trắng nguyên bản `#FFFFFF`, viền xám nhẹ `border-ink-900/10`, đổ bóng mềm `shadow-soft`.
-- **Icon & Badge 404**: Màu đỏ son đậm `#9F241F` trên nền kem hồng `#FEF2F2` (`bg-seal-50`).
-- **Chữ chính**: Màu mực sẫm `#231B14` (`text-ink-900`) bảo đảm tỷ lệ tương phản $\ge 7:1$ theo tiêu chuẩn WCAG AAA.
-- **TUYỆT ĐỐI CẤM**: Không dùng `backdrop-blur-*`, không dùng nền trong suốt làm giảm độ tương phản của văn bản.
-
-### 7.2. Responsive Viewports SSOT
-- **Mobile (360px – 430px)**:
-  - Thẻ chiếm toàn bộ chiều ngang màn hình (`w-full`) với padding `p-6`.
-  - Cụm 2 nút hành động xếp chồng dọc (`flex-col`), mỗi nút chiếm trọn chiều rộng và có chiều cao tối thiểu $\ge 44\text{px}$ thuận tiện bấm bằng một tay.
-- **Tablet & Laptop (768px – 1366px)**:
-  - Thẻ giới hạn chiều rộng tối đa `max-w-lg` (512px) căn giữa hoàn hảo.
-  - Cụm 2 nút hành động dàn hàng ngang (`flex-row`) cân đối.
-- **Desktop lớn (1920px)**:
-  - Bố cục trung tâm ổn định, khoảng cách lề trên dưới `py-12` thanh thoát.
+| Nút bấm / Thao tác | Vị trí | Màu sắc | Kích thước | Hành động khi bấm |
+|---|---|---|:---:|---|
+| **[Quay về trang chính]** | Nút chính bên trái | Nền đen mực, chữ trắng đậm | Chiều cao 44px | Đưa người dùng về đúng trang làm việc theo vai trò của mình |
+| **[Cổng công dân]** | Nút phụ bên phải | Nền trắng, viền xám nhạt, chữ đen | Chiều cao 44px | Chuyển thẳng sang Cổng công dân `/citizen` |
+| **Liên kết "Cổng thông tin công dân"** | Trong khung gợi ý | Chữ xanh dương đậm, gạch chân | Chiều cao dòng chuẩn | Mở Cổng công dân `/citizen` |
+| **Liên kết "Gửi phản ánh khẩn cấp"** | Trong khung gợi ý | Chữ xanh dương đậm, gạch chân | Chiều cao dòng chuẩn | Mở ngay form báo cáo vi phạm bụi `/citizen/report` |
+| **Liên kết "Hướng dẫn thiết bị đo"** | Trong khung gợi ý | Chữ xanh dương đậm, gạch chân | Chiều cao dòng chuẩn | Mở trang hướng dẫn sử dụng `/guide` |
 
 ---
 
-## 8. Bẫy Lỗi Thường Gặp & Hướng Dẫn Kiểm Thử
+## 7. Tiêu Chuẩn Giao Diện & Hiển Thị Đa Thiết Bị
 
-### 8.1. Các bẫy lỗi cần phòng ngừa (Forensic Checklist)
-1. **Lỗi Null Pointer khi User chưa đăng nhập**: Luôn kiểm tra `if (!user)` trước khi truy cập `user.role` trong hàm `handleGoHome` để tránh ứng dụng bị crash trắng (White Screen).
-2. **Lỗi Đứt Gãy Liên Kết Tài Liệu**: Link `/docs/sensor-guide` phải luôn được định tuyến an toàn về `/guide` thông qua hệ thống Router SSOT.
-3. **Lỗi Đè Màu Chữ Nút Bấm Chính**: Nút Primary bắt buộc khai báo `!text-white` để tránh bị CSS toàn cục ghi đè màu chữ đen trên nền đen khi tích hợp.
+### 7.1. Màu sắc và độ tương phản (Sáng rõ ngoài trời)
+- **Nền trang**: Màu kem sáng `#FDFBF7` chống mỏi mắt.
+- **Thẻ thông báo**: Nền trắng nguyên khối `#FFFFFF`, viền xám nhẹ rõ nét.
+- **Biểu tượng cảnh báo**: Màu đỏ son `#9F241F` nổi bật trên nền hồng nhạt.
+- **Màu chữ**: Đen mực `#231B14`, độ đậm rõ ràng, độ tương phản rất cao dễ đọc dưới trời nắng.
+- **Quy tắc bất biến**: Tuyệt đối **không dùng hiệu ứng kính mờ (glassmorphism)**, bảo đảm mọi chi tiết đều sắc nét.
 
-### 8.2. Lệnh kiểm thử nhanh trên PowerShell CLI (< 0.5s)
+### 7.2. Hiển thị trên các kích thước màn hình
+- **Điện thoại (360px – 430px)**:
+  - Thẻ thông báo chiếm vừa vặn chiều ngang màn hình.
+  - 2 Nút bấm tự động xếp chồng lên nhau thành hàng dọc, nút to rõ $\ge 44\text{px}$ tiện bấm bằng một ngón tay.
+- **Máy tính bảng & Laptop (768px – 1440px)**:
+  - Thẻ thông báo căn giữa màn hình với kích thước vừa mắt (khoảng 500px).
+  - 2 Nút bấm xếp hàng ngang cân đối.
+- **Màn hình lớn (1920x1080)**:
+  - Bố cục trung tâm trang nhã, khoảng cách lề rộng thoáng.
+
+---
+
+## 8. Xử Lý Lỗi & Tình Huống Thực Tế
+
+### 8.1. Các tình huống thường gặp và cách xử lý
+1. **Khách chưa đăng nhập bấm [Quay về trang chính]**:
+   - *Cách xử lý*: Hệ thống kiểm tra an toàn và đưa về Trang chủ `/`, không bao giờ để xảy ra lỗi màn hình trắng.
+2. **Người dùng mở lại link tài liệu cũ**:
+   - *Cách xử lý*: Hệ thống tự động chuyển hướng về trang tài liệu chuẩn `/guide`.
+3. **Màu chữ trên nút bấm**:
+   - *Cách xử lý*: Nút chính luôn giữ chữ màu trắng nổi bật trên nền đen, không bị lẫn màu nền.
+
+### 8.2. Lệnh kiểm tra hệ thống nhanh bằng PowerShell (< 0.5s)
 ```powershell
-# 1. Kiểm tra tính toàn vẹn của Router và Fallback Route (*)
+# 1. Kiểm tra việc bắt lỗi đường dẫn 404
 node --test app/tests/landing-ssot-guard.test.js
 
-# 2. Kiểm tra toàn bộ luồng Edge Routes và phản hồi 404 Problem Details
+# 2. Kiểm tra toàn bộ đường dẫn trong hệ thống
 node --test app/tests/worker-full-edge-routes.test.js
 
-# 3. Kiểm tra bảo mật và xác thực người dùng
+# 3. Kiểm tra phân quyền và điều hướng an toàn
 node --test app/tests/auth-user-management-audit.test.js
 ```

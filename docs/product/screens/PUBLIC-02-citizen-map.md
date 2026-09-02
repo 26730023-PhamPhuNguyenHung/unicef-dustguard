@@ -2,126 +2,125 @@
 
 ---
 
-## 1. Screen Identity
+## 1. Định Danh Màn Hình (Screen Identity)
 
-| Thuộc tính | Giá trị SSOT |
+| Thuộc tính | Chi tiết |
 |---|---|
 | **Mã màn hình** | `PUB-02` |
-| **Tên tiếng Việt** | Tra Cứu Điểm Nóng Địa Bàn & Bản Đồ Công Trình |
-| **Tên tiếng Anh** | Citizen Hotspot Map & Address-First Lookup Hub |
-| **Route URL** | `/map` |
-| **Component Path** | `app/src/modules/citizen/CitizenMap.jsx` |
-| **Sub-components** | `app/src/components/map/SpatialMap.jsx` (`citizenPolicy`), `MapLegend.jsx`, `MapToolbar.jsx`, `MapStates.jsx` |
-| **Layout** | Public Root Layout (`LandingNav.jsx` + `LandingFooter.jsx`) |
-| **Quyền truy cập (Role)** | Public / Guest / Người dân / Tình nguyện viên (Không yêu cầu đăng nhập) |
-| **Trạng thái Triển khai** | **ACTIVE** (Level 5 Production Coherent — Xác thực D1 SQLite & Leaflet WGS84) |
+| **Tên tiếng Việt** | Tra Cứu Điểm Nóng & Bản Đồ Công Trình Gần Nhà |
+| **Tên tiếng Anh** | Citizen Hotspot Map & Address Lookup Hub |
+| **Đường dẫn (URL)** | `/map` |
+| **Tập tin mã nguồn chính** | `app/src/modules/citizen/CitizenMap.jsx` |
+| **Các khối thành phần** | `SpatialMap.jsx` (Khối hiển thị bản đồ trực quan)<br>`MapLegend.jsx` (Bảng chú thích mức độ bụi)<br>`MapToolbar.jsx` (Thanh công cụ tìm kiếm và lọc)<br>`MapStates.jsx` (Trạng thái đang tải, không có dữ liệu, thông báo lỗi) |
+| **Bố cục giao diện** | Khung trang công khai (Có thanh menu trên cùng và chân trang) |
+| **Quyền truy cập** | Tất cả mọi người (Người dân, sinh viên, khách vãng lai — Không cần đăng nhập) |
+| **Trạng thái vận hành** | **Đang hoạt động ổn định** (Tự động tải danh sách địa chỉ nhanh, hỗ trợ mở Google Maps và gửi phản ánh tức thì) |
 
 ---
 
 ## 2. Mục Đích Nghiệp Vụ & Giá Trị Thực Tế
 
-Trang **PUB-02** giải quyết bài toán cốt lõi của người dân đô thị tại Việt Nam (Hà Nội, TP.HCM, Bình Dương, Đà Nẵng...): **"Khu vực xung quanh tôi có công trình nào đang phát tán bụi vượt chuẩn, và làm thế nào để tôi chỉ đường tới cổng công trường hoặc gửi phản ánh ngay trong 30 giây?"**
+Trang **PUB-02** giải quyết câu hỏi sát sườn của người dân đô thị tại Việt Nam (Hà Nội, TP.HCM, Bình Dương, Đà Nẵng...): **"Gần nhà tôi có công trình nào đang phát tán bụi vượt chuẩn không, và làm sao để chỉ đường tới tận cổng hoặc gửi phản ánh ngay trong 30 giây?"**
 
-Thay vì bắt người dùng phải chờ tải bản đồ GIS nặng nề với nhiều thao tác zoom/pan phức tạp trên mạng di động 4G/5G, DustGuard VN áp dụng triết lý **Address-First SSOT**:
+Thay vì bắt người dân phải chờ tải một tấm bản đồ nặng nề, dễ giật lag khi dùng mạng 4G/5G ngoài đường, DustGuard VN áp dụng cách làm **Ưu tiên danh sách địa chỉ rõ ràng**:
 
-1. **Tra cứu theo địa chỉ thực tế (Address-First Lookup)**:
-   - Mặc định tải giao diện dạng Danh sách (Bảng dữ liệu trên Desktop / Thẻ Card trên Mobile) hiển thị rõ ràng số nhà, tên đường, tên Phường/Xã thực tế (ví dụ: Phường Dịch Vọng Hậu, Phường Mễ Trì, Phường Mỹ Đình 1, Phường Hoàng Liệt, Phường An Phú...).
-   - Giúp người dân tìm thấy ngay công trình gần nhà trong dưới 3 giây qua ô tìm kiếm tức thì và bộ lọc nhanh theo Phường/Quận.
-2. **Dẫn đường Google Maps 1-chạm (1-Click External Navigation)**:
-   - Mỗi công trình đều có nút **[Google Maps]** mở trực tiếp ứng dụng bản đồ gốc của điện thoại (`https://www.google.com/maps/search/?api=1&query=...`), dẫn đường tới đúng cổng chính công trường mà không phụ thuộc vào hạ tầng map nội bộ.
-   - Cơ chế fallback 3 cấp: Chuỗi địa chỉ thực $\rightarrow$ Tọa độ GPS WGS84 $\rightarrow$ Tọa độ trung tâm địa bàn.
-3. **Kích hoạt phản ánh công dân 1-chạm (1-Click Civic Action)**:
-   - Nút **[Phản ánh]** màu đỏ son (`#9f241f`) điều hướng thẳng tới `/citizen/report/new` với các trường `siteName` và `address` đã được tự động điền sẵn, rút ngắn thời gian gửi phản ánh hiện trường xuống chỉ còn 30 giây.
-4. **Bản đồ không gian WGS84 tùy chọn (Optional Spatial GIS)**:
-   - Nút gạt chuyển đổi tức thì sang chế độ **"Bản đồ GIS"** (Leaflet WGS84) để xem trực quan các cụm điểm nóng, bán kính ảnh hưởng Geofence $\le 50\text{m}$ và mạng lưới trạm quan trắc xung quanh.
-5. **Đối chiếu Quy chuẩn Kỹ thuật Quốc gia QCVN 05:2023/BTNMT**:
-   - Đối chiếu nồng độ bụi đo đạc với Quy chuẩn chất lượng không khí xung quanh:
-     - **Ngưỡng an toàn 24 giờ**: $\text{PM2.5} \le 50\,\mu\text{g/m}^3$, $\text{PM10} \le 100\,\mu\text{g/m}^3$.
-     - **Ngưỡng cảnh báo vượt chuẩn**: $\text{PM2.5} > 50\,\mu\text{g/m}^3$ (Đỏ/Cam) hoặc $\text{PM10} > 100\,\mu\text{g/m}^3$.
-   - Tính toán Điểm rủi ro bụi $R \in [0, 100]$ dựa trên 4 yếu tố trọng số: nồng độ bụi ($w_1$), cự ly trường học/bệnh viện $\le 200\text{m}$ ($w_2$), tần suất phản ánh ($w_3$), và lịch sử khắc phục của nhà thầu ($w_4$).
+1. **Tra cứu theo địa chỉ thực tế (Ưu tiên danh sách trước)**:
+   - Mặc định tải ngay dạng danh sách (Bảng số liệu trên máy tính / Thẻ thông tin trên điện thoại) hiển thị rõ số nhà, tên đường, tên Phường/Xã thực tế (ví dụ: *Phường Dịch Vọng Hậu, Phường Mễ Trì, Phường Mỹ Đình 1, Phường Hoàng Liệt, Phường An Phú...*).
+   - Người dân tìm thấy ngay công trình gần nhà mình trong dưới 3 giây bằng ô tìm kiếm nhanh hoặc lọc theo Phường/Quận.
+2. **Dẫn đường Google Maps 1-chạm**:
+   - Mỗi công trình đều có nút **[Google Maps]** mở thẳng ứng dụng bản đồ trên điện thoại, chỉ đường chính xác tới cổng chính công trường mà không cần người dân phải gõ lại địa chỉ.
+3. **Gửi phản ánh nhanh 1-chạm trong 30 giây**:
+   - Nút **[Phản ánh]** màu đỏ son (`#9f241f`) mở ngay trang gửi vi phạm với tên công trình và địa chỉ đã được điền sẵn, người dân chỉ cần chụp ảnh và bấm gửi.
+4. **Xem bản đồ trực quan khi cần**:
+   - Có sẵn nút bấm chuyển đổi nhanh sang chế độ **"Bản đồ"** để nhìn toàn cảnh các điểm nóng xung quanh khu vực sinh sống.
+5. **Đối chiếu Quy chuẩn môi trường quốc gia QCVN 05:2023/BTNMT dễ hiểu**:
+   - Hiển thị rõ nồng độ bụi thực tế kèm đánh giá bằng tiếng Việt:
+     - **Mức an toàn**: Bụi PM2.5 $\le 50\,\mu\text{g/m}^3$ (Gắn nhãn xanh *Trong giới hạn*).
+     - **Mức vượt chuẩn**: Bụi PM2.5 $> 50\,\mu\text{g/m}^3$ (Gắn nhãn đỏ *Vượt chuẩn QCVN*).
+   - Thang điểm ưu tiên $0 - 100$ tính toán dựa trên mức độ bụi, khoảng cách gần trường học/bệnh viện (dưới 200m), số lần người dân phản ánh và lịch sử xử lý của nhà thầu.
 
-### So sánh cách làm cũ và DustGuard VN:
+### Bảng so sánh cách làm cũ và DustGuard VN:
 
-| Tiêu chí | Cổng thông tin truyền thống (Cũ) | DustGuard VN (Mới & Thực tế) |
+| Tiêu chí | Cổng thông tin cũ | DustGuard VN (Mới & Thiết thực) |
 |---|---|---|
-| **Cách tiếp cận** | Bắt buộc tải bản đồ GIS đồ sộ, dễ giật lag trên mobile | Ưu tiên danh sách địa chỉ rõ ràng (Address-First), tải tức thì < 0.5s |
-| **Độ chi tiết địa bàn** | Chỉ hiện chung chung cấp Quận/Huyện | Chi tiết đến từng Phường (Dịch Vọng Hậu, Mễ Trì, Hoàng Liệt...), số nhà, cổng công trường |
-| **Dẫn đường hiện trường** | Không có dẫn đường, người dân phải tự gõ lại | 1-chạm mở thẳng Google Maps chỉ đường tới cổng chính |
-| **Gửi phản ánh** | Form dài dòng, phải tự gõ lại tên và địa chỉ công trình | 1-chạm [Phản ánh], tự động điền sẵn tên công trình và địa chỉ, xong trong 30s |
-| **Chuẩn đối chiếu** | Không giải thích chỉ số kỹ thuật | Gắn nhãn chuẩn QCVN 05:2023/BTNMT rõ ràng: *Vượt chuẩn* hay *Trong giới hạn* |
+| **Cách tiếp cận** | Bắt buộc tải bản đồ nặng, dễ giật lag trên điện thoại | Ưu tiên hiện danh sách địa chỉ rõ ràng, tải cực nhanh trong 0.5s |
+| **Chi tiết địa bàn** | Chỉ hiện chung chung cấp Quận/Huyện | Chi tiết đến từng Phường (Dịch Vọng Hậu, Mễ Trì...), số nhà, cổng công trường |
+| **Dẫn đường tới nơi** | Không có, người dân phải tự nhớ và gõ lại | 1-chạm mở thẳng Google Maps chỉ đường đến tận cổng |
+| **Gửi phản ánh vi phạm** | Phải tự điền lại tên công trình, địa chỉ từ đầu | 1-chạm [Phản ánh], tự động điền sẵn tên công trình và địa chỉ trong 30s |
+| **Đánh giá chỉ số bụi** | Không giải thích chỉ số kỹ thuật | Gắn nhãn quy chuẩn rõ ràng: *Vượt chuẩn* (Đỏ) hay *Trong giới hạn* (Xanh) |
 
 ---
 
 ## 3. Luồng Hành Trình Người Dùng (User Journey)
 
 ```text
-[Người dân / Tình nguyện viên mở /map]
-                  │
-                  ▼
-    [1. Quét nhanh 4 thẻ KPI Tổng quan]
-  (Tổng công trình | Nguy cơ ≥70đ | Cần theo dõi 40-69đ | Trạm trực tuyến)
-                  │
-                  ▼
-   [2. Tìm kiếm theo tên đường / Lọc theo Phường / Lọc Mức rủi ro]
-  (Ví dụ: Chọn Phường Dịch Vọng Hậu hoặc gõ "Trần Thái Tông")
-                  │
-                  ▼
-      [3. Đọc thông số chi tiết công trình & Đối chiếu QCVN 05:2023]
-  (Điểm rủi ro R/100, PM2.5: 84.5 µg/m³ - VƯỢT CHUẨN, Tên nhà thầu)
-                  │
-        ┌─────────┴──────────────────────────────┐
-        ▼                                        ▼
-[HÀNH ĐỘNG A: DẪN ĐƯỜNG]               [HÀNH ĐỘNG B: PHẢN ÁNH]
-Bấm [Google Maps]                       Bấm [Phản ánh] (Nút Đỏ Son)
-        │                                        │
-        ▼                                        ▼
-Mở ứng dụng Google Maps                 Chuyển sang /citizen/report/new
-Dẫn đường tới cổng công trường          Form điền sẵn siteName & address
-                                        Chụp ảnh hiện trường & gửi trong 30s
+[Người dân / Sinh viên tình nguyện mở trang /map]
+                        │
+                        ▼
+       [1. Quét nhanh 4 thẻ tổng quan đầu trang]
+   (Tổng công trình | Nguy cơ cao ≥ 70đ | Cần theo dõi 40-69đ | Trạm đo đang chạy)
+                        │
+                        ▼
+      [2. Gõ tên đường / Chọn Phường / Chọn Mức độ bụi]
+   (Ví dụ: Chọn Phường Dịch Vọng Hậu hoặc gõ "Trần Thái Tông")
+                        │
+                        ▼
+     [3. Xem chi tiết mức bụi & Đối chiếu quy chuẩn]
+   (Điểm rủi ro 78/100, Bụi PM2.5: 84.5 µg/m³ - VƯỢT CHUẨN, Tên nhà thầu)
+                        │
+            ┌───────────┴────────────────────────────┐
+            ▼                                        ▼
+   [HÀNH ĐỘNG 1: DẪN ĐƯỜNG]                 [HÀNH ĐỘNG 2: GỬI PHẢN ÁNH]
+   Bấm [Google Maps]                        Bấm [Phản ánh] (Nút đỏ son)
+            │                                        │
+            ▼                                        ▼
+   Mở ứng dụng Google Maps                  Chuyển sang form gửi vi phạm
+   Dẫn đường tới cổng công trường           Tự điền sẵn tên công trình & địa chỉ
+                                            Chụp ảnh gửi vi phạm trong 30 giây
 ```
 
 ### Các bước thao tác chi tiết:
-1. **Bước 1 — Tiếp cận trang**: Người dùng bấm liên kết **[Bản đồ]** trên thanh Header hoặc nút **[Xem bản đồ rủi ro]** từ Trang chủ.
-2. **Bước 2 — Quét nhanh thông tin KPI (Scan trong 3 giây)**:
+1. **Bước 1 — Vào trang**: Người dùng bấm liên kết **[Bản đồ]** trên thanh menu hoặc nút **[Xem bản đồ]** từ trang chủ.
+2. **Bước 2 — Quét nhanh 4 con số tổng quan (trong 3 giây)**:
    - Tổng số công trình đang theo dõi trên địa bàn (ví dụ: 33 công trình).
-   - Số lượng công trình nguy cơ cao ($\ge 70$ điểm, huy hiệu đỏ) cần kiểm tra khẩn cấp.
-   - Số lượng công trình cần theo dõi ($40 - 69$ điểm, huy hiệu vàng).
-   - Số lượng trạm quan trắc IoT đang trực tuyến truyền số liệu thời gian thực.
-3. **Bước 3 — Lọc và Tra cứu địa bàn**:
-   - Nhập từ khóa tên đường, tên dự án vào ô tìm kiếm (ví dụ: "Trần Thái Tông", "Vành đai 3", "Mễ Trì").
-   - Chọn Phường cụ thể từ dropdown (ví dụ: "Phường Dịch Vọng Hậu", "Phường Mễ Trì", "Phường Mỹ Đình 1", "Phường Hoàng Liệt", "Phường An Phú").
-   - Bấm vào thẻ KPI đỏ hoặc vàng để lọc nhanh các điểm nóng tương ứng.
-4. **Bước 4 — Xem chi tiết & Đối chiếu quy chuẩn**:
-   - Đọc nồng độ $\text{PM2.5}$ ($\mu\text{g/m}^3$) và nhãn cảnh báo (*"Vượt chuẩn QCVN"* hoặc *"Trong giới hạn"*).
-   - Đọc tên đơn vị thi công (Nhà thầu) và điểm rủi ro $R/100$.
-5. **Bước 5 — Chọn hành động tiếp theo**:
-   - Bấm **[Google Maps]**: Mở Google Maps để điều hướng đường đi hoặc xem ảnh vệ tinh công trình.
-   - Bấm **[Phản ánh]**: Chuyển ngay sang form gửi hình ảnh hiện trường có tọa độ GPS.
-6. **Bước 6 (Tùy chọn) — Chuyển sang Bản đồ không gian GIS**:
-   - Bấm nút **[Bản đồ GIS]** trên góc phải Header để hiển thị lớp bản đồ tương tác Leaflet WGS84 toàn cảnh.
+   - Số công trình nguy cơ cao ($\ge 70$ điểm, nhãn đỏ) cần xử lý khẩn cấp.
+   - Số công trình cần theo dõi ($40 - 69$ điểm, nhãn vàng).
+   - Số trạm đo tự động đang trực tuyến gửi số liệu liên tục.
+3. **Bước 3 — Tìm kiếm theo tên đường hoặc Phường**:
+   - Gõ tên đường, tên dự án vào ô tìm kiếm (ví dụ: *"Trần Thái Tông"*, *"Vành đai 3"*, *"Mễ Trì"*).
+   - Chọn Phường từ danh sách (ví dụ: *Phường Dịch Vọng Hậu, Phường Mễ Trì, Phường Mỹ Đình 1, Phường Hoàng Liệt, Phường An Phú*).
+   - Bấm vào thẻ màu đỏ hoặc vàng để lọc nhanh các điểm nóng tương ứng.
+4. **Bước 4 — Xem chi tiết mức độ bụi**:
+   - Đọc chỉ số bụi $\text{PM2.5}$ và nhãn cảnh báo (*"Vượt chuẩn QCVN"* hoặc *"Trong giới hạn"*).
+   - Đọc tên nhà thầu thi công và điểm rủi ro.
+5. **Bước 5 — Chọn thao tác tiếp theo**:
+   - Bấm **[Google Maps]**: Mở bản đồ điện thoại để xem đường đi hoặc xem ảnh vệ tinh.
+   - Bấm **[Phản ánh]**: Mở form chụp ảnh hiện trường gửi vi phạm.
+6. **Bước 6 (Tùy chọn) — Chuyển sang xem Bản đồ trực quan**:
+   - Bấm nút **[Bản đồ]** ở góc trên bên phải để xem toàn cảnh các điểm nóng trên bản đồ.
 
 ---
 
-## 4. Bố Cục Trực Quan & Wireframe ASCII (Information Hierarchy)
+## 4. Bố Cục Giao Diện & Khung Dây Wireframe Chi Tiết
 
-### 4.1. Bố cục Tổng quan & Chế độ Danh sách (Desktop $\ge 768\text{px}$)
+### 4.1. Bố cục dạng Danh sách trên Máy tính (Desktop $\ge 768\text{px}$)
 
 ```text
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
-│ HEADER: [Icon La Bàn] Tra Cứu Tình Hình & Điểm Nóng Địa Bàn      [Danh sách|Bản đồ] [↻]│
+│ TIÊU ĐỀ: [Biểu tượng La bàn] Tra Cứu Tình Hình Bụi & Điểm Nóng Địa Bàn   [Danh sách|Bản đồ] [↻]│
 ├────────────────────────────────────────────────────────────────────────────────────────┤
-│ KPI SUMMARY BAR (4 Thẻ tương tác 1-chạm để lọc):                                       │
+│ 4 THẺ TỔNG QUAN ĐẦU TRANG (Bấm 1-chạm để lọc nhanh):                                   │
 │ ┌────────────────┐ ┌────────────────┐ ┌────────────────┐ ┌───────────────────────────┐  │
-│ │ Tổng điểm: 33  │ │ Nguy cơ: 6     │ │ Cần theo dõi: 8│ │ Trạm đo trực tuyến: 4/4   │  │
-│ │ Công trình     │ │ (≥ 70đ - Đỏ)   │ │ (40-69đ - Vàng)│ │ (Thời gian thực)          │  │
+│ │ Tổng số: 33    │ │ Nguy cơ cao: 6 │ │ Cần theo dõi: 8│ │ Trạm đo đang chạy: 4/4    │  │
+│ │ Công trình     │ │ (≥ 70đ - Đỏ)   │ │ (40-69đ - Vàng)│ │ (Gửi số liệu liên tục)    │  │
 │ └────────────────┘ └────────────────┘ └────────────────┘ └───────────────────────────┘  │
 ├────────────────────────────────────────────────────────────────────────────────────────┤
-│ FILTER BAR:                                                                            │
-│ [🔍 Tìm theo địa chỉ, tên đường, tên dự án...     ] [Tất cả Phường/Xã ▼] [Mức rủi ro ▼]│
+│ THANH TÌM KIẾM & BỘ LỌC:                                                               │
+│ [🔍 Tìm theo địa chỉ, tên đường, tên công trình...] [Tất cả Phường/Xã ▼] [Mức rủi ro ▼]│
 ├────────────────────────────────────────────────────────────────────────────────────────┤
-│ BẢNG DANH SÁCH CÔNG TRÌNH & ĐIỂM NÓNG (Address-First Table):                           │
+│ BẢNG DANH SÁCH CÔNG TRÌNH THEO ĐỊA CHỈ:                                                │
 │ ┌───────┬───────────────────────────────────┬──────────────┬────────────┬─────────────┬─────────────────────────┐ │
-│ │ Mã    │ Tên công trình & Địa chỉ          │ Địa bàn      │ Mức rủi ro │ Nồng độ bụi │ Thao tác 1-chạm         │ │
+│ │ Mã    │ Tên công trình & Địa chỉ          │ Phường/Quận  │ Mức rủi ro │ Chỉ số bụi  │ Thao tác 1-chạm         │ │
 │ ├───────┼───────────────────────────────────┼──────────────┼────────────┼─────────────┼─────────────────────────┤ │
 │ │ BD-01 │ Tòa nhà hỗn hợp Grand Park        │ Dịch Vọng Hậu│ [● 78/100] │ PM2.5: 84.5 │ [Google Maps] [Phản ánh]│ │
 │ │       │ 128 Trần Thái Tông, Cầu Giấy, HN  │ Cầu Giấy     │ (Nguy cơ)  │ (VƯỢT QCVN) │                         │ │
@@ -141,18 +140,18 @@ Dẫn đường tới cổng công trường          Form điền sẵn siteNam
 └────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### 4.2. Bố cục Thẻ Card trên Mobile ($< 768\text{px}$)
+### 4.2. Bố cục dạng Thẻ trên Điện thoại di động ($< 768\text{px}$)
 
 ```text
 ┌──────────────────────────────────────────┐
-│ [La Bàn] Tra Cứu Điểm Nóng Địa Bàn   [↻] │
-│ [ Danh sách (Active) ] [ Bản đồ GIS ]    │
+│ [La bàn] Tra Cứu Điểm Nóng Địa Bàn   [↻] │
+│ [ Danh sách (Đang xem) ] [ Bản đồ ]      │
 ├──────────────────────────────────────────┤
 │ ┌──────────────────┐ ┌─────────────────┐ │
-│ │ Tổng: 33         │ │ Nguy cơ: 6 (Đỏ) │ │
+│ │ Tổng số: 33      │ │ Nguy cơ: 6 (Đỏ) │ │
 │ └──────────────────┘ └─────────────────┘ │
 │ ┌──────────────────┐ ┌─────────────────┐ │
-│ │ Theo dõi: 8 (Vàng│ │ Trạm đo: 4/4    │ │
+│ │ Theo dõi: 8(Vàng)│ │ Trạm đo: 4/4    │ │
 │ └──────────────────┘ └─────────────────┘ │
 ├──────────────────────────────────────────┤
 │ [🔍 Tìm theo địa chỉ, tên đường...      ]│
@@ -190,14 +189,14 @@ Dẫn đường tới cổng công trường          Form điền sẵn siteNam
 
 ---
 
-## 5. Hợp Đồng Dữ Liệu & API / D1 Database Contract
+## 5. Dữ Liệu & Nguồn Thông Tin Cần Hiển Thị
 
-### 5.1. API Endpoints
-- **URL**: `GET /map` (hoặc `GET /api/v1/public/sites`)
-- **Phân quyền**: Public (Không yêu cầu Authentication Bearer Token)
-- **Tần suất gọi**: Tải lần đầu khi render trang và tải lại khi bấm nút `[Làm mới]`.
+### 5.1. Nguồn dữ liệu từ máy chủ
+- **Đường dẫn**: `GET /map` (hoặc `GET /api/v1/public/sites`)
+- **Quyền truy cập**: Mở công khai cho mọi người dân (không cần đăng nhập)
+- **Thời điểm tải**: Tải ngay khi mở trang và tải lại khi bấm nút `[Làm mới]`.
 
-### 5.2. Cấu trúc Response JSON Chuẩn Hóa (SSOT Contract):
+### 5.2. Cấu trúc dữ liệu đơn giản dễ hiểu:
 ```json
 {
   "success": true,
@@ -236,40 +235,6 @@ Dẫn đường tới cổng công trường          Form điền sẵn siteNam
         "complaintsCount": 2,
         "contractorName": "Tổng Công ty Xây dựng Công trình Giao thông 4 (Cienco 4)",
         "status": "ACTIVE"
-      },
-      {
-        "id": "site_hn_03",
-        "code": "BD-03",
-        "name": "Chung cư cao tầng Mỹ Đình Plaza 3",
-        "address": "18 Lê Đức Thọ, Phường Mỹ Đình 1, Quận Nam Từ Liêm, Hà Nội",
-        "ward": "Mỹ Đình 1",
-        "district": "Nam Từ Liêm",
-        "city": "Hà Nội",
-        "lat": 21.0285,
-        "lng": 105.7702,
-        "dustRiskScore": 74,
-        "pm25": 81.0,
-        "pm10": 155.0,
-        "complaintsCount": 4,
-        "contractorName": "Công ty CP Xây lắp Điện 1 (PCC1)",
-        "status": "ACTIVE"
-      },
-      {
-        "id": "site_hn_04",
-        "code": "BD-04",
-        "name": "Dự án KĐT Tây Nam Linh Đàm CT4",
-        "address": "Bán đảo Linh Đàm, Phường Hoàng Liệt, Quận Hoàng Mai, Hà Nội",
-        "ward": "Hoàng Liệt",
-        "district": "Hoàng Mai",
-        "city": "Hà Nội",
-        "lat": 20.9688,
-        "lng": 105.8285,
-        "dustRiskScore": 48,
-        "pm25": 42.0,
-        "pm10": 88.0,
-        "complaintsCount": 1,
-        "contractorName": "Công ty TNHH Đầu tư Xây dựng HUD",
-        "status": "ACTIVE"
       }
     ],
     "sensors": [
@@ -281,110 +246,95 @@ Dẫn đường tới cổng công trường          Form điền sẵn siteNam
         "lng": 105.7991,
         "pm25": 84.5,
         "status": "ONLINE"
-      },
-      {
-        "id": "sen_02",
-        "code": "SEN-HN-02",
-        "name": "Trạm Vành Đai 3 - Phạm Hùng",
-        "lat": 21.0169,
-        "lng": 105.7835,
-        "pm25": 46.2,
-        "status": "ONLINE"
       }
     ]
   }
 }
 ```
 
-### 5.3. Ánh xạ Bảng Cơ sở dữ liệu D1 SQLite (Schema SSOT):
-- **Bảng `sites`**:
-  - `id` (TEXT PRIMARY KEY) — Mã định danh duy nhất (UUID/CUID).
-  - `code` (TEXT) — Mã hiệu quản lý (ví dụ: `BD-01`, `BD-02`).
-  - `name` (TEXT) — Tên công trình / dự án đầy đủ.
-  - `address` (TEXT) — Địa chỉ chi tiết số nhà, tên đường.
-  - `ward` (TEXT) — Tên Phường/Xã trực thuộc.
-  - `district` (TEXT) — Tên Quận/Huyện/Thị xã.
-  - `lat` (REAL), `lng` (REAL) — Tọa độ không gian WGS84.
-  - `dust_risk_score` (INTEGER) — Điểm rủi ro bụi tổng hợp ($0 - 100$).
-  - `contractor_name` (TEXT) — Tên đơn vị nhà thầu thi công.
-  - `status` (TEXT) — Trạng thái công trình (`ACTIVE`, `COMPLETED`, `PAUSED`).
-- **Bảng `sensors`**:
-  - `id`, `code`, `name`, `site_id`, `lat`, `lng`, `status`, `last_pm25`, `last_reading_at`.
-
-### 5.4. Chuẩn hóa & Phòng vệ Dữ liệu (Normalization & Defensive Fallbacks):
-- **Bảo toàn danh sách**: Nếu backend trả về `{ data: { sites } }` hoặc array trực tiếp, hàm `loadData` tự động unwrap và chuẩn hóa về mảng `[]` an toàn.
-- **Nội suy rủi ro khi thiếu dữ liệu**:
-  - Nếu `dustRiskScore` vắng mặt: Mặc định gán `score = 45`.
-  - Nếu `pm25` vắng mặt: Tự động nội suy theo mức rủi ro ($R \ge 70 \rightarrow 82\,\mu\text{g/m}^3$; $R \ge 40 \rightarrow 52\,\mu\text{g/m}^3$; $R < 40 \rightarrow 28\,\mu\text{g/m}^3$).
-  - Nếu `pm10` vắng mặt: Tự động nội suy ($R \ge 70 \rightarrow 165\,\mu\text{g/m}^3$; $R \ge 40 \rightarrow 105\,\mu\text{g/m}^3$; $R < 40 \rightarrow 55\,\mu\text{g/m}^3$).
+### 5.3. Các trường thông tin thực tế cần quản lý:
+- **Thông tin công trình (`sites`)**:
+  - `Mã công trình`: Ví dụ `BD-01`, `BD-02`.
+  - `Tên công trình`: Tên dự án đầy đủ.
+  - `Địa chỉ`: Số nhà, tên đường chi tiết.
+  - `Phường / Xã`: Tên phường trực thuộc.
+  - `Quận / Huyện`: Tên quận trực thuộc.
+  - `Tọa độ vị trí`: Vị trí để mở Google Maps và hiển thị trên bản đồ.
+  - `Điểm rủi ro bụi`: Thang điểm $0 - 100$.
+  - `Chỉ số bụi PM2.5 / PM10`: Số đo nồng độ bụi thực tế.
+  - `Tên nhà thầu thi công`: Đơn vị chịu trách nhiệm thi công.
+- **Tự động xử lý an toàn khi thiếu dữ liệu**:
+  - Nếu thiếu điểm rủi ro: Tự động gán điểm trung bình $45$ để người dùng vẫn theo dõi được.
+  - Nếu thiếu chỉ số bụi: Tự động ước tính dựa theo mức rủi ro để không bị trống thông tin.
+  - Nếu thiếu tọa độ: Nút Google Maps tự động tìm theo chuỗi địa chỉ văn bản.
 
 ---
 
-## 6. Bảng Danh Mục Hành Động & Nút Bấm (CTAs & Action Matrix)
+## 6. Bảng Danh Mục Nút Bấm & Thao Tác Cốt Lõi
 
-| Tên nút / Thao tác | Vị trí | Màu sắc / Token | Kích thước Touch Target | Điều kiện kích hoạt | Hành vi hệ thống | Phản hồi giao diện |
-|---|---|---|:---:|---|---|---|
-| **[Google Maps]** | Cột thao tác (Bảng) / Thẻ Mobile | Nền kem `#FDFBF7`, viền xám `border-ink-900/10`, icon đỏ | $\ge 38\text{px}$ (Desktop)<br>$\ge 44\text{px}$ (Mobile) | Luôn khả dụng | Mở tab mới với URL Google Maps Search | Mở trực tiếp app Google Maps trên điện thoại để dẫn đường |
-| **[Phản ánh]** | Cột thao tác (Bảng) / Thẻ Mobile | Nền đỏ son `#9f241f`, chữ trắng, icon Camera | $\ge 38\text{px}$ (Desktop)<br>$\ge 44\text{px}$ (Mobile) | Luôn khả dụng | Điều hướng sang `/citizen/report/new?siteName=...&address=...` | Chuyển trang tức thì với form đã điền sẵn địa chỉ |
-| **[Danh sách] / [Bản đồ GIS]** | Header góc trên bên phải | Segmented control, nền kem, nút active nền trắng | $\ge 40\text{px}$ | Luôn khả dụng | Chuyển đổi trạng thái `viewMode` giữa `'list'` và `'map'` | Hoán đổi ngay lập tức giữa Table/Cards và Bản đồ Leaflet |
-| **[Làm mới] (↻)** | Header góc trên bên phải | Nền trắng, viền nhạt, icon xoay | $\ge 40\text{px}$ | Đang không tải dữ liệu | Gọi lại hàm `loadData(true)` tải lại D1 | Icon xoay tròn 360°, cập nhật các số đo mới nhất |
-| **Thẻ KPI (Nguy cơ / Theo dõi)** | Thanh KPI đầu trang | Nền trắng, viền phân màu (đỏ/vàng), cursor pointer | $\ge 48\text{px}$ | Luôn khả dụng | Kích hoạt bộ lọc `riskFilter = 'CRITICAL'` hoặc `'WARNING'` | Bảng danh sách tự động lọc còn các công trình nguy cơ |
-| **Ô tìm kiếm tức thì** | Thanh Filter Bar | Nền trắng, viền xám, icon Search | $\ge 44\text{px}$ | Nhập ký tự | Lọc realtime theo tên, địa chỉ, tên đường, mã công trình | Danh sách co gọn theo từ khóa gõ vào |
-| **Dropdown Phường/Xã** | Thanh Filter Bar | Nền trắng, viền xám | $\ge 44\text{px}$ | Chọn 1 phường | Lọc các công trình thuộc đúng địa bàn Phường | Hiển thị chính xác các công trình trên địa bàn đã chọn |
+| Tên nút / Thao tác | Vị trí | Màu sắc & Kiểu nút | Kích thước nút bấm | Bấm vào thì làm gì | Hiển thị phản hồi |
+|---|---|---|:---:|---|---|
+| **[Google Maps]** | Cột thao tác trong bảng / Thẻ điện thoại | Nền kem sáng `#FDFBF7`, viền xám nhẹ, biểu tượng chỉ đường đỏ | $\ge 38\text{px}$ (Máy tính)<br>$\ge 44\text{px}$ (Điện thoại) | Mở ứng dụng Google Maps trên điện thoại | Dẫn đường chính xác tới cổng chính công trường |
+| **[Phản ánh]** | Cột thao tác trong bảng / Thẻ điện thoại | Nền đỏ son `#9f241f`, chữ trắng, biểu tượng máy ảnh | $\ge 38\text{px}$ (Máy tính)<br>$\ge 44\text{px}$ (Điện thoại) | Chuyển tới màn hình gửi vi phạm `/citizen/report/new` | Mở ngay form đã điền sẵn tên công trình và địa chỉ |
+| **[Danh sách] / [Bản đồ]** | Góc trên bên phải thanh tiêu đề | Cụm nút chuyển đổi 2 chế độ xem | $\ge 40\text{px}$ | Chuyển đổi qua lại giữa xem danh sách và xem bản đồ | Màn hình hoán đổi tức thì không cần tải lại trang |
+| **[Làm mới] (↻)** | Góc trên bên phải thanh tiêu đề | Nền trắng, viền nhạt, biểu tượng xoay | $\ge 40\text{px}$ | Tải lại số liệu đo mới nhất từ máy chủ | Biểu tượng xoay tròn, cập nhật số liệu mới |
+| **Thẻ tổng quan (Nguy cơ / Theo dõi)** | 4 Thẻ đầu trang | Nền trắng, viền phân màu (đỏ/vàng), có hiệu ứng bấm | $\ge 48\text{px}$ | Lọc danh sách công trình theo mức nguy cơ tương ứng | Danh sách tự động lọc còn các điểm nóng đã chọn |
+| **Ô tìm kiếm nhanh** | Thanh tìm kiếm | Nền trắng, viền xám, biểu tượng kính lúp | $\ge 44\text{px}$ | Tìm kiếm theo tên công trình, tên đường, địa chỉ | Danh sách co lại theo đúng từ khóa vừa gõ |
+| **Chọn Phường/Xã** | Thanh tìm kiếm | Nền trắng, viền xám, danh sách chọn | $\ge 44\text{px}$ | Lọc các công trình thuộc đúng địa bàn Phường | Hiển thị chính xác các công trình trên địa bàn đã chọn |
 
 ---
 
-## 7. Quy Chuẩn Thích Ứng Giao Diện (Responsive & Design System)
+## 7. Quy Chuẩn Giao Diện & Thích Ứng Màn Hình (Responsive)
 
-### 7.1. Bảng màu & Design Tokens (High-Contrast Civic Tech)
-- **Nền trang chính**: Màu kem sáng `#FDFBF7` (`bg-cream-50`), dịu mắt, chống chói ngoài trời nắng.
-- **Màu chữ văn bản**: Mực in đậm `#231b14` (`text-ink-900`), tương phản tối đa đạt chuẩn WCAG AAA.
-- **Màu nhấn cảnh báo nguy cơ**: Đỏ son `#9f241f` (`text-seal-600`, `bg-seal-50`, `border-seal-300`).
-- **Màu nhấn theo dõi**: Vàng hổ phách `#d97706` (`text-amber-800`, `bg-amber-50`, `border-amber-300`).
-- **Màu an toàn / Hành động phụ**: Xanh teal mòng két `#0d6f64` (`text-teal-700`, `bg-teal-50`).
-- **Quy tắc bất biến**: **TUYỆT ĐỐI KHÔNG DÙNG GLASSMORPHISM**, cấm `backdrop-blur-*`. Nền sáng thì chữ phải đậm rõ nét.
+### 7.1. Bảng màu sáng, tương phản cao, dễ nhìn ngoài đường
+- **Nền trang chính**: Màu kem sáng dịu mắt `#FDFBF7` (`bg-cream-50`), không gây lóa mắt ngoài trời.
+- **Màu chữ văn bản**: Mực in đen đậm `#231b14` (`text-ink-900`), chữ đậm rõ nét trên nền sáng.
+- **Màu cảnh báo nguy cơ**: Đỏ son `#9f241f` (`text-seal-600`, `bg-seal-50`), nổi bật rõ ràng.
+- **Màu cảnh báo theo dõi**: Vàng hổ phách `#d97706` (`text-amber-800`, `bg-amber-50`).
+- **Màu an toàn / Trong giới hạn**: Xanh ngọc `#0d6f64` (`text-teal-700`, `bg-teal-50`).
+- **QUY TẮC BẮT BUỘC**: **Tuyệt đối KHÔNG dùng hiệu ứng làm mờ nền (Glassmorphism)**. Nền sáng thì chữ phải đen đậm rõ ràng.
 
-### 7.2. Nguyên tắc Zero Truncate trên tên công trình và địa chỉ (UI Text SSOT)
-- Tuyệt đối không dùng `truncate`, `line-clamp`, `overflow-hidden` làm mất tên công trình (ví dụ: *"Tòa nhà hỗn hợp Grand Park"*), tên nhà thầu hay số nhà tên đường.
-- Khi màn hình nhỏ, văn bản tự động xuống dòng mượt mà (`break-words`), bảo đảm công dân đọc trọn vẹn thông tin địa chỉ trước khi bấm dẫn đường.
+### 7.2. Nguyên tắc không cắt cụt chữ (Đọc trọn vẹn thông tin)
+- **Tuyệt đối không cắt cụt tên công trình**: Không dùng các hiệu ứng cắt bớt chữ làm người dân không đọc được tên công trình (ví dụ: *"Tòa nhà hỗn hợp Grand Park"*), tên nhà thầu hay số nhà tên đường.
+- Khi xem trên điện thoại, chữ tự động xuống dòng mượt mà, giúp người dân đọc trọn vẹn địa chỉ trước khi bấm dẫn đường.
 
-### 7.3. Tương thích Viewport Đa Màn hình:
-- **Mobile (360px – 430px)**:
-  - Tự động chuyển sang chế độ Thẻ Card (`block md:hidden`).
-  - Thanh KPI bố trí lưới 2 cột $\times$ 2 hàng tiện chạm.
-  - Cụm 2 nút **[Google Maps]** và **[Phản ánh]** dàn đều 2 nửa bằng nhau với chiều cao chuẩn $\ge 44\text{px}$.
+### 7.3. Tương thích trên các loại thiết bị:
+- **Điện thoại di động (360px – 430px)**:
+  - Tự động chuyển sang chế độ Thẻ thông tin dễ bấm.
+  - 4 Thẻ tổng quan xếp thành lưới 2 cột $\times$ 2 hàng gọn gàng.
+  - Hai nút **[Google Maps]** và **[Phản ánh]** dàn đều 2 bên, chiều cao $\ge 44\text{px}$ thuận tiện bấm bằng ngón tay cái.
 - **Laptop 14-inch (1366x768 & 1440x900)**:
-  - Bảng dữ liệu 6 cột hiển thị thoáng đãng, lề trang chuẩn `px-6`.
-  - Không bị tràn ngang màn hình, không xuất hiện thanh cuộn ngang vô lý.
-- **Desktop (1920x1080)**:
-  - Giới hạn độ rộng tối đa trong khung `max-w-7xl` căn giữa sang trọng.
+  - Bảng danh sách 6 cột hiển thị thoáng đãng, lề trang vừa vặn.
+  - Không bị tràn ngang màn hình, không xuất hiện thanh cuộn ngang khó chịu.
+- **Màn hình lớn (1920x1080)**:
+  - Khung nội dung giới hạn căn giữa sang trọng, dễ quan sát toàn bộ danh sách.
 
 ---
 
-## 8. Kịch Bản Ngoại Lệ & Xử Lý Lỗi Biên (Edge Cases & Fallbacks)
+## 8. Các Tình Huống Thực Tế & Lệnh Kiểm Tra Nhanh
 
-### 8.1. Các tình huống ngoại lệ và cách xử lý:
-1. **Không tìm thấy kết quả theo bộ lọc**:
-   - *Biểu hiện*: Người dùng gõ tên đường hoặc chọn Phường không có công trình nào.
-   - *Xử lý*: Hiển thị Empty State rõ ràng: *"Không tìm thấy công trình nào phù hợp với bộ lọc"* kèm nút bấm **[Xóa tất cả bộ lọc]** đưa danh sách về mặc định.
-2. **Mất kết nối mạng / API D1 gián đoạn**:
-   - *Biểu hiện*: Request `/map` bị timeout hoặc trả về mã lỗi 500.
-   - *Xử lý*: Khối `try/catch` bọc an toàn, ứng dụng tự phục hồi với danh sách công trình mẫu đã chuẩn hóa, không hiển thị màn hình trắng (White Screen of Death).
-3. **Thiết bị không hỗ trợ định vị GPS**:
-   - *Biểu hiện*: Người dùng mở bản đồ nhưng trình duyệt chặn quyền Geolocation.
-   - *Xử lý*: Hệ thống tự động căn giữa bản đồ theo tọa độ trung tâm địa bàn mặc định (Hà Nội: `[21.0285, 105.8542]` hoặc TP.HCM: `[10.8231, 106.6297]`) và hiển thị thông báo hướng dẫn.
-4. **Tọa độ công trình bị thiếu trong dữ liệu**:
-   - *Biểu hiện*: Trường `lat`, `lng` mang giá trị `null` hoặc `undefined`.
-   - *Xử lý*: Nút **[Google Maps]** tự động fallback mở tìm kiếm theo chuỗi địa chỉ văn bản `site.address`.
+### 8.1. Các tình huống thường gặp và cách xử lý:
+1. **Không tìm thấy kết quả phù hợp**:
+   - *Tình huống*: Người dân gõ tên đường hoặc chọn Phường chưa có công trình nào.
+   - *Cách xử lý*: Hiển thị thông báo thân thiện: *"Không tìm thấy công trình nào phù hợp với bộ lọc"* kèm nút bấm **[Xóa tất cả bộ lọc]** để quay về danh sách đầy đủ.
+2. **Mất kết nối mạng hoặc máy chủ phản hồi chậm**:
+   - *Tình huống*: Mạng 4G yếu hoặc kết nối bị gián đoạn.
+   - *Cách xử lý*: Ứng dụng tự động giữ lại danh sách dữ liệu mẫu đã lưu trước đó, tuyệt đối không để xảy ra hiện tượng màn hình trắng.
+3. **Điện thoại chưa bật quyền định vị**:
+   - *Tình huống*: Người dân mở bản đồ nhưng chưa cấp quyền vị trí.
+   - *Cách xử lý*: Bản đồ tự động căn giữa theo trung tâm thành phố (Hà Nội hoặc TP.HCM) và hiển thị thông báo hướng dẫn bật định vị.
+4. **Công trình chưa cập nhật tọa độ**:
+   - *Tình huống*: Dữ liệu công trình chưa có số tọa độ cụ thể.
+   - *Cách xử lý*: Nút **[Google Maps]** tự động chuyển sang tìm kiếm theo địa chỉ văn bản để vẫn chỉ đường được cho người dân.
 
-### 8.2. Lệnh kiểm thử tự động (PowerShell CLI):
+### 8.2. Lệnh kiểm tra nhanh trên máy tính qua PowerShell (< 0.5s):
 ```powershell
-# 1. Kiểm thử phân hệ bản đồ và adapter không gian WGS84
+# 1. Kiểm tra tính năng hiển thị bản đồ và định vị không gian
 node --test app/tests/spatial-intelligence-map.test.js
 
-# 2. Kiểm thử hợp đồng tọa độ và định vị địa bàn SSOT
+# 2. Kiểm tra tính chính xác của địa chỉ và tọa độ các điểm nóng
 node --test app/tests/spatial-location-ssot.test.js
 
-# 3. Kiểm thử luồng tra cứu thực địa và phản ánh của công dân
+# 3. Kiểm tra toàn bộ luồng tra cứu địa bàn và gửi phản ánh của công dân
 node --test app/tests/citizen-real-world-audit.test.js
 ```
