@@ -5,6 +5,16 @@
 ---
 
 ## 🎯 1. Trọng Tâm Hoạt Động Hiện Tại (Active Operational State)
+- **Hoàn Tất Rà Soát & Hoàn Thiện Giao Diện 6 Màn Hình Cán Bộ 1-6 + Layout (Subagent UI-3)**:
+  - **1. Layout Cán Bộ (`StaffLayout.jsx`)**: Sidebar điều hướng cố định 240px vững chãi, tích hợp min-h-[44px] touch targets, zero glassmorphism, responsive từ 360px đến desktop.
+  - **2. Bàn Làm Việc Cán Bộ (`StaffDashboardPage.jsx`)**: Bố cục 3 cột chuẩn (~42% Việc cần làm, ~30% Cảnh báo, ~28% Hồ sơ), 4 metric KPI cards nổi bật, hàng loạt action buttons đạt chuẩn $\ge 44\text{px}$, không cắt cụt tên công trình (`break-words`).
+  - **3. Danh Sách Công Trình (`SitesListPage.jsx`)**: Bảng cuộn ngang an toàn (`overflow-x-auto`), 4 KPI cards, bộ lọc phân trang $\ge 44\text{px}$, địa chỉ và tên công trình tự xuống dòng `break-words`.
+  - **4. Chi Tiết Công Trình (`SiteDetailPage.jsx`)**: Tích hợp bản đồ Leaflet OpenStreetMap, chuỗi dữ liệu đo bụi thời gian thực, bảng hồ sơ liên quan, checklist việc cần bổ sung và các nút tác nghiệp $\ge 44\text{px}$.
+  - **5. Danh Sách Hồ Sơ Vụ Việc (`CasesListPage.jsx`)**: 4 KPI cards, 6 tab trạng thái, bảng 7 cột chuẩn CSDL D1/SQLite với cột ưu tiên khẩn cấp 310px, zero truncate, touch targets $\ge 44\text{px}$.
+  - **6. Không Gian Xử Lý Vụ Việc (`CaseDetailPage.jsx`)**: Stepper 7 bước tác nghiệp trực quan (Enforcement DAG), Checklist 10 tiêu chuẩn theo QCVN 18:2021/BXD và QĐ 48/2021/QĐ-UBND với 3 trạng thái tương tác (Đạt / Cần cải thiện / Chưa đạt), Modal giao việc phân công cán bộ & hạn SLA, Modal xem trước và in ấn biên bản A4 chuẩn thể thức hành chính theo **Nghị định 30/2020/NĐ-CP**, SafeImage đối chứng Before/After và modal phóng to ảnh kèm mã băm SHA-256 đối chứng toàn vẹn.
+  - **7. Danh Sách Nhiệm Vụ (`TasksListPage.jsx`)**: 4 KPI cards, 5 tabs lọc, bảng nhiệm vụ 7 cột, cột lịch công tác hôm nay 310px cố định, các nút thao tác (Mở, Sửa, Đổi hạn, Hoàn thành) đều đạt chuẩn $\ge 44\text{px}$.
+  - **Kiểm thử**: Toàn bộ test suite liên quan (`staff-sites-mockup4-5.test.js`, `staff-cases-mockup6-7.test.js`, `staff-mockups8-9-10.test.js`, `staff-dashboard-priority-queue-ssot.test.js`, `staff-workflow-ux.test.js`, `design-system-tokens.test.js`) 31/31 tests PASS (365ms), Toàn bộ Quick Gate (279/279 tests) PASS 100%.
+
 - **Hoàn Tất Rà Soát & Hoàn Thiện Giao Diện 5 Màn Hình Cán Bộ 7-11 (Subagent UI-4)**:
   - **1. Màn hình Quan trắc (`StaffMonitoringPage.jsx`)**: Biểu đồ đường chuỗi thời gian 24h rõ ràng (PM2.5 / PM10 đối chiếu ngưỡng QCVN 05:2023), bảng danh sách trạm phân trang mượt mà, bộ lọc khu vực/quận huyện (Thanh Xuân, Cầu Giấy, Ba Đình, Hoàng Mai...), nhúng bản đồ OpenStreetMap GIS tỷ lệ chuẩn không tràn layout, thẻ trạm bất thường trực quan, touch targets $\ge 44\text{px}$, zero glassmorphism.
   - **2. Màn hình Cảnh báo (`StaffAlertsPage.jsx`)**: Bố cục tối ưu tỷ lệ 75% Bảng danh sách cảnh báo + 25% Cột ưu tiên xử lý khẩn cấp (310px cố định), nút 1-Click `+ Hồ sơ` chuyển đổi nhanh sang vụ việc, tích hợp SafeImage an toàn minh chứng hiện trường và modal phóng to ảnh, touch targets $\ge 44\text{px}$.
