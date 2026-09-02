@@ -1,11 +1,82 @@
 # ACTIVE CONTEXT — DUSTGUARD VN
 
-> **Trạng thái**: Hoàn tất Rà soát & Củng cố Phân hệ Staff Monitoring, Alerts & Optional IoT (Subagent 5) | **Branch**: `master` | **Cập nhật**: 2026-09-02
+> **Trạng thái**: Hoàn tất Rà soát & Củng cố Toàn diện Phân Hệ Citizen Observation & Evidence Pipeline (Subagent 1) | **Branch**: `master` | **Cập nhật**: 2026-09-02
 
 ---
 
 ## 🎯 1. Trọng Tâm Hoạt Động Hiện Tại (Active Operational State)
-- **Hoàn Tất Rà Soát & Củng Cố Phân Hệ Staff Monitoring, Alerts & IoT Sensor Network (Subagent 5)**:
+- **Hoàn Tất Rà Soát & Củng Cố Toàn Diện Phân Hệ Citizen Observation & Evidence Pipeline (Subagent 1)**:
+  - **1. Nối Ống Dữ Liệu Thực Tế (Data Plumbing SSOT)**:
+    * Kiểm tra và củng cố toàn bộ luồng: Form ghi nhận của người dân/thanh niên (`CreateObservation.jsx`, `CitizenReport.jsx`, `ReportNewPage.jsx`, `UploadZone.jsx`) -> Nén ảnh tự động < 300KB & khử metadata nhạy cảm EXIF (`image-compressor.js`) -> Tạo mã băm cryptographic SHA-256 Web Crypto (`image-integrity.js`) -> Lưu trữ D1/SQLite bảng `complaints`, `evidences`, `observations`, `observation_evidence` -> API normalization/unwrap -> Hiển thị chi tiết và dòng thời gian xử lý (`ObservationDetail.jsx`, `ReportDetailPage.jsx`, `ReportsListPage.jsx`).
+  - **2. Đồng Bộ Ngoại Tuyến (Offline Mode & Resilient Drafts)**:
+    * Thống nhất hàng đợi lưu nháp ngoại tuyến giữa Citizen Portal và Community Portal qua `saveOfflineDraft` và `setupAutoSync` trong `offline-drafts.js`.
+    * Tự động đồng bộ các bản ghi nhận nháp lên máy chủ D1 ngay khi kết nối mạng được phục hồi (`online` event listener).
+    * Hạn chế rủi ro vượt hạn mức localStorage quota bằng cơ chế cắt tỉa thông minh (QuotaExceededError protection).
+  - **3. Khử Lỗi Runtime & Null Pointer**:
+    * Sửa lỗi `Invalid Date` tiềm ẩn khi parse các trường ngày tháng không đồng nhất giữa `created_at` và `createdAt` trong `ObservationDetail.jsx`, `ReportDetailPage.jsx`, `ReportsListPage.jsx`.
+    * Sửa lỗi kiểm tra tọa độ `Number(null).toFixed(6)` biến thành `'0.000000'` bằng việc kiểm tra tường minh `latitude != null && longitude != null`.
+    * Thêm try/catch bảo vệ cho `evidencesRes`, `followUpsRes`, `handoffsRes` trong `observation.repository.js` và parse JSON an toàn trong `community.routes.js`.
+    * Nối liên kết 2 chiều giữa `complaints` và `cases` để nạp `resolvedEvidenceUrl` (ảnh sau khi nhà thầu khắc phục) và timeline vụ việc vào màn hình chi tiết của người dân.
+  - **4. Kiểm Thử Toàn Diện**:
+    * Chạy `node --test app/tests/citizen-observation-lifecycle.test.js`: **5/5 tests PASS 100%**.
+    * Chạy toàn bộ 18 test files liên quan (Citizen, Community, Image, Drafts, Edge Routes): **131/131 tests PASS 100%**.
+    * Chạy Level 3 Quick Gate `npm --prefix app run verify:quick`: **241+ tests PASS 100%**.
+    * Xây dựng `document-generator.js`: Unified API cho toàn bộ Legal Tech Studio, tự động chuẩn hóa AST sang Legal AST chuẩn NĐ 30/2020, xuất bản A4 HTML Preview & Print, biên dịch OpenXML DOCX buffer / blob.
+    * Đảm bảo đủ 5 thành phần bắt buộc của NĐ 30/2020: Quốc hiệu & Tiêu ngữ, Tên cơ quan & Số hiệu, Trích yếu, 3 phần nội dung (I. Căn cứ & Hiện trạng, II. Hành vi & Kết quả, III. Đề xuất & Kiến nghị), Nơi nhận & Người ký duyệt / Chữ ký số CA & Con dấu đỏ điện tử.
+  - **2. Căn Cứ Pháp Lý & Trích Dẫn Khung Xử Phạt**:
+    * Đối soát chính xác Nghị định 45/2022/NĐ-CP (Điều 15, Điều 43) và Quy chuẩn kỹ thuật quốc gia QCVN 05:2023/BTNMT, QCVN 18:2021/BXD, Quyết định 48/2024/QĐ-UBND Hà Nội.
+    * Củng cố `calculateFineRange` (`legalRulesSSOT.js`) trả về đầy đủ `minTotal`, `maxTotal`, `totalMin`, `totalMax` và `formattedText`.
+  - **3. Xuất Bản DOCX Thật & In Ấn A4 Không Vỡ Layout**:
+    * Nâng cấp `StaffReportsPage.jsx` tạo file Word `.DOCX` OpenXML chuẩn Microsoft Word theo NĐ 30/2020 thay vì text blob đơn giản.
+    * Bảo đảm lề trang in chuẩn NĐ 30: Top 20mm (1134 DXA), Bottom 20mm (1134 DXA), Left 30mm (1701 DXA), Right 15mm (850 DXA), Printable Width 9355 DXA.
+    * Chế độ `@media print` trong `a4-preview.css` và `ExecutiveDashboard.jsx` ẩn thanh công cụ `no-print`, giữ văn bản trắng đen sắc nét.
+  - **4. Sửa Lỗi Regex & Zero Undefined Guarantee**:
+    * Sửa lỗi `key.replace(/\./g, '\\.')` trong `document-template-engine.js` để escape toàn bộ dấu chấm của key thay vì chỉ dấu chấm đầu tiên.
+    * Đảm bảo không bao giờ xuất hiện chuỗi undefined / null / NaN trong bất kỳ văn bản nào.
+  - **5. Kiểm Thử Toàn Diện**:
+    * Tạo test suite mới `app/tests/executive-legal-docs-parity.test.js`: **9/9 tests PASS 100%**.
+    * Chạy toàn bộ 9 bộ test Executive & Legal Tech: **66/66 tests PASS 100%**.
+    * Chạy Level 3 Quick Gate `npm --prefix app run verify:quick`: **283/283 tests PASS 100%**.
+
+- **Hoàn Tất Rà Soát & Củng Cố Tầng API Client Unwrapping, Normalization & Error Boundaries (Subagent 10)**:
+  - **1. Chuẩn hóa & Unwrapping Collection (`request.js`)**:
+    * Nâng cấp `normalizeList(payload)`: Tự động unwrap mọi cấu trúc phản hồi backend (`{ data: { items: [] } }`, `{ data: { campaigns: [] } }`, `{ data: [] }`, `{ items: [] }`, `{ cases: [] }`, `{ reports: [] }`, `{ sites: [] }`, `{ stations: [] }`, `{ obligations: [] }`, raw `[]`). Tuyệt đối không trả về `undefined`, `null` hoặc object không phải mảng.
+    * Nâng cấp `normalizeObject(payload, fallback)`: Tự động unwrap `{ data: { ... } }` hoặc giữ nguyên object an toàn, trả về fallback `{}` khi rỗng.
+    * Xử lý thông minh `options.data` vs `options.body` trong `request(path, options)`: Tự động `JSON.stringify(body)` nếu truyền plain object thay vì string, bảo toàn `FormData`, `Blob`, `ArrayBuffer`, `URLSearchParams`.
+  - **2. Xử lý Lỗi RFC 7807 & Civic Vietnamese Copy**:
+    * Nâng cấp `formatCivicErrorMessage(rawMessage, status, code)`: Tự động chuyển đổi toàn bộ thông điệp kỹ thuật thô (`Failed to fetch`, `NetworkError`, `500 Internal Server Error`, `Bad Request`, `Unauthorized`, `Forbidden`, `Not Found`, `Too Many Requests`) thành câu tiếng Việt chuẩn civic tech, lịch sự, dễ hiểu và có thể hành động được.
+    * Tích hợp `formatCivicErrorMessage` trực tiếp vào `ToastProvider` (`Toast.jsx`) và `CommunityToastContext.jsx`.
+  - **3. Củng cố Component An toàn & BROKEN IMAGE RULE**:
+    * Rà soát `SafeImage.jsx`, `ErrorBoundary.jsx`, `SectionErrorBoundary.jsx`.
+    * Thay thế các thẻ `<img>` trần trong `ReportDetailPage.jsx` và `ContractorCasesPage.jsx` bằng `<SafeImage>` để chống vỡ icon khi URL hỏng.
+    * Chuẩn hóa unwrap trong `policyIntelligenceApi.js` (`normalizeObject`, `normalizeList`).
+  - **4. Kiểm thử & Xác thực**:
+    * Tạo mới test suite `app/tests/api-client-unwrapping-normalization.test.js`: **5/5 tests PASS 100%**.
+    * Chạy `node --test app/tests/api_contract_rbac_security.test.js`: **16/16 tests PASS 100%**.
+    * Chạy `node --test app/tests/worker-full-edge-routes.test.js`: **12/12 tests PASS 100%**.
+    * Chạy Level 3 Quick Gate `npm --prefix app run verify:quick`: **283+ tests PASS 100%**.
+
+- **Hoàn Tất Rà Soát & Củng Cố Phân Hệ Staff Case Management & 7-Step Enforcement DAG (Subagent 4)**:
+  - **1. Danh Sách Hồ Sơ Vụ Việc (`CasesListPage.jsx` - Mockup 6 chuẩn)**:
+    * 4 KPIs tổng quan ("Hồ sơ mở", "Gần đến hạn", "Chờ khảo sát", "Chờ nghiệm thu").
+    * 6 Tabs lọc trạng thái ("Tất cả", "Mới tạo", "Đang xử lý", "Chờ nhà thầu", "Chờ nghiệm thu", "Đã hoàn tất").
+    * Bảng 7 cột danh sách hồ sơ (Mã hồ sơ, Tên công trình & Địa chỉ `break-words`, Bước hiện tại, Hạn xử lý SLA, Cán bộ phụ trách, Trạng thái, Nút mở chi tiết $\ge 44\text{px}$).
+    * Bố cục 75% Bảng + 25% Cột ưu tiên hôm nay 310px (`xl:w-[310px]`) cho Top 3 hồ sơ khẩn cấp.
+    * Nút "Xuất danh sách" và "Tạo hồ sơ" kèm Modal tạo vụ việc mới lưu trực tiếp vào D1/SQLite.
+  - **2. Không Gian Xử Lý Vụ Việc (`CaseDetailPage.jsx` - Mockup 7 chuẩn)**:
+    * Metadata bar 6 cột thông tin cốt lõi (Mã hồ sơ, Trạng thái, Mức ưu tiên, Hạn SLA 48h, Cán bộ phụ trách, Việc cần làm tiếp).
+    * Stepper tiến trình 7 bước (Enforcement DAG: Tiếp nhận -> Xác minh -> Thông báo -> Khảo sát -> Đề xuất -> Thẩm định -> Hoàn tất).
+    * 6 Tabs chuyên sâu: Thông tin chi tiết, Ảnh đối chứng Before/After, Lịch sử theo dõi 7 bước, Biên bản khảo sát 10 tiêu chí QCVN 18/QĐ 48, Kế hoạch khắc phục của nhà thầu, Hồ sơ pháp lý & dự thảo quyết định xử phạt NĐ 45/2022/NĐ-CP.
+    * Modal phóng to ảnh kèm mã băm SHA-256 đối chứng toàn vẹn.
+    * Modal phân công cán bộ & hạn SLA.
+    * Modal xem trước & in biên bản A4 chuẩn thể thức NĐ 30/2020/NĐ-CP.
+  - **3. Backend & State Machine DAG SSOT**:
+    * Củng cố `case.rules.js`: hàm `validateCaseTransition` chuẩn hóa `normalizeStatus`, khóa illegal jumps, chống sửa đổi hồ sơ `COMPLETED`.
+    * Sửa lỗi tham số `undefined` binding trong `cases.routes.js` và bổ sung import `deriveWorkflowStep`, `getNextAction`.
+    * Bổ sung route handler cho `PUT /api/complaints/:id/status` trong `complaints.routes.js`.
+  - **4. Kiểm thử**:
+    * `node --test app/tests/case-enforcement-dag-7steps.test.js app/tests/staff-cases-mockup6-7.test.js app/tests/cases-inspections-complaints-audit.test.js`: **31/31 tests PASS 100%**.
+    * Toàn bộ Quick Gate: **283/283 tests PASS 100%**.
   - **1. Quan trắc & Chuỗi đo 24h (`StaffMonitoringPage.jsx`)**:
     * Biểu đồ đường SVG trực quan hóa chuỗi thời gian 24h đối chiếu ngưỡng QCVN 05:2023/BTNMT (PM2.5: 50/75 µg/m³, PM10: 100/150 µg/m³), xử lý an toàn khi 0 cảm biến (Optional IoT zero-crash).
     * Nhúng bản đồ OpenStreetMap GIS tỷ lệ chuẩn `w-full h-[180px] sm:h-[200px] overflow-hidden` không gây tràn layout.
@@ -71,6 +142,26 @@
     * `UsersPage.jsx`: Bảng danh sách tài khoản hỗ trợ Dropdown đổi quyền trực tiếp In-Place (5 roles chuẩn RBAC), Zero Truncate trên họ tên và email (`break-words`/`break-all`), thanh tìm kiếm & bộ lọc, modal thêm người dùng mới.
     * `SettingsPage.jsx`: Form cấu hình tương tác đầy đủ các ngưỡng quy chuẩn kỹ thuật quốc gia QCVN 05:2023/BTNMT (PM2.5, PM10, TSP, SO2, NO2, CO), tham số Geofence 50m, thời hạn SLA 24h/48h, cấu hình Webhook Zalo OA / Telegram Bot.
   - **Kiểm thử**: `verify:quick` (279/279 tests) PASS 100%, tất cả test suite Contractor & Admin pass trọn vẹn.
+- **Hoàn Tất Nâng Cấp Toàn Diện Bàn Làm Việc Cán Bộ & Task Queue SSOT (Subagent 3 - Staff Dashboard & Task Queue)**:
+  - **1. Nối Ống Dữ Liệu Thực Tế D1/SQLite SSOT**:
+    * Đồng bộ truy vấn SQL tổng hợp qua `getStaffDashboardData` trong `staff-dashboard.service.js` với 4 bảng thực thể (`sites`, `alerts`, `cases`, `tasks`).
+    * Cung cấp các endpoint `/api/staff/dashboard`, `/api/staff/overview`, `/api/staff/dashboard/summary` trên cả Express và Cloudflare Hono Worker.
+    * Bổ sung auto-healing đầy đủ cho các cột bảng `alerts` (`title`, `severity`, `pm25Value`, `priorityReasons`, `evidenceUrls`, `caseId`) trong `schema-healer.js`.
+  - **2. Bố Cục 3 Cột Chuẩn Tác Nghiệp (~42% / ~30% / ~28%)**:
+    * Cột 1 (~42% `xl:col-span-5`): Việc cần làm tiếp theo (Next Actions ưu tiên theo SLA và mức độ khẩn cấp, filter tabs ALL/CASE/TASK/ALERT, nút Xử lý & Giao việc nhanh).
+    * Cột 2 (~30% `xl:col-span-4`): Tín hiệu cảnh báo mới (Chỉ số PM2.5/PM10 đối chiếu QCVN 05:2023, thời gian thực, nút Mở case & nút Xem ảnh hiện trường).
+    * Cột 3 (~28% `xl:col-span-3`): Hồ sơ đang theo dõi & Tái kiểm (Mã hồ sơ, công trình, bước tác nghiệp 1->7, cán bộ phụ trách, nút phân công trực tiếp).
+  - **3. Tích Hợp 3 Modal Thao Tác Trực Tiếp Tại Chỗ**:
+    * Modal 1: Tạo hồ sơ vụ việc mới (Create Case Modal với tính năng tự động điền thông tin từ Alert).
+    * Modal 2: Giao việc & Phân công cán bộ (Assign Modal kết nối API `/cases/:id/assign` hoặc direct patch, cập nhật ngay lập tức).
+    * Modal 3: Phóng to ảnh minh chứng trạm đo (Photo Lightbox Modal hiển thị thông số PM2.5 và chữ ký đối soát SHA-256).
+  - **4. Tuân Thủ 100% Nguyên Tắc Zero Truncate & Touch Target $\ge 44\text{px}$**:
+    * Loại bỏ hoàn toàn `truncate` trên tên công trình và tiêu đề hồ sơ, chuyển sang `break-words min-w-0 flex-1 font-bold leading-snug`.
+    * Toàn bộ nút bấm, filter pill, input, select đều đạt chuẩn tiếp cận $\ge 44\text{px}$, responsive mượt mà từ di động 360px đến laptop 14-inch (1366x768, 1440x900).
+  - **5. Kiểm Thử Đạt Chuẩn 100%**:
+    * `node --test app/tests/staff-dashboard-real-devdb.test.js app/tests/staff-dashboard-priority-queue-ssot.test.js`: **14/14 tests PASS 100%** (214ms).
+    * `npm --prefix app run verify:quick`: **279/279 tests PASS 100%** (28 test files + 4 UI smoke tests, 4.6s).
+    * `npm --prefix app run build`: **Vite build thành công 100%** (4.6s).
 - **Hoàn Tất Rà Soát & Vá Toàn Diện Phân Hệ Nhà Thầu & Đối Chứng Khắc Phục (Subagent Ops-3)**:
   - **Quick Token 0-Login UTF-8**: Khắc phục lỗi `btoa` crash khi mã hóa payload tiếng Việt có dấu, thay thế bằng helper base64url an toàn UTF-8.
   - **Worker Multipart Upload**: Bổ sung `c.req.parseBody()` cho các endpoint `POST /api/contractor/actions/:id/evidence` và `POST /api/contractor/quick-submit` khi nhận `multipart/form-data`.

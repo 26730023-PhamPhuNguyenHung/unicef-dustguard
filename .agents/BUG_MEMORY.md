@@ -57,13 +57,30 @@
   - Endpoint xuất CSV (`/export-csv`) bắt buộc ghi mã **UTF-8 BOM (`\uFEFF`)** vào đầu stream trước khi gửi dữ liệu.
   - Bảng `audit_logs` là **chỉ ghi thêm (Append-Only)**, khóa toàn bộ lệnh `UPDATE`/`DELETE` ở cấp D1 SQLite schema, gắn kèm mã băm SHA-256 `logHash` xâu chuỗi thời gian thực.
 
-### 📌 Invariant -1.10: Staff Monitoring, Alerts 1-Click Case Creation & Zero-Failure Optional IoT
-- **Nguyên nhân**: Thiết kế biểu đồ thời gian thực (24h trend chart) bị lỗi divide-by-zero hoặc crash khi 0 cảm biến kết nối; hoặc bản đồ GIS OpenStreetMap tràn ra ngoài khung nhìn trên mobile; hoặc chức năng chuyển đổi cảnh báo sang hồ sơ bắt cán bộ nhập lại toàn bộ thông tin.
+### 📌 Invariant -1.13: Regex Global Dot Escape & Dual AST Normalization (Tiptap vs Legal AST)
+- **Nguyên nhân**:
+  1. Dùng `key.replace('.', '\\.')` chỉ thay thế dấu chấm đầu tiên trong placeholder (`{{site.manager.phone}}` -> chỉ escape dấu chấm thứ nhất, làm regex bị lỗi cú pháp khi match nested keys).
+  2. AST của Tiptap Editor (`{ type: 'doc', content: [...] }`) khác với Legal AST chuẩn của GovTech (`{ header, title, subtitle, sections, signatures, recipients }`). Nếu render trực tiếp Tiptap AST vào renderer A4/DOCX mà không qua adapter chuẩn hóa, các thuộc tính `ast.header.agency` sẽ bị `undefined` gây crash ứng dụng.
 - **Quy tắc chuẩn**:
-  - **Optional IoT Zero-Crash**: Biểu đồ SVG 24h trend chart luôn kiểm tra độ dài mảng points và render fallback UI trung tính ("Chưa có đủ chuỗi đo 24h") an toàn khi chưa có dữ liệu cảm biến.
-  - **Embedded GIS Bounds**: Frame OpenStreetMap đặt trong container `w-full h-[180px] sm:h-[200px] overflow-hidden` có viền bo tròn sạch sẽ, không tràn ngang layout.
-  - **1-Click Case Creation**: Nút `+ Tạo hồ sơ` tự động thực hiện Atomic D1 transaction (`POST /api/staff/alerts/:id/convert-to-case`), khởi tạo Case với mã hồ sơ chuẩn, chuyển trạng thái Alert sang `IN_PROGRESS` và kế thừa tọa độ/dữ liệu bụi.
-  - **75/25 Fixed Priority Panel**: Cột "Ưu tiên hôm nay" (Top 3 cảnh báo khẩn cấp) cố định 310px trên desktop (`xl:w-[310px]`) và chuyển xuống dưới trên màn hình nhỏ.
+  - Luôn sử dụng regex toàn cục `key.replace(/\./g, '\\.')` khi build Dynamic Regex Matcher cho template bindings.
+  - Tầng `document-generator.js` bắt buộc có adapter `normalizeToLegalAst(rawAst, tmpl, options, bindings)` để chuyển đổi Tiptap AST sang Legal AST chuẩn NĐ 30/2020 trước khi đưa vào renderer HTML và DOCX exporter.
+
+### 📌 Invariant -1.10: Staff Monitoring, Alerts 1-Click Case Creation & Zero-Failure Optional IoT
+- **Nguyên nhân**: Bản đồ GIS hoặc biểu đồ chuỗi thời gian 24h bị crash khi không có cảm biến IoT (`sensorCount = 0`), hoặc chuyển đổi cảnh báo sang hồ sơ vụ việc thiếu giao dịch D1 Atomic làm thất lạc ID vụ việc.
+- **Quy tắc chuẩn**:
+  - Optional IoT: Hệ thống vận hành trơn tru 100% khi có 0 cảm biến. Biểu đồ 24h fallback đường cơ sở QCVN 05:2023, bản đồ GIS giữ nguyên view bounding box mặc định của địa bàn (Hà Nội).
+  - 1-Click Convert to Case (`handleConvertToCase`): Thực hiện Atomic D1 transaction (`POST /api/staff/alerts/:id/convert-to-case`), tạo bản ghi `cases` với `source_type = 'ALERT'` và chuyển alert status sang `IN_PROGRESS`.
+
+### 📌 Invariant -1.12: API Client Normalization, RFC 7807 Handling & Civic Vietnamese Error Copy
+- **Nguyên nhân**:
+  1. Frontend tự đoán mò cấu trúc response (`res.data.map` hoặc `res.items.map`), khi API trả về `{ data: { items: [] } }` hoặc mảng rỗng `[]` hoặc payload lỗi 4xx/5xx thì component crash ngay lập tức vì `Cannot read properties of undefined (reading 'map')`.
+  2. Truyền `body: { key: value }` dạng plain object trong fetch options mà quên `JSON.stringify`, fetch tự động ép kiểu thành `[object Object]` gửi lên server.
+  3. Lộ toast thông báo lỗi tiếng Anh kỹ thuật thô (`Failed to fetch`, `500 Internal Error`, `NetworkError`) gây hoang mang cho người dùng và cán bộ.
+- **Quy tắc chuẩn**:
+  - **Collection Normalization**: Tất cả mảng collection qua `normalizeList(payload)`: tự động unwrap `{ data: { items: [] } }`, `{ data: [] }`, `{ items: [] }`, raw `[]` và luôn trả về `Array []` an toàn.
+  - **Object Normalization**: Tất cả object đơn qua `normalizeObject(payload, fallback = {})`: tự động unwrap `{ data: { ... } }`, trả về fallback `{}` khi rỗng/lỗi.
+  - **Body / Data Handling**: Tự động chuyển đổi `body` plain object sang JSON string trong `request(path, options)`, bảo toàn `FormData`, `Blob`, `ArrayBuffer`, `URLSearchParams`.
+  - **Civic Vietnamese Error Copy**: Chuẩn hóa RFC 7807 problem details handler và chuyển toàn bộ thông điệp lỗi sang tiếng Việt civic văn minh, rõ ràng, dễ hiểu qua `formatCivicErrorMessage(rawMsg, status, code)`. Toast notifications và Error States bắt buộc hiển thị tiếng Việt, có thể hành động được (Thử lại / Kiểm tra kết nối mạng).
 
 ---
 
@@ -141,7 +158,13 @@
   1. **Bố cục 3 Cột Chuẩn SSoT**: Cột 1 Việc cần làm (~42% `xl:col-span-5`), Cột 2 Cảnh báo mới (~30% `xl:col-span-4`), Cột 3 Hồ sơ đang theo dõi (~28% `xl:col-span-3`).
   2. **Zero Truncate**: Toàn bộ tên công trình và tiêu đề hồ sơ sử dụng `break-words min-w-0 flex-1 font-bold leading-snug`.
   3. **3 Modals Tương Tác**: Tích hợp Modal Tạo hồ sơ (tự điền từ Alert), Modal Giao việc/Phân công nhanh (chọn cán bộ, thời hạn, ghi chú), Modal Xem ảnh minh chứng phóng to (hiển thị trạm đo, nồng độ PM2.5, đối soát SHA-256).
-  4. **Backend SSOT**: Đảm bảo các route `/api/staff/overview`, `/api/staff/dashboard`, `/api/staff/tasks`, `/api/staff/sites` truy vấn trực tiếp từ CSDL D1/SQLite và auto-heal đầy đủ các cột bảng `alerts` trong `schema-healer.js`.
+### 🚨 Trap 0.16: Youth Credits & QR ISO/IEC 18004 Verification Alignment (Offline Fallback & URL Endpoints)
+- **Nguyên nhân**: Khi khởi tạo QR code hoặc gọi hàm kiểm tra chữ ký số offline, nếu truyền `code` (như `ACT-REC-2026-XXXX`) thay vì `studentId` vào hàm sinh hash nội bộ, hash sinh ra sẽ không khớp với bản gốc. Đồng thời nếu `qrData` không duy trì cấu trúc URL scanable trực tiếp (`/certificate/:id?hash=...` kết hợp `/citizen?verifyCert=...`), việc quét QR bằng camera điện thoại hoặc chuyển trường đại học có thể bị lỗi liên kết.
+- **Giải pháp**:
+  1. Chuẩn hóa service `youth-credits.service.js` tiếp nhận cả `certificate` object lẫn chuỗi `code`, kiểm tra format HMAC-SHA256 (`VERIFY-` hoặc `SHA256:`).
+  2. Bổ sung route `/certificate` và `/certificate/:id` trong router để render trực tiếp `YouthCertificate.jsx` khi camera quét QR.
+  3. Khi sinh viên đổi trường đại học (`saveUniversitySelection`), cập nhật ngay state và tái tạo mã băm `VERIFY-<UNI>-<HEX>`, lưu an toàn vào `localStorage`.
+  4. Đảm bảo quy đổi chuẩn 20 giờ tình nguyện = 4.0 tín chỉ / 80 ĐRL và chữ ký số HMAC-SHA256 lưu vết D1.
 
 ---
 
@@ -207,6 +230,12 @@
 ### 🚨 Trap 1.23: Bỏ qua bước trung gian trong Case State Machine DAG (Illegal Step Jumps)
 - **Nguyên nhân**: `case.rules.js` trước đây chứa các đường tắt không hợp lệ (`PREPARING -> ON_SITE`, `ON_SITE -> APPRAISING`), làm lệch chuẩn DAG 7 bước so với `caseStateMachine.js`, cho phép bỏ qua bước ban hành quyết định hoặc lập biên bản. Đồng thời UI `StaffCaseDetail.jsx` thiếu Stepper trực quan và không khóa các trạng thái nhảy cóc trong form chỉnh sửa.
 - **Giải pháp**: Đồng bộ 100% ma trận `VALID_CASE_TRANSITIONS` trong `case.rules.js` và `caseStateMachine.js`; tích hợp 7-Step Interactive Workflow Stepper Strip trên `StaffCaseDetail.jsx`, khóa disabled các option trạng thái vi phạm DAG và hiển thị dialog xác nhận kèm ghi chú khi chuyển bước hợp lệ.
+
+### 🚨 Trap 1.26: Truyền giá trị `undefined` vào `db.prepare().bind()` gây lỗi kiểu dữ liệu và thiếu import helper `deriveWorkflowStep`
+- **Nguyên nhân**: Khi thực hiện câu lệnh `UPDATE` hoặc `INSERT` trên D1 SQLite, nếu một trường trong payload (như `slaDeadline`, `description`) có giá trị `undefined`, Better-sqlite3 hoặc D1 driver sẽ ném lỗi `TypeError: DataType not supported: undefined`. Đồng thời trong worker route `cases.routes.js`, gọi hàm `deriveWorkflowStep` hoặc `getNextAction` mà quên khai báo trong câu lệnh `import` từ `case.rules.js` dẫn đến `ReferenceError`.
+- **Giải pháp**:
+  1. Luôn dùng null-coalescing hoặc fallback an toàn `val !== undefined ? val : (existing.val || null)` để đảm bảo tham số truyền vào `bind()` luôn là giá trị hợp lệ (`string`, `number`, `null`), không bao giờ là `undefined`.
+  2. Bổ sung đầy đủ các hàm helper state machine (`deriveWorkflowStep`, `getNextAction`) vào import từ `domain/cases/case.rules.js`.
 
 ### 🚨 Trap 1.20: Lạm dụng LocalStorage làm SSOT thay vì Cloudflare D1 Persistent Storage
 - **Nguyên nhân**: Lưu trữ các thực thể nghiệp vụ cốt lõi (`users`, `cases`, `complaints`, `sites`, `tasks`, `campaigns`, `sensors`, `evidences`, `credits`) trong `localStorage` hoặc fallback dữ liệu fake/mock trong `catch` block làm dữ liệu bị phân mảnh trên từng client, không đồng bộ giữa các máy và rò rỉ dữ liệu ảo.
@@ -644,6 +673,31 @@
 ### 🚨 Trap 15.8: Lỗ hổng gán `valid: true` khi GPS rỗng trong `ContractorService.addEvidence` (Geofence Bypass Trap)
 - **Nguyên nhân**: Trong `contractor.service.js`, khi `lat`/`lng` là `NaN` hoặc `null` (nộp từ văn phòng không có GPS), hệ thống gán `valid: true` với `matchStatus: 'OFFICE_SUBMITTED'`. Điều này làm bypass cơ chế kiểm soát vị trí thực địa 50m của công trình.
 - **Giải pháp**: Khi tọa độ GPS bị khuyết hoặc không hợp lệ, luôn đặt `valid: false`, `within50m: false`, `distanceMeters: null`, `matchStatus: 'NO_GPS'` để hệ thống không ghi nhận nhầm là hợp lệ trong buffer 50m.
+
+---
+
+## 🛠️ 16. Citizen Observation & Evidence Pipeline Hardening
+
+### 🚨 Trap 16.1: `Invalid Date` crash khi truy cập trường ngày tháng không đồng nhất (`created_at` vs `createdAt`)
+- **Nguyên nhân**: D1 SQLite trả về `created_at` ở một số bảng và `createdAt` ở bảng khác. Khi frontend gọi `new Date(item.created_at)` mà dữ liệu là `createdAt`, `new Date(undefined)` biến thành `Invalid Date` và phương thức `toLocaleDateString()` ném exception hoặc hiển thị thô ráp `"Invalid Date"` cho người dùng.
+- **Giải pháp**: Luôn bảo bọc ngày tháng với chuỗi fallback an toàn: `new Date(item.created_at || item.createdAt || Date.now()).toLocaleDateString('vi-VN', ...)`.
+
+### 🚨 Trap 16.2: Ép kiểu `Number(null)` làm vỡ hiển thị tọa độ GPS (`0.000000, 0.000000`)
+- **Nguyên nhân**: Kiểm tra `if (item.latitude)` nhưng khi `latitude === null`, biểu thức `${Number(item.latitude).toFixed(6)}` trả về `'0.000000'` và hiển thị tọa độ ảo tại Đại Tây Dương, đồng thời tạo link Google Maps sai thực tế.
+- **Giải pháp**: Bắt buộc kiểm tra tường minh `item.latitude != null && item.longitude != null` trước khi định dạng và hiển thị liên kết Google Maps.
+
+### 🚨 Trap 16.3: Đứt gãy đồng bộ ngoại tuyến do phân mảnh khóa `localStorage` giữa Citizen và Community
+- **Nguyên nhân**: Phân hệ `ReportNewPage.jsx` lưu nháp ngoại tuyến vào `localStorage.getItem('dg_offline_drafts')` thay vì dùng module chuẩn `saveOfflineDraft()` trong `offline-drafts.js` (dùng khóa `dg_offline_report_drafts`), dẫn đến việc hàng đợi ngoại tuyến không được dọn hạn mức quota (QuotaExceededError) và không thể tự động đồng bộ khi có mạng.
+- **Giải pháp**: Đồng bộ hóa toàn bộ luồng lưu nháp qua `saveOfflineDraft()` và đăng ký bộ lắng nghe `setupAutoSync()` trong `useEffect` cho cả Citizen Portal và Community Portal.
+
+### 🚨 Trap 16.4: Rủi ro nuốt exception và trả HTTP 500 khi parse JSON rỗng trong Worker Route
+- **Nguyên nhân**: Trong `community.routes.js`, gọi trực tiếp `await c.req.json()` mà không có catch fallback khiến các request với body rỗng hoặc lỗi cú pháp JSON bị ném `SyntaxError` và trả mã lỗi 500 thay vì trả mã lỗi 400 chuẩn RFC 7807 problem details.
+- **Giải pháp**: Luôn dùng `const body = await c.req.json().catch(() => ({}))` và để tầng validator nghiệp vụ `validateObservationInput(body)` kiểm tra và trả về lỗi 400 rõ ràng.
+
+### 🚨 Trap 16.5: Thiếu liên kết ngược hồ sơ vụ việc (`cases`) và biên bản xử lý sau khắc phục (`actions`) vào API chi tiết phản ánh
+- **Nguyên nhân**: Endpoint `GET /api/complaints/:id` chỉ truy vấn `complaint.caseId` trên bảng `complaints`. Khi vụ việc được khởi tạo từ thanh tra với khóa ngoại `cases.complaintId = complaint.id`, phản ánh người dân không xem được dòng thời gian xử lý và hình ảnh đối chứng sau khắc phục (`resolvedEvidenceUrl`).
+- **Giải pháp**: Trong `handleGetComplaintById`, tự động truy vấn liên kết 2 chiều `SELECT id FROM cases WHERE complaintId = ? OR id = ?` và nạp `resolvedEvidenceUrl` từ bảng `actions` để người dân theo dõi trực tiếp hình ảnh trước/sau khi công trình khắc phục.
+
 
 
 
