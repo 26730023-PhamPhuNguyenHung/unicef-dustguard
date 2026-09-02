@@ -1,15 +1,15 @@
 # ACTIVE CONTEXT — DUSTGUARD VN
 
-> **Trạng thái**: Hoàn tất Dọn Dẹp Toàn Bộ Markdown Cũ / Trùng Lặp & Screenshot Rác | **Branch**: `master` | **Cập nhật**: 2026-09-02
+> **Trạng thái**: Hoàn tất Khôi Phục & Đồng Bộ Toàn Bộ Tài Liệu Mới + Dọn Dẹp Screenshot Rác | **Branch**: `master` | **Cập nhật**: 2026-09-02
 
 ---
 
 ## 🎯 1. Trọng Tâm Hoạt Động Hiện Tại (Active Operational State)
-- **Hoàn Tất Dọn Dẹp File Markdown Thừa & Ảnh Screenshot Rác Theo Yêu Cầu**:
-  - Đã xóa toàn bộ các file screenshot cũ `staff_*.png` ở root.
-  - Đã xóa toàn bộ các thư mục tài liệu cũ/trùng lặp: `docs/`, `app/docs/`, `app/plans/`, `FEATURE_PRESERVATION_AUDIT.md`, `legacy/README.md`, các file `.md` thừa trong `app/` và `presentation/`.
-  - Giữ lại SSOT duy nhất tại `.agents/` (`rules`, `ssot`, `skills`, `memory-bank`) và `AGENTS.md`, `README.md` sạch ở root.
-  - Kiểm thử toàn diện `verify:quick` đạt 100% PASS (279/279 tests).
+- **Bảo Toàn Toàn Bộ Tài Liệu Mới & Đồng Bộ 3 File Mới Nhất**:
+  - Đã khôi phục toàn bộ các tài liệu đặc tả chuẩn mới: `docs/product/screens/` (39 files), `docs/product/` (toàn bộ specs, consistency audit, scorecard, language), `docs/ui/HUMAN_CENTRIC_31_PAGE_AUDIT.md`, `docs/architecture/` và `presentation/` pitch & spec.
+  - Đã sao chép và đồng bộ 3 file mới nhất từ Downloads: `PRODUCT_CONSISTENCY_AUDIT.md`, `PRODUCT_CONSISTENCY_SCORECARD.md`, `PRODUCT_LANGUAGE.md`.
+  - Đã dọn dẹp sạch sẽ 24 ảnh screenshot rác `staff_*.png` ở root và các file rác cũ/trùng lặp.
+  - Toàn bộ Quick Gate (`verify:quick`) đạt 100% PASS (279/279 tests).
 
   - **1. Hoàn tất 39 tài liệu chuẩn tại `docs/product/screens/`**:
     * 31 File Screen Specs: Tinh gọn (120-200 dòng), chuẩn hóa 21 mục, phân định 4 trạng thái `CURRENT / PARTIAL / PROPOSED / UNKNOWN`, loại bỏ toàn bộ boilerplate CLI/testing dài dòng.
