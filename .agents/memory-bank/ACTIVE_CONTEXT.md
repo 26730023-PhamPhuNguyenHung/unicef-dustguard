@@ -1,20 +1,24 @@
 # ACTIVE CONTEXT — DUSTGUARD VN
 
-> **Trạng thái**: dev.db Real Data Integration & Staff Dashboard 100% SSOT | **Branch**: `master` | **Cập nhật**: 2026-09-02
+> **Trạng thái**: Landing Page Redesign SSOT & Real Data Dashboard 100% | **Branch**: `master` | **Cập nhật**: 2026-09-02
 
 ---
 
 ## 🎯 1. Trọng Tâm Hoạt Động Hiện Tại (Active Operational State)
-- **Staff Dashboard Thực dev.db (dev.db -> Pure SQL Query -> API Endpoint -> UI)**:
-  - `dev.db` (`app/prisma/dev.db`, 36MB) là nguồn dữ liệu chuẩn duy nhất (38 sites, 23 alerts, 21 cases, 24 tasks).
-  - Tích hợp `staff-dashboard.service.js` thực hiện SQL aggregations & JOINs trực tiếp trên SQLite/D1.
-  - Endpoint `GET /api/staff/dashboard` và `GET /api/dashboard/summary` trả về Data Contract sạch: `stats`, `nextActions`, `latestAlerts`, `recentCases`.
-  - Frontend `/staff` (StaffDashboardPage) render đầy đủ 4 trạng thái (Loading, Success data, Empty state, Error retry), mật độ dữ liệu thực tế cao (Hàng 1: 4 KPI cards, Hàng 2: Việc cần làm ~42%, Cảnh báo mới ~30%, Hồ sơ gần đây ~28%).
-  - Role header và User initials phản ánh đúng vai trò thực tế từ Auth session.
-  - Tài liệu kiểm toán `docs/DEV_DB_AUDIT.md` được lập đầy đủ cho 9 phân hệ sidebar.
+- **Tái Thiết Toàn Diện Landing Page Chuẩn Civic Tech (DUSTGUARD VN SSOT)**:
+  - Đồng bộ 100% nội dung và triết lý từ đặc tả `DUSTGUARD VN.md`: *"Phát hiện bụi. Tạo hồ sơ. Theo dõi đến khi có kết quả."*
+  - **Hero Section & Interactive Case Dossier**: Mẫu hồ sơ `#DG-2026-0842` (Vành đai 3 · Dịch Vọng Hậu) với tiến trình 5 bước, Before/After toggle, PM2.5 metric, mã xác thực SHA-256.
+  - **Khoảng trống thực tế (Problem)**: 6 nguồn dữ liệu phân tán & 4 câu hỏi trăn trở lớn.
+  - **Quy trình 4 bước (Process)**: 01 Ghi nhận -> 02 Xác minh -> 03 Ưu tiên (0-100) -> 04 Tạo Case.
+  - **Theo dõi & Tái kiểm (Accountability Loop & Before/After)**: Vòng lặp 6 bước khép kín và đối chứng hiện trường Before vs After.
+  - **Phân vai 5 Nhóm tác nhân (Roles)**: Người dân, Tình nguyện viên/CLB sinh viên, Người điều phối, Đơn vị xử lý, Quản trị & Lãnh đạo.
+  - **Công nghệ & Cảm biến mở (Tech & Open IoT)**: 3 trụ cột Bằng chứng số, Bản đồ GIS, AI trợ lý; Khối IoT tham chiếu `≈ 500.000đ/node`.
+  - **Trải nghiệm Giao diện Vận hành (Live Workspace)**: Dashboard 5 KPI, Việc của tôi (Lịch trình kiểm tra viên), Dòng thời gian minh bạch theo phút.
+  - **Lộ trình Pilot & Kêu gọi đối tác (Impact & CTA)**: 5 cam kết cốt lõi, 3 giai đoạn triển khai và DustGuard Manifesto.
+  - **Đảm bảo Nguyên Tắc Thiết Kế**: Sáng màu tương phản cao (Sand Cream, Ink, Seal Red, Teal), tuyệt đối KHÔNG glassmorphism, touch target >= 44px, responsive 360px - 1920px.
 - **Sức khỏe Mã nguồn**:
-  - `npm --prefix app run verify:quick`: **279/279 tests PASS 100%** (28 test files + 4 UI smoke tests, ~2.8s).
-  - `staff-dashboard-real-devdb.test.js`: **7/7 PASS 100%** (69ms).
+  - `npm --prefix app run verify:quick`: **279/279 tests PASS 100%** (28 test files + 4 UI smoke tests, ~3.6s).
+  - `npm --prefix app run build`: **Vite build thành công 100%** (6.33s).
 
 ---
 
