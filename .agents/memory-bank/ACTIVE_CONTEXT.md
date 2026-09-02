@@ -1,10 +1,21 @@
 # ACTIVE CONTEXT — DUSTGUARD VN
 
-> **Trạng thái**: 10-Domain Comprehensive Bug Fixing & Codebase Hardening 100% | **Branch**: `master` | **Cập nhật**: 2026-09-02
+> **Trạng thái**: Hoàn tất 100% Rebuild & Chuẩn Hóa Bộ 31-Screen Product Spec / PDR & Human-Centric UI/UX Rules | **Branch**: `master` | **Cập nhật**: 2026-09-02
 
 ---
 
 ## 🎯 1. Trọng Tâm Hoạt Động Hiện Tại (Active Operational State)
+- **Hoàn Tất Rebuild & Chuẩn Hóa Toàn Diện Bộ 31-Screen Product Spec / PDR (Theo Master Prompt & Human-Centric UI/UX Rules)**:
+  - **1. Hoàn tất 39 tài liệu chuẩn tại `docs/product/screens/`**:
+    * 31 File Screen Specs: Tinh gọn (120-200 dòng), chuẩn hóa 21 mục, phân định 4 trạng thái `CURRENT / PARTIAL / PROPOSED / UNKNOWN`, loại bỏ toàn bộ boilerplate CLI/testing dài dòng.
+    * 6 File Global Matrices: `SCREEN-REGISTRY.md`, `SCREEN-AUDIT.md`, `SCREEN-PERMISSION-MATRIX.md`, `SCREEN-DATA-MATRIX.md`, `SCREEN-STATE-MATRIX.md`, `SCREEN-VERIFICATION-PLAN.md`.
+    * 2 File Tổng Hợp: `README.md` và `INDEX.md`.
+  - **2. Khắc phục triệt để các ranh giới nghiệp vụ & Human-Centric UI/UX**:
+    * Dust Risk Score (0-100) là Điểm ưu tiên tác nghiệp, không phải kết luận vi phạm pháp lý.
+    * AI Engine là Trợ lý hỗ trợ quyết định (Decision Support, Human-in-the-loop).
+    * IoT Sensors là nguồn tín hiệu tùy chọn (Optional signal source), hệ thống chạy 100% khi 0 cảm biến.
+    * Loại bỏ hoàn toàn jargon kỹ thuật trên UI người dùng phổ thông, CTA ngắn 1-3 từ, tối ưu nhận thức 5s/10s/30s.
+  - **3. Kiểm thử Gate**: Toàn bộ Quick Gate (`verify:quick`) đạt **279/279 Tests Pass 100%** (2.3s in-memory, 0.5s smoke).
 - **Hoàn Tất Rà Soát & Hoàn Thiện Giao Diện 6 Màn Hình Cán Bộ 1-6 + Layout (Subagent UI-3)**:
   - **1. Layout Cán Bộ (`StaffLayout.jsx`)**: Sidebar điều hướng cố định 240px vững chãi, tích hợp min-h-[44px] touch targets, zero glassmorphism, responsive từ 360px đến desktop.
   - **2. Bàn Làm Việc Cán Bộ (`StaffDashboardPage.jsx`)**: Bố cục 3 cột chuẩn (~42% Việc cần làm, ~30% Cảnh báo, ~28% Hồ sơ), 4 metric KPI cards nổi bật, hàng loạt action buttons đạt chuẩn $\ge 44\text{px}$, không cắt cụt tên công trình (`break-words`).
