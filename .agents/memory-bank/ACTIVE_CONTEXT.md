@@ -1,24 +1,25 @@
 # ACTIVE CONTEXT — DUSTGUARD VN
 
-> **Trạng thái**: Landing Page Redesign SSOT & Real Data Dashboard 100% | **Branch**: `master` | **Cập nhật**: 2026-09-02
+> **Trạng thái**: 10-Domain Comprehensive Bug Fixing & Codebase Hardening 100% | **Branch**: `master` | **Cập nhật**: 2026-09-02
 
 ---
 
 ## 🎯 1. Trọng Tâm Hoạt Động Hiện Tại (Active Operational State)
-- **Tái Thiết Toàn Diện Landing Page Chuẩn Civic Tech (DUSTGUARD VN SSOT)**:
-  - Đồng bộ 100% nội dung và triết lý từ đặc tả `DUSTGUARD VN.md`: *"Phát hiện bụi. Tạo hồ sơ. Theo dõi đến khi có kết quả."*
-  - **Hero Section & Interactive Case Dossier**: Mẫu hồ sơ `#DG-2026-0842` (Vành đai 3 · Dịch Vọng Hậu) với tiến trình 5 bước, Before/After toggle, PM2.5 metric, mã xác thực SHA-256.
-  - **Khoảng trống thực tế (Problem)**: 6 nguồn dữ liệu phân tán & 4 câu hỏi trăn trở lớn.
-  - **Quy trình 4 bước (Process)**: 01 Ghi nhận -> 02 Xác minh -> 03 Ưu tiên (0-100) -> 04 Tạo Case.
-  - **Theo dõi & Tái kiểm (Accountability Loop & Before/After)**: Vòng lặp 6 bước khép kín và đối chứng hiện trường Before vs After.
-  - **Phân vai 5 Nhóm tác nhân (Roles)**: Người dân, Tình nguyện viên/CLB sinh viên, Người điều phối, Đơn vị xử lý, Quản trị & Lãnh đạo.
-  - **Công nghệ & Cảm biến mở (Tech & Open IoT)**: 3 trụ cột Bằng chứng số, Bản đồ GIS, AI trợ lý; Khối IoT tham chiếu `≈ 500.000đ/node`.
-  - **Trải nghiệm Giao diện Vận hành (Live Workspace)**: Dashboard 5 KPI, Việc của tôi (Lịch trình kiểm tra viên), Dòng thời gian minh bạch theo phút.
-  - **Lộ trình Pilot & Kêu gọi đối tác (Impact & CTA)**: 5 cam kết cốt lõi, 3 giai đoạn triển khai và DustGuard Manifesto.
-  - **Đảm bảo Nguyên Tắc Thiết Kế**: Sáng màu tương phản cao (Sand Cream, Ink, Seal Red, Teal), tuyệt đối KHÔNG glassmorphism, touch target >= 44px, responsive 360px - 1920px.
+- **Hoàn Tất Chiến Dịch Săn & Vá Lỗi Toàn Diện Qua 10 Subagent Chuyên Trách**:
+  - Triệu tập 10 Subagent Fixer chạy song song, sửa dứt điểm **84 lỗi & bẫy rủi ro tiềm ẩn** (14 P0, 29 P1, 33 P2, 8 P3) trên 10 phân hệ nghiệp vụ.
+  - **Core API & Data Normalization**: Tự động chuyển `options.data` sang `body`, mở rộng `normalizeList` unwrap an toàn mọi collection array, vá triệt để crash `users.filter`.
+  - **Staff Workspace & Case UI**: Bổ sung null check `evidencePhotos`, `site.kpis`, cung cấp method `getSiteTelemetry`, `submitInspection`, dọn dẹp swallowed catches.
+  - **Citizen & Youth Credits**: Vá crash tìm kiếm CLB `universityCode`, dọn cache tự động khi `QuotaExceededError`, chống biến ảnh PNG trong suốt thành nền đen, bỏ tọa độ GPS Hà Nội gán cứng.
+  - **Contractor & CSR**: Vá hàm `calculateHaversineDistance` trả về `Infinity` khi tọa độ null/NaN, loại bỏ mock `success: true`, upload file `FormData` nhị phân thật.
+  - **Executive & Legal Engine**: Bổ sung `ExecutiveService.getReportById`, sửa `sensitiveReceptors = []` truthy, escape regex so sánh toán học `< 100m` trong DOCX parser.
+  - **GIS & Spatial Intelligence**: Chặn Null Island `(0,0)`, sửa lọc Bounding box qua kinh tuyến 180°, mask PII số điện thoại & fuzz tọa độ công khai, dọn mock drawer.
+  - **Backend Staff & D1 SQL**: Khắc phục các câu truy vấn sai cột `c.deadline` $\rightarrow$ `c.slaDeadline`, bảo vệ PII thông tin liên hệ ban quản lý công trình.
+  - **Backend Worker Routes & Schema**: Chuẩn hóa snake_case trên `audit_logs`, `draft_documents`, `evidences`, `contractor_explanations`.
+  - **AI & Telemetry Engine**: Thêm `AbortSignal.timeout(10000)` chống treo worker, vá prompt injection XML `<user_query>`, sửa `Number(null) === 0` trong flatline detection.
+  - **Security & DAG Engine**: Whitelist MIME types raster, CSP sandbox cho storage upload, từ chối unsigned JWT tại production, HMAC token nhà thầu, tối ưu N+1 batch queries trong automation cron sweep.
 - **Sức khỏe Mã nguồn**:
-  - `npm --prefix app run verify:quick`: **279/279 tests PASS 100%** (28 test files + 4 UI smoke tests, ~3.6s).
-  - `npm --prefix app run build`: **Vite build thành công 100%** (6.33s).
+  - `npm --prefix app run verify:quick`: **279/279 tests PASS 100%** (28 test files + 4 UI smoke tests, 4.8s).
+  - `npm --prefix app run build`: **Vite build thành công 100%** (4.6s).
 
 ---
 

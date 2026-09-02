@@ -573,3 +573,28 @@
   2. Tự động lưu bản nháp form đang nhập vào `localStorage ('dg_active_report_form')` và khôi phục khi reload trang; xóa nháp khi đã nộp thành công ở Bước 4.
   3. Hiển thị banner trạng thái hàng đợi nháp kèm nút "Đồng bộ ngay" khi `offlineDraftsCount > 0`.
 
+---
+
+## 🛠️ 15. Comprehensive 10-Domain Codebase Hardening & Bug Fixes
+
+### 🚨 Trap 15.1: `request()` gọi với `data: payload` thay vì `body: JSON.stringify(payload)`
+- **Nguyên nhân**: Trong JavaScript `fetch(url, options)`, API chỉ đọc trường `options.body` mà bỏ qua `options.data`. Khi gọi `request(url, { method: 'POST', data: payload })`, request được gửi với body rỗng.
+- **Giải pháp**: Trong `app/src/lib/api/request.js`, tự động chuyển `options.data` sang `options.body = isFormData ? options.data : JSON.stringify(options.data)`.
+
+### 🚨 Trap 15.2: `calculateHaversineDistance` trả về 0m khi tọa độ `null` (Bypass Geofence 50m)
+- **Nguyên nhân**: Trả về `0` khi `lat1 == null` khiến mọi yêu cầu không có GPS hoặc tọa độ công trình rỗng đều lọt qua kiểm tra `distance <= 50m`.
+- **Giải pháp**: Luôn trả về `Infinity` khi bất kỳ tọa độ nào bị `null`, `undefined` hoặc `NaN`.
+
+### 🚨 Trap 15.3: AI Service Fetch thiếu `AbortSignal.timeout` gây treo Worker vô hạn
+- **Nguyên nhân**: Gọi fetch tới AI Gateway mà không có timeout khiến worker bị treo socket khi mạng ngoài trễ, không kích hoạt được cơ chế fallback.
+- **Giải pháp**: Luôn thêm `signal: AbortSignal.timeout(10000)` (10s) cho mọi lời gọi fetch LLM/AI.
+
+### 🚨 Trap 15.4: Lỗi ép kiểu `Number(null) === 0` kích hoạt báo động giả cảm biến Flatline
+- **Nguyên nhân**: Khi sensor gửi `pm10: null` hoặc `""`, `Number(null)` biến thành `0`, khiến 5 gói tin khuyết dữ liệu bị hiểu là 5 gói tin đo cùng mức 0.0 µg/m³ và đánh dấu `FAULTY` cảm biến.
+- **Giải pháp**: Luôn kiểm tra `null`, `undefined`, `""` trước khi `parseFloat` trong anomaly detection.
+
+### 🚨 Trap 15.5: D1 Column/Table Mismatch trong Worker Routes làm rơi vào Mock Fallback
+- **Nguyên nhân**: Viết SQL sai tên cột (`c.deadline` thay vì `c.slaDeadline`, `actorName` thay vì `actor_name`) khiến D1 query ném lỗi và khối `.catch()` nuốt lỗi rơi vào dữ liệu mock tĩnh.
+- **Giải pháp**: Đồng bộ 100% tên cột với `d1-schema.sql` và `schema-healer.js`.
+
+
