@@ -8,7 +8,8 @@
 
 | Thời gian | Mã Commit | Thông điệp Commit | Kết quả & Phạm vi tác động |
 |---|:---:|---|---|
-| **2026-09-02** | `HEAD` | `docs(ssot): create CODEBASE_SIMPLIFICATION.md and finalize human-centric architecture` | Hoàn thành tài liệu SSOT Codebase Simplification & Human-Centric Consolidation theo yêu cầu: phân loại chi tiết KEEP/MERGE/INLINE/LEGACY cho toàn bộ module, tinh gọn menu 5 role, tích hợp giá trị cũ (Youth Credits, NĐ 30, Policy Smart Hint) vào luồng thực tế. |
+| **2026-09-02** | `HEAD` | `feat(citizen): add direct QR certificate & credits actions in profile` | Lưu bộ 10 Prompt Master OS vào `.agents/PROMPTS.md` và bổ sung 2 nút hành động trực tiếp (Nhận chứng nhận số QR & Bảng thi đua) vào `CitizenProfilePage.jsx`. |
+| **2026-09-02** | `3680201` | `docs(ssot): create CODEBASE_SIMPLIFICATION.md and finalize human-centric architecture` | Hoàn thành tài liệu SSOT Codebase Simplification & Human-Centric Consolidation theo yêu cầu: phân loại chi tiết KEEP/MERGE/INLINE/LEGACY cho toàn bộ module, tinh gọn menu 5 role, tích hợp giá trị cũ (Youth Credits, NĐ 30, Policy Smart Hint) vào luồng thực tế. |
 | **2026-09-02** | `chore-db` | `chore(db): audit and verify D1/SQLite schema integrity and remove favicon.png` | Audit toàn diện 59 bảng CSDL trong `prisma/dev.db` (55/55 checks passed 100%), kiểm tra toàn vẹn khóa ngoại 0 orphans, chuẩn hóa RBAC enum và xóa `favicon.png` thừa. |
 | **2026-09-02** | `e1520bb` | `chore(cleanup): remove incorrect logo.svg and logo-dark.svg` | Xóa bỏ 2 tệp logo vector không chuẩn trong `public/images/logo/`, đồng bộ hóa duy nhất logo thương hiệu SSOT `dustguard-shield-logo.webp`. |
 
