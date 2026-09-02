@@ -1,11 +1,16 @@
 # ACTIVE CONTEXT — DUSTGUARD VN
 
-> **Trạng thái**: Hoàn tất 100% Rebuild & Chuẩn Hóa Bộ 31-Screen Product Spec / PDR & Human-Centric UI/UX Rules | **Branch**: `master` | **Cập nhật**: 2026-09-02
+> **Trạng thái**: Hoàn tất Dọn Dẹp Toàn Bộ Markdown Cũ / Trùng Lặp & Screenshot Rác | **Branch**: `master` | **Cập nhật**: 2026-09-02
 
 ---
 
 ## 🎯 1. Trọng Tâm Hoạt Động Hiện Tại (Active Operational State)
-- **Hoàn Tất Rebuild & Chuẩn Hóa Toàn Diện Bộ 31-Screen Product Spec / PDR (Theo Master Prompt & Human-Centric UI/UX Rules)**:
+- **Hoàn Tất Dọn Dẹp File Markdown Thừa & Ảnh Screenshot Rác Theo Yêu Cầu**:
+  - Đã xóa toàn bộ các file screenshot cũ `staff_*.png` ở root.
+  - Đã xóa toàn bộ các thư mục tài liệu cũ/trùng lặp: `docs/`, `app/docs/`, `app/plans/`, `FEATURE_PRESERVATION_AUDIT.md`, `legacy/README.md`, các file `.md` thừa trong `app/` và `presentation/`.
+  - Giữ lại SSOT duy nhất tại `.agents/` (`rules`, `ssot`, `skills`, `memory-bank`) và `AGENTS.md`, `README.md` sạch ở root.
+  - Kiểm thử toàn diện `verify:quick` đạt 100% PASS (279/279 tests).
+
   - **1. Hoàn tất 39 tài liệu chuẩn tại `docs/product/screens/`**:
     * 31 File Screen Specs: Tinh gọn (120-200 dòng), chuẩn hóa 21 mục, phân định 4 trạng thái `CURRENT / PARTIAL / PROPOSED / UNKNOWN`, loại bỏ toàn bộ boilerplate CLI/testing dài dòng.
     * 6 File Global Matrices: `SCREEN-REGISTRY.md`, `SCREEN-AUDIT.md`, `SCREEN-PERMISSION-MATRIX.md`, `SCREEN-DATA-MATRIX.md`, `SCREEN-STATE-MATRIX.md`, `SCREEN-VERIFICATION-PLAN.md`.
