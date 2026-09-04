@@ -27,6 +27,48 @@
   - Định nghĩa `const proxyConfig = { ... }` dùng chung cho cả `server.proxy` và `preview.proxy` trong `vite.config.js`.
   - Kiểm tra kết nối mạng qua probe fetch trước khi cho crawler duyệt trang.
 
+### 📌 Invariant -1.16: Chuẩn Hóa Phân Hệ Người Dân (Citizen Simple Flow & Dual Responsive Layout)
+- **Bẫy lỗi**: Thiết kế phân hệ công dân quá phức tạp, dùng chung 1 Topbar khiến Laptop trông như Mobile phóng to; nhồi nhét thuật ngữ kỹ thuật (GIS, DAG, QCVN, Hash) làm người dân nản lòng; thiếu cơ chế đối chứng Before/After và không khép kín vòng phản hồi đánh giá.
+- **Quy tắc chuẩn**:
+  - **Layout kép thích ứng tự động**: Màn hình lớn ($\ge 768\text{px}$) có **Sidebar trái** cố định (Logo, 4 menu: *Trang chủ*, *Phản ánh mới*, *Hồ sơ của tôi*, *Cá nhân*, và Hotline *1800 1234*); Màn hình điện thoại ($< 768\text{px}$) hiển thị **Topbar + Bottom Navigation Bar** 4 tabs tiện lợi cho 1 ngón tay cái.
+  - **Trang chủ trực quan**: Thẻ AQI lớn (38 Tốt, icon mặt cười), thẻ bản đồ mini, thẻ tóm tắt hồ sơ và nút CTA to `+ Phản ánh mới` màu xanh lá tự nhiên `#15803d`.
+  - **Quy trình 5 bước dễ dùng**: 1. Chụp ảnh (Viewfinder 1-3 ảnh) $\to$ 2. Vị trí (GPS 1-click & mô tả ngắn) $\to$ 3. Mô tả (4 icons danh mục & 3 mức độ) $\to$ 4. Kiểm tra & cam kết $\to$ 5. Thành công (#DG-2026-XXXX).
+  - **Khép kín vòng phản hồi**: Cho phép xem ảnh đối chứng Trước/Sau và đánh giá 3 mức độ cảm xúc (😊/😐/☹️) lưu trực tiếp vào D1 SQLite (`prisma/dev.db`).
+
+
+### 📌 Invariant -1.17: Triệt Tiêu Lỗi Rớt Chữ Mobile & Bản Đồ Thực Tế (Không Dùng Mock Data)
+- **Bẫy lỗi**:
+  1. Card "Hồ sơ của tôi" trên mobile 390px bị nút "Xem chi tiết →" dài chiếm 40% bề ngang, làm cụm từ "7 phản ánh đang xử lý" bị bẻ gãy từ, chữ "lý" rơi xuống dòng mới một mình hoặc cắt thành `x...`. Trong danh sách phản ánh dùng `.slice(0, 24)` thô bạo chặt ngang từ ("rơi vãi" thành "rơi vã").
+  2. Khối bản đồ dùng SVG grid pattern giả lập, hardcode địa danh "Cầu Giấy, Hà Nội", không kết nối Google Maps thật.
+- **Quy tắc chuẩn**:
+  - Đặt `whitespace-nowrap` trên tiêu đề đếm hồ sơ, thu gọn nút phụ thành `Chi tiết ›`, loại bỏ 100% việc cắt chuỗi bằng `slice(0, N)` mà dùng hàm tách theo từ (`replace(/\s+\S*$/, '') + '…'`) kết hợp `line-clamp-2` và `break-words`.
+  - Tích hợp Geolocation API thực tế lấy tọa độ WGS84 thật, nhúng bản đồ OpenStreetMap thật, cung cấp nút **Google Maps ↗** mở trực tiếp tab Google Maps ngoài đời và nút **Định vị lại** cập nhật GPS tức thì.
+
+### 📌 Invariant -1.18: Chuẩn Hóa Bộ 30 Màn Hình Khép Kín 5 Nhóm Người Dùng (Human-Centric SSOT)
+- **Bẫy lỗi**:
+  1. Gom toàn bộ vai trò vào một phiên bản thu nhỏ của Admin, bắt mọi người dùng phải nhìn thấy biểu đồ phức tạp và thông số quản lý.
+  2. Redirect tùy tiện `/community/*` sang `/citizen`, làm mất đi không gian sinh hoạt và tích lũy Tín chỉ Xanh của các CLB và tình nguyện viên trẻ.
+  3. Lỗi import relative path sai cấp thư mục giữa `pages/` (4 cấp `../../../../`) và `layout/` (3 cấp `../../../`).
+- **Quy tắc chuẩn**:
+  - **Citizen (01–06)**: Phát hiện $\to$ Gửi $\to$ Xác nhận $\to$ Theo dõi $\to$ Chi tiết $\to$ Hồ sơ. Tối giản, không biệt ngữ.
+  - **Field Staff (07–12)**: Mobile-first cho hiện trường nắng gió: Hôm nay của tôi $\to$ Danh sách nhiệm vụ $\to$ Chi tiết công trình $\to$ Checklist 1 tay $\to$ Camera-first bằng chứng SHA-256 $\to$ Kết luận kiểm tra & audit log.
+  - **Admin (13–18)**: Laptop-first: Tổng quan điều hành $\to$ Trung tâm phản ánh $\to$ Quản lý vụ việc $\to$ Phân công cán bộ $\to$ Quản lý công trình $\to$ Cấu hình hệ thống.
+  - **Contractor (19–24)**: Tinh gọn theo nhu cầu thi công: Dashboard 4 thẻ trạng thái $\to$ Công trình của tôi $\to$ Yêu cầu khắc phục $\to$ Chi tiết đối chứng Before/After $\to$ Nộp minh chứng dập bụi chuyển "Chờ tái kiểm" $\to$ Lịch sử tuân thủ.
+  - **Community (25–30)**: Không gian thanh niên văn minh: Trang chủ truyền cảm hứng $\to$ Bản đồ điểm quan sát $\to$ Nhiệm vụ cộng đồng $\to$ Gửi tín hiệu quan sát $\to$ Tín chỉ Xanh (20h = 4.0 tín chỉ) $\to$ Bảng tác động tập thể (cấm thi đua tố cáo).
+
+### 📌 Invariant -1.19: Triệt Tiêu Fake Success, Catch Swallow & Ngắt Kết Nối Worker Router (Production Recovery SSOT)
+- **Bẫy lỗi**:
+  1. **Ngắt kết nối Worker**: Các router nghiệp vụ như `staff-tasks` (10 endpoints thực địa: `/api/staff/tasks/summary`, `/schedule`, `/:id/checklist`, `/:id/evidence`, `/:id/complete`) và `staff-reports-notifications` chỉ được viết trong Express cũ mà quên mount vào Composition Root Hono (`app/server/app.js`). Khi chạy trên Cloudflare Worker runtime (port 8787), toàn bộ request trả về 404 khiến frontend phải tự bịa mock data.
+  2. **Nuốt lỗi & Giả mạo thành công (Catch Swallow)**:
+     - `ReportNewPage.jsx`: Trong catch block tự sinh mã ngẫu nhiên `Math.random()` rồi tự nhảy sang Bước 5 báo thành công giả.
+     - `CommunityObservePage.jsx`: Gọi API với `.catch(() => null)` rồi `setSuccess(true); // Graceful fallback`.
+     - `StaffAssignmentPage.jsx`: Trong catch block hiển thị `alert('Phân công thành công (phiên demo)')`.
+     - `FieldConclusionPage.jsx`: Dùng sai `taskId` để gọi `PATCH /cases/${taskId}` thay vì `caseId`, nuốt lỗi và không lưu D1.
+- **Quy tắc chuẩn**:
+  - **Composition Root Toàn Diện**: Mọi năng lực nghiệp vụ đều phải được mount vào `app/server/app.js` và kết nối trực tiếp vào D1 SQLite (`prisma/dev.db`).
+  - **Zero Fake Success**: Tuyệt đối không sinh mã ngẫu nhiên `Math.random()`, không alert demo và không `setSuccess(true)` trong khối catch. Khi API lỗi, phải hiển thị thông báo lỗi RFC 7807 tiếng Việt rõ ràng để người dùng biết và thử lại.
+  - **Evidence Integrity**: Ảnh minh chứng phải được upload qua `/api/upload` lên R2 storage và tính mã băm SHA-256 trước khi lưu URL vào D1.
+  - **Task-to-Case DAG Sync**: Khi cán bộ hoàn tất nhiệm vụ thực địa, phải gọi `POST /api/staff/tasks/:id/complete` để ghi nhận timeline và cập nhật trạng thái Case trong CSDL D1.
 
 ### 📌 Invariant -1.2: Nguyên Tắc Vàng "Move, Don't Rewrite"
 - **Nguyên tắc**: Mỗi commit chỉ được phép thay đổi vị trí code HOẶC thay đổi behavior, **không được làm cả hai cùng một lúc**.
