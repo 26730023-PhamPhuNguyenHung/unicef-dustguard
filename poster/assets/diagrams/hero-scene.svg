@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- DustGuard hero backdrop: construction dust (left) -> youth with phone (centre)
+     -> clean city + green (right). One continuous ground line. No text.
+     Whole scene is drawn at low opacity so poster copy stays legible on top. -->
+<!-- viewBox is panned right so the crane sits behind the logo edge and the
+     youth / city half of the scene lands in the open gap between the tagline
+     and the QR panel instead of under opaque content. -->
+<svg viewBox="220 0 1900 340" width="1900" height="340" xmlns="http://www.w3.org/2000/svg">
+  <g opacity="0.115">
+
+    <!-- continuous ground -->
+    <path d="M 0 300 L 1900 300" stroke="#231B14" stroke-width="3" fill="none" />
+
+    <!-- ============ LEFT: construction site + dust ============ -->
+    <g fill="none" stroke="#9f0d0c" stroke-width="11" stroke-linecap="round" stroke-linejoin="round">
+      <!-- tower crane -->
+      <path d="M 130 300 L 130 66" />
+      <path d="M 40 66 L 288 66" />
+      <path d="M 130 66 L 88 120 L 172 120 Z" />
+      <path d="M 232 66 L 232 142" />
+      <path d="M 232 142 L 204 142 L 204 172 L 260 172 L 260 142 Z" />
+      <path d="M 96 300 L 164 300" />
+    </g>
+    <!-- unfinished slabs -->
+    <g fill="#9f0d0c">
+      <rect x="300" y="196" width="150" height="104" />
+      <rect x="470" y="234" width="104" height="66" />
+    </g>
+    <g fill="none" stroke="#231B14" stroke-width="3">
+      <path d="M 300 230 L 450 230 M 300 264 L 450 264 M 350 196 L 350 300 M 400 196 L 400 300" />
+      <path d="M 470 266 L 574 266 M 522 234 L 522 300" />
+    </g>
+    <!-- dust plume drifting right -->
+    <g fill="#9f0d0c">
+      <ellipse cx="380" cy="168" rx="86" ry="44" />
+      <ellipse cx="470" cy="140" rx="66" ry="36" />
+      <ellipse cx="548" cy="164" rx="52" ry="28" />
+      <circle cx="612" cy="140" r="19" />
+      <circle cx="660" cy="176" r="13" />
+      <circle cx="704" cy="132" r="10" />
+      <circle cx="748" cy="172" r="8" />
+      <circle cx="790" cy="140" r="6" />
+    </g>
+
+    <!-- ============ CENTRE: youth holding a phone ============ -->
+    <g>
+      <!-- volunteer -->
+      <circle cx="905" cy="132" r="34" fill="#0D6F64" />
+      <path d="M 862 300 L 862 200 Q 862 172 905 172 Q 948 172 948 200 L 948 300 Z" fill="#0D6F64" />
+      <!-- raised arm holding phone -->
+      <path d="M 944 208 L 1002 168" stroke="#0D6F64" stroke-width="17" stroke-linecap="round" fill="none" />
+      <rect x="992" y="112" width="46" height="74" rx="7" fill="#231B14" />
+      <rect x="998" y="120" width="34" height="52" rx="3" fill="#FFFFFF" />
+      <!-- capture pulse -->
+      <g fill="none" stroke="#0D6F64" stroke-width="4" stroke-linecap="round">
+        <path d="M 1054 128 Q 1074 149 1054 170" />
+        <path d="M 1076 112 Q 1108 149 1076 186" />
+      </g>
+      <!-- second youth, slightly behind -->
+      <circle cx="822" cy="152" r="26" fill="#231B14" />
+      <path d="M 790 300 L 790 214 Q 790 190 822 190 Q 854 190 854 214 L 854 300 Z" fill="#231B14" />
+    </g>
+
+    <!-- structured record travelling right -->
+    <g fill="none" stroke="#0D6F64" stroke-width="4" stroke-dasharray="16 13" stroke-linecap="round">
+      <path d="M 1120 150 Q 1240 108 1360 150" />
+    </g>
+    <g fill="#0D6F64">
+      <rect x="1150" y="176" width="54" height="68" rx="6" />
+      <rect x="1226" y="176" width="54" height="68" rx="6" />
+      <rect x="1302" y="176" width="54" height="68" rx="6" />
+    </g>
+    <g fill="none" stroke="#FDFBF7" stroke-width="4" stroke-linecap="round">
+      <path d="M 1162 196 L 1192 196 M 1162 210 L 1192 210 M 1162 224 L 1180 224" />
+      <path d="M 1238 196 L 1268 196 M 1238 210 L 1268 210 M 1238 224 L 1256 224" />
+      <path d="M 1314 196 L 1344 196 M 1314 210 L 1344 210 M 1314 224 L 1332 224" />
+    </g>
+
+    <!-- ============ RIGHT: clean city + green ============ -->
+    <g fill="#0D6F64">
+      <rect x="1430" y="150" width="82" height="150" />
+      <rect x="1530" y="96" width="66" height="204" />
+      <rect x="1614" y="184" width="94" height="116" />
+      <rect x="1726" y="126" width="72" height="174" />
+      <rect x="1816" y="200" width="60" height="100" />
+    </g>
+    <g fill="#FDFBF7">
+      <rect x="1446" y="170" width="16" height="20" /><rect x="1478" y="170" width="16" height="20" />
+      <rect x="1446" y="208" width="16" height="20" /><rect x="1478" y="208" width="16" height="20" />
+      <rect x="1446" y="246" width="16" height="20" /><rect x="1478" y="246" width="16" height="20" />
+      <rect x="1546" y="118" width="14" height="20" /><rect x="1572" y="118" width="14" height="20" />
+      <rect x="1546" y="156" width="14" height="20" /><rect x="1572" y="156" width="14" height="20" />
+      <rect x="1546" y="194" width="14" height="20" /><rect x="1572" y="194" width="14" height="20" />
+      <rect x="1546" y="232" width="14" height="20" /><rect x="1572" y="232" width="14" height="20" />
+      <rect x="1632" y="206" width="16" height="20" /><rect x="1666" y="206" width="16" height="20" />
+      <rect x="1632" y="244" width="16" height="20" /><rect x="1666" y="244" width="16" height="20" />
+      <rect x="1742" y="148" width="14" height="20" /><rect x="1770" y="148" width="14" height="20" />
+      <rect x="1742" y="186" width="14" height="20" /><rect x="1770" y="186" width="14" height="20" />
+      <rect x="1742" y="224" width="14" height="20" /><rect x="1770" y="224" width="14" height="20" />
+      <rect x="1832" y="222" width="14" height="20" />
+      <rect x="1832" y="258" width="14" height="20" />
+    </g>
+    <!-- street trees -->
+    <g>
+      <path d="M 1398 300 L 1398 258" stroke="#231B14" stroke-width="7" stroke-linecap="round" fill="none" />
+      <circle cx="1398" cy="234" r="30" fill="#0D6F64" />
+      <path d="M 1700 300 L 1700 262" stroke="#231B14" stroke-width="6" stroke-linecap="round" fill="none" />
+      <circle cx="1700" cy="240" r="24" fill="#0D6F64" />
+    </g>
+    <!-- clean-air arcs over the city -->
+    <g fill="none" stroke="#0D6F64" stroke-width="4" stroke-linecap="round">
+      <path d="M 1420 60 Q 1650 6 1880 60" />
+      <path d="M 1470 34 Q 1650 -8 1830 34" opacity="0.6" />
+    </g>
+
+  </g>
+</svg>

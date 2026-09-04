@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DustGuard VN — Backdrop Khổ Ngang 90x70cm</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- =======================================================================
+       1. THANH ĐIỀU KHIỂN & CÔNG CỤ (KHÔNG IN)
+       ======================================================================= -->
+  <header class="control-bar no-print">
+    <div class="title-group">
+      <span class="tag">Bản In 90x70cm</span>
+      <h1>DustGuard VN — Backdrop Trưng Bày & Mapping Text</h1>
+    </div>
+
+    <div class="actions">
+      <!-- Bộ điều khiển Zoom -->
+      <div class="zoom-controls">
+        <button class="btn-zoom" id="btnZoomOut" title="Thu nhỏ">−</button>
+        <span class="zoom-label" id="zoomVal">60%</span>
+        <button class="btn-zoom" id="btnZoomIn" title="Phóng to">+</button>
+        <button class="btn-zoom" id="btnZoomFit" title="Vừa màn hình" style="font-size: 11px; padding: 5px 8px;">Vừa</button>
+      </div>
+
+      <!-- Nút Chế độ Sửa trực tiếp -->
+      <button type="button" class="btn-ctrl" id="btnToggleEdit">
+        <span id="editIcon">✏️</span>
+        <span id="editText">Sửa Chữ Trực Tiếp</span>
+      </button>
+
+      <!-- Nút Mở Bảng Cấu Hình Mapping -->
+      <button type="button" class="btn-ctrl" id="btnOpenDrawer">
+        ⚙️ Bảng Mapping Text
+      </button>
+
+      <!-- Nút Khôi phục mặc định -->
+      <button type="button" class="btn-ctrl" id="btnReset">
+        🔄 Khôi Phục Gốc
+      </button>
+
+      <!-- Nút Xuất JSON -->
+      <button type="button" class="btn-ctrl" id="btnExportJson">
+        📥 Xuất JSON
+      </button>
+
+      <!-- Nút In / Xuất PDF 90x70cm -->
+      <button type="button" class="btn-ctrl btn-primary" id="btnPrint">
+        🖨️ In / Xuất PDF 90x70cm
+      </button>
+    </div>
+  </header>
+
+  <!-- =======================================================================
+       2. VÙNG KHÔNG GIAN LÀM VIỆC & CANVAS 90x70CM
+       ======================================================================= -->
+  <main class="workspace-wrapper" id="workspaceWrapper">
+    <div class="canvas-transform-box" id="canvasTransformBox">
+
+      <div class="backdrop-canvas" id="backdropCanvas">
+
+        <!-- 2.1 HEADER: LOGO ĐỐI TÁC & BAN NGÀNH -->
+        <section class="header-logos" aria-label="Logo đối tác">
+          <img src="assets/header-logos.png" alt="Các đơn vị đồng hành & bảo trợ" class="header-logos-img">
+        </section>
+
+        <!-- 2.2 BRAND BANNER & SLOGAN -->
+        <section class="brand-hero-section">
+          <!-- Logo & Tên Dự án -->
+          <div class="brand-left">
+            <img src="assets/dustguard-shield-logo.webp" alt="DustGuard VN Shield" class="brand-shield-logo">
+            <div class="brand-info">
+              <h1 class="brand-title" data-map="brand.name">
+                DustGuard <span class="vn">VN</span>
+              </h1>
+              <p class="brand-subtitle" data-map="brand.subName">
+                Nền tảng giám sát bụi công trình & môi trường
+              </p>
+              <div class="brand-pillars" id="brandPillars">
+                <!-- Pillars rendered dynamically -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Slogan viết tay nghệ thuật -->
+          <div class="brand-center-slogan">
+            <span class="handwriting-text" data-map="brand.handwritingSlogan">
+              Không khí sạch là quyền của mọi trẻ em
+            </span>
+          </div>
+
+          <!-- Ảnh mockup thiết bị & dashboard bên phải -->
+          <div class="brand-right-devices">
+            <img src="assets/hero-devices.png" alt="Mockup Dashboard & Trạm IoT" class="devices-preview-img">
+          </div>
+        </section>
+
+        <!-- 2.3 KHỐI NỘI DUNG CHÍNH (11 KHỐI BỐ CỤC THEO GRID 3 HÀNG) -->
+        <div class="content-grid">
+
+          <!-- ==================== HÀNG 1: KHỐI 1, 2, 3, 4 ==================== -->
+          <div class="grid-row-1">
+
+            <!-- KHỐI 1: VẤN ĐỀ -->
+            <article class="card-block" id="box1">
+              <div class="card-header">
+                <span class="badge-num">1</span>
+                <h2 class="card-title" data-map="blocks.block1.title">VẤN ĐỀ</h2>
+              </div>
+              <div class="list-simple" id="box1Items">
+                <!-- Rendered dynamically -->
+              </div>
+            </article>
+
+            <!-- KHỐI 2: GIẢI PHÁP -->
+            <article class="card-block" id="box2">
+              <div class="card-header">
+                <span class="badge-num">2</span>
+                <h2 class="card-title" data-map="blocks.block2.title">GIẢI PHÁP</h2>
+              </div>
+              <div class="list-simple" id="box2Items">
+                <!-- Rendered dynamically -->
+              </div>
+            </article>
+
+            <!-- KHỐI 3: ĐỐI TƯỢNG LỢI ÍCH -->
+            <article class="card-block" id="box3">
+              <div class="card-header">
+                <span class="badge-num">3</span>
+                <h2 class="card-title" data-map="blocks.block3.title">ĐỐI TƯỢNG LỢI ÍCH</h2>
+              </div>
+              <div class="stakeholder-grid" id="box3Items">
+                <!-- Rendered dynamically -->
+              </div>
+            </article>
+
+            <!-- KHỐI 4: QUY TRÌNH VẬN HÀNH -->
+            <article class="card-block" id="box4">
+              <div class="card-header">
+                <span class="badge-num">4</span>
+                <h2 class="card-title" data-map="blocks.block4.title">QUY TRÌNH VẬN HÀNH</h2>
+              </div>
+              <div class="workflow-stepper" id="box4Stepper">
+                <!-- Rendered dynamically -->
+              </div>
+              <p class="workflow-caption" data-map="blocks.block4.caption">
+                Danh sách ưu tiên & Bảng điều hành trực quan
+              </p>
+            </article>
+
+          </div>
+
+          <!-- ==================== HÀNG 2: KHỐI 5, 6, 7 ==================== -->
+          <div class="grid-row-2">
+
+            <!-- KHỐI 5: ĐIỂM ƯU TIÊN XỬ LÝ (MINH HOẠ) -->
+            <article class="card-block" id="box5">
+              <div class="card-header">
+                <span class="badge-num">5</span>
+                <h2 class="card-title" data-map="blocks.block5.title">ĐIỂM ƯU TIÊN XỬ LÝ (MINH HOẠ)</h2>
+              </div>
+              <div class="gauge-content">
+                <div class="gauge-circle-box">
+                  <span class="gauge-score" data-map="blocks.block5.score">87</span>
+                  <span class="gauge-label" data-map="blocks.block5.scoreLabel">Ưu tiên: Cao</span>
+                </div>
+                <div class="gauge-legend" id="box5Levels">
+                  <!-- Rendered dynamically -->
+                </div>
+              </div>
+              <div class="block5-note" data-map="blocks.block5.note">
+                ⓘ Điểm dùng để hỗ trợ sắp xếp ưu tiên, không thay thế kết luận tại hiện trường.
+              </div>
+            </article>
+
+            <!-- KHỐI 6: THIẾT BỊ IOT ĐƠN GIẢN -->
+            <article class="card-block" id="box6">
+              <div class="card-header">
+                <span class="badge-num">6</span>
+                <h2 class="card-title" data-map="blocks.block6.title">THIẾT BỊ IOT ĐƠN GIẢN</h2>
+              </div>
+              <div class="iot-content">
+                <img src="assets/iot-device.png" alt="Hộp cảm biến bụi DustGuard" class="iot-device-img">
+                <div class="iot-specs-list" id="box6Specs">
+                  <!-- Rendered dynamically -->
+                </div>
+              </div>
+            </article>
+
+            <!-- KHỐI 7: TÁC ĐỘNG DỰ KIẾN (ĐỊNH TÍNH) -->
+            <article class="card-block" id="box7">
+              <div class="card-header">
+                <span class="badge-num">7</span>
+                <h2 class="card-title" data-map="blocks.block7.title">TÁC ĐỘNG DỰ KIẾN (ĐỊNH TÍNH)</h2>
+              </div>
+              <div class="impacts-grid" id="box7Impacts">
+                <!-- Rendered dynamically -->
+              </div>
+            </article>
+
+          </div>
+
+          <!-- ==================== HÀNG 3: KHỐI 8, 9, 10, 11 ==================== -->
+          <div class="grid-row-3">
+
+            <!-- KHỐI 8: SO SÁNH GIẢI PHÁP -->
+            <article class="card-block" id="box8">
+              <div class="card-header">
+                <span class="badge-num">8</span>
+                <h2 class="card-title" data-map="blocks.block8.title">SO SÁNH GIẢI PHÁP</h2>
+              </div>
+              <table class="compare-table" id="box8Table">
+                <!-- Rendered dynamically -->
+              </table>
+            </article>
+
+            <!-- KHỐI 9: HIỆN TRẠNG & KẾ HOẠCH KẾT NỐI -->
+            <article class="card-block" id="box9">
+              <div class="card-header">
+                <span class="badge-num">9</span>
+                <h2 class="card-title" data-map="blocks.block9.title">HIỆN TRẠNG & KẾ HOẠCH KẾT NỐI</h2>
+              </div>
+              <div class="phases-stepper" id="box9Phases">
+                <!-- Rendered dynamically -->
+              </div>
+              <p class="block9-note" data-map="blocks.block9.goalNote">
+                Mục tiêu: Chuẩn hóa dữ liệu, quy trình và đầu ra trước giai đoạn pilot.
+              </p>
+            </article>
+
+            <!-- KHỐI 10: BỀN VỮNG -->
+            <article class="card-block" id="box10">
+              <div class="card-header">
+                <span class="badge-num">10</span>
+                <h2 class="card-title" data-map="blocks.block10.title">BỀN VỮNG</h2>
+              </div>
+              <div class="sustainability-content" id="box10Points">
+                <!-- Rendered dynamically -->
+              </div>
+            </article>
+
+            <!-- KHỐI 11: LỘ TRÌNH -->
+            <article class="card-block" id="box11">
+              <div class="card-header">
+                <span class="badge-num">11</span>
+                <h2 class="card-title" data-map="blocks.block11.title">LỘ TRÌNH</h2>
+              </div>
+              <div class="timeline-vertical" id="box11Timeline">
+                <!-- Rendered dynamically -->
+              </div>
+            </article>
+
+          </div>
+
+        </div>
+
+        <!-- 2.4 FOOTER: QUÉT MÃ QR & KHẨU HIỆU DỰ ÁN -->
+        <footer class="footer-banner">
+          <!-- Ô Quét Mã QR -->
+          <div class="footer-qr-box">
+            <img src="assets/qr-code.png" alt="Mã QR DustGuard VN" class="qr-code-image">
+            <div class="qr-text-info">
+              <span class="qr-title" data-map="footer.qrBox.title">QUÉT MÃ</span>
+              <span class="qr-subtitle" data-map="footer.qrBox.subtitle">Tìm hiểu dự án</span>
+              <span class="qr-target" data-map="footer.qrBox.target">DustGuard VN →</span>
+            </div>
+          </div>
+
+          <!-- Thương hiệu & Slogan chính -->
+          <div class="footer-brand-strip">
+            <img src="assets/dustguard-shield-logo.webp" alt="Logo DustGuard" class="footer-shield-logo">
+            <div class="footer-slogan-box">
+              <div class="footer-brand-title" data-map="footer.brandLine.name">
+                DustGuard <span class="vn">VN</span>
+              </div>
+              <p class="footer-slogan-text" data-map="footer.brandLine.slogan">
+                Dữ liệu sạch — Quy trình rõ — Cộng đồng mạnh — Vì tương lai xanh
+              </p>
+            </div>
+          </div>
+
+          <!-- Tranh thành phố xanh -->
+          <img src="assets/footer-city.png" alt="Thành phố xanh" class="footer-city-bg">
+        </footer>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- =======================================================================
+       3. PANEL CẤU HÌNH MAPPING DỮ LIỆU (DRAWER CHO PHÉP NHẬP TEXT)
+       ======================================================================= -->
+  <aside class="mapping-drawer no-print" id="mappingDrawer">
+    <div class="drawer-header">
+      <h2>⚙️ Bảng Mapping Nội Dung Chữ</h2>
+      <button type="button" class="btn-close-drawer" id="btnCloseDrawer">✕</button>
+    </div>
+
+    <div class="drawer-body">
+      <p style="font-size: 12px; color: #94A3B8; line-height: 1.4;">
+        Bạn có thể trực tiếp sửa các nội dung dưới đây hoặc bật chế độ <b>"Sửa Chữ Trực Tiếp"</b> trên thanh công cụ để nhấp chuột và gõ thẳng vào backdrop.
+      </p>
+
+      <div class="form-group">
+        <label>Tiêu Đề Dự Án</label>
+        <input type="text" id="map_brandName" value="DustGuard VN">
+      </div>
+
+      <div class="form-group">
+        <label>Dòng Định Vị (Subtitle)</label>
+        <input type="text" id="map_brandSubName" value="Nền tảng giám sát bụi công trình & môi trường">
+      </div>
+
+      <div class="form-group">
+        <label>Khẩu Hiệu Viết Tay</label>
+        <input type="text" id="map_handwritingSlogan" value="Không khí sạch là quyền của mọi trẻ em">
+      </div>
+
+      <hr style="border: none; border-top: 1px solid #334155; margin: 4px 0;">
+
+      <div class="form-group">
+        <label>Khối 1: Tiêu đề Vấn Đề</label>
+        <input type="text" id="map_b1_title" value="VẤN ĐỀ">
+      </div>
+
+      <div class="form-group">
+        <label>Khối 2: Tiêu đề Giải Pháp</label>
+        <input type="text" id="map_b2_title" value="GIẢI PHÁP">
+      </div>
+
+      <div class="form-group">
+        <label>Khối 3: Tiêu đề Đối Tượng Lợi Ích</label>
+        <input type="text" id="map_b3_title" value="ĐỐI TƯỢNG LỢI ÍCH">
+      </div>
+
+      <div class="form-group">
+        <label>Khối 4: Tiêu đề Quy Trình Vận Hành</label>
+        <input type="text" id="map_b4_title" value="QUY TRÌNH VẬN HÀNH">
+      </div>
+
+      <div class="form-group">
+        <label>Khối 5: Điểm số Minh Hoạ</label>
+        <input type="text" id="map_b5_score" value="87">
+      </div>
+
+      <div class="form-group">
+        <label>Footer: Khẩu hiệu chân trang</label>
+        <textarea id="map_footer_slogan">Dữ liệu sạch — Quy trình rõ — Cộng đồng mạnh — Vì tương lai xanh</textarea>
+      </div>
+    </div>
+
+    <div class="drawer-footer">
+      <button type="button" class="btn-ctrl btn-primary" id="btnApplyDrawer" style="flex: 1; justify-content: center;">
+        Áp Dụng Thay Đổi
+      </button>
+    </div>
+  </aside>
+
+  <!-- Nạp dữ liệu cấu hình text (hỗ trợ cả file:// và HTTP) -->
+  <script src="mapping-data.js"></script>
+
+  <!-- Script Logic Mapping & Controls -->
+  <script>
+    // State
+    const STORAGE_KEY = 'dustguard_backdrop_custom_data_v1';
+    const fallbackDefault = window.DEFAULT_BACKDROP_DATA || {};
+    let currentData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || fallbackDefault;
+    let isEditing = false;
+    let currentScale = 0.60;
+
+    // Elements
+    const canvas = document.getElementById('backdropCanvas');
+    const transformBox = document.getElementById('canvasTransformBox');
+    const zoomVal = document.getElementById('zoomVal');
+    const btnZoomIn = document.getElementById('btnZoomIn');
+    const btnZoomOut = document.getElementById('btnZoomOut');
+    const btnZoomFit = document.getElementById('btnZoomFit');
+    const btnToggleEdit = document.getElementById('btnToggleEdit');
+    const editText = document.getElementById('editText');
+    const btnOpenDrawer = document.getElementById('btnOpenDrawer');
+    const btnCloseDrawer = document.getElementById('btnCloseDrawer');
+    const mappingDrawer = document.getElementById('mappingDrawer');
+    const btnApplyDrawer = document.getElementById('btnApplyDrawer');
+    const btnReset = document.getElementById('btnReset');
+    const btnExportJson = document.getElementById('btnExportJson');
+    const btnPrint = document.getElementById('btnPrint');
+
+    // =========================================================================
+    // RENDER FUNCTIONS
+    // =========================================================================
+    function renderBackdrop(data) {
+      // 1. Brand & Slogan
+      document.querySelector('[data-map="brand.name"]').innerHTML = `${data.brand.name.replace(' VN', '')} <span class="vn">VN</span>`;
+      document.querySelector('[data-map="brand.subName"]').innerText = data.brand.subName;
+      document.querySelector('[data-map="brand.handwritingSlogan"]').innerText = data.brand.handwritingSlogan;
+
+      // Pillars
+      const pillarsEl = document.getElementById('brandPillars');
+      pillarsEl.innerHTML = data.brand.pillars.map(p => `
+        <div class="pillar-item">
+          <span class="icon">${p.icon}</span>
+          <span>${p.text}</span>
+        </div>
+      `).join('');
+
+      // 2. Block 1: Vấn đề
+      document.querySelector('[data-map="blocks.block1.title"]').innerText = data.blocks.block1.title;
+      document.getElementById('box1Items').innerHTML = data.blocks.block1.items.map(item => `
+        <div class="list-item-icon">
+          <span class="icon">${item.icon}</span>
+          <span>${item.text}</span>
+        </div>
+      `).join('');
+
+      // 3. Block 2: Giải pháp
+      document.querySelector('[data-map="blocks.block2.title"]').innerText = data.blocks.block2.title;
+      document.getElementById('box2Items').innerHTML = data.blocks.block2.items.map(item => `
+        <div class="list-item-icon">
+          <span class="icon">${item.icon}</span>
+          <span>${item.text}</span>
+        </div>
+      `).join('');
+
+      // 4. Block 3: Đối tượng lợi ích
+      document.querySelector('[data-map="blocks.block3.title"]').innerText = data.blocks.block3.title;
+      document.getElementById('box3Items').innerHTML = data.blocks.block3.items.map(item => `
+        <div class="stakeholder-box">
+          <div class="stakeholder-header">
+            <span>${item.icon}</span>
+            <span>${item.role}</span>
+          </div>
+          <p class="stakeholder-desc">${item.desc}</p>
+        </div>
+      `).join('');
+
+      // 5. Block 4: Quy trình vận hành
+      document.querySelector('[data-map="blocks.block4.title"]').innerText = data.blocks.block4.title;
+      document.querySelector('[data-map="blocks.block4.caption"]').innerText = data.blocks.block4.caption;
+      const stepsHtml = [];
+      data.blocks.block4.steps.forEach((st, idx) => {
+        stepsHtml.push(`
+          <div class="step-card">
+            <span class="step-icon">${st.icon}</span>
+            <span class="step-label">${st.label}</span>
+          </div>
+        `);
+        if (idx < data.blocks.block4.steps.length - 1) {
+          stepsHtml.push('<span class="step-arrow">➔</span>');
+        }
+      });
+      document.getElementById('box4Stepper').innerHTML = stepsHtml.join('');
+
+      // 6. Block 5: Điểm ưu tiên
+      document.querySelector('[data-map="blocks.block5.title"]').innerText = data.blocks.block5.title;
+      document.querySelector('[data-map="blocks.block5.score"]').innerText = data.blocks.block5.score;
+      document.querySelector('[data-map="blocks.block5.scoreLabel"]').innerText = data.blocks.block5.scoreLabel;
+      document.querySelector('[data-map="blocks.block5.note"]').innerText = data.blocks.block5.note;
+      document.getElementById('box5Levels').innerHTML = data.blocks.block5.levels.map(l => `
+        <div class="legend-item">
+          <span class="legend-dot" style="background: ${l.color}"></span>
+          <span class="legend-text">${l.level}</span>
+          <span class="legend-sub">— ${l.desc}</span>
+        </div>
+      `).join('');
+
+      // 7. Block 6: Thiết bị IoT
+      document.querySelector('[data-map="blocks.block6.title"]').innerText = data.blocks.block6.title;
+      document.getElementById('box6Specs').innerHTML = data.blocks.block6.specs.map(sp => `
+        <div class="iot-spec-item">
+          <span class="icon">${sp.icon}</span>
+          <span>${sp.text}</span>
+        </div>
+      `).join('');
+
+      // 8. Block 7: Tác động dự kiến
+      document.querySelector('[data-map="blocks.block7.title"]').innerText = data.blocks.block7.title;
+      document.getElementById('box7Impacts').innerHTML = data.blocks.block7.impacts.map(im => `
+        <div class="impact-card">
+          <span class="impact-icon">${im.icon}</span>
+          <span class="impact-title">${im.title}</span>
+        </div>
+      `).join('');
+
+      // 9. Block 8: So sánh giải pháp
+      document.querySelector('[data-map="blocks.block8.title"]').innerText = data.blocks.block8.title;
+      document.getElementById('box8Table').innerHTML = `
+        <thead>
+          <tr>
+            <th>${data.blocks.block8.columns[0]}</th>
+            <th>${data.blocks.block8.columns[1]}</th>
+            <th class="col-dustguard">${data.blocks.block8.columns[2]}</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${data.blocks.block8.rows.map(row => `
+            <tr>
+              <td>${row.criteria}</td>
+              <td>${row.traditional}</td>
+              <td class="col-dustguard">
+                <span>${row.dustguard}</span>
+                <span class="check-icon">✓</span>
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      `;
+
+      // 10. Block 9: Hiện trạng & Kết nối
+      document.querySelector('[data-map="blocks.block9.title"]').innerText = data.blocks.block9.title;
+      document.querySelector('[data-map="blocks.block9.goalNote"]').innerText = data.blocks.block9.goalNote;
+      document.getElementById('box9Phases').innerHTML = data.blocks.block9.phases.map(ph => `
+        <div class="phase-item ${ph.num === 4 ? 'phase-highlight' : ''}">
+          <span class="phase-num">${ph.num}</span>
+          <span>${ph.text}</span>
+        </div>
+      `).join('');
+
+      // 11. Block 10: Bền vững
+      document.querySelector('[data-map="blocks.block10.title"]').innerText = data.blocks.block10.title;
+      document.getElementById('box10Points').innerHTML = data.blocks.block10.points.map(pt => `
+        <div class="sust-item">
+          <span class="icon">${pt.icon}</span>
+          <span>${pt.text}</span>
+        </div>
+      `).join('');
+
+      // 12. Block 11: Lộ trình
+      document.querySelector('[data-map="blocks.block11.title"]').innerText = data.blocks.block11.title;
+      document.getElementById('box11Timeline').innerHTML = data.blocks.block11.milestones.map(m => `
+        <div class="timeline-item">
+          <span class="timeline-dot"></span>
+          <span class="timeline-time">${m.time}</span>
+          <span class="timeline-text">${m.text}</span>
+        </div>
+      `).join('');
+
+      // 13. Footer
+      document.querySelector('[data-map="footer.qrBox.title"]').innerText = data.footer.qrBox.title;
+      document.querySelector('[data-map="footer.qrBox.subtitle"]').innerText = data.footer.qrBox.subtitle;
+      document.querySelector('[data-map="footer.qrBox.target"]').innerText = data.footer.qrBox.target;
+      document.querySelector('[data-map="footer.brandLine.name"]').innerHTML = `${data.footer.brandLine.name.replace(' VN', '')} <span class="vn">VN</span>`;
+      document.querySelector('[data-map="footer.brandLine.slogan"]').innerText = data.footer.brandLine.slogan;
+    }
+
+    // =========================================================================
+    // ZOOM ENGINE
+    // =========================================================================
+    function setZoom(scale) {
+      currentScale = Math.max(0.15, Math.min(1.5, scale));
+      transformBox.style.transform = `scale(${currentScale})`;
+      zoomVal.innerText = `${Math.round(currentScale * 100)}%`;
+    }
+
+    function fitToScreen() {
+      const availWidth = window.innerWidth - 60;
+      const availHeight = window.innerHeight - 90;
+      const scaleX = availWidth / 1800;
+      const scaleY = availHeight / 1400;
+      const targetScale = Math.min(scaleX, scaleY);
+      setZoom(Math.max(0.2, targetScale));
+    }
+
+    btnZoomIn.addEventListener('click', () => setZoom(currentScale + 0.05));
+    btnZoomOut.addEventListener('click', () => setZoom(currentScale - 0.05));
+    btnZoomFit.addEventListener('click', fitToScreen);
+
+    // =========================================================================
+    // LIVE CONTENTEDITABLE TOGGLE
+    // =========================================================================
+    btnToggleEdit.addEventListener('click', () => {
+      isEditing = !isEditing;
+      const allEditable = canvas.querySelectorAll('h1, h2, h3, p, span, td, th, div');
+      allEditable.forEach(el => {
+        if (!el.querySelector('img') && el.children.length === 0) {
+          el.setAttribute('contenteditable', isEditing ? 'true' : 'false');
+        }
+      });
+
+      if (isEditing) {
+        btnToggleEdit.classList.add('btn-teal');
+        editText.innerText = 'Đang Sửa (Bấm để Lưu)';
+      } else {
+        btnToggleEdit.classList.remove('btn-teal');
+        editText.innerText = 'Sửa Chữ Trực Tiếp';
+        saveDomToStorage();
+      }
+    });
+
+    function saveDomToStorage() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(currentData));
+    }
+
+    // =========================================================================
+    // MAPPING DRAWER & CONTROLS
+    // =========================================================================
+    btnOpenDrawer.addEventListener('click', () => {
+      document.getElementById('map_brandName').value = currentData.brand.name;
+      document.getElementById('map_brandSubName').value = currentData.brand.subName;
+      document.getElementById('map_handwritingSlogan').value = currentData.brand.handwritingSlogan;
+      document.getElementById('map_b1_title').value = currentData.blocks.block1.title;
+      document.getElementById('map_b2_title').value = currentData.blocks.block2.title;
+      document.getElementById('map_b3_title').value = currentData.blocks.block3.title;
+      document.getElementById('map_b4_title').value = currentData.blocks.block4.title;
+      document.getElementById('map_b5_score').value = currentData.blocks.block5.score;
+      document.getElementById('map_footer_slogan').value = currentData.footer.brandLine.slogan;
+
+      mappingDrawer.classList.add('open');
+    });
+
+    btnCloseDrawer.addEventListener('click', () => {
+      mappingDrawer.classList.remove('open');
+    });
+
+    btnApplyDrawer.addEventListener('click', () => {
+      currentData.brand.name = document.getElementById('map_brandName').value;
+      currentData.brand.subName = document.getElementById('map_brandSubName').value;
+      currentData.brand.handwritingSlogan = document.getElementById('map_handwritingSlogan').value;
+      currentData.blocks.block1.title = document.getElementById('map_b1_title').value;
+      currentData.blocks.block2.title = document.getElementById('map_b2_title').value;
+      currentData.blocks.block3.title = document.getElementById('map_b3_title').value;
+      currentData.blocks.block4.title = document.getElementById('map_b4_title').value;
+      currentData.blocks.block5.score = document.getElementById('map_b5_score').value;
+      currentData.footer.brandLine.slogan = document.getElementById('map_footer_slogan').value;
+
+      saveDomToStorage();
+      renderBackdrop(currentData);
+      mappingDrawer.classList.remove('open');
+      alert('✓ Đã cập nhật và lưu thay đổi thành công!');
+    });
+
+    // Reset Default
+    btnReset.addEventListener('click', () => {
+      if (confirm('Bạn có chắc chắn muốn khôi phục toàn bộ nội dung về mặc định ban đầu không?')) {
+        localStorage.removeItem(STORAGE_KEY);
+        currentData = JSON.parse(JSON.stringify(fallbackDefault));
+        renderBackdrop(currentData);
+        alert('✓ Đã khôi phục nội dung gốc.');
+      }
+    });
+
+    // Export JSON
+    btnExportJson.addEventListener('click', () => {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(currentData, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", "dustguard_backdrop_90x70_mapping.json");
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    });
+
+    // Print 90x70cm
+    btnPrint.addEventListener('click', () => {
+      window.print();
+    });
+
+    // Init
+    renderBackdrop(currentData);
+    fitToScreen();
+    window.addEventListener('resize', () => {
+      // Keep reasonable zoom on resize
+    });
+  </script>
+
+</body>
+</html>

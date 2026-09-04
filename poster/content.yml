@@ -1,0 +1,273 @@
+# ==============================================================================
+# DUSTGUARD VN — POSTER COPY SSOT (content.yml)
+# Print: 70 cm × 90 cm PORTRAIT only (700 mm × 900 mm)
+# Chung kết 07/09/2026
+# MỌI CHỮ HIỂN THỊ TRÊN POSTER ĐƯỢC ĐỊNH NGHĨA Ở ĐÂY.
+# poster.typ chỉ đọc key — không hardcode chữ tiếng Việt.
+# Ảnh / icon dùng cho từng khối cũng khai báo ở đây để bố cục đi theo nội dung.
+# ==============================================================================
+
+meta:
+  project_name: "DUSTGUARD VN"
+  event: "Chung kết — Không khí sạch vì Bầu trời xanh (07/09/2026)"
+  competition: "Sáng kiến Thanh niên vì Không khí sạch | UNICEF & TW Hội Sinh viên VN"
+  live_url: "https://dustguard.phamphunguyenhung.com/"
+  repo_url: "https://github.com/hungpixi/dust-guard-vn"
+  # Short footer print form — full repo_url kept for manifest/links; QR covers demo.
+  repo_display: "github.com/hungpixi/dust-guard-vn"
+  print_size: "70 × 90 cm"
+  print_orientation: "portrait"
+  print_bleed: "3mm"
+
+hero:
+  mark: "DG"
+  title: "DUSTGUARD VN"
+  # Split in two lines on purpose: line 1 is the promise, line 2 is the proof.
+  tagline: "Biến quan sát môi trường thành hành động"
+  tagline_proof: "có bằng chứng · có theo dõi · có kết quả"
+  subtitle: "CivicTech cho nhóm trẻ và cộng đồng."
+  qr_label: "QUÉT ĐỂ DÙNG THỬ"
+  actors_label: "Người trẻ / CLB"
+  actor_figures:
+    - "assets/people/citizen.svg"
+    - "assets/people/youth-volunteer.svg"
+    - "assets/people/inspector.svg"
+  # Hero = the thesis in four nodes. The detailed five-step product workflow
+  # lives once, in zone 03 — the hero must never repeat those step titles.
+  thesis:
+    - label: "NGƯỜI TRẺ · CLB"
+      note: "Đi hiện trường"
+    - label: "DUSTGUARD"
+      note: "Một hồ sơ duy nhất"
+      icon: "assets/icons/device-analytics.svg"
+    - label: "CỘNG ĐỒNG & ĐƠN VỊ"
+      note: "Phối hợp xử lý"
+      icon: "assets/icons/users-group.svg"
+    - label: "KẾT QUẢ"
+      note: "Có lịch sử · có thể truy vết"
+      icon: "assets/icons/circle-check.svg"
+
+zone1_problem:
+  index: "01"
+  title: "VẤN ĐỀ"
+  headline: "Dữ liệu không thiếu. Thiếu một hành trình liền mạch."
+  sources_label: "Nằm rải rác"
+  sources:
+    - label: "Chat nhóm"
+      icon: "assets/icons/users-group.svg"
+    - label: "Ảnh điện thoại"
+      icon: "assets/icons/camera.svg"
+    - label: "Vị trí / bản đồ"
+      icon: "assets/icons/map-pin.svg"
+    - label: "Ghi chú rời"
+      icon: "assets/icons/file-text.svg"
+  gap_mark: "?"
+  missing_label: "Không có hồ sơ thống nhất"
+  missing:
+    - "Hồ sơ"
+    - "Lịch sử xử lý"
+    - "Người phụ trách"
+  closing: "Thông tin rời rạc → khó ưu tiên, khó theo dõi, khó chịu trách nhiệm."
+
+zone2_actors:
+  index: "02"
+  title: "CHỦ THỂ HÀNH ĐỘNG"
+  answer: "Người trẻ, cộng đồng và cán bộ là chủ thể — công nghệ là công cụ hỗ trợ."
+  actors:
+    - name: "CLB · sinh viên · Đoàn–Hội"
+      verb: "PHÁT HIỆN"
+      action: "Ghi nhận · bằng chứng · theo dõi"
+      figure: "assets/people/youth-volunteer.svg"
+    - name: "Người dân · cộng đồng"
+      verb: "BỔ SUNG"
+      action: "Nêu hiện trạng nơi mình sống"
+      figure: "assets/people/citizen.svg"
+    - name: "Cán bộ · đơn vị phụ trách"
+      verb: "QUYẾT ĐỊNH"
+      action: "Vào cuộc khi cần thẩm quyền"
+      figure: "assets/people/inspector.svg"
+
+zone3_core_loop:
+  index: "03"
+  title: "DUSTGUARD HOẠT ĐỘNG"
+  headline: "Một quan sát không kết thúc sau lần gửi đầu tiên."
+  product_strip_label: "Giao diện thật của sản phẩm"
+  conclusion: "MỘT HỒ SƠ XUYÊN SUỐT — TỪ GHI NHẬN ĐẾN KẾT QUẢ"
+  conclusion_note: "Giữ lại lịch sử xử lý và người phụ trách."
+  steps:
+    - num: "1"
+      title: "Phát hiện"
+    - num: "2"
+      title: "Ghi nhận có cấu trúc"
+    - num: "3"
+      title: "Bằng chứng"
+    - num: "4"
+      title: "Theo dõi lại"
+    - num: "5"
+      title: "Phối hợp / kết quả"
+  screenshots:
+    - title: "Ghi nhận phản ánh"
+      caption: "Người dân · biểu mẫu có cấu trúc"
+      file: "assets/screenshots/ui-citizen-report.png"
+    - title: "Theo dõi cộng đồng"
+      caption: "Nhóm trẻ & CLB địa bàn"
+      file: "assets/screenshots/ui-community-actions.png"
+    - title: "Hồ sơ cán bộ"
+      caption: "Quy trình 7 bước · SLA thời gian thực"
+      file: "assets/screenshots/ui-staff-case.png"
+
+zone4_priority_score:
+  index: "04"
+  title: "ĐIỂM ƯU TIÊN XỬ LÝ 0–100"
+  headline: "Việc nào xem trước — và vì sao?"
+  score_example: "87"
+  score_badge: "HỒ SƠ MINH HỌA"
+  score_level: "Điểm ưu tiên xử lý"
+  scale_min: "0"
+  scale_max: "100"
+  components_label: "Cấu thành điểm"
+  # Labels must match live demo SiteOverviewTab breakdown (same % and wording).
+  components:
+    - name: "Tín hiệu cộng đồng"
+      weight: "30%"
+    - name: "Phơi nhiễm nhạy cảm"
+      weight: "25%"
+    - name: "Độ tin cậy minh chứng"
+      weight: "20%"
+    - name: "Lịch sử & Tái diễn"
+      weight: "15%"
+    - name: "Cảm biến IoT bổ trợ"
+      weight: "10%"
+  disclaimer: "Hỗ trợ xếp ưu tiên — không phải kết luận vi phạm."
+  zero_iot_note: "Không có IoT vẫn chạy đủ."
+
+zone5_ai_human:
+  index: "05"
+  title: "AI + CON NGƯỜI"
+  headline: "AI chuẩn bị. Con người quyết định."
+  # One sequence, not two parallel branches: the case walks through AI, then
+  # through a person, and only a person closes it.
+  case_label: "HỒ SƠ"
+  case_note: "Ghi nhận có cấu trúc"
+  ai_role:
+    title: "AI HỖ TRỢ"
+    items:
+      - "Phân loại · tóm tắt"
+      - "Chỉ ra phần còn thiếu"
+  human_role:
+    title: "CON NGƯỜI"
+    items:
+      - "Xác minh hiện trường"
+      - "Đánh giá chuyên môn"
+  decision: "QUYẾT ĐỊNH THUỘC VỀ CON NGƯỜI"
+  boundary: "Ranh giới: AI không kết luận vi phạm, không xử phạt."
+
+zone6_pilot:
+  index: "06"
+  title: "KHẢ THI & PILOT ĐỀ XUẤT"
+  # Split into two halves so the eye separates what exists from what is proposed.
+  status_now_label: "ĐÃ CÓ"
+  status_now: "Nguyên mẫu kiểm chứng kỹ thuật"
+  status_next_label: "BƯỚC TIẾP THEO"
+  status_next: "Pilot thực địa 4–8 tuần"
+  scope:
+    - value: "01"
+      unit: "CLB / trường"
+      icon: "assets/icons/users-group.svg"
+    - value: "20–30"
+      unit: "người tham gia"
+      icon: "assets/icons/users.svg"
+    - value: "01"
+      unit: "địa bàn"
+      icon: "assets/icons/map-pin.svg"
+    - value: "4–8"
+      unit: "tuần"
+      icon: "assets/icons/calendar-time.svg"
+  kpi_label: "CHỈ SỐ PILOT"
+  kpis:
+    - "Chất lượng bằng chứng"
+    - "Tỷ lệ theo dõi lại"
+    - "Thời gian đến hành động"
+    - "Tỷ lệ quay lại"
+  # Five blocks, not an eight-column Gantt: at 2 m only the shape is readable.
+  timeline:
+    - weeks: "TUẦN 1"
+      name: "Chuẩn bị"
+    - weeks: "TUẦN 2–3"
+      name: "Quan sát"
+    - weeks: "TUẦN 4–5"
+      name: "Hành động"
+    - weeks: "TUẦN 6–7"
+      name: "Theo dõi"
+    - weeks: "TUẦN 8"
+      name: "Đánh giá"
+
+zone7_tech:
+  index: "07"
+  title: "CÔNG NGHỆ & MINH CHỨNG"
+  headline: "Cloudflare-native · không cần quản trị server riêng."
+  arch:
+    actors_label: "Người dùng"
+    actors:
+      - "Người dân"
+      - "Người trẻ / CLB"
+      - "Cán bộ"
+    core_title: "Cloudflare Worker"
+    core_sub: "React + Hono"
+    stores:
+      - name: "D1"
+        detail: "Hồ sơ & lịch sử"
+      - name: "R2"
+        detail: "Ảnh & minh chứng"
+  prototype_label: "NGUYÊN MẪU & KIỂM CHỨNG KỸ THUẬT"
+  prototype_note: "Số liệu demo/seed không được gọi là kết quả thử nghiệm thực địa."
+  verification:
+    - "Nguyên mẫu hoạt động"
+    - "Kiểm chứng tự động"
+    - "Lưu vết thao tác"
+    - "Không cần quản trị server riêng"
+  iot:
+    title: "NGUỒN DỮ LIỆU BỔ SUNG"
+    card_title: "Phần cứng chính"
+    chip_icon: "assets/iot/icon-chip.svg"
+    wallet_icon: "assets/iot/icon-wallet.svg"
+    components:
+      - name: "APM2000"
+        detail: "Cảm biến bụi laser đo PM1.0, PM2.5, PM10"
+        photo: "assets/iot/apm2000.png"
+      - name: "ESP32 DevKit"
+        detail: "Vi điều khiển chính, kết nối Wi-Fi"
+        photo: "assets/iot/esp32.png"
+      - name: "OLED SSD1306"
+        detail: "Hiển thị thông số tại thiết bị"
+        photo: "assets/iot/oled-ssd1306.png"
+    cost_prefix: "Chi phí dự kiến: khoảng"
+    cost_value: "420.000 – 500.000 VNĐ / node"
+    # Right panel fills the former empty bottom-right of zone 07.
+    role_title: "Vai trò trên hệ thống"
+    role_points:
+      - "Tín hiệu môi trường bổ sung — không bắt buộc"
+      - "Node → Wi-Fi → Cloudflare Worker → hồ sơ"
+      - "Không có IoT: điểm ưu tiên vẫn chạy đủ"
+    role_flow:
+      - "Cảm biến"
+      - "ESP32"
+      - "Wi-Fi"
+      - "DustGuard"
+    pm_chips:
+      - "PM1.0"
+      - "PM2.5"
+      - "PM10"
+
+footer:
+  roadmap_title: "LỘ TRÌNH"
+  roadmap_steps:
+    - "Pilot nhỏ"
+    - "Chứng minh quy trình"
+    - "Chuẩn hóa"
+    - "Mở rộng"
+    - "Tích hợp khi được kiểm chứng"
+  closing: "BẮT ĐẦU NHỎ. ĐO ĐƯỢC. SAU ĐÓ MỚI MỞ RỘNG."
+  team: "DustGuardians"
+  github_label: "Mã nguồn"
+  site_label: "Trang dùng thử"

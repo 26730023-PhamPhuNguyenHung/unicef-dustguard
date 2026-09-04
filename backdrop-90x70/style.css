@@ -1,0 +1,1097 @@
+/* =========================================================================
+   DUSTGUARD VN — BACKDROP 90x70CM PRINT-READY CSS ENGINE
+   Chuẩn tỷ lệ ngang 90cm x 70cm (900mm x 700mm)
+   High-Contrast Civic Tech • Zero Glassmorphism • Sắc Nét 300DPI
+   ========================================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700&family=Caveat:wght@600;700&display=swap');
+
+:root {
+  --primary-red: #9F241F;
+  --primary-red-hover: #7F1D1D;
+  --primary-red-light: #FEF2F2;
+  --primary-teal: #0D6F64;
+  --primary-teal-light: #F0FDFA;
+  --primary-green: #15803D;
+  --primary-green-light: #F0FDF4;
+  --ink-black: #1C1917;
+  --text-muted: #57534E;
+  --text-subtle: #78716C;
+  --border-color: #E2E8F0;
+  --border-dark: #CBD5E1;
+  --bg-cream: #FDFBF7;
+  --bg-card: #FFFFFF;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--ink-black);
+  background-color: #334155;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* =========================================================================
+   TOP CONTROL BAR (NO-PRINT)
+   ========================================================================= */
+.control-bar {
+  width: 100%;
+  background: #0F172A;
+  color: white;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 9999;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  font-size: 13px;
+}
+
+.control-bar .title-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.control-bar h1 {
+  font-size: 15px;
+  font-weight: 800;
+  color: #F8FAFC;
+  letter-spacing: -0.01em;
+}
+
+.control-bar .tag {
+  background: var(--primary-red);
+  color: white;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.control-bar .actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-ctrl {
+  background: #1E293B;
+  color: #F1F5F9;
+  border: 1px solid #334155;
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.btn-ctrl:hover {
+  background: #334155;
+  border-color: #475569;
+}
+
+.btn-ctrl.btn-primary {
+  background: var(--primary-red);
+  border-color: var(--primary-red);
+  color: white;
+}
+
+.btn-ctrl.btn-primary:hover {
+  background: var(--primary-red-hover);
+}
+
+.btn-ctrl.btn-teal {
+  background: var(--primary-teal);
+  border-color: var(--primary-teal);
+  color: white;
+}
+
+.zoom-controls {
+  display: flex;
+  align-items: center;
+  background: #1E293B;
+  border-radius: 8px;
+  border: 1px solid #334155;
+  padding: 2px;
+}
+
+.btn-zoom {
+  background: none;
+  border: none;
+  color: #E2E8F0;
+  padding: 5px 10px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-zoom:hover {
+  background: #334155;
+  border-radius: 6px;
+}
+
+.zoom-label {
+  padding: 0 8px;
+  font-size: 12px;
+  color: #94A3B8;
+  min-width: 50px;
+  text-align: center;
+}
+
+/* =========================================================================
+   WORKSPACE & CANVAS WRAPPER
+   ========================================================================= */
+.workspace-wrapper {
+  flex: 1;
+  width: 100%;
+  overflow: auto;
+  display: flex;
+  justify-content: center;
+  padding: 30px;
+}
+
+.canvas-transform-box {
+  transform-origin: top center;
+  transition: transform 0.2s ease-out;
+}
+
+/* =========================================================================
+   CANVAS 900mm x 700mm (90cm x 70cm)
+   Tỷ lệ 9:7 = 1.2857.
+   Ở màn hình web, ta dựng chuẩn 1800px x 1400px (độ nét gấp đôi chuẩn retina)
+   ========================================================================= */
+.backdrop-canvas {
+  width: 1800px;
+  height: 1400px;
+  background: #FFFFFF;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 30px 40px 24px 40px;
+  user-select: text;
+}
+
+/* Content Editable Hint */
+[contenteditable="true"]:hover {
+  outline: 2px dashed #0284C7;
+  outline-offset: 2px;
+  border-radius: 4px;
+  cursor: text;
+}
+
+[contenteditable="true"]:focus {
+  outline: 2px solid #0284C7;
+  outline-offset: 2px;
+  background-color: #F0F9FF;
+}
+
+/* =========================================================================
+   1. HEADER LOGOS STRIP (TOP)
+   ========================================================================= */
+.header-logos {
+  width: 100%;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1.5px solid #CBD5E1;
+  padding-bottom: 10px;
+  margin-bottom: 16px;
+}
+
+.header-logos-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+
+/* =========================================================================
+   2. BRAND BANNER & SLOGAN
+   ========================================================================= */
+.brand-hero-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+  gap: 20px;
+}
+
+.brand-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.brand-shield-logo {
+  width: 108px;
+  height: 108px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.brand-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.brand-title {
+  font-size: 58px;
+  font-weight: 900;
+  color: var(--primary-red);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-title span.vn {
+  color: var(--ink-black);
+}
+
+.brand-subtitle {
+  font-size: 22px;
+  font-weight: 800;
+  color: #334155;
+  letter-spacing: -0.01em;
+}
+
+.brand-pillars {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-top: 4px;
+}
+
+.pillar-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 17px;
+  font-weight: 800;
+  color: #1E293B;
+}
+
+.pillar-item .icon {
+  font-size: 19px;
+}
+
+.brand-center-slogan {
+  flex: 1;
+  text-align: center;
+  padding: 0 16px;
+}
+
+.handwriting-text {
+  font-family: 'Caveat', cursive;
+  font-size: 38px;
+  font-weight: 700;
+  color: var(--ink-black);
+  line-height: 1.15;
+  transform: rotate(-3deg);
+  display: inline-block;
+}
+
+.brand-right-devices {
+  width: 520px;
+  height: 116px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+
+.devices-preview-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* =========================================================================
+   COMMON CARD STYLES
+   ========================================================================= */
+.card-block {
+  background: var(--bg-card);
+  border: 1.8px solid #CBD5E1;
+  border-radius: 14px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.badge-num {
+  background: var(--primary-red);
+  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  font-size: 15px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--ink-black);
+  letter-spacing: 0.02em;
+}
+
+/* =========================================================================
+   GRID ROWS
+   ========================================================================= */
+.content-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex: 1;
+}
+
+/* ROW 1: BLOCKS 1, 2, 3, 4 */
+.grid-row-1 {
+  display: grid;
+  grid-template-columns: 220px 220px 270px 1fr;
+  gap: 14px;
+  height: 232px;
+}
+
+/* Items inside block 1 & 2 */
+.list-simple {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
+  gap: 6px;
+}
+
+.list-item-icon {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: #334155;
+}
+
+.list-item-icon .icon {
+  font-size: 15px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* Block 3: Đối tượng lợi ích */
+.stakeholder-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  flex: 1;
+}
+
+.stakeholder-box {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+}
+
+.stakeholder-header {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--ink-black);
+}
+
+.stakeholder-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.25;
+  font-weight: 500;
+}
+
+/* Block 4: Quy trình vận hành */
+.workflow-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+  padding: 8px 6px;
+  position: relative;
+}
+
+.step-card {
+  background: #F8FAFC;
+  border: 1.2px solid #CBD5E1;
+  border-radius: 10px;
+  padding: 10px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 132px;
+  height: 110px;
+  gap: 6px;
+  position: relative;
+}
+
+.step-card .step-icon {
+  font-size: 26px;
+}
+
+.step-card .step-label {
+  font-size: 12px;
+  font-weight: 800;
+  color: #1E293B;
+  line-height: 1.25;
+}
+
+.step-arrow {
+  font-size: 20px;
+  font-weight: 900;
+  color: #94A3B8;
+  margin: 0 4px;
+}
+
+.workflow-caption {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-subtle);
+  text-align: center;
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px dashed #E2E8F0;
+}
+
+/* =========================================================================
+   ROW 2: BLOCKS 5, 6, 7
+   ========================================================================= */
+.grid-row-2 {
+  display: grid;
+  grid-template-columns: 310px 480px 1fr;
+  gap: 14px;
+  height: 255px;
+}
+
+/* Block 5: Điểm ưu tiên Gauge */
+.gauge-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+  padding: 4px 6px;
+}
+
+.gauge-circle-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  border: 10px solid var(--primary-green);
+  border-top-color: var(--primary-red);
+  border-right-color: #EA580C;
+  position: relative;
+}
+
+.gauge-score {
+  font-size: 44px;
+  font-weight: 900;
+  color: var(--ink-black);
+  line-height: 1;
+}
+
+.gauge-label {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--primary-red);
+  margin-top: 2px;
+}
+
+.gauge-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-left: 10px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.legend-dot.red { background: var(--primary-red); }
+.legend-dot.orange { background: #EA580C; }
+.legend-dot.blue { background: #0284C7; }
+
+.legend-text {
+  font-weight: 800;
+  color: #1E293B;
+}
+
+.legend-sub {
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.block5-note {
+  font-size: 11px;
+  font-style: italic;
+  color: #64748B;
+  margin-top: auto;
+  padding-top: 4px;
+  border-top: 1px dashed #E2E8F0;
+}
+
+/* Block 6: Thiết bị IoT đơn giản */
+.iot-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex: 1;
+}
+
+.iot-device-img {
+  width: 160px;
+  height: 125px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.1));
+}
+
+.iot-specs-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
+  gap: 7px;
+}
+
+.iot-spec-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #1E293B;
+}
+
+.iot-spec-item .icon {
+  font-size: 16px;
+  color: var(--primary-teal);
+}
+
+/* Block 7: Tác động dự kiến */
+.impacts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  flex: 1;
+}
+
+.impact-card {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 6px;
+}
+
+.impact-icon {
+  font-size: 28px;
+}
+
+.impact-title {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #1E293B;
+  line-height: 1.3;
+}
+
+/* =========================================================================
+   ROW 3: BLOCKS 8, 9, 10, 11
+   ========================================================================= */
+.grid-row-3 {
+  display: grid;
+  grid-template-columns: 360px 420px 280px 1fr;
+  gap: 14px;
+  height: 310px;
+}
+
+/* Block 8: Bảng so sánh */
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11.5px;
+  flex: 1;
+}
+
+.compare-table th {
+  background: #F1F5F9;
+  padding: 5px 8px;
+  font-weight: 800;
+  text-align: left;
+  border: 1px solid #CBD5E1;
+  color: #334155;
+}
+
+.compare-table th.col-dustguard {
+  background: #FEF2F2;
+  color: var(--primary-red);
+  text-align: center;
+}
+
+.compare-table td {
+  padding: 5px 8px;
+  border: 1px solid #E2E8F0;
+  font-weight: 600;
+  color: #334155;
+  line-height: 1.25;
+}
+
+.compare-table td.col-dustguard {
+  background: #FFFBFB;
+  color: var(--primary-red);
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.compare-table tr:hover td {
+  background-color: #F8FAFC;
+}
+
+.check-icon {
+  color: var(--primary-green);
+  font-weight: 900;
+}
+
+/* Block 9: Hiện trạng & Kế hoạch kết nối */
+.phases-stepper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.phase-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #1E293B;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  padding: 6px 10px;
+}
+
+.phase-num {
+  background: var(--primary-teal);
+  color: white;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.phase-item.phase-highlight {
+  background: #F0FDF4;
+  border-color: #86EFAC;
+}
+
+.phase-item.phase-highlight .phase-num {
+  background: var(--primary-green);
+}
+
+.block9-note {
+  font-size: 11px;
+  color: #64748B;
+  font-weight: 600;
+  border-top: 1px dashed #CBD5E1;
+  padding-top: 4px;
+  text-align: center;
+}
+
+/* Block 10: Bền vững */
+.sustainability-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
+  gap: 8px;
+}
+
+.sust-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #1E293B;
+  line-height: 1.3;
+}
+
+.sust-item .icon {
+  font-size: 16px;
+  color: var(--primary-green);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* Block 11: Lộ trình timeline */
+.timeline-vertical {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  flex: 1;
+  position: relative;
+  padding-left: 18px;
+  border-left: 2px solid var(--primary-red);
+  margin-left: 10px;
+}
+
+.timeline-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.timeline-dot {
+  width: 12px;
+  height: 12px;
+  background: var(--primary-red);
+  border-radius: 50%;
+  position: absolute;
+  left: -25px;
+  top: 4px;
+  border: 2px solid white;
+}
+
+.timeline-time {
+  font-size: 14px;
+  font-weight: 900;
+  color: var(--primary-red);
+}
+
+.timeline-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: #334155;
+  line-height: 1.3;
+}
+
+/* =========================================================================
+   4. FOOTER (BOTTOM STRIP)
+   ========================================================================= */
+.footer-banner {
+  height: 110px;
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 2px solid #CBD5E1;
+  padding-top: 12px;
+  position: relative;
+}
+
+.footer-qr-box {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--primary-red);
+  color: white;
+  padding: 8px 18px 8px 10px;
+  border-radius: 12px;
+  height: 90px;
+  box-shadow: 0 4px 12px rgba(159,36,31,0.25);
+  flex-shrink: 0;
+}
+
+.qr-code-image {
+  width: 72px;
+  height: 72px;
+  border-radius: 6px;
+  background: white;
+  padding: 3px;
+  object-fit: contain;
+}
+
+.qr-text-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.qr-title {
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.qr-subtitle {
+  font-size: 12px;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.qr-target {
+  font-size: 14px;
+  font-weight: 900;
+  margin-top: 2px;
+}
+
+.footer-brand-strip {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 0 20px;
+}
+
+.footer-shield-logo {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+
+.footer-slogan-box {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.footer-brand-title {
+  font-size: 32px;
+  font-weight: 900;
+  color: var(--primary-red);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.footer-brand-title span.vn {
+  color: var(--ink-black);
+}
+
+.footer-slogan-text {
+  font-size: 16px;
+  font-weight: 800;
+  color: #334155;
+  letter-spacing: -0.01em;
+}
+
+.footer-city-bg {
+  height: 90px;
+  width: 480px;
+  object-fit: contain;
+  object-position: right center;
+  opacity: 0.95;
+}
+
+/* =========================================================================
+   MAPPING CONFIG DRAWER (MODAL)
+   ========================================================================= */
+.mapping-drawer {
+  position: fixed;
+  top: 0;
+  right: -520px;
+  width: 500px;
+  height: 100vh;
+  background: #0F172A;
+  color: #E2E8F0;
+  box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mapping-drawer.open {
+  right: 0;
+}
+
+.drawer-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid #334155;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.drawer-header h2 {
+  font-size: 16px;
+  font-weight: 800;
+  color: #F8FAFC;
+}
+
+.btn-close-drawer {
+  background: none;
+  border: none;
+  color: #94A3B8;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #94A3B8;
+  text-transform: uppercase;
+}
+
+.form-group input, .form-group textarea {
+  background: #1E293B;
+  border: 1px solid #334155;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: inherit;
+}
+
+.form-group textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.drawer-footer {
+  padding: 16px 20px;
+  border-top: 1px solid #334155;
+  display: flex;
+  gap: 10px;
+}
+
+/* =========================================================================
+   PRINT ENGINE MEDIA QUERY (900mm x 700mm)
+   ========================================================================= */
+@media print {
+  @page {
+    size: 900mm 700mm;
+    margin: 0;
+  }
+
+  html, body {
+    width: 900mm !important;
+    height: 700mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #FFFFFF !important;
+    overflow: hidden !important;
+  }
+
+  .no-print, .control-bar, .mapping-drawer {
+    display: none !important;
+  }
+
+  .workspace-wrapper {
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+    display: block !important;
+  }
+
+  .canvas-transform-box {
+    transform: none !important;
+  }
+
+  .backdrop-canvas {
+    width: 900mm !important;
+    height: 700mm !important;
+    box-shadow: none !important;
+    padding: 18mm 20mm 15mm 20mm !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    margin: 0 !important;
+    transform: none !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

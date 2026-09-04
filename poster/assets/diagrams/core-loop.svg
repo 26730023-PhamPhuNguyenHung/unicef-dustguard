@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 780 85" width="780" height="85" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .step-box { fill: #FFFFFF; stroke: #DDD7CE; stroke-width: 1.5; rx: 6px; }
+    .step-title { font-family: 'Be Vietnam Pro', 'DejaVu Sans', sans-serif; font-size: 13px; font-weight: 700; fill: #231B14; }
+    .step-sub { font-family: 'Be Vietnam Pro', 'DejaVu Sans', sans-serif; font-size: 10px; font-weight: 500; fill: #5C5248; }
+    .arrow { stroke: #0D6F64; stroke-width: 2; fill: none; stroke-linecap: round; }
+    .arrow-head { fill: #0D6F64; }
+  </style>
+  
+  <!-- Step 1: Phát hiện -->
+  <rect x="0" y="8" width="132" height="68" class="step-box" />
+  <circle cx="24" cy="28" r="11" fill="#E8F4F2" />
+  <text x="24" y="32" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="#0D6F64">01</text>
+  <text x="42" y="32" class="step-title">Phát hiện</text>
+  <text x="12" y="52" class="step-sub">Dân sinh / Người trẻ</text>
+  <text x="12" y="65" class="step-sub">GPS &amp; Bụi công trình</text>
+
+  <!-- Arrow 1-2 -->
+  <path d="M 136 42 L 152 42" class="arrow" />
+  <polygon points="152,38 158,42 152,46" class="arrow-head" />
+
+  <!-- Step 2: Ghi nhận cấu trúc -->
+  <rect x="162" y="8" width="132" height="68" class="step-box" />
+  <circle cx="186" cy="28" r="11" fill="#E8F4F2" />
+  <text x="186" y="32" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="#0D6F64">02</text>
+  <text x="204" y="32" class="step-title">Ghi nhận</text>
+  <text x="174" y="52" class="step-sub">7 Civic categories</text>
+  <text x="174" y="65" class="step-sub">Nén ảnh &lt;300KB</text>
+
+  <!-- Arrow 2-3 -->
+  <path d="M 298 42 L 314 42" class="arrow" />
+  <polygon points="314,38 320,42 314,46" class="arrow-head" />
+
+  <!-- Step 3: Niêm phong SHA-256 -->
+  <rect x="324" y="8" width="132" height="68" class="step-box" stroke="#B51F24" stroke-width="1.8" />
+  <circle cx="348" cy="28" r="11" fill="#FDE8E9" />
+  <text x="348" y="32" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="#B51F24">03</text>
+  <text x="366" y="32" class="step-title" fill="#B51F24">Bằng chứng</text>
+  <text x="336" y="52" class="step-sub">Mã băm SHA-256</text>
+  <text x="336" y="65" class="step-sub">Geofence bán kính 50m</text>
+
+  <!-- Arrow 3-4 -->
+  <path d="M 460 42 L 476 42" class="arrow" />
+  <polygon points="476,38 482,42 476,46" class="arrow-head" />
+
+  <!-- Step 4: Theo dõi Follow-up -->
+  <rect x="486" y="8" width="132" height="68" class="step-box" />
+  <circle cx="510" cy="28" r="11" fill="#E8F4F2" />
+  <text x="510" y="32" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="#0D6F64">04</text>
+  <text x="528" y="32" class="step-title">Follow-up</text>
+  <text x="498" y="52" class="step-sub">Tái kiểm tra hiện trường</text>
+  <text x="498" y="65" class="step-sub">Đối chứng Trước / Sau</text>
+
+  <!-- Arrow 4-5 -->
+  <path d="M 622 42 L 638 42" class="arrow" />
+  <polygon points="638,38 644,42 638,46" class="arrow-head" />
+
+  <!-- Step 5: Handoff & Kết quả -->
+  <rect x="648" y="8" width="132" height="68" class="step-box" fill="#0D6F64" stroke="#0D6F64" />
+  <circle cx="672" cy="28" r="11" fill="#FFFFFF" />
+  <text x="672" y="32" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="#0D6F64">05</text>
+  <text x="690" y="32" class="step-title" fill="#FFFFFF">Kết quả</text>
+  <text x="660" y="52" class="step-sub" fill="#E8F4F2">Handoff cơ quan</text>
+  <text x="660" y="65" class="step-sub" fill="#E8F4F2">Dập bụi &amp; Tác động</text>
+</svg>
