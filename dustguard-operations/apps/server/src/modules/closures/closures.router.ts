@@ -115,7 +115,8 @@ closuresRouter.post('/:id/close', requirePermission('case:close'), (req: AuthReq
     });
 
     const closure = get(`SELECT * FROM case_closures WHERE id = ?`, [closureId]);
-    res.json({ success: true, closure, message: 'Đã đóng hồ sơ vụ việc thành công.' });
+    const updatedCase = get(`SELECT * FROM cases WHERE id = ?`, [id]);
+    res.json({ success: true, closure, case: updatedCase, message: 'Đã đóng hồ sơ vụ việc thành công.' });
   } catch (err) {
     next(err);
   }
@@ -173,7 +174,8 @@ closuresRouter.post('/:id/reopen', requirePermission('case:reopen'), (req: AuthR
       );
     });
 
-    res.json({ success: true, message: 'Hồ sơ vụ việc đã được mở lại thành công.' });
+    const updatedCase = get(`SELECT * FROM cases WHERE id = ?`, [id]);
+    res.json({ success: true, case: updatedCase, message: 'Hồ sơ vụ việc đã được mở lại thành công.' });
   } catch (err) {
     next(err);
   }

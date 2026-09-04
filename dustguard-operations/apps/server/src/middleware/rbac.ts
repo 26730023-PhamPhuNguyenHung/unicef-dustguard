@@ -27,3 +27,6 @@ export function requirePermission(permission: Permission) {
     next();
   };
 }
+
+export const requireCapability = requirePermission;
+

@@ -47,6 +47,8 @@ export function get<T = any>(sql: string, params: any[] = []): T | undefined {
   return stmt.get(...params) as T | undefined;
 }
 
+export const queryOne = get;
+
 export function run(sql: string, params: any[] = []) {
   const stmt = db.prepare(sql);
   return stmt.run(...params);

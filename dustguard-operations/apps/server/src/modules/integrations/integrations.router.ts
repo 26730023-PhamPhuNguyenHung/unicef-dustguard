@@ -55,7 +55,7 @@ integrationsRouter.post('/community/cases', (req, res, next) => {
 
       res.status(200).json({
         success: true,
-        action: 'UPDATED_EXISTING',
+        action: 'UPDATED',
         case_id: existingCase.id,
         case_code: existingCase.case_code,
         message: 'Hồ sơ đã tồn tại, hệ thống đã cập nhật tăng số lượt phản ánh an toàn.',
@@ -77,12 +77,12 @@ integrationsRouter.post('/community/cases', (req, res, next) => {
           newCaseId,
           case_code,
           data.title,
-          data.description,
-          data.location,
-          data.lat,
-          data.lng,
+          data.description || data.summary || '',
+          data.location || data.location_text || 'TP.HCM',
+          data.latitude ?? data.lat ?? 10.7769,
+          data.longitude ?? data.lng ?? 106.7009,
           data.external_case_id,
-          data.report_count,
+          data.report_count ?? (data.reports?.length || 1),
           data.contractor_name || null,
         ]
       );
@@ -120,7 +120,7 @@ integrationsRouter.post('/community/cases', (req, res, next) => {
       );
     });
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       action: 'CREATED_NEW',
       case_id: newCaseId,

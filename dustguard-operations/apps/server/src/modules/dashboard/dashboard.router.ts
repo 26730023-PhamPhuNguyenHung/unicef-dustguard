@@ -71,17 +71,12 @@ dashboardRouter.get('/', requireAuth, (req: AuthRequest, res) => {
     };
   }
 
-  res.json({
-    metrics: {
-      new_cases: newCasesCount,
-      pending_legal: pendingLegalCount,
-      pending_inspection: pendingInspectionCount,
-      overdue_actions: overdueActionsCount,
-      pending_reinspection: pendingReinspectionCount,
-      ready_to_close: readyToCloseCount,
-    },
-    myQueue,
-    recentActivities,
     supervisor: supervisorData,
-  });
-});
+  };
+
+  res.json(payload);
+}
+
+dashboardRouter.get('/', requireAuth, getDashboardData);
+dashboardRouter.get('/staff', requireAuth, getDashboardData);
+dashboardRouter.get('/supervisor', requireAuth, getDashboardData);

@@ -106,12 +106,28 @@ export const api = {
         method: 'POST',
         body: JSON.stringify(data),
       }),
+    nextAction: (id: string) =>
+      request<{ action: any; title: string; reason: string; route: string; blockingIssues: string[] }>(
+        `/api/cases/${id}/next-action`
+      ),
+    decisionPack: (id: string) => request<any>(`/api/cases/${id}/decision-pack`),
   },
 
   legal: {
     search: (q: string) => request<{ query: string; results: any[]; total: number }>(`/api/legal/search?q=${encodeURIComponent(q)}`),
     documents: () => request<{ documents: any[] }>('/api/legal/documents'),
     document: (id: string) => request<{ document: any; sections: any[] }>(`/api/legal/documents/${id}`),
+    importText: (data: { title: string; document_number: string; authority: string; text_content: string }) =>
+      request<{ document: any; sections: any[] }>('/api/legal/import', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }),
+    saveDocument: (data: any) =>
+      request<{ document: any }>('/api/legal/documents', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }),
+    evidenceGaps: (caseId: string) => request<{ gaps: any[] }>(`/api/cases/${caseId}/legal/evidence-gaps`),
     analyze: (caseId: string) =>
       request<{ analysis: any }>(`/api/cases/${caseId}/legal/analyze`, { method: 'POST' }),
     analyses: (caseId: string) => request<{ analyses: any[] }>(`/api/cases/${caseId}/legal/analyses`),
@@ -214,6 +230,78 @@ export const api = {
     markRead: (id: string) => request<{ success: boolean }>(`/api/notifications/${id}/read`, { method: 'POST' }),
   },
 
+  tasks: {
+    list: (params: Record<string, string | undefined> = {}) => {
+      const sp = new URLSearchParams();
+      Object.entries(params).forEach(([k, v]) => {
+        if (v) sp.append(k, v);
+      });
+      return request<{ tasks: any[] }>(`/api/tasks?${sp.toString()}`);
+    },
+    create: (data: any) =>
+      request<{ task: any }>('/api/tasks', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }),
+    update: (id: string, data: any) =>
+      request<{ task: any }>(`/api/tasks/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify(data),
+      }),
+  },
+
+  signals: {
+    list: (params: Record<string, string | undefined> = {}) => {
+      const sp = new URLSearchParams();
+      Object.entries(params).forEach(([k, v]) => {
+        if (v) sp.append(k, v);
+      });
+      return request<{ signals: any[] }>(`/api/signals?${sp.toString()}`);
+    },
+    get: (id: string) => request<{ signal: any }>(`/api/signals/${id}`),
+    matches: (id: string) => request<{ signal: any; matches: any[] }>(`/api/signals/${id}/matches`),
+    linkCase: (id: string, data: any) =>
+      request<{ success: boolean; link: any }>(`/api/signals/${id}/link-case`, {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }),
+  },
+
+  iot: {
+    devices: () => request<{ devices: any[] }>('/api/iot/devices'),
+    device: (id: string) =>
+      request<{
+        device: any;
+        latestReading: any;
+        recentReadings: any[];
+        recentEvents: any[];
+        relatedCases: any[];
+      }>(`/api/iot/devices/${id}`),
+    readings: (id: string, params: Record<string, string | undefined> = {}) => {
+      const sp = new URLSearchParams();
+      Object.entries(params).forEach(([k, v]) => {
+        if (v) sp.append(k, v);
+      });
+      return request<{ readings: any[] }>(`/api/iot/devices/${id}/readings?${sp.toString()}`);
+    },
+  },
+
+  automations: {
+    rules: () => request<{ rules: any[] }>('/api/automations/rules'),
+    runs: (params: Record<string, string | undefined> = {}) => {
+      const sp = new URLSearchParams();
+      Object.entries(params).forEach(([k, v]) => {
+        if (v) sp.append(k, v);
+      });
+      return request<{ runs: any[] }>(`/api/automations/runs?${sp.toString()}`);
+    },
+    toggleRule: (id: string, enabled: boolean) =>
+      request<{ rule: any }>(`/api/automations/rules/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ enabled }),
+      }),
+  },
+
   admin: {
     users: () => request<{ users: any[] }>('/api/admin/users'),
     updateUser: (id: string, data: any) =>
@@ -228,5 +316,11 @@ export const api = {
       });
       return request<{ logs: any[] }>(`/api/admin/audit?${sp.toString()}`);
     },
+    configs: () => request<{ configs: any[] }>('/api/admin/configs'),
+    updateConfig: (key: string, data: any) =>
+      request<{ config: any }>(`/api/admin/configs/${key}`, {
+        method: 'PATCH',
+        body: JSON.stringify(data),
+      }),
   },
 };

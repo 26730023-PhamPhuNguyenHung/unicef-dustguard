@@ -42,14 +42,14 @@ dustguard-operations/
 │   │   └── src/
 │   │       ├── db/               # SQLite connection (WAL, FTS5), schema migrations & seeders
 │   │       ├── middleware/       # Auth JWT, RBAC capability guard, request logging
-│   │       ├── routes/           # 12 modules API (cases, legal, inspections, actions, closure...)
-│   │       ├── services/         # LegalAIProvider, FTS5 Search, Audit Logger
+│   │       ├── routes/           # 16 modules API (cases, legal, inspections, actions, iot, automations, tasks...)
+│   │       ├── services/         # LegalAIProvider, FTS5 Search, Audit Logger, NextActionEngine
 │   │       └── index.ts          # Express App Entry & REST APIs
 │   └── web/                      # Frontend React 18 + Vite + TypeScript (Port 3002)
 │       └── src/
 │           ├── components/       # Layout, Header, Sidebar, DevRoleSwitcher, Toast, Modals
 │           ├── context/          # AuthContext, PermissionsProvider
-│           ├── pages/            # 18 màn hình nghiệp vụ đầy đủ
+│           ├── pages/            # 24 màn hình nghiệp vụ đầy đủ
 │           └── index.css         # Tailwind + Civic High-Contrast Token System
 ├── packages/
 │   └── shared/                   # Model dùng chung giữa Frontend & Backend
@@ -58,13 +58,13 @@ dustguard-operations/
 │           ├── state-machine.ts  # canTransitionCase() State Engine & Matrix
 │           └── types.ts          # TypeScript interfaces & Zod Schemas
 ├── data/
-│   └── dustguard-operations.db  # CSDL SQLite SSOT thật (24 bảng + FTS5)
+│   └── dustguard-operations.db  # CSDL SQLite SSOT thật (32 bảng + FTS5)
 ├── uploads/                      # Thư mục lưu trữ bằng chứng số (SHA-256)
 ├── scripts/
 │   ├── dev.js                    # 1 lệnh khởi động đồng thời Backend (4000) & Frontend (3002)
 │   └── setup.js                  # Khởi tạo CSDL, migrate schema và nạp seed data
 └── tests/
-    └── operations-api.test.js    # 15 kịch bản kiểm thử tích hợp tự động (Node 24 native runner)
+    └── operations-api.test.js    # 32 kịch bản kiểm thử tích hợp tự động (Node 24 native runner)
 ```
 
 ---
@@ -118,6 +118,14 @@ CSDL SQLite cục bộ gồm **24 bảng quan hệ** cùng **1 bảng ảo tìm 
 22. `audit_logs`: Nhật ký kiểm toán bất biến (Immutable Audit Trail) cho mọi thao tác đột biến dữ liệu.
 23. `integration_logs`: Nhật ký tiếp nhận API tích hợp từ DustGuard Community (chống trùng lặp Idempotency).
 24. `system_configs`: Cấu hình hệ thống (SLA, dung lượng upload tối đa, AI Provider).
+25. `signals`: Tín hiệu quan trắc đa nguồn (COMMUNITY, IOT, STAFF, IMPORT) kiểm tra tính toàn vẹn (VALID, SUSPICIOUS, CORRUPTED).
+26. `case_signals`: Bảng liên kết N-N giữa Vụ việc (Case) và Tín hiệu nguồn (Signals).
+27. `tasks`: Hạng mục công việc vận hành (Tasks) phát sinh tự động từ Case/IoT/Pháp chế kèm liên kết sâu (Deep Link).
+28. `iot_devices`: Danh mục trạm quan trắc IoT (ESP32 APM2000), tọa độ, trạng thái (ONLINE, OFFLINE, FAULTY).
+29. `iot_readings`: Dữ liệu gói tin cảm biến PM2.5, PM10, nhiệt độ, độ ẩm được xác thực chữ ký HMAC SHA-256.
+30. `iot_events`: Nhật ký sự kiện phần cứng trạm đo (Mất kết nối, Treo tín hiệu Flatline, Đột biến nồng độ).
+31. `automation_rules`: Bộ quy tắc tự động hóa dựa trên sự kiện (Event-Driven Workflow Automation).
+32. `automation_runs`: Lịch sử thực thi bất biến của cỗ máy tự động hóa phục vụ kiểm toán và truy vết.
 
 ---
 
@@ -234,30 +242,47 @@ Mật khẩu mặc định cho toàn bộ tài khoản: `password123`
 
 ## 9. Kiểm Thử Tự Động (Automated Testing)
 
-Chạy bộ kiểm thử tích hợp 15 kịch bản tự động:
+Chạy bộ kiểm thử tích hợp 32 kịch bản tự động:
 ```powershell
 npm --prefix dustguard-operations run test
 ```
 
-### Kết Quả Kiểm Thử (15/15 Passed):
+### Kết Quả Kiểm Thử (32/32 Passed):
 ```text
-✔ 1. Auth & JWT: Login with valid staff credentials (91.9ms)
-✔ 2. Auth: Reject invalid password (23.3ms)
-✔ 3. RBAC: Enforce role-based capabilities (74.4ms)
-✔ 4. Cases: List cases with search, tabs, and computed operational flags (42.8ms)
-✔ 5. Case State Machine: Enforce valid and invalid status transitions (63.2ms)
-✔ 6. Assignment & Reassignment: Maintain audit trail and previous status (50.7ms)
-✔ 7. Legal Search: SQLite FTS5 returns exact matches with snippet (14.5ms)
-✔ 8. Legal Intelligence: Assistive AI Provider generates Zod-validated output (28.8ms)
-✔ 9. Inspection: Create inspection and generate checklist from template (40.0ms)
-✔ 10. Inspection Submission: Required validation and Findings auto-generation (56.6ms)
-✔ 11. Corrective Action & Remediation Lifecycle (74.6ms)
-✔ 12. Case Closure Safety Gate: Enforce 4 mandatory closure criteria (33.0ms)
-✔ 13. Case Reopen: Supervisor can reopen closed case (40.9ms)
-✔ 14. Community Integration Idempotency: Duplicate imports update without duplicate cases (25.2ms)
-✔ 15. Audit Trail: All mutations write structured audit logs (0.2ms)
+✔ 1. Auth Login: Valid credentials returns JWT and user permissions (241.6ms)
+✔ 2. RBAC: Reject unauthorized access across roles (5.1ms)
+✔ 3. Case Creation: Sequential code generation DG-2026-OP-XXX (9.9ms)
+✔ 4. State Machine: Valid transition path NEW -> TRIAGED (13.0ms)
+✔ 5. Invalid Transition Rejected: Jumping from NEW directly to CLOSED rejected (4.4ms)
+✔ 6. Assignment: Staff assignment writes to staff_assignments and updates primary assignee (4.6ms)
+✔ 7. Reassignment History: Reassigning staff preserves history and replaces old assignment (11.8ms)
+✔ 8. Task Creation: Tasks created with priority, due date, and deep link to entity (4.3ms)
+✔ 9. Evidence Upload + SHA-256: Uploaded files have valid SHA-256 hash stored (0.9ms)
+✔ 10. Legal Document Import: Vietnamese legal text parsed into hierarchical sections (9.8ms)
+✔ 11. Legal Structure Persistence: Reviewed document & sections stored into DB and FTS5 (15.1ms)
+✔ 12. FTS Search: SQLite FTS5 returns exact match with highlighted snippet (15.7ms)
+✔ 13. Legal Review: Human legal reviewer submits review and updates case timeline (17.2ms)
+✔ 14. AI Fallback: Assistive AI returns rule-based fallback when no external provider (12.3ms)
+✔ 15. Invalid AI Citation Rejection: AI cannot cite nonexistent sections (3.5ms)
+✔ 16. Inspection Creation: Inspection created from template with checklist items (12.0ms)
+✔ 17. Required Checklist Validation: Submitting inspection with empty required items is rejected (14.4ms)
+✔ 18. Inspection Submit: Successfully submit inspection and mark COMPLETED (3.5ms)
+✔ 19. Finding Creation: Auto-generate findings with severity from failed inspection items (0.3ms)
+✔ 20. Corrective Action: Create corrective action with due date and responsible party (3.8ms)
+✔ 21. Remediation: Submit remediation proof and verify review status (8.7ms)
+✔ 22. Closure Requirements: Case closure blocked if 4 conditions not satisfied (15.6ms)
+✔ 23. Case Close: Supervisor closes case when all conditions met (2.6ms)
+✔ 24. Case Reopen: Supervisor reopens closed case with reason (6.3ms)
+✔ 25. IoT Ingest Contract: Valid ESP32 APM2000 HMAC payload ingested successfully (15.0ms)
+✔ 26. Invalid IoT Signature Rejection: Invalid HMAC signature rejected with HTTP 403 (13.8ms)
+✔ 27. IoT Liveness & Flatline Detection: 5 consecutive identical packets triggers FLATLINE & FAULTY status (48.6ms)
+✔ 28. Automation Rule: Event triggers automation rule execution (15.3ms)
+✔ 29. Automation Run Audit: Automation execution logged in automation_runs table (2.3ms)
+✔ 30. Notification Delivery: System notifications persisted in DB and queryable (12.6ms)
+✔ 31. Community Import Idempotency: Duplicate imports update without duplicate cases (25.5ms)
+✔ 32. Audit Log: Immutable audit trail records all critical mutations (0.2ms)
 
-Tests: 15 passed, 0 failed, 15 total (Thời gian chạy: ~1.28 giây)
+Tests: 32 passed, 0 failed, 32 total | Thời gian chạy: ~1.26 giây | Tỷ lệ thành công: 100%
 ```
 
 ---

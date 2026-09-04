@@ -12,7 +12,7 @@ export function runMigrations(): void {
   const sql = fs.readFileSync(schemaPath, 'utf-8');
   
   db.exec(sql);
-  console.log('[Database Migration] Schema migrated successfully with 24 tables & FTS5!');
+  console.log('[Database Migration] Schema migrated successfully with 32 tables & FTS5!');
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

@@ -37,7 +37,7 @@ export const CaseCreateSchema = z.object({
   district: z.string().min(2, 'Quận/Huyện không được để trống'),
   latitude: z.number(),
   longitude: z.number(),
-  source: z.enum(['COMMUNITY', 'IOT', 'MANUAL', 'IMPORT']).default('MANUAL'),
+  source: z.enum(['COMMUNITY', 'IOT', 'STAFF', 'MANUAL', 'IMPORT']).default('MANUAL'),
   source_reference: z.string().optional(),
   contractor_name: z.string().optional(),
   priority: z.enum(['LOW', 'NORMAL', 'HIGH', 'URGENT']).default('NORMAL'),
@@ -145,21 +145,27 @@ export const CaseReopenSchema = z.object({
   reopen_reason: z.string().min(5, 'Vui lòng nhập lý do mở lại hồ sơ vụ việc'),
 });
 
-// Community Case Import Schema (Section 39)
+// Community Case Import Schema (Section 72)
 export const CommunityCaseImportSchema = z.object({
   external_case_id: z.string().min(1, 'external_case_id là bắt buộc'),
   case_code: z.string().optional(),
   title: z.string().min(1, 'title là bắt buộc'),
-  description: z.string().min(1, 'description là bắt buộc'),
-  location: z.string().min(1, 'location là bắt buộc'),
-  lat: z.number(),
-  lng: z.number(),
+  summary: z.string().optional(),
+  description: z.string().optional(),
+  location: z.string().optional(),
+  location_text: z.string().optional(),
+  latitude: z.number().optional(),
+  longitude: z.number().optional(),
+  lat: z.number().optional(),
+  lng: z.number().optional(),
   report_count: z.number().default(1),
   confirmation_count: z.number().default(0),
   contractor_name: z.string().optional(),
+  reports: z.array(z.any()).optional().default([]),
   evidence: z
     .array(
       z.object({
+        filename: z.string().optional(),
         file_path: z.string().optional(),
         mime_type: z.string().optional(),
         sha256: z.string().optional(),

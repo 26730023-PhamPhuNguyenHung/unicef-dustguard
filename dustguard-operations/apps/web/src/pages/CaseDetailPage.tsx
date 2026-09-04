@@ -33,6 +33,7 @@ const TABS = [
   { id: 'signals', label: 'Tín hiệu', icon: <Radio className="w-4 h-4" /> },
   { id: 'evidence', label: 'Bằng chứng', icon: <Image className="w-4 h-4" /> },
   { id: 'legal', label: 'Pháp lý', icon: <Shield className="w-4 h-4" /> },
+  { id: 'iot', label: 'IoT Quan trắc', icon: <Radio className="w-4 h-4" /> },
   { id: 'inspection', label: 'Kiểm tra', icon: <ClipboardCheck className="w-4 h-4" /> },
   { id: 'actions', label: 'Khắc phục', icon: <Wrench className="w-4 h-4" /> },
   { id: 'timeline', label: 'Dòng thời gian', icon: <Clock className="w-4 h-4" /> },
@@ -47,6 +48,9 @@ export const CaseDetailPage: React.FC = () => {
   const [caseData, setCaseData] = useState<any>(null);
   const [activeTab, setActiveTab] = useState('overview');
   const [loading, setLoading] = useState(true);
+  const [nextActionData, setNextActionData] = useState<any>(null);
+  const [evidenceGaps, setEvidenceGaps] = useState<any[]>([]);
+  const [iotDevices, setIotDevices] = useState<any[]>([]);
 
   // Modals state
   const [assignModalOpen, setAssignModalOpen] = useState(false);
@@ -85,6 +89,18 @@ export const CaseDetailPage: React.FC = () => {
       if (res.case.contractor_name) {
         setActionParty(res.case.contractor_name);
       }
+      try {
+        const na = await api.cases.nextAction(id!);
+        setNextActionData(na);
+      } catch {}
+      try {
+        const eg = await api.legal.evidenceGaps(id!);
+        setEvidenceGaps(eg.gaps || []);
+      } catch {}
+      try {
+        const devs = await api.iot.devices();
+        setIotDevices(devs.devices || []);
+      } catch {}
     } catch (err: any) {
       error('Lỗi tải dữ liệu', err.detail || 'Không tìm thấy hồ sơ');
     } finally {
@@ -273,7 +289,45 @@ export const CaseDetailPage: React.FC = () => {
         onSecondaryAction={() => handleOpenAssignModal()}
       />
 
-      {/* 7 Tabs (Section 9) */}
+      {/* Next Action Engine Banner (Section 16 & 58) */}
+      {nextActionData && (
+        <div className="civic-card p-4 border-l-4 border-l-dustguard-red bg-rose-50/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold uppercase tracking-wider text-dustguard-red font-mono">
+                BƯỚC TIẾP THEO (NEXT ACTION)
+              </span>
+              <span className="text-xs font-bold text-slate-900">• {nextActionData.title}</span>
+            </div>
+            <p className="text-xs text-slate-600">{nextActionData.reason}</p>
+            {nextActionData.blockingIssues && nextActionData.blockingIssues.length > 0 && (
+              <div className="flex flex-wrap items-center gap-2 pt-1 text-[11px] text-amber-800">
+                <AlertTriangle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                <span>Vấn đề cần hoàn tất: {nextActionData.blockingIssues.join('; ')}</span>
+              </div>
+            )}
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            {nextActionData.route && (
+              <Link to={nextActionData.route}>
+                <Button variant="danger" size="sm">
+                  {nextActionData.title}
+                </Button>
+              </Link>
+            )}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => window.open(`/api/cases/${currentCase.id}/decision-pack`, '_blank')}
+              icon={<FileText className="w-3.5 h-3.5" />}
+            >
+              Xuất Decision Pack
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* 8 Tabs (Section 15) */}
       <div className="border-b border-slate-200 overflow-x-auto scrollbar-thin">
         <nav className="flex space-x-3 pb-px">
           {TABS.map(tab => {
@@ -602,6 +656,78 @@ export const CaseDetailPage: React.FC = () => {
                 </time>
               </div>
             ))}
+          </div>
+
+          {/* Evidence Gaps (Section 25 & 32: Khung xem xét dự kiến & Thông tin còn thiếu) */}
+          <div className="pt-4 border-t border-slate-200 space-y-3">
+            <h4 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 text-amber-600" />
+              Khung xem xét dự kiến & Thông tin cần thu thập bổ sung ({evidenceGaps.length})
+            </h4>
+            {evidenceGaps.length === 0 ? (
+              <p className="text-xs text-slate-500">Hồ sơ pháp lý cơ bản đầy đủ, không ghi nhận thiếu hụt chứng cứ trọng yếu.</p>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {evidenceGaps.map((gap: any, gIdx: number) => (
+                  <div key={gIdx} className="p-3 bg-amber-50/50 border border-amber-200 rounded-lg text-xs space-y-1">
+                    <span className="font-bold text-amber-900 block">{gap.description}</span>
+                    <p className="text-amber-800 text-[11px]">{gap.reason}</p>
+                    <span className="text-[10px] font-mono text-slate-500 block">
+                      Biện pháp thu thập: {gap.suggestedCollectionMethod || 'Kiểm tra hiện trường & Chụp ảnh'}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* TAB: IOT (Section 15 & 48) */}
+      {activeTab === 'iot' && (
+        <div className="civic-card p-6 space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div>
+              <h3 className="text-base font-bold text-slate-900">Mạng lưới Cảm biến Quan trắc Khả nghi liên quan</h3>
+              <p className="text-xs text-slate-500">
+                Đối soát dữ liệu vi khí hậu và nồng độ PM2.5 / PM10 thực thu từ các trạm quan trắc xung quanh hiện trường vụ việc
+              </p>
+            </div>
+            <Link to="/iot">
+              <Button variant="outline" size="sm" icon={<ExternalLink className="w-4 h-4" />}>
+                Xem Toàn bộ Trạm IoT
+              </Button>
+            </Link>
+          </div>
+
+          <div className="space-y-4">
+            {iotDevices.length === 0 ? (
+              <p className="text-xs text-slate-500 py-6 text-center">Chưa có trạm quan trắc nào trong khu vực này.</p>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {iotDevices.slice(0, 4).map(dev => (
+                  <div key={dev.id} className="p-4 bg-slate-50 rounded-lg border border-slate-200 space-y-2 text-xs">
+                    <div className="flex items-center justify-between">
+                      <span className="font-mono font-bold text-slate-800">{dev.device_code}</span>
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                        dev.status === 'ONLINE' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
+                      }`}>
+                        {dev.status}
+                      </span>
+                    </div>
+                    <p className="font-semibold text-slate-900">{dev.name}</p>
+                    <p className="text-slate-500 text-[11px]">{dev.location_text}</p>
+                    <div className="pt-2 border-t border-slate-200 flex items-center justify-between text-[11px]">
+                      <span>PM2.5: <strong className="text-rose-600">{dev.latest_pm25 ?? '--'}</strong> µg/m³</span>
+                      <span>PM10: <strong>{dev.latest_pm10 ?? '--'}</strong> µg/m³</span>
+                      <Link to={`/iot/devices/${dev.id}`} className="text-dustguard-teal font-semibold hover:underline">
+                        Chi tiết trạm →
+                      </Link>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}

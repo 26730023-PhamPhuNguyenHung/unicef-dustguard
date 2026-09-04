@@ -26,8 +26,9 @@ const serverProcess = spawn(
 // 2. Start Vite Web on port 3002
 const webProcess = spawn(
   process.platform === 'win32' ? 'npx.cmd' : 'npx',
-  ['vite', path.join(PROJECT_ROOT, 'apps/web'), '--port', '3002'],
+  ['vite', '--port', '3002', '--host'],
   {
+    cwd: path.join(PROJECT_ROOT, 'apps/web'),
     stdio: 'inherit',
     shell: true,
     env: { ...process.env },

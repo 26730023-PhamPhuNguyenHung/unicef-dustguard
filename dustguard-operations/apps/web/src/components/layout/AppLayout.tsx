@@ -18,6 +18,11 @@ import {
   X,
   FileCheck2,
   ShieldAlert,
+  CheckSquare,
+  Cpu,
+  FileUp,
+  Zap,
+  Settings,
 } from 'lucide-react';
 import { getRoleLabel } from '@dustguard-operations/shared';
 
@@ -42,12 +47,17 @@ export const AppLayout: React.FC = () => {
   const navItems = [
     { label: 'Tổng quan', path: '/dashboard', icon: <LayoutDashboard className="w-5 h-5" />, perm: 'dashboard:view' },
     { label: 'Hộp việc Vụ việc', path: '/cases', icon: <Inbox className="w-5 h-5" />, perm: 'case:view' },
+    { label: 'Nhiệm vụ', path: '/tasks', icon: <CheckSquare className="w-5 h-5" />, perm: 'task:view' },
     { label: 'Đợt kiểm tra', path: '/inspections', icon: <ClipboardCheck className="w-5 h-5" />, perm: 'inspection:perform' },
     { label: 'Thư viện Pháp lý', path: '/legal/library', icon: <BookOpen className="w-5 h-5" />, perm: 'legal:view' },
+    { label: 'Nhập văn bản pháp lý', path: '/legal/import', icon: <FileUp className="w-5 h-5" />, perm: 'legal:import' },
+    { label: 'Trạm quan trắc IoT', path: '/iot', icon: <Cpu className="w-5 h-5" />, perm: 'iot:view' },
     { label: 'Yêu cầu khắc phục', path: '/actions', icon: <Wrench className="w-5 h-5" />, perm: 'action:create' },
+    { label: 'Tự động hóa', path: '/automations', icon: <Zap className="w-5 h-5" />, perm: 'automation:view' },
     { label: 'Điều phối & Nhân lực', path: '/supervisor/workload', icon: <Users className="w-5 h-5" />, perm: 'workload:view' },
     { label: 'Người dùng', path: '/admin/users', icon: <User className="w-5 h-5" />, perm: 'user:manage' },
     { label: 'Nhật ký kiểm toán', path: '/admin/audit', icon: <ShieldCheck className="w-5 h-5" />, perm: 'audit:view' },
+    { label: 'Cấu hình hệ thống', path: '/admin/settings', icon: <Settings className="w-5 h-5" />, perm: 'system:config' },
   ];
 
   const visibleNav = navItems.filter(item => can(item.perm as any));

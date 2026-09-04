@@ -669,3 +669,163 @@ casesRouter.post('/:id/reassign', requirePermission('case:reassign'), (req: Auth
     next(err);
   }
 });
+
+// GET /api/cases/:id/next-action - Next Action Engine (Section 16)
+export function getNextCaseAction(caseId: string) {
+  const targetCase = get<any>(`SELECT * FROM cases WHERE id = ?`, [caseId]);
+  if (!targetCase) return null;
+
+  const { status, assigned_staff_id } = targetCase;
+
+  if (status === 'NEW') {
+    return {
+      action: 'TRIAGE_CASE',
+      title: 'Tiếp nhận & Phân loại',
+      reason: 'Vụ việc mới tiếp nhận từ nguồn giám sát, cần cán bộ xác minh tọa độ và xác định độ ưu tiên xử lý',
+      route: `/cases/${caseId}`,
+      blockingIssues: [],
+    };
+  }
+
+  if (status === 'TRIAGED' || !assigned_staff_id) {
+    return {
+      action: 'ASSIGN_STAFF',
+      title: 'Phân công cán bộ thụ lý',
+      reason: 'Hồ sơ đã được phân loại nhưng chưa có cán bộ chuyên trách nhận nhiệm vụ điều tra hiện trường',
+      route: `/cases/${caseId}`,
+      blockingIssues: ['Chưa có cán bộ phân công thụ lý chính'],
+    };
+  }
+
+  if (status === 'ASSIGNED') {
+    const legalReview = get<any>(`SELECT * FROM legal_reviews WHERE case_id = ?`, [caseId]);
+    if (!legalReview) {
+      return {
+        action: 'REVIEW_LEGAL_CONTEXT',
+        title: 'Đối chiếu căn cứ pháp lý',
+        reason: 'Cần xác định khung điều khoản xử phạt theo Nghị định 45/2022 để định hướng thanh tra',
+        route: `/cases/${caseId}/legal`,
+        blockingIssues: [],
+      };
+    }
+    if (legalReview.status === 'NEEDS_INFO') {
+      return {
+        action: 'COLLECT_MISSING_INFORMATION',
+        title: 'Bổ sung thông tin pháp chế',
+        reason: 'Chuyên viên pháp chế yêu cầu thu thập thêm ảnh chụp hiện trường hoặc nhật ký thi công',
+        route: `/cases/${caseId}/evidence`,
+        blockingIssues: ['Pháp chế yêu cầu cung cấp thêm tài liệu xác minh'],
+      };
+    }
+
+    const scheduledInspection = get<any>(`SELECT * FROM inspections WHERE case_id = ? AND status IN ('PLANNED', 'IN_PROGRESS')`, [caseId]);
+    if (!scheduledInspection) {
+      return {
+        action: 'CREATE_INSPECTION',
+        title: 'Lập kế hoạch thanh tra hiện trường',
+        reason: 'Hồ sơ pháp lý đã rõ ràng, cần thiết lập đoàn kiểm tra và ngày thị sát công trình',
+        route: `/cases/${caseId}/inspection`,
+        blockingIssues: [],
+      };
+    }
+  }
+
+  if (status === 'INSPECTION_PLANNED') {
+    return {
+      action: 'PERFORM_INSPECTION',
+      title: 'Thực hiện kiểm tra hiện trường',
+      reason: 'Đoàn kiểm tra tiến hành kiểm tra các hạng mục chống bụi thực tế theo mẫu biểu đã duyệt',
+      route: `/cases/${caseId}/inspection`,
+      blockingIssues: [],
+    };
+  }
+
+  if (status === 'INSPECTION_IN_PROGRESS') {
+    return {
+      action: 'SUBMIT_INSPECTION',
+      title: 'Nộp biên bản thanh tra',
+      reason: 'Cán bộ hoàn tất chấm điểm checklist hiện trường và ghi nhận các hành vi vi phạm',
+      route: `/cases/${caseId}/inspection`,
+      blockingIssues: [],
+    };
+  }
+
+  if (status === 'ACTION_REQUIRED') {
+    const openActions = query<any>(`SELECT * FROM corrective_actions WHERE case_id = ? AND status IN ('OPEN', 'IN_PROGRESS')`, [caseId]);
+    if (openActions.length === 0) {
+      return {
+        action: 'CREATE_ACTION',
+        title: 'Ban hành yêu cầu khắc phục',
+        reason: 'Phát hiện vi phạm chưa có văn bản yêu cầu biện pháp khắc phục kèm thời hạn cam kết',
+        route: `/cases/${caseId}/actions`,
+        blockingIssues: [],
+      };
+    }
+    return {
+      action: 'MONITOR_REMEDIATION',
+      title: 'Theo dõi tiến độ khắc phục',
+      reason: `Đang chờ đơn vị thi công hoàn tất ${openActions.length} biện pháp khắc phục đã giao`,
+      route: `/cases/${caseId}/actions`,
+      blockingIssues: [],
+    };
+  }
+
+  if (status === 'REMEDIATION') {
+    return {
+      action: 'VERIFY_REMEDIATION',
+      title: 'Thẩm định hồ sơ khắc phục',
+      reason: 'Nhà thầu đã nộp báo cáo hoàn thành, cán bộ kiểm tra hình ảnh và quyết định nghiệm thu hoặc tái kiểm',
+      route: `/cases/${caseId}/actions`,
+      blockingIssues: [],
+    };
+  }
+
+  if (status === 'REINSPECTION') {
+    return {
+      action: 'PERFORM_REINSPECTION',
+      title: 'Tái kiểm tra hiện trường',
+      reason: 'Tiến hành đo đạc và thị sát lại để xác nhận môi trường đã đạt chuẩn trước khi khép hồ sơ',
+      route: `/cases/${caseId}/inspection`,
+      blockingIssues: [],
+    };
+  }
+
+  if (status === 'READY_TO_CLOSE') {
+    return {
+      action: 'PREPARE_CLOSURE',
+      title: 'Ký duyệt đóng hồ sơ vụ việc',
+      reason: 'Vụ việc đã thỏa mãn đầy đủ 4 điều kiện an toàn, lãnh đạo phòng giám sát ký quyết định kết thúc',
+      route: `/cases/${caseId}`,
+      blockingIssues: [],
+    };
+  }
+
+  if (status === 'CLOSED') {
+    return {
+      action: 'VIEW_DECISION_PACK',
+      title: 'Xuất hồ sơ quyết định tổng hợp',
+      reason: 'Vụ việc đã kết thúc toàn diện, có thể trích xuất toàn văn hồ sơ lưu trữ điện tử',
+      route: `/cases/${caseId}`,
+      blockingIssues: [],
+    };
+  }
+
+  return {
+    action: 'REVIEW_CASE',
+    title: 'Theo dõi diễn tiến',
+    reason: 'Hồ sơ đang trong quy trình xử lý của các đơn vị chuyên môn',
+    route: `/cases/${caseId}`,
+    blockingIssues: [],
+  };
+}
+
+casesRouter.get('/:id/next-action', (req, res) => {
+  const { id } = req.params;
+  const nextAction = getNextCaseAction(id);
+  if (!nextAction) {
+    res.status(404).json({ error: 'Không tìm thấy hồ sơ' });
+    return;
+  }
+  res.json({ success: true, data: nextAction });
+});
+

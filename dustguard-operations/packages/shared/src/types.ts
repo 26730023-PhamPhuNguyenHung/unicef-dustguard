@@ -297,3 +297,130 @@ export interface IntegrationLog {
   processed_at: string;
   error?: string;
 }
+
+export interface Signal {
+  id: string;
+  source_type: 'COMMUNITY' | 'IOT' | 'STAFF' | 'IMPORT';
+  external_source_id?: string;
+  signal_type: string;
+  title: string;
+  description: string;
+  location_text: string;
+  latitude: number;
+  longitude: number;
+  observed_at: string;
+  received_at: string;
+  payload_json?: string;
+  integrity_status: 'VALID' | 'SUSPICIOUS' | 'CORRUPTED';
+  created_at: string;
+}
+
+export interface CaseSignal {
+  id: string;
+  case_id: string;
+  signal_id: string;
+  linked_at: string;
+  linked_by?: string;
+  notes?: string;
+}
+
+export interface Task {
+  id: string;
+  case_id?: string;
+  case_code?: string;
+  title: string;
+  description: string;
+  source: 'MANUAL' | 'CASE' | 'LEGAL' | 'INSPECTION' | 'IOT' | 'AUTOMATION';
+  source_entity_type?: string;
+  source_entity_id?: string;
+  assigned_to: string;
+  assigned_to_name?: string;
+  status: 'OPEN' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
+  priority: 'LOW' | 'NORMAL' | 'HIGH' | 'URGENT';
+  due_at: string;
+  created_at: string;
+  completed_at?: string;
+}
+
+export interface IoTDevice {
+  id: string;
+  device_code: string;
+  name: string;
+  location_text: string;
+  latitude: number;
+  longitude: number;
+  status: 'ONLINE' | 'OFFLINE' | 'FAULTY' | 'UNKNOWN';
+  last_seen_at?: string;
+  firmware_version?: string;
+  secret_reference: string;
+  is_simulated: number;
+  created_at: string;
+  updated_at: string;
+  latest_pm25?: number;
+  latest_pm10?: number;
+}
+
+export interface IoTReading {
+  id: string;
+  device_id: string;
+  recorded_at: string;
+  received_at: string;
+  pm25: number;
+  pm10: number;
+  temperature?: number;
+  humidity?: number;
+  raw_payload_json: string;
+  integrity_status: 'VALID' | 'FLATLINE' | 'CORRUPTED' | 'CLOCK_DRIFT';
+  created_at: string;
+}
+
+export interface IoTEvent {
+  id: string;
+  device_id: string;
+  event_type: 'OFFLINE' | 'FLATLINE' | 'TAMPER' | 'RECONNECTED' | 'SPIKE';
+  severity: 'LOW' | 'MEDIUM' | 'HIGH';
+  description: string;
+  created_at: string;
+}
+
+export interface AutomationRule {
+  id: string;
+  name: string;
+  event_type: string;
+  conditions_json: string;
+  actions_json: string;
+  enabled: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AutomationRun {
+  id: string;
+  rule_id: string;
+  rule_name?: string;
+  trigger_entity_type: string;
+  trigger_entity_id: string;
+  status: 'SUCCESS' | 'FAILED' | 'SKIPPED';
+  input_json: string;
+  result_json?: string;
+  error_message?: string;
+  started_at: string;
+  completed_at?: string;
+}
+
+export interface NextCaseAction {
+  action: string;
+  title: string;
+  reason: string;
+  route: string;
+  blockingIssues: string[];
+}
+
+export interface EvidenceGap {
+  type: 'PHOTO' | 'DOCUMENT' | 'LOG' | 'WITNESS';
+  description: string;
+  reason: string;
+  legalSectionIds: string[];
+  suggestedCollectionMethod: string;
+}
+

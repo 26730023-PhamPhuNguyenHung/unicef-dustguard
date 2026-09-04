@@ -54,62 +54,74 @@ function ensureEvidenceFiles() {
 
 export function seedDatabase() {
   console.log('[Database Seed] Starting database seeding...');
+
+  const tables = [
+    'automation_runs',
+    'automation_rules',
+    'iot_events',
+    'iot_readings',
+    'iot_devices',
+    'tasks',
+    'case_signals',
+    'signals',
+    'integration_logs',
+    'audit_logs',
+    'notifications',
+    'case_closures',
+    'remediation_submissions',
+    'corrective_actions',
+    'inspection_findings',
+    'inspection_items',
+    'inspections',
+    'inspection_template_items',
+    'inspection_templates',
+    'legal_reviews',
+    'legal_analyses',
+    'legal_search_history',
+    'legal_sections',
+    'legal_documents',
+    'evidence_assets',
+    'staff_assignments',
+    'case_timeline',
+    'cases',
+    'sessions',
+    'users',
+  ];
+
+  db.exec('PRAGMA foreign_keys = OFF;');
+  for (const t of tables) {
+    try {
+      db.exec(`DROP TABLE IF EXISTS ${t};`);
+    } catch (e) {}
+  }
+  try {
+    db.exec(`DROP TABLE IF EXISTS legal_sections_fts;`);
+  } catch (e) {}
+  db.exec('PRAGMA foreign_keys = ON;');
+
   runMigrations();
 
   const evidenceMap = ensureEvidenceFiles();
   const passwordHash = bcrypt.hashSync('password123', 8);
 
   transaction(() => {
-    // Clear existing data in correct FK order
-    const tables = [
-      'integration_logs',
-      'audit_logs',
-      'notifications',
-      'case_closures',
-      'remediation_submissions',
-      'corrective_actions',
-      'inspection_findings',
-      'inspection_items',
-      'inspections',
-      'inspection_template_items',
-      'inspection_templates',
-      'legal_reviews',
-      'legal_analyses',
-      'legal_search_history',
-      'legal_sections',
-      'legal_documents',
-      'evidence_assets',
-      'staff_assignments',
-      'case_timeline',
-      'cases',
-      'sessions',
-      'users',
-    ];
 
-    for (const t of tables) {
-      try {
-        db.exec(`DELETE FROM ${t};`);
-      } catch (e) {
-        // Table might not exist yet
-      }
-    }
-    try {
-      db.exec(`DELETE FROM legal_sections_fts;`);
-    } catch (e) {}
-
-    // 1. Seed Users (5 staff, 2 supervisors, 2 legal reviewers, 1 admin)
-    console.log('[Database Seed] Seeding 10 users...');
+    // 1. Seed Users (8 staff, 2 supervisors, 2 legal reviewers, 1 admin = 13 users)
+    console.log('[Database Seed] Seeding 13 users...');
     const users = [
       { id: 'usr-staff-1', username: 'staff1', full_name: 'Nguyễn Văn Hùng', email: 'staff1@dustguard.gov.vn', role: 'staff', department: 'Đội Kiểm tra Hiện trường Số 1', phone: '0901234561' },
       { id: 'usr-staff-2', username: 'staff2', full_name: 'Trần Thị Mai', email: 'staff2@dustguard.gov.vn', role: 'staff', department: 'Đội Kiểm tra Hiện trường Số 2', phone: '0901234562' },
       { id: 'usr-staff-3', username: 'staff3', full_name: 'Lê Hoàng Nam', email: 'staff3@dustguard.gov.vn', role: 'staff', department: 'Đội Kiểm tra Hiện trường Số 3', phone: '0901234563' },
       { id: 'usr-staff-4', username: 'staff4', full_name: 'Phạm Quốc Bảo', email: 'staff4@dustguard.gov.vn', role: 'staff', department: 'Đội Kiểm tra Hiện trường Số 1', phone: '0901234564' },
       { id: 'usr-staff-5', username: 'staff5', full_name: 'Đỗ Thị Lan', email: 'staff5@dustguard.gov.vn', role: 'staff', department: 'Đội Kiểm tra Hiện trường Số 2', phone: '0901234565' },
+      { id: 'usr-staff-6', username: 'staff6', full_name: 'Vũ Anh Tuấn', email: 'staff6@dustguard.gov.vn', role: 'staff', department: 'Đội Kiểm tra Hiện trường Số 3', phone: '0901234566' },
+      { id: 'usr-staff-7', username: 'staff7', full_name: 'Bùi Thanh Sơn', email: 'staff7@dustguard.gov.vn', role: 'staff', department: 'Đội Giám sát Công nghệ', phone: '0901234567' },
+      { id: 'usr-staff-8', username: 'staff8', full_name: 'Hoàng Thu Trang', email: 'staff8@dustguard.gov.vn', role: 'staff', department: 'Đội Tiếp nhận Phản ánh', phone: '0901234568' },
       { id: 'usr-sup-1', username: 'supervisor1', full_name: 'Võ Minh Trí', email: 'supervisor1@dustguard.gov.vn', role: 'supervisor', department: 'Phòng Điều phối & Giám sát', phone: '0918889901' },
       { id: 'usr-sup-2', username: 'supervisor2', full_name: 'Hoàng Kim Yến', email: 'supervisor2@dustguard.gov.vn', role: 'supervisor', department: 'Phòng Điều phối & Giám sát', phone: '0918889902' },
       { id: 'usr-legal-1', username: 'legal1', full_name: 'Luật sư Đặng Thu Thảo', email: 'legal1@dustguard.gov.vn', role: 'legal_reviewer', department: 'Ban Pháp chế Môi trường', phone: '0932223301' },
-      { id: 'usr-legal-2', username: 'legal2', full_name: 'ThS. Vũ Đức Thành', email: 'legal2@dustguard.gov.vn', role: 'legal_reviewer', department: 'Ban Pháp chế Môi trường', phone: '0932223302' },
-      { id: 'usr-admin-1', username: 'admin', full_name: 'Quản trị viên Hệ thống', email: 'admin@dustguard.gov.vn', role: 'admin', department: 'Trung tâm Vận hành Dữ liệu', phone: '0989990000' },
+      { id: 'usr-legal-2', username: 'legal2', full_name: 'ThS. Trần Quang Huy', email: 'legal2@dustguard.gov.vn', role: 'legal_reviewer', department: 'Ban Pháp chế Môi trường', phone: '0932223302' },
+      { id: 'usr-admin-1', username: 'admin', full_name: 'Quản trị viên Hệ thống', email: 'admin@dustguard.gov.vn', role: 'admin', department: 'Trung tâm Vận hành CNTT', phone: '0999888777' },
     ];
 
     for (const u of users) {
@@ -1017,6 +1029,292 @@ export function seedDatabase() {
         [a.id, a.user_id, a.action, a.entity_type, a.entity_id, a.meta]
       );
     }
+
+    // 11. Seed Signals & Case Signals
+    console.log('[Database Seed] Seeding signals and case signals...');
+    const signals = [
+      {
+        id: 'sig-001',
+        source_type: 'COMMUNITY',
+        external_source_id: 'com-rep-8812',
+        signal_type: 'DUST_PLUME',
+        title: 'Bụi mù mịt từ công trình mở rộng đường Nguyễn Thị Định',
+        description: 'Đoàn xe tải chở đất đá chạy liên tục từ công trình ra đường không được phủ bạt kín, gây bụi dày đặc khu dân cư.',
+        location_text: 'Đường Nguyễn Thị Định, Cát Lái, TP. Thủ Đức',
+        latitude: 10.7712,
+        longitude: 106.7684,
+        integrity_status: 'VALID',
+      },
+      {
+        id: 'sig-002',
+        source_type: 'IOT',
+        external_source_id: 'iot-alert-4401',
+        signal_type: 'PM25_SPIKE',
+        title: 'Cảnh báo nồng độ bụi PM2.5 vượt ngưỡng 125 µg/m³ trạm SENSOR-VD1-01',
+        description: 'Trạm quan trắc Vành Đai 1 phát hiện chỉ số PM2.5 tăng đột biến vượt 2.5 lần QCVN 05:2023 trong khung giờ 08:00 - 10:00.',
+        location_text: 'Nút giao Vành Đai 2, TP. Thủ Đức',
+        latitude: 10.8231,
+        longitude: 106.7721,
+        integrity_status: 'VALID',
+      },
+      {
+        id: 'sig-003',
+        source_type: 'STAFF',
+        external_source_id: null,
+        signal_type: 'SITE_OBSERVATION',
+        title: 'Phát hiện trạm rửa xe không hoạt động tại dự án chung cư Bến Vân Đồn',
+        description: 'Cán bộ tuần tra ghi nhận xe bồn bê tông rời công trường làm vung vãi bùn đất dọc đường Bến Vân Đồn.',
+        location_text: 'Số 132 Bến Vân Đồn, Phường 6, Quận 4',
+        latitude: 10.7608,
+        longitude: 106.6975,
+        integrity_status: 'VALID',
+      },
+      {
+        id: 'sig-004',
+        source_type: 'IMPORT',
+        external_source_id: 'portal-1022-993',
+        signal_type: 'CITIZEN_PETITION',
+        title: 'Đơn kiến nghị tập thể về ô nhiễm bụi xây dựng cầu Rạch Đĩa',
+        description: 'Người dân khu dân cư phản ánh nhà thầu thi công ban đêm không phun sương giảm bụi làm ảnh hưởng sức khỏe trẻ nhỏ.',
+        location_text: 'Khu vực cầu Rạch Đĩa, Lê Văn Lương, Nhà Bè',
+        latitude: 10.7185,
+        longitude: 106.7024,
+        integrity_status: 'VALID',
+      },
+    ];
+
+    for (const s of signals) {
+      run(
+        `INSERT INTO signals (id, source_type, external_source_id, signal_type, title, description, location_text, latitude, longitude, observed_at, received_at, integrity_status, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now', '-2 days'), datetime('now', '-2 days'), ?, datetime('now', '-2 days'))`,
+        [s.id, s.source_type, s.external_source_id, s.signal_type, s.title, s.description, s.location_text, s.latitude, s.longitude, s.integrity_status]
+      );
+    }
+
+    run(`INSERT OR IGNORE INTO case_signals (id, case_id, signal_id, linked_at, linked_by, notes)
+         VALUES ('cs-1', 'case-001', 'sig-001', datetime('now', '-2 days'), 'usr-sup-1', 'Liên kết ban đầu khi tiếp nhận phản ánh')`);
+    run(`INSERT OR IGNORE INTO case_signals (id, case_id, signal_id, linked_at, linked_by, notes)
+         VALUES ('cs-2', 'case-006', 'sig-002', datetime('now', '-1 days'), 'usr-sup-1', 'Trạm quan trắc phụ cận ghi nhận chỉ số cao')`);
+
+    // 12. Seed Tasks (DB-derived Work Items)
+    console.log('[Database Seed] Seeding operational tasks...');
+    const tasks = [
+      {
+        id: 'task-001',
+        case_id: 'case-006',
+        title: 'Rà soát hồ sơ vụ việc Masteri Thảo Điền',
+        description: 'Kiểm tra biên bản hiện trường trước đây và nhật ký công trình của nhà thầu Coteccons.',
+        source: 'CASE',
+        source_entity_type: 'CASE',
+        source_entity_id: 'case-006',
+        assigned_to: 'usr-staff-1',
+        status: 'OPEN',
+        priority: 'HIGH',
+        due_at: "datetime('now', '+1 days')",
+      },
+      {
+        id: 'task-002',
+        case_id: 'case-013',
+        title: 'Lập kế hoạch thanh tra đột xuất công trình Landmark 81',
+        description: 'Chuẩn bị danh mục tiêu chí kiểm tra theo Mẫu biểu Kiểm soát Bụi Xây dựng Đô thị.',
+        source: 'INSPECTION',
+        source_entity_type: 'INSPECTION',
+        source_entity_id: 'insp-013',
+        assigned_to: 'usr-staff-1',
+        status: 'OPEN',
+        priority: 'URGENT',
+        due_at: "datetime('now', '+0 days')",
+      },
+      {
+        id: 'task-003',
+        case_id: 'case-019',
+        title: 'Xác minh khắc phục trạm rửa xe công trình The Global City',
+        description: 'Kiểm tra hình ảnh và video nghiệm thu hệ thống phun rửa gầm xe tự động do nhà thầu An Phong nộp.',
+        source: 'INSPECTION',
+        source_entity_type: 'CORRECTIVE_ACTION',
+        source_entity_id: 'act-019-1',
+        assigned_to: 'usr-staff-1',
+        status: 'OPEN',
+        priority: 'NORMAL',
+        due_at: "datetime('now', '+2 days')",
+      },
+      {
+        id: 'task-004',
+        case_id: 'case-009',
+        title: 'Thẩm định hồ sơ pháp lý đối chiếu Nghị định 45/2022',
+        description: 'Rà soát hành vi vi phạm không che chắn công trình dự án Metro Tuyến 1 Bến Thành - Suối Tiên.',
+        source: 'LEGAL',
+        source_entity_type: 'LEGAL_REVIEW',
+        source_entity_id: 'rev-009',
+        assigned_to: 'usr-legal-1',
+        status: 'OPEN',
+        priority: 'HIGH',
+        due_at: "datetime('now', '+1 days')",
+      },
+      {
+        id: 'task-005',
+        case_id: null,
+        title: 'Kiểm tra tín hiệu đóng băng trạm đo SENSOR-BT-03',
+        description: 'Hệ thống phát hiện cảm biến đo bụi Bình Thạnh bị treo số 5 gói tin liên tiếp. Cần kiểm tra phần cứng hoặc ống lấy mẫu.',
+        source: 'IOT',
+        source_entity_type: 'IOT_DEVICE',
+        source_entity_id: 'dev-03',
+        assigned_to: 'usr-staff-7',
+        status: 'OPEN',
+        priority: 'HIGH',
+        due_at: "datetime('now', '+0 days')",
+      },
+    ];
+
+    for (const tk of tasks) {
+      run(
+        `INSERT INTO tasks (id, case_id, title, description, source, source_entity_type, source_entity_id, assigned_to, status, priority, due_at, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now', '-1 days'))`,
+        [tk.id, tk.case_id, tk.title, tk.description, tk.source, tk.source_entity_type, tk.source_entity_id, tk.assigned_to, tk.status, tk.priority, tk.due_at]
+      );
+    }
+
+    // 13. Seed IoT Devices, Readings & Events
+    console.log('[Database Seed] Seeding IoT devices, readings & events...');
+    const iotDevices = [
+      {
+        id: 'dev-01',
+        device_code: 'SENSOR-VD1-01',
+        name: 'Trạm Quan Trắc Vành Đai 1 (Thủ Đức)',
+        location_text: 'Nút giao thông Vành Đai 2 & Nguyễn Thị Định, TP. Thủ Đức',
+        latitude: 10.8231,
+        longitude: 106.7721,
+        status: 'ONLINE',
+        last_seen_at: "datetime('now', '-2 minutes')",
+        secret_reference: 'secret-key-vd1',
+        is_simulated: 0,
+      },
+      {
+        id: 'dev-02',
+        device_code: 'SENSOR-TH-02',
+        name: 'Trạm Quan Trắc KCN Tân Thuận',
+        location_text: 'Cổng B, Khu chế xuất Tân Thuận, Quận 7',
+        latitude: 10.7482,
+        longitude: 106.7214,
+        status: 'ONLINE',
+        last_seen_at: "datetime('now', '-5 minutes')",
+        secret_reference: 'secret-key-th2',
+        is_simulated: 0,
+      },
+      {
+        id: 'dev-03',
+        device_code: 'SENSOR-BT-03',
+        name: 'Trạm Đo Bến Xe Miền Đông Cũ',
+        location_text: 'Số 292 Đinh Bộ Lĩnh, Phường 26, Bình Thạnh',
+        latitude: 10.8142,
+        longitude: 106.7112,
+        status: 'FAULTY',
+        last_seen_at: "datetime('now', '-25 minutes')",
+        secret_reference: 'secret-key-bt3',
+        is_simulated: 0,
+      },
+      {
+        id: 'dev-sim-01',
+        device_code: 'SENSOR-DEV-SIM',
+        name: 'Trạm Thử Nghiệm Phát Triển (Simulator)',
+        location_text: 'Phòng Thí Nghiệm R&D DustGuard VN',
+        latitude: 10.7769,
+        longitude: 106.7009,
+        status: 'ONLINE',
+        last_seen_at: "datetime('now', '-1 minutes')",
+        secret_reference: 'secret-key-sim',
+        is_simulated: 1,
+      },
+    ];
+
+    for (const d of iotDevices) {
+      run(
+        `INSERT INTO iot_devices (id, device_code, name, location_text, latitude, longitude, status, last_seen_at, secret_reference, is_simulated, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now', '-30 days'), datetime('now'))`,
+        [d.id, d.device_code, d.name, d.location_text, d.latitude, d.longitude, d.status, d.last_seen_at, d.secret_reference, d.is_simulated]
+      );
+    }
+
+    for (let i = 20; i >= 0; i--) {
+      const pm25Val = Math.round((35.0 + Math.sin(i / 2) * 15.0) * 10) / 10;
+      const pm10Val = Math.round((65.0 + Math.cos(i / 2) * 20.0) * 10) / 10;
+      run(
+        `INSERT INTO iot_readings (id, device_id, recorded_at, received_at, pm25, pm10, temperature, humidity, raw_payload_json, integrity_status, created_at)
+         VALUES (?, 'dev-01', datetime('now', '-${i * 15} minutes'), datetime('now', '-${i * 15} minutes'), ?, ?, 31.5, 68.0, '{"source_environment": "PROD"}', 'VALID', datetime('now', '-${i * 15} minutes'))`,
+        [`read-01-${i}`, pm25Val, pm10Val]
+      );
+    }
+
+    for (let i = 5; i >= 1; i--) {
+      run(
+        `INSERT INTO iot_readings (id, device_id, recorded_at, received_at, pm25, pm10, temperature, humidity, raw_payload_json, integrity_status, created_at)
+         VALUES (?, 'dev-03', datetime('now', '-${i * 5} minutes'), datetime('now', '-${i * 5} minutes'), 42.0, 85.0, 30.0, 70.0, '{"source_environment": "PROD"}', 'FLATLINE', datetime('now', '-${i * 5} minutes'))`,
+        [`read-03-${i}`]
+      );
+    }
+
+    run(
+      `INSERT INTO iot_events (id, device_id, event_type, severity, description, created_at)
+       VALUES ('ev-01', 'dev-03', 'FLATLINE', 'HIGH', 'Phát hiện cảm biến treo chỉ số 5 bản tin liên tiếp cùng giá trị PM10 (85.0) và PM2.5 (42.0)', datetime('now', '-15 minutes'))`
+    );
+
+    // 14. Seed Automation Rules & Runs
+    console.log('[Database Seed] Seeding automation rules & runs...');
+    const defaultRules = [
+      {
+        id: 'rule-case-assigned',
+        name: 'Tự động giao việc rà soát khi phân công vụ việc',
+        event_type: 'CASE_ASSIGNED',
+        conditions_json: JSON.stringify({ has_assignee: true }),
+        actions_json: JSON.stringify([{ type: 'CREATE_TASK', title: 'Rà soát hồ sơ vụ việc', due_days: 1 }, { type: 'CREATE_NOTIFICATION', title: 'Bạn có vụ việc mới cần xử lý' }]),
+        enabled: 1,
+      },
+      {
+        id: 'rule-legal-needs-info',
+        name: 'Tự động yêu cầu bổ sung thông tin khi pháp chế gắn cờ',
+        event_type: 'LEGAL_REVIEW_NEEDS_INFO',
+        conditions_json: JSON.stringify({ review_status: 'NEEDS_INFO' }),
+        actions_json: JSON.stringify([{ type: 'CREATE_TASK', title: 'Thu thập thông tin bổ sung cho pháp chế', priority: 'HIGH' }]),
+        enabled: 1,
+      },
+      {
+        id: 'rule-action-overdue',
+        name: 'Cảnh báo giám sát khi biện pháp khắc phục quá hạn',
+        event_type: 'CORRECTIVE_ACTION_OVERDUE',
+        conditions_json: JSON.stringify({ overdue: true }),
+        actions_json: JSON.stringify([{ type: 'NOTIFY_SUPERVISOR', message: 'Biện pháp khắc phục đã quá thời hạn cam kết' }]),
+        enabled: 1,
+      },
+      {
+        id: 'rule-iot-offline',
+        name: 'Thông báo kỹ thuật khi trạm đo mất kết nối',
+        event_type: 'IOT_DEVICE_OFFLINE',
+        conditions_json: JSON.stringify({ offline_minutes_gt: 15 }),
+        actions_json: JSON.stringify([{ type: 'CREATE_TASK', title: 'Kiểm tra trạm đo mất kết nối', priority: 'HIGH' }]),
+        enabled: 1,
+      },
+      {
+        id: 'rule-signal-matched',
+        name: 'Tạo tác vụ xem xét khi tín hiệu mới đối sánh khớp vụ việc',
+        event_type: 'NEW_SIGNAL_MATCHED_CASE',
+        conditions_json: JSON.stringify({ confidence_gt: 0.7 }),
+        actions_json: JSON.stringify([{ type: 'CREATE_TASK', title: 'Xem xét liên kết tín hiệu mới vào vụ việc', priority: 'NORMAL' }]),
+        enabled: 1,
+      },
+    ];
+
+    for (const r of defaultRules) {
+      run(
+        `INSERT INTO automation_rules (id, name, event_type, conditions_json, actions_json, enabled, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, datetime('now', '-7 days'), datetime('now'))`,
+        [r.id, r.name, r.event_type, r.conditions_json, r.actions_json, r.enabled]
+      );
+    }
+
+    run(
+      `INSERT INTO automation_runs (id, rule_id, trigger_entity_type, trigger_entity_id, status, input_json, result_json, error_message, started_at, completed_at)
+       VALUES ('run-01', 'rule-case-assigned', 'CASE', 'case-006', 'SUCCESS', '{"case_code": "DG-2026-OP-006", "assigned_staff_id": "usr-staff-1"}', '{"task_created": "task-001", "notification_sent": true}', NULL, datetime('now', '-1 hours'), datetime('now', '-1 hours'))`
+    );
 
     // System Configs
     run(

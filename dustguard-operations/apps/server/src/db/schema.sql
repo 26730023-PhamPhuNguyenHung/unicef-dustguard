@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS cases (
   district TEXT NOT NULL,
   latitude REAL NOT NULL,
   longitude REAL NOT NULL,
-  source TEXT NOT NULL DEFAULT 'MANUAL' CHECK (source IN ('COMMUNITY', 'IOT', 'MANUAL', 'IMPORT')),
+  source TEXT NOT NULL DEFAULT 'MANUAL' CHECK (source IN ('COMMUNITY', 'IOT', 'MANUAL', 'IMPORT', 'STAFF')),
   source_reference TEXT,
   source_report_count INTEGER NOT NULL DEFAULT 1,
   status TEXT NOT NULL DEFAULT 'NEW' CHECK (status IN (
@@ -316,6 +316,120 @@ CREATE TABLE IF NOT EXISTS integration_logs (
   error TEXT
 );
 
+-- 25. Signals (Multi-source Environmental Observations)
+CREATE TABLE IF NOT EXISTS signals (
+  id TEXT PRIMARY KEY,
+  source_type TEXT NOT NULL CHECK (source_type IN ('COMMUNITY', 'IOT', 'STAFF', 'IMPORT')),
+  external_source_id TEXT,
+  signal_type TEXT NOT NULL,
+  title TEXT NOT NULL,
+  description TEXT NOT NULL,
+  location_text TEXT NOT NULL,
+  latitude REAL NOT NULL,
+  longitude REAL NOT NULL,
+  observed_at TEXT NOT NULL,
+  received_at TEXT NOT NULL,
+  payload_json TEXT,
+  integrity_status TEXT NOT NULL DEFAULT 'VALID' CHECK (integrity_status IN ('VALID', 'SUSPICIOUS', 'CORRUPTED')),
+  created_at TEXT NOT NULL
+);
+
+-- 26. Case Signals (N-to-N Linkage between Cases & Signals)
+CREATE TABLE IF NOT EXISTS case_signals (
+  id TEXT PRIMARY KEY,
+  case_id TEXT NOT NULL REFERENCES cases(id) ON DELETE CASCADE,
+  signal_id TEXT NOT NULL REFERENCES signals(id) ON DELETE CASCADE,
+  linked_at TEXT NOT NULL,
+  linked_by TEXT REFERENCES users(id) ON DELETE SET NULL,
+  notes TEXT,
+  UNIQUE(case_id, signal_id)
+);
+
+-- 27. Tasks (DB-derived Work Items with Deep Links)
+CREATE TABLE IF NOT EXISTS tasks (
+  id TEXT PRIMARY KEY,
+  case_id TEXT REFERENCES cases(id) ON DELETE CASCADE,
+  title TEXT NOT NULL,
+  description TEXT NOT NULL,
+  source TEXT NOT NULL CHECK (source IN ('MANUAL', 'CASE', 'LEGAL', 'INSPECTION', 'IOT', 'AUTOMATION')),
+  source_entity_type TEXT,
+  source_entity_id TEXT,
+  assigned_to TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  status TEXT NOT NULL DEFAULT 'OPEN' CHECK (status IN ('OPEN', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED')),
+  priority TEXT NOT NULL DEFAULT 'NORMAL' CHECK (priority IN ('LOW', 'NORMAL', 'HIGH', 'URGENT')),
+  due_at TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  completed_at TEXT
+);
+
+-- 28. IoT Devices (Monitoring Node Registry)
+CREATE TABLE IF NOT EXISTS iot_devices (
+  id TEXT PRIMARY KEY,
+  device_code TEXT UNIQUE NOT NULL,
+  name TEXT NOT NULL,
+  location_text TEXT NOT NULL,
+  latitude REAL NOT NULL,
+  longitude REAL NOT NULL,
+  status TEXT NOT NULL DEFAULT 'ONLINE' CHECK (status IN ('ONLINE', 'OFFLINE', 'FAULTY', 'UNKNOWN')),
+  last_seen_at TEXT,
+  firmware_version TEXT DEFAULT '1.0.0',
+  secret_reference TEXT NOT NULL,
+  is_simulated INTEGER NOT NULL DEFAULT 0,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+
+-- 29. IoT Readings (Sensor Packets with Integrity Evaluation)
+CREATE TABLE IF NOT EXISTS iot_readings (
+  id TEXT PRIMARY KEY,
+  device_id TEXT NOT NULL REFERENCES iot_devices(id) ON DELETE CASCADE,
+  recorded_at TEXT NOT NULL,
+  received_at TEXT NOT NULL,
+  pm25 REAL NOT NULL,
+  pm10 REAL NOT NULL,
+  temperature REAL,
+  humidity REAL,
+  raw_payload_json TEXT NOT NULL,
+  integrity_status TEXT NOT NULL DEFAULT 'VALID' CHECK (integrity_status IN ('VALID', 'FLATLINE', 'CORRUPTED', 'CLOCK_DRIFT')),
+  created_at TEXT NOT NULL
+);
+
+-- 30. IoT Events (Tamper, Flatline & Connectivity Logs)
+CREATE TABLE IF NOT EXISTS iot_events (
+  id TEXT PRIMARY KEY,
+  device_id TEXT NOT NULL REFERENCES iot_devices(id) ON DELETE CASCADE,
+  event_type TEXT NOT NULL CHECK (event_type IN ('OFFLINE', 'FLATLINE', 'TAMPER', 'RECONNECTED', 'SPIKE')),
+  severity TEXT NOT NULL DEFAULT 'MEDIUM' CHECK (severity IN ('LOW', 'MEDIUM', 'HIGH')),
+  description TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);
+
+-- 31. Automation Rules (Event-Driven Workflow Automation Engine)
+CREATE TABLE IF NOT EXISTS automation_rules (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  event_type TEXT NOT NULL,
+  conditions_json TEXT NOT NULL,
+  actions_json TEXT NOT NULL,
+  enabled INTEGER NOT NULL DEFAULT 1,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+
+-- 32. Automation Runs (Immutable Run History for Traceability)
+CREATE TABLE IF NOT EXISTS automation_runs (
+  id TEXT PRIMARY KEY,
+  rule_id TEXT NOT NULL REFERENCES automation_rules(id) ON DELETE CASCADE,
+  trigger_entity_type TEXT NOT NULL,
+  trigger_entity_id TEXT NOT NULL,
+  status TEXT NOT NULL CHECK (status IN ('SUCCESS', 'FAILED', 'SKIPPED')),
+  input_json TEXT NOT NULL,
+  result_json TEXT,
+  error_message TEXT,
+  started_at TEXT NOT NULL,
+  completed_at TEXT
+);
+
 -- Indexes for lightning fast queries
 CREATE INDEX IF NOT EXISTS idx_cases_status ON cases(status);
 CREATE INDEX IF NOT EXISTS idx_cases_assigned_staff ON cases(assigned_staff_id);
@@ -330,3 +444,12 @@ CREATE INDEX IF NOT EXISTS idx_findings_inspection_id ON inspection_findings(ins
 CREATE INDEX IF NOT EXISTS idx_notifications_user_unread ON notifications(user_id, read);
 CREATE INDEX IF NOT EXISTS idx_audit_created ON audit_logs(created_at);
 CREATE INDEX IF NOT EXISTS idx_integration_external ON integration_logs(source, external_id);
+CREATE INDEX IF NOT EXISTS idx_signals_source ON signals(source_type);
+CREATE INDEX IF NOT EXISTS idx_case_signals_case ON case_signals(case_id);
+CREATE INDEX IF NOT EXISTS idx_case_signals_signal ON case_signals(signal_id);
+CREATE INDEX IF NOT EXISTS idx_tasks_assigned_to ON tasks(assigned_to, status);
+CREATE INDEX IF NOT EXISTS idx_tasks_case_id ON tasks(case_id);
+CREATE INDEX IF NOT EXISTS idx_iot_readings_device ON iot_readings(device_id, recorded_at);
+CREATE INDEX IF NOT EXISTS idx_iot_events_device ON iot_events(device_id, created_at);
+CREATE INDEX IF NOT EXISTS idx_automation_runs_rule ON automation_runs(rule_id, started_at);
+

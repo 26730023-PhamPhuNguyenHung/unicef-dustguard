@@ -18,6 +18,10 @@ import { evidenceRouter } from './modules/evidence/evidence.router.js';
 import { notificationsRouter } from './modules/notifications/notifications.router.js';
 import { integrationsRouter } from './modules/integrations/integrations.router.js';
 import { adminRouter } from './modules/admin/admin.router.js';
+import { signalsRouter } from './modules/signals/signals.router.js';
+import { tasksRouter } from './modules/tasks/tasks.router.js';
+import { iotRouter } from './modules/iot/iot.router.js';
+import { automationsRouter } from './modules/automations/automations.router.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -53,6 +57,10 @@ app.get('/api/health', (req, res) => {
 app.use('/api/auth', authRouter);
 app.use('/api/dashboard', dashboardRouter);
 
+// Signals & Tasks
+app.use('/api/signals', signalsRouter);
+app.use('/api/tasks', tasksRouter);
+
 // Cases & Case actions
 app.use('/api/cases', casesRouter);
 app.use('/api/cases', closuresRouter);
@@ -61,8 +69,14 @@ app.use('/api/cases', inspectionsRouter);
 app.use('/api/cases', actionsRouter);
 app.use('/api/cases', evidenceRouter);
 
-// Legal Library & Search
+// Legal Library & Search & Ingestion
 app.use('/api/legal', legalRouter);
+
+// IoT Monitoring & Ingestion
+app.use('/api/iot', iotRouter);
+
+// Automation Engine
+app.use('/api/automations', automationsRouter);
 
 // Inspection templates & Inspection flow
 app.use('/api/inspection-templates', templatesRouter);

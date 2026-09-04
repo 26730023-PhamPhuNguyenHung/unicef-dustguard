@@ -225,7 +225,7 @@ actionsRouter.post('/:id/remediation', requireAuth, (req: AuthRequest, res, next
     });
 
     const created = get(`SELECT * FROM remediation_submissions WHERE id = ?`, [subId]);
-    res.status(201).json({ submission: created });
+    res.status(201).json({ submission: created, remediation: created });
   } catch (err) {
     next(err);
   }

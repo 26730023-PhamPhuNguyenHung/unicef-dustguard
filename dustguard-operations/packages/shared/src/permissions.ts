@@ -7,24 +7,37 @@ export type Permission =
   | 'case:triage'
   | 'case:assign'
   | 'case:reassign'
+  | 'case:transition'
   | 'case:close'
   | 'case:reopen'
+  | 'task:view'
+  | 'task:update'
   | 'inspection:create'
   | 'inspection:perform'
+  | 'inspection:review'
   | 'inspection:submit'
   | 'action:create'
   | 'action:update'
+  | 'action:verify'
   | 'remediation:submit'
   | 'remediation:review'
   | 'legal:view'
+  | 'legal:import'
   | 'legal:search'
   | 'legal:analyze'
   | 'legal:review'
   | 'legal:approve'
   | 'evidence:upload'
   | 'evidence:view'
+  | 'iot:view'
+  | 'iot:manage'
+  | 'automation:view'
+  | 'automation:manage'
   | 'dashboard:view'
   | 'workload:view'
+  | 'admin:users'
+  | 'admin:audit'
+  | 'admin:config'
   | 'user:manage'
   | 'audit:view'
   | 'system:config'
@@ -36,17 +49,22 @@ export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
     'case:create',
     'case:update',
     'case:triage',
+    'case:transition',
+    'task:view',
+    'task:update',
     'inspection:create',
     'inspection:perform',
     'inspection:submit',
     'action:create',
     'action:update',
+    'remediation:submit',
     'remediation:review',
     'legal:view',
     'legal:search',
     'legal:analyze',
     'evidence:upload',
     'evidence:view',
+    'iot:view',
     'dashboard:view',
   ],
   supervisor: [
@@ -56,19 +74,28 @@ export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
     'case:triage',
     'case:assign',
     'case:reassign',
+    'case:transition',
     'case:close',
     'case:reopen',
+    'task:view',
+    'task:update',
     'inspection:create',
     'inspection:perform',
+    'inspection:review',
     'inspection:submit',
     'action:create',
     'action:update',
+    'action:verify',
     'remediation:review',
     'legal:view',
     'legal:search',
     'legal:analyze',
     'evidence:upload',
     'evidence:view',
+    'iot:view',
+    'iot:manage',
+    'automation:view',
+    'automation:manage',
     'dashboard:view',
     'workload:view',
     'audit:view',
@@ -76,6 +103,7 @@ export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
   legal_reviewer: [
     'case:view',
     'legal:view',
+    'legal:import',
     'legal:search',
     'legal:analyze',
     'legal:review',

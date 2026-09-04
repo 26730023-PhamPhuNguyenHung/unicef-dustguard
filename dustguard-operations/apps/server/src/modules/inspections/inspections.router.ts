@@ -202,7 +202,8 @@ inspectionsRouter.post('/:id/inspections', requirePermission('inspection:create'
     });
 
     const created = get(`SELECT * FROM inspections WHERE id = ?`, [inspectionId]);
-    res.status(201).json({ inspection: created });
+    const items = query(`SELECT * FROM inspection_items WHERE inspection_id = ?`, [inspectionId]);
+    res.status(201).json({ inspection: created, items });
   } catch (err) {
     next(err);
   }
@@ -373,8 +374,10 @@ inspectionsRouter.post('/:id/submit', requirePermission('inspection:submit'), (r
       );
     });
 
+    const updated = get(`SELECT * FROM inspections WHERE id = ?`, [id]);
     res.json({
       success: true,
+      inspection: updated,
       message: 'Nộp biên bản kiểm tra thành công.',
     });
   } catch (err) {
