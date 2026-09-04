@@ -31,10 +31,16 @@ export const IotDeviceDetailPage: React.FC = () => {
   const loadDetail = async () => {
     try {
       setLoading(true);
-      const res = await api.iot.device(id!);
-      setDeviceData(res);
-      const rRes = await api.iot.readings(id!, { limit: '20' });
-      setReadings(rRes.readings || []);
+      const res: any = await api.iot.device(id!);
+      const devObj = res?.device ? res : { 
+        device: res?.data?.device || res?.data || res, 
+        latestReading: res?.latestReading || res?.data?.latestReading || (res?.readings && res.readings[0]), 
+        recentEvents: res?.events || res?.data?.events || [], 
+        relatedCases: res?.relatedCases || [] 
+      };
+      setDeviceData(devObj);
+      const rRes: any = await api.iot.readings(id!, { limit: '20' });
+      setReadings(Array.isArray(rRes) ? rRes : rRes.readings || rRes.data || []);
     } catch (err: any) {
       addToast(err.detail || 'Không thể tải thông tin chi tiết trạm quan trắc', 'error');
     } finally {

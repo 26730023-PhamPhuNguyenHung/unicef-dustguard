@@ -18,8 +18,9 @@ export const IotDevicesPage: React.FC = () => {
   const loadDevices = async () => {
     try {
       setLoading(true);
-      const res = await api.iot.devices();
-      setDevices(res.devices || []);
+      const res: any = await api.iot.devices();
+      const list = Array.isArray(res) ? res : res.devices || res.data || [];
+      setDevices(list);
     } catch (err: any) {
       addToast(err.detail || 'Không thể tải danh sách trạm quan trắc IoT', 'error');
     } finally {

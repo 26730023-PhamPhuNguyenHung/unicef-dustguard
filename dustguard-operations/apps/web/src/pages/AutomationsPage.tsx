@@ -19,8 +19,9 @@ export const AutomationsPage: React.FC = () => {
   const loadRules = async () => {
     try {
       setLoading(true);
-      const res = await api.automations.rules();
-      setRules(res.rules || []);
+      const res: any = await api.automations.rules();
+      const list = Array.isArray(res) ? res : res.rules || res.data || [];
+      setRules(list);
     } catch (err: any) {
       addToast(err.detail || 'Không thể tải quy tắc tự động', 'error');
     } finally {
@@ -31,8 +32,9 @@ export const AutomationsPage: React.FC = () => {
   const loadRuns = async () => {
     try {
       setLoading(true);
-      const res = await api.automations.runs();
-      setRuns(res.runs || []);
+      const res: any = await api.automations.runs();
+      const list = Array.isArray(res) ? res : res.runs || res.data || [];
+      setRuns(list);
     } catch (err: any) {
       addToast(err.detail || 'Không thể tải nhật ký chạy quy tắc tự động', 'error');
     } finally {

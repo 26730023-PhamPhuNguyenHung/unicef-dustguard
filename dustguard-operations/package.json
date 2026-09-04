@@ -7,6 +7,7 @@
     "setup": "node scripts/setup.js",
     "dev": "node scripts/dev.js",
     "test": "npx tsx --test tests/operations-api.test.js",
+    "test:responsive": "node scripts/verify-responsive.js",
     "build": "npx vite build apps/web",
     "db:migrate": "npx tsx apps/server/src/db/migrate.ts",
     "db:seed": "npx tsx apps/server/src/db/seed.ts"

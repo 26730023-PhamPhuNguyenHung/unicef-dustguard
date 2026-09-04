@@ -415,7 +415,12 @@ function parseVietnameseLegalText(text: string) {
 
 // POST /api/legal/import - Parse raw text / document for Human Review
 legalRouter.post('/import', requireAuth, (req: AuthRequest, res) => {
-  const { text, file_name = 'document.txt' } = req.body;
+  const text = req.body.text || req.body.text_content;
+  const file_name = req.body.file_name || 'document.txt';
+  const customTitle = req.body.title;
+  const customDocNumber = req.body.document_number;
+  const customAuthority = req.body.authority;
+
   if (!text || typeof text !== 'string' || !text.trim()) {
     res.status(400).json({ error: 'Nội dung văn bản (text) là bắt buộc' });
     return;
@@ -424,14 +429,45 @@ legalRouter.post('/import', requireAuth, (req: AuthRequest, res) => {
   const sha256 = crypto.createHash('sha256').update(text, 'utf-8').digest('hex');
   const parsed = parseVietnameseLegalText(text);
 
+  const flatSections: any[] = [];
+  function flatten(secs: any[]) {
+    for (const s of secs) {
+      flatSections.push({
+        id: s.id,
+        section_type: s.section_type,
+        section_number: s.section_number,
+        heading: s.heading,
+        content: s.content,
+      });
+      if (Array.isArray(s.children) && s.children.length > 0) {
+        flatten(s.children);
+      }
+    }
+  }
+  flatten(parsed.sections);
+
+  const finalTitle = customTitle || parsed.docTitle;
+  const finalDocNumber = customDocNumber || parsed.docNumber;
+  const finalAuthority = customAuthority || parsed.authority;
+
+  const doc = {
+    title: finalTitle,
+    document_number: finalDocNumber,
+    authority: finalAuthority,
+    sha256,
+    file_name,
+  };
+
   res.json({
     success: true,
+    document: doc,
+    sections: flatSections.length > 0 ? flatSections : parsed.sections,
     data: {
       file_name,
       sha256,
-      title: parsed.docTitle,
-      document_number: parsed.docNumber,
-      authority: parsed.authority,
+      title: finalTitle,
+      document_number: finalDocNumber,
+      authority: finalAuthority,
       sections: parsed.sections,
       total_sections: parsed.sections.length,
     },
@@ -456,13 +492,24 @@ legalRouter.post('/documents', requireAuth, (req: AuthRequest, res) => {
     [docId, title, document_number, authority || 'Cơ quan có thẩm quyền', issued_date || now, effective_date || now, now]
   );
 
+  function normalizeSectionType(type: string): string {
+    const upper = (type || '').toUpperCase();
+    if (upper.includes('CHƯƠNG') || upper === 'CHAPTER') return 'Chapter';
+    if (upper.includes('MỤC') || upper === 'SECTION') return 'Section';
+    if (upper.includes('ĐIỀU') || upper === 'ARTICLE') return 'Article';
+    if (upper.includes('KHOẢN') || upper === 'CLAUSE') return 'Clause';
+    if (upper.includes('ĐIỂM') || upper === 'POINT') return 'Point';
+    return 'Article';
+  }
+
   // Flatten and persist sections into legal_sections and legal_sections_fts
   function insertSection(s: any, parentId: string | null = null) {
     const secId = s.id || `sec-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
+    const normalizedType = normalizeSectionType(s.section_type);
     run(
       `INSERT INTO legal_sections (id, document_id, section_type, section_number, heading, content, parent_section_id)
        VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [secId, docId, s.section_type || 'Article', s.section_number || '', s.heading || '', s.content || '', parentId]
+      [secId, docId, normalizedType, s.section_number || '', s.heading || '', s.content || '', parentId]
     );
 
     run(
@@ -490,7 +537,7 @@ legalRouter.post('/documents', requireAuth, (req: AuthRequest, res) => {
   );
 
   const created = get(`SELECT * FROM legal_documents WHERE id = ?`, [docId]);
-  res.status(201).json({ success: true, data: created });
+  res.status(201).json({ success: true, document: created, data: created });
 });
 
 // GET /api/cases/:id/legal/evidence-gaps - Missing Evidence Gap Engine

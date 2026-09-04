@@ -52,7 +52,7 @@ iotRouter.get('/devices', requireAuth, (req: Request, res: Response) => {
     };
   });
 
-  res.json({ success: true, data: processed });
+  res.json({ success: true, data: processed, devices: processed });
 });
 
 // 2. Device Detail
@@ -81,14 +81,21 @@ iotRouter.get('/devices/:id', requireAuth, (req: Request, res: Response) => {
     `SELECT * FROM signals WHERE source_type = 'IOT' ORDER BY observed_at DESC LIMIT 10`
   );
 
+  const payload = {
+    device,
+    latestReading: readings[0] || null,
+    recentEvents: events,
+    relatedCases: [],
+    readings,
+    events,
+    nearbySignals,
+    ...device,
+  };
+
   res.json({
     success: true,
-    data: {
-      ...device,
-      readings,
-      events,
-      nearbySignals,
-    },
+    data: payload,
+    ...payload,
   });
 });
 
@@ -102,7 +109,7 @@ iotRouter.get('/devices/:id/readings', requireAuth, (req: Request, res: Response
     [id, limit]
   );
 
-  res.json({ success: true, data: readings });
+  res.json({ success: true, data: readings, readings });
 });
 
 // 4. Ingest Route (Firmware APM2000 / ESP32 Endpoint)

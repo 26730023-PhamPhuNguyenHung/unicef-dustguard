@@ -129,19 +129,30 @@ export const LegalImportPage: React.FC = () => {
   };
 
   const handleApproveAndSave = async () => {
-    if (!parsedDoc || parsedSections.length === 0) {
-      addToast('Chưa có cấu trúc pháp lý nào được duyệt', 'error');
+    const activeDoc = parsedDoc || {
+      title: title.trim(),
+      document_number: docNumber.trim(),
+      authority: authority.trim() || 'Cơ quan có thẩm quyền',
+    };
+
+    if (!activeDoc.title || !activeDoc.document_number || parsedSections.length === 0) {
+      addToast('Vui lòng nhập đầy đủ tiêu đề, số hiệu và có ít nhất 1 điều khoản', 'error');
       return;
     }
 
     try {
       setPersisting(true);
-      const res = await api.legal.saveDocument({
-        ...parsedDoc,
+      const res: any = await api.legal.saveDocument({
+        ...activeDoc,
         sections: parsedSections,
       });
       addToast('Đã lưu văn bản quy phạm pháp luật và đồng bộ chỉ mục FTS5 thành công!', 'success');
-      navigate(`/legal/documents/${res.document.id}`);
+      const docId = res?.id || res?.document?.id || res?.data?.id;
+      if (docId) {
+        navigate(`/legal/documents/${docId}`);
+      } else {
+        navigate('/legal/documents');
+      }
     } catch (err: any) {
       addToast(err.detail || 'Lỗi lưu văn bản pháp lý vào CSDL', 'error');
     } finally {

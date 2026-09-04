@@ -4,7 +4,7 @@ import { AuthRequest, requireAuth } from '../../middleware/auth.js';
 
 export const dashboardRouter = Router();
 
-dashboardRouter.get('/', requireAuth, (req: AuthRequest, res) => {
+const getDashboardData = (req: AuthRequest, res: Response) => {
   const userId = req.user!.id;
   const role = req.user!.role;
 
@@ -71,11 +71,22 @@ dashboardRouter.get('/', requireAuth, (req: AuthRequest, res) => {
     };
   }
 
+  const payload = {
+    metrics: {
+      new_cases: newCasesCount,
+      pending_legal: pendingLegalCount,
+      pending_inspection: pendingInspectionCount,
+      overdue_actions: overdueActionsCount,
+      pending_reinspection: pendingReinspectionCount,
+      ready_to_close: readyToCloseCount,
+    },
+    myQueue,
+    recentActivities,
     supervisor: supervisorData,
   };
 
   res.json(payload);
-}
+};
 
 dashboardRouter.get('/', requireAuth, getDashboardData);
 dashboardRouter.get('/staff', requireAuth, getDashboardData);

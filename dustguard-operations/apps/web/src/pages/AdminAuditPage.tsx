@@ -16,11 +16,11 @@ export const AdminAuditPage: React.FC = () => {
   const loadAuditLogs = async () => {
     try {
       setLoading(true);
-      const res = await api.admin.audit({
+      const res: any = await api.admin.audit({
         action: actionFilter || undefined,
         entity_type: entityFilter || undefined,
       });
-      setLogs(res.logs);
+      setLogs(Array.isArray(res) ? res : res.logs || res.data || []);
     } catch (err) {
       console.error(err);
     } finally {

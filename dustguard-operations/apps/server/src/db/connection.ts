@@ -33,6 +33,7 @@ export const DB_PATH = process.env.DB_PATH || path.join(DATA_DIR, 'dustguard-ope
 export const db = new DatabaseSync(DB_PATH);
 
 // Enable WAL mode and foreign keys for high-performance and strict data integrity
+db.exec('PRAGMA busy_timeout = 5000;');
 db.exec('PRAGMA journal_mode = WAL;');
 db.exec('PRAGMA foreign_keys = ON;');
 db.exec('PRAGMA synchronous = NORMAL;');

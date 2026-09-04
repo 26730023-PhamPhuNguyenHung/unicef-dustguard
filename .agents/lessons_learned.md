@@ -58,7 +58,56 @@
 - **Giải pháp chuẩn hóa**:
   1. Thêm `min-w-0 flex-1` cho container văn bản trong flexbox.
   2. Áp dụng `truncate` hoặc `line-clamp-1` kết hợp `text-wrap: pretty`.
-  3. Thêm cấu hình toàn cục `overflow-x: hidden` tại `body` và `html`.
+  3. Kiểm tra bằng lệnh: `node scripts/verify-responsive.js` chạy qua 5 viewports từ $390\text{px}$ đến $1440\text{px}$ đạt 75/75 test pass.
+
+---
+
+### 5. SQLite Concurrency & Chống Khóa Cơ Sở Dữ Liệu (`PRAGMA busy_timeout = 5000`)
+- **Vấn đề**: Khi chạy `tsx watch` tự động restart server hoặc khi các tiến trình test chạy song song với backend, SQLite WAL mode có thể quăng lỗi `ERR_SQLITE_ERROR (errcode: 261): database is locked` nếu thời gian chờ mặc định là 0ms.
+- **Giải pháp chuẩn hóa**:
+  Luôn cấu hình `PRAGMA busy_timeout = 5000;` ngay sau khi khởi tạo kết nối `DatabaseSync`:
+  ```typescript
+  export const db = new DatabaseSync(DB_PATH);
+  db.exec('PRAGMA busy_timeout = 5000;');
+  db.exec('PRAGMA journal_mode = WAL;');
+  db.exec('PRAGMA foreign_keys = ON;');
+  ```
+
+---
+
+### 6. Chuẩn Hóa Giá Trị Enum Trước Ràng Buộc SQLite `CHECK`
+- **Vấn đề**: Schema SQLite định nghĩa nghiêm ngặt `CHECK (section_type IN ('Chapter', 'Article', 'Clause', 'Point', 'Section'))`. Trong khi đó, bộ phân tích regex hoặc giao diện người dùng có thể gửi lên chuỗi in hoa (`'ARTICLE'`) hoặc tiếng Việt (`'ĐIỀU'`), gây lỗi `CHECK constraint failed`.
+- **Giải pháp chuẩn hóa**:
+  Viết hàm helper `normalizeSectionType()` chuyển đổi trước khi insert vào CSDL:
+  ```typescript
+  function normalizeSectionType(type: string): string {
+    const upper = (type || '').toUpperCase();
+    if (upper.includes('CHƯƠNG') || upper === 'CHAPTER') return 'Chapter';
+    if (upper.includes('MỤC') || upper === 'SECTION') return 'Section';
+    if (upper.includes('ĐIỀU') || upper === 'ARTICLE') return 'Article';
+    if (upper.includes('KHOẢN') || upper === 'CLAUSE') return 'Clause';
+    if (upper.includes('ĐIỂM') || upper === 'POINT') return 'Point';
+    return 'Article';
+  }
+  ```
+
+---
+
+### 7. Tương Thích Hai Tầng Client Unwrapping (`return data.data ?? data`)
+- **Vấn đề**: Khi HTTP client bóc tách `data.data ?? data`, phản hồi trả về dạng mảng thô `[...]`. Nếu mã nguồn trang web truy cập cứng `res.devices` hoặc `res.rules`, giá trị sẽ là `undefined` làm bảng hiển thị 0 bản ghi rỗng.
+- **Giải pháp chuẩn hóa**:
+  1. Phía Server trả về cả `data` chuẩn lẫn các thuộc tính tiện ích tương thích ngược: `{ success: true, data: processed, devices: processed }`.
+  2. Phía Client luôn kiểm tra kiểu mảng trước:
+     ```typescript
+     const list = Array.isArray(res) ? res : res.devices || res.data || [];
+     ```
+
+---
+
+### 8. Thao Tác Windows PowerShell với Ký Tự `@` trong CLI
+- **Vấn đề**: Trong môi trường PowerShell trên Windows, cú pháp `@e16` bị nhận diện là toán tử mảng/splatting của PowerShell, dẫn đến việc nuốt mất tham số khi truyền vào lệnh `agent-browser click @e16`.
+- **Giải pháp chuẩn hóa**:
+  Luôn bọc các selector có ký tự `@` trong cặp dấu nháy kép: `agent-browser click "@e16"`.  3. Thêm cấu hình toàn cục `overflow-x: hidden` tại `body` và `html`.
   4. Xác minh tự động qua `agent-browser`:
      ```javascript
      document.documentElement.scrollWidth <= window.innerWidth // Bắt buộc true
