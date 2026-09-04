@@ -1,0 +1,25 @@
+{
+  "name": "dustguard-operations",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "DustGuard Operations — Staff Case Management + Legal Intelligence + Inspection Workflow",
+  "scripts": {
+    "setup": "node scripts/setup.js",
+    "dev": "node scripts/dev.js",
+    "test": "npx tsx --test tests/operations-api.test.js",
+    "build": "npx vite build apps/web",
+    "db:migrate": "npx tsx apps/server/src/db/migrate.ts",
+    "db:seed": "npx tsx apps/server/src/db/seed.ts"
+  },
+  "keywords": [
+    "dustguard",
+    "operations",
+    "civictech",
+    "environmental",
+    "inspection",
+    "sqlite",
+    "fts5"
+  ],
+  "author": "DustGuard VN Team",
+  "license": "UNLICENSED"
+}

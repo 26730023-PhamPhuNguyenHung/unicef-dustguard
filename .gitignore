@@ -23,6 +23,8 @@ user.env
 # Database WAL / Temporary
 *.sqlite-shm
 *.sqlite-wal
+*.db-shm
+*.db-wal
 prisma/*.db-shm
 prisma/*.db-wal
 

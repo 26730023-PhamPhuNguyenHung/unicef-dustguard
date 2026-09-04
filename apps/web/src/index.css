@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scrollbar-gutter: stable;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    text-wrap: pretty;
+  }
+
+  /* Civic high-contrast touch targets */
+  button, a, input, select, textarea {
+    min-height: 40px;
+  }
+}
+
+/* Map container fixes */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  border-radius: 14px;
+}

@@ -3,11 +3,21 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "npm --prefix app run dev",
-    "dev:web": "npm --prefix app run dev:web",
+    "dev": "node scripts/community-dev.js",
+    "dev:community": "node scripts/community-dev.js",
+    "dev:core": "npm --prefix app run dev",
+    "dev:server": "npm --prefix apps/server run dev",
+    "dev:web": "npm --prefix apps/web run dev",
+    "setup": "node scripts/community-setup.js",
+    "db:migrate": "npm --prefix apps/server run db:migrate",
+    "db:seed": "npm --prefix apps/server run db:seed",
+    "db:reset": "npm --prefix apps/server run db:reset",
+    "build:community": "npm --prefix apps/server run build && npm --prefix apps/web run build",
+    "test:community": "node --test tests/community-api.test.js",
+    "dev:web:core": "npm --prefix app run dev:web",
     "dev:worker": "npm --prefix app run dev:worker",
-    "build": "npm --prefix app run build",
-    "test": "npm --prefix app test",
+    "build": "npm --prefix apps/web run build",
+    "test": "node --test tests/community-api.test.js",
     "verify": "npm --prefix app run verify",
     "verify:quick": "npm --prefix app run verify:quick",
     "verify:dustguard": "npm --prefix app run verify:dustguard",
@@ -23,6 +33,10 @@
     "harness:journey": "node scripts/harness.js journey",
     "harness:release-check": "node scripts/harness.js release-check"
   },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
   "devDependencies": {
     "wrangler": "^4.125.0"
   },

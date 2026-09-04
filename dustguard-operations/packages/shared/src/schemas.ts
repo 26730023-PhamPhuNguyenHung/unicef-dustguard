@@ -1,0 +1,180 @@
+import { z } from 'zod';
+
+// AI Output Schema (Section 16)
+export const LegalAIPotentialIssueSchema = z.object({
+  title: z.string().min(1, 'Tiêu đề vấn đề không được để trống'),
+  reason: z.string().min(1, 'Lý do không được để trống'),
+});
+
+export const LegalAIRelevantProvisionSchema = z.object({
+  legalSectionId: z.string().min(1, 'ID điều khoản pháp luật không được để trống'),
+  reason: z.string().min(1, 'Căn cứ đối chiếu không được để trống'),
+});
+
+export const LegalAIOutputSchema = z.object({
+  summary: z.string().min(1, 'Tóm tắt phân tích không được để trống'),
+  potentialIssues: z.array(LegalAIPotentialIssueSchema),
+  relevantProvisions: z.array(LegalAIRelevantProvisionSchema),
+  missingInformation: z.array(z.string()),
+  suggestedChecklistItems: z.array(z.string()),
+  confidence: z.number().min(0).max(1),
+  disclaimer: z.string().min(1, 'Khuyến cáo pháp lý bắt buộc'),
+});
+
+export type LegalAIOutput = z.infer<typeof LegalAIOutputSchema>;
+
+// Auth
+export const LoginSchema = z.object({
+  username: z.string().min(1, 'Vui lòng nhập tên đăng nhập'),
+  password: z.string().min(1, 'Vui lòng nhập mật khẩu'),
+});
+
+// Case Create & Transition
+export const CaseCreateSchema = z.object({
+  title: z.string().min(3, 'Tiêu đề vụ việc tối thiểu 3 ký tự'),
+  description: z.string().min(5, 'Mô tả chi tiết tối thiểu 5 ký tự'),
+  location_text: z.string().min(3, 'Địa chỉ hiện trường không được để trống'),
+  district: z.string().min(2, 'Quận/Huyện không được để trống'),
+  latitude: z.number(),
+  longitude: z.number(),
+  source: z.enum(['COMMUNITY', 'IOT', 'MANUAL', 'IMPORT']).default('MANUAL'),
+  source_reference: z.string().optional(),
+  contractor_name: z.string().optional(),
+  priority: z.enum(['LOW', 'NORMAL', 'HIGH', 'URGENT']).default('NORMAL'),
+});
+
+export const CaseTransitionSchema = z.object({
+  to_status: z.enum([
+    'NEW',
+    'TRIAGED',
+    'ASSIGNED',
+    'LEGAL_REVIEW',
+    'INSPECTION_PLANNED',
+    'INSPECTION_IN_PROGRESS',
+    'ACTION_REQUIRED',
+    'REMEDIATION',
+    'REINSPECTION',
+    'READY_TO_CLOSE',
+    'CLOSED',
+    'REOPENED',
+  ]),
+  note: z.string().optional(),
+  closure_reason: z.string().optional(),
+  closure_summary: z.string().optional(),
+  reopen_reason: z.string().optional(),
+});
+
+// Staff Assignment
+export const CaseAssignSchema = z.object({
+  staff_user_id: z.string().min(1, 'Vui lòng chọn cán bộ được phân công'),
+  assignment_type: z.enum(['PRIMARY', 'COLLABORATOR', 'LEGAL_REVIEWER']).default('PRIMARY'),
+  note: z.string().optional(),
+  due_at: z.string().optional(),
+});
+
+// Legal Review
+export const LegalReviewSchema = z.object({
+  status: z.enum(['NOT_STARTED', 'IN_REVIEW', 'NEEDS_INFO', 'REVIEWED']),
+  summary: z.string().min(5, 'Vui lòng nhập kết luận thẩm tra pháp lý'),
+  legal_basis_note: z.string().optional(),
+});
+
+// Inspection
+export const InspectionCreateSchema = z.object({
+  case_id: z.string().min(1, 'Vui lòng chọn vụ việc'),
+  template_id: z.string().min(1, 'Vui lòng chọn mẫu biên bản kiểm tra'),
+  inspection_type: z.enum(['INITIAL', 'FOLLOW_UP', 'REINSPECTION']).default('INITIAL'),
+  scheduled_date: z.string().min(1, 'Vui lòng chọn ngày dự kiến kiểm tra'),
+  location_text: z.string().min(1, 'Vui lòng nhập địa điểm kiểm tra'),
+  note: z.string().optional(),
+});
+
+export const InspectionSubmitItemSchema = z.object({
+  item_id: z.string().min(1),
+  status: z.enum(['PASS', 'FAIL', 'UNKNOWN', 'NOT_APPLICABLE']),
+  note: z.string().optional(),
+  evidence_asset_id: z.string().optional(),
+});
+
+export const InspectionSubmitSchema = z.object({
+  items: z.array(InspectionSubmitItemSchema),
+  note: z.string().optional(),
+  override_reason: z.string().optional(),
+});
+
+// Finding
+export const FindingCreateSchema = z.object({
+  inspection_id: z.string().min(1),
+  category: z.string().min(1, 'Danh mục không được để trống'),
+  finding: z.string().min(3, 'Nội dung phát hiện không được để trống'),
+  severity: z.enum(['LOW', 'MEDIUM', 'HIGH']),
+  legal_section_id: z.string().optional(),
+  evidence_asset_id: z.string().optional(),
+  staff_note: z.string().optional(),
+});
+
+// Corrective Action
+export const CorrectiveActionCreateSchema = z.object({
+  case_id: z.string().min(1),
+  inspection_id: z.string().optional(),
+  finding_id: z.string().optional(),
+  title: z.string().min(3, 'Tiêu đề yêu cầu khắc phục không được để trống'),
+  description: z.string().min(5, 'Nội dung khắc phục chi tiết không được để trống'),
+  responsible_party: z.string().min(2, 'Đơn vị/Cá nhân chịu trách nhiệm không được để trống'),
+  due_at: z.string().min(1, 'Hạn chót hoàn thành không được để trống'),
+});
+
+// Remediation
+export const RemediationSubmitSchema = z.object({
+  description: z.string().min(5, 'Vui lòng mô tả biện pháp và kết quả đã khắc phục'),
+  evidence_asset_ids: z.union([z.string(), z.array(z.string())]).optional(),
+});
+
+export const RemediationReviewSchema = z.object({
+  review_status: z.enum(['APPROVED', 'REJECTED', 'MORE_EVIDENCE_REQUESTED']),
+  review_note: z.string().min(3, 'Vui lòng nhập nhận xét thẩm định khắc phục'),
+});
+
+// Case Closure
+export const CaseClosureSchema = z.object({
+  closure_reason: z.string().min(3, 'Vui lòng chọn hoặc nhập lý do kết thúc vụ việc'),
+  closure_summary: z.string().min(5, 'Vui lòng nhập tóm tắt kết quả xử lý và căn cứ đóng hồ sơ'),
+});
+
+export const CaseReopenSchema = z.object({
+  reopen_reason: z.string().min(5, 'Vui lòng nhập lý do mở lại hồ sơ vụ việc'),
+});
+
+// Community Case Import Schema (Section 39)
+export const CommunityCaseImportSchema = z.object({
+  external_case_id: z.string().min(1, 'external_case_id là bắt buộc'),
+  case_code: z.string().optional(),
+  title: z.string().min(1, 'title là bắt buộc'),
+  description: z.string().min(1, 'description là bắt buộc'),
+  location: z.string().min(1, 'location là bắt buộc'),
+  lat: z.number(),
+  lng: z.number(),
+  report_count: z.number().default(1),
+  confirmation_count: z.number().default(0),
+  contractor_name: z.string().optional(),
+  evidence: z
+    .array(
+      z.object({
+        file_path: z.string().optional(),
+        mime_type: z.string().optional(),
+        sha256: z.string().optional(),
+      })
+    )
+    .optional()
+    .default([]),
+  timeline: z
+    .array(
+      z.object({
+        event: z.string(),
+        time: z.string().optional(),
+        note: z.string().optional(),
+      })
+    )
+    .optional()
+    .default([]),
+});

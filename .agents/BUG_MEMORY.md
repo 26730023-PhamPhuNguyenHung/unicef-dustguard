@@ -785,6 +785,22 @@
 - **Nguyên nhân**: Endpoint `GET /api/complaints/:id` chỉ truy vấn `complaint.caseId` trên bảng `complaints`. Khi vụ việc được khởi tạo từ thanh tra với khóa ngoại `cases.complaintId = complaint.id`, phản ánh người dân không xem được dòng thời gian xử lý và hình ảnh đối chứng sau khắc phục (`resolvedEvidenceUrl`).
 - **Giải pháp**: Trong `handleGetComplaintById`, tự động truy vấn liên kết 2 chiều `SELECT id FROM cases WHERE complaintId = ? OR id = ?` và nạp `resolvedEvidenceUrl` từ bảng `actions` để người dân theo dõi trực tiếp hình ảnh trước/sau khi công trình khắc phục.
 
+---
 
+## 🛠️ 17. Standalone DustGuard Community Architecture & Invariants
 
+### 🚨 Trap 17.1: `better-sqlite3` build failure trên Windows thiếu Visual C++ Build Tools
+- **Nguyên nhân**: Thư viện `better-sqlite3` yêu cầu biên dịch C++ native addon (`node-gyp`). Trên máy tính Windows phổ thông của lập trình viên hoặc môi trường CI không có Visual Studio C++ build tools, lệnh cài đặt hoặc khởi chạy sẽ ném lỗi `gyp ERR! find VS`.
+- **Giải pháp**: Sử dụng module chuẩn sẵn có `node:sqlite` (`DatabaseSync` trong Node.js >= 22) kết hợp kích hoạt chế độ `PRAGMA journal_mode = WAL;` và `PRAGMA foreign_keys = ON;`. Điều này đảm bảo 100% zero-dependency, tốc độ thực thi SQLite cực nhanh mà không cần bất kỳ trình biên dịch C++ phụ trợ nào.
 
+### 🚨 Trap 17.2: ESM Hoisting làm Server tự động bind port trong bộ chạy kiểm thử tự động
+- **Nguyên nhân**: Trong Node.js ESM, các lệnh `import` được thực thi trước mã nguồn kiểm thử. Nếu file entry `apps/server/src/index.ts` gọi `app.listen(PORT)` vô điều kiện, khi chạy `node --test tests/community-api.test.js` server sẽ cố gắng chiếm dụng cổng 3001, dẫn tới lỗi `EADDRINUSE: address already in use :::3001` khi có tiến trình dev đang chạy song song.
+- **Giải pháp**: Kiểm tra cờ runtime `if (!process.env.NODE_TEST_CONTEXT) { app.listen(PORT, ...); }`. Trong file test suite, tự động khởi tạo server trên cổng động `app.listen(0)` để đảm bảo kiểm thử cô lập hoàn toàn và chạy song song an toàn.
+
+### 🚨 Trap 17.3: Ambiguity trong API Toggle "Tôi cũng ghi nhận" & "Lưu theo dõi"
+- **Nguyên nhân**: Việc sử dụng một endpoint toggle duy nhất (`POST /toggle`) dễ dẫn tới tình trạng race condition khi người dùng nhấn liên tục hoặc mất đồng bộ giữa frontend state và database state, gây ra sai lệch số lượng đếm xác nhận.
+- **Giải pháp**: Tách bạch tường minh hai hành vi thành RESTful primitives: `POST /api/cases/:id/confirm` (tạo xác nhận mới, ném lỗi 409 nếu đã xác nhận) và `DELETE /api/cases/:id/confirm` (hủy xác nhận, trả 404 nếu chưa xác nhận). Tương tự cho tính năng lưu vụ việc `POST/DELETE /api/cases/:id/save`.
+
+### 🚨 Trap 17.4: Chống lưu trữ dữ liệu nghiệp vụ qua `localStorage` (SSOT F5 Reload Invariant)
+- **Nguyên nhân**: Frontend lưu trạng thái phản ánh hoặc vụ việc vào `localStorage` dẫn đến dữ liệu ảo không đồng bộ giữa các tab trình duyệt và không có giá trị truy xuất khi người dùng chuyển sang thiết bị khác hoặc xóa cache.
+- **Giải pháp**: SQLite (`data/dustguard-community.db`) là chân lý duy nhất (SSOT). Mọi chỉ số dashboard, danh sách phản ánh, danh sách vụ việc, thông báo, và hồ sơ đều được nạp trực tiếp qua REST API backend. `localStorage` chỉ được phép dùng cho UI preferences (như `token`, `user`, `role`, `sidebar_collapsed`).
