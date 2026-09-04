@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "operations:dev": "npm --prefix dustguard-operations run dev",
+    "operations:setup": "npm --prefix dustguard-operations run setup",
+    "operations:test": "npm --prefix dustguard-operations run test",
+    "operations:build": "npm --prefix dustguard-operations run build",
+    "operations:test:responsive": "npm --prefix dustguard-operations run test:responsive",
     "dev": "node scripts/community-dev.js",
     "dev:community": "node scripts/community-dev.js",
     "dev:core": "npm --prefix app run dev",

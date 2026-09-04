@@ -318,7 +318,11 @@ export const CaseDetailPage: React.FC = () => {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => window.open(`/api/cases/${currentCase.id}/decision-pack`, '_blank')}
+              onClick={() => {
+                const token = localStorage.getItem('dustguard_token');
+                const url = `/api/cases/${currentCase.id}/decision-pack${token ? `?token=${encodeURIComponent(token)}` : ''}`;
+                window.open(url, '_blank');
+              }}
               icon={<FileText className="w-3.5 h-3.5" />}
             >
               Xuất Decision Pack

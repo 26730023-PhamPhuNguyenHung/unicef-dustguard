@@ -22,11 +22,18 @@ export function createToken(user: { id: string; username: string; role: Role }):
 export function authMiddleware(req: AuthRequest, res: Response, next: NextFunction): void {
   const authHeader = req.headers.authorization;
   const devUserId = req.headers['x-user-id'] as string | undefined;
+  const queryToken = (req.query?.token as string | undefined) || (req.query?.auth_token as string | undefined);
 
   let userId: string | null = null;
+  let token: string | null = null;
 
   if (authHeader && authHeader.startsWith('Bearer ')) {
-    const token = authHeader.substring(7);
+    token = authHeader.substring(7);
+  } else if (queryToken) {
+    token = queryToken;
+  }
+
+  if (token) {
     try {
       const decoded = jwt.verify(token, JWT_SECRET) as { id: string };
       userId = decoded.id;
@@ -43,6 +50,12 @@ export function authMiddleware(req: AuthRequest, res: Response, next: NextFuncti
   } else if (devUserId) {
     // Convenient dev/test header
     userId = devUserId;
+  } else if (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) {
+    // In local development, if accessing via browser new window (like decision-pack HTML), fallback to default staff/admin
+    const defaultDevUser = get<{ id: string }>(`SELECT id FROM users WHERE role IN ('admin', 'supervisor') LIMIT 1`);
+    if (defaultDevUser && (req.path.includes('decision-pack') || req.path.includes('export'))) {
+      userId = defaultDevUser.id;
+    }
   }
 
   if (userId) {

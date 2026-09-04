@@ -733,24 +733,30 @@ legalRouter.get('/:id/decision-pack', requireAuth, (req, res) => {
     </html>
   `;
 
-  res.json({
-    success: true,
-    data: {
-      case_id: id,
-      case_code: targetCase.case_code,
-      generated_at: new Date().toISOString(),
-      raw_data: {
-        targetCase,
-        signals,
-        evidence,
-        reviews,
-        inspections,
-        findings,
-        actions,
-        timeline,
-        closure,
+  // Return HTML first for direct browser viewing (Section 58: HTML first)
+  if (req.query.format === 'json' || (req.headers.accept?.includes('application/json') && !req.headers.accept?.includes('text/html'))) {
+    res.json({
+      success: true,
+      data: {
+        case_id: id,
+        case_code: targetCase.case_code,
+        generated_at: new Date().toISOString(),
+        raw_data: {
+          targetCase,
+          signals,
+          evidence,
+          reviews,
+          inspections,
+          findings,
+          actions,
+          timeline,
+          closure,
+        },
+        html,
       },
-      html,
-    },
-  });
+    });
+    return;
+  }
+
+  res.setHeader('Content-Type', 'text/html; charset=utf-8').send(html);
 });
