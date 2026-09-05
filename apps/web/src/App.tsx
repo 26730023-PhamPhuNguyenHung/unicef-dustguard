@@ -5,6 +5,7 @@ import { AppShell } from './components/layout/AppShell.js';
 import { ProtectedRoute } from './components/auth/ProtectedRoute.js';
 
 // Import các trang chính
+import { LandingPage } from './pages/LandingPage.js';
 import { DashboardPage } from './pages/DashboardPage.js';
 import { MapPage } from './pages/MapPage.js';
 import { ReportsListPage } from './pages/ReportsListPage.js';
@@ -43,6 +44,10 @@ export const App: React.FC = () => {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
+          {/* Landing Page công chúng độc lập */}
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/landing" element={<LandingPage />} />
+
           {/* Auth Routes không dùng AppShell */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
@@ -54,8 +59,7 @@ export const App: React.FC = () => {
             element={
               <AppShell>
                 <Routes>
-                  {/* Trang chủ & Dashboard */}
-                  <Route path="/" element={<DashboardPage />} />
+                  {/* Trang tổng quan cộng đồng */}
                   <Route path="/dashboard" element={<DashboardPage />} />
 
                   {/* Bản đồ */}
