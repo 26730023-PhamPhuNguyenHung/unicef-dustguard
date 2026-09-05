@@ -424,3 +424,135 @@ export interface EvidenceGap {
   suggestedCollectionMethod: string;
 }
 
+// -----------------------------------------------------------------------------
+// EVIDENCE PROVENANCE & STRICT GROUNDED INTELLIGENCE TYPES
+// SOURCE -> FACT -> EVIDENCE -> INFERENCE -> HUMAN DECISION
+// -----------------------------------------------------------------------------
+
+export type FactType =
+  | 'METADATA'
+  | 'COMMUNITY_CLAIM'
+  | 'INSPECTION_OBSERVATION'
+  | 'CHECKLIST_ITEM'
+  | 'FIELD_MEASUREMENT'
+  | 'EVIDENCE_ASSET'
+  | 'IOT_READING'
+  | 'IOT_ANOMALY'
+  | 'LEGAL_REVIEW'
+  | 'REMEDIATION_RESULT'
+  | 'HUMAN_DECISION';
+
+export type SemanticType = 'CLAIM' | 'OBSERVATION' | 'TELEMETRY' | 'DOCUMENT' | 'HUMAN_DECISION';
+export type VerificationState = 'UNVERIFIED' | 'PENDING' | 'VERIFIED' | 'REJECTED';
+export type IntegrityState = 'UNVERIFIED' | 'VERIFIED' | 'TAMPERED' | 'FILE_MISSING' | 'INVALID';
+
+export interface CaseFact {
+  id: string;
+  fact_type: FactType;
+  semantic_type: SemanticType;
+  title: string;
+  value: string;
+  source_type: 'COMMUNITY' | 'STAFF' | 'INSPECTOR' | 'IOT' | 'EVIDENCE' | 'SUPERVISOR' | 'SYSTEM';
+  source_id: string;
+  source_timestamp: string;
+  created_by?: string;
+  verification_state: VerificationState;
+  integrity_state: IntegrityState;
+  metadata?: any;
+}
+
+export type ConclusionLevel =
+  | 'INSUFFICIENT_EVIDENCE'
+  | 'PRELIMINARY'
+  | 'SUPPORTED'
+  | 'HUMAN_CONFIRMED';
+
+export interface AnalysisFinding {
+  id: string;
+  statement: string;
+  source_ids: string[];
+  legal_section_ids: string[];
+  confidence: number;
+  requires_human_review: boolean;
+}
+
+export interface MissingFact {
+  fact: string;
+  reason_needed: string;
+  recommended_verification_action: string;
+}
+
+export interface AnalysisRecommendedAction {
+  action_type: string;
+  reason: string;
+  source_ids: string[];
+  requires_human_approval: boolean;
+}
+
+export interface EvidenceMatrixRow {
+  finding_id: string;
+  statement: string;
+  sources: Array<{
+    id: string;
+    title: string;
+    semantic_type: SemanticType;
+    verification_state: VerificationState;
+    integrity_state: IntegrityState;
+  }>;
+  legal_provisions: Array<{
+    id: string;
+    number: string;
+    heading: string;
+    excerpt: string;
+  }>;
+  verification_status: string;
+  missing_items: string[];
+  confidence: number;
+  requires_human_review: boolean;
+}
+
+export interface AnalysisOutput {
+  conclusion_level: ConclusionLevel;
+  findings: AnalysisFinding[];
+  missing_facts: MissingFact[];
+  recommended_actions: AnalysisRecommendedAction[];
+  evidence_matrix?: EvidenceMatrixRow[];
+  disclaimer: string;
+}
+
+export type HumanDecisionType =
+  | 'ACCEPT_ASSESSMENT'
+  | 'REQUEST_MORE_VERIFICATION'
+  | 'REJECT_ASSESSMENT'
+  | 'SEND_TO_FIELD_INSPECTION'
+  | 'SEND_TO_LEGAL_REVIEW'
+  | 'CLOSE_INSUFFICIENT_EVIDENCE'
+  | 'CONFIRM_VIOLATION';
+
+export interface HumanDecision {
+  id: string;
+  case_id: string;
+  decision_type: HumanDecisionType;
+  actor_id: string;
+  actor_name: string;
+  actor_role: string;
+  reason: string;
+  analysis_run_id?: string;
+  source_snapshot_json: string;
+  created_at: string;
+}
+
+export interface AnalysisRun {
+  id: string;
+  case_id: string;
+  created_at: string;
+  created_by: string;
+  model: string;
+  prompt_version: string;
+  fact_snapshot_json: string;
+  legal_snapshot_json: string;
+  output_json: string;
+  validation_status: 'VALID' | 'REJECTED' | 'FAILED';
+}
+
+

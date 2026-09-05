@@ -1,6 +1,61 @@
 import { z } from 'zod';
 
-// AI Output Schema (Section 16)
+// Strict Evidence-Grounded Intelligence Output Schema
+// SOURCE -> FACT -> EVIDENCE -> INFERENCE -> HUMAN DECISION
+export const ConclusionLevelSchema = z.enum([
+  'INSUFFICIENT_EVIDENCE',
+  'PRELIMINARY',
+  'SUPPORTED',
+  'HUMAN_CONFIRMED',
+]);
+
+export const AnalysisFindingSchema = z.object({
+  id: z.string().min(1),
+  statement: z.string().min(3, 'Nội dung nhận định tối thiểu 3 ký tự'),
+  source_ids: z.array(z.string()).min(1, 'Finding bắt buộc phải trích dẫn ít nhất 1 source_id thực tế'),
+  legal_section_ids: z.array(z.string()),
+  confidence: z.number().min(0).max(1),
+  requires_human_review: z.boolean().default(true),
+});
+
+export const MissingFactSchema = z.object({
+  fact: z.string().min(1, 'Nội dung dữ kiện còn thiếu không được để trống'),
+  reason_needed: z.string().min(1, 'Lý do cần xác minh không được để trống'),
+  recommended_verification_action: z.string().min(1, 'Khuyến nghị hành động không được để trống'),
+});
+
+export const AnalysisRecommendedActionSchema = z.object({
+  action_type: z.string().min(1),
+  reason: z.string().min(1),
+  source_ids: z.array(z.string()).default([]),
+  requires_human_approval: z.boolean().default(true),
+});
+
+export const AnalysisOutputSchema = z.object({
+  conclusion_level: ConclusionLevelSchema,
+  findings: z.array(AnalysisFindingSchema),
+  missing_facts: z.array(MissingFactSchema),
+  recommended_actions: z.array(AnalysisRecommendedActionSchema),
+  disclaimer: z.string().min(1, 'Khuyến cáo pháp lý bắt buộc'),
+});
+
+export type StrictAnalysisOutput = z.infer<typeof AnalysisOutputSchema>;
+
+export const HumanDecisionSubmitSchema = z.object({
+  decision_type: z.enum([
+    'ACCEPT_ASSESSMENT',
+    'REQUEST_MORE_VERIFICATION',
+    'REJECT_ASSESSMENT',
+    'SEND_TO_FIELD_INSPECTION',
+    'SEND_TO_LEGAL_REVIEW',
+    'CLOSE_INSUFFICIENT_EVIDENCE',
+    'CONFIRM_VIOLATION',
+  ]),
+  reason: z.string().min(3, 'Lý do quyết định tối thiểu 3 ký tự'),
+  analysis_run_id: z.string().optional(),
+});
+
+// Backward-compatible AI Output Schema
 export const LegalAIPotentialIssueSchema = z.object({
   title: z.string().min(1, 'Tiêu đề vấn đề không được để trống'),
   reason: z.string().min(1, 'Lý do không được để trống'),
@@ -19,6 +74,10 @@ export const LegalAIOutputSchema = z.object({
   suggestedChecklistItems: z.array(z.string()),
   confidence: z.number().min(0).max(1),
   disclaimer: z.string().min(1, 'Khuyến cáo pháp lý bắt buộc'),
+  conclusion_level: ConclusionLevelSchema.optional(),
+  findings: z.array(AnalysisFindingSchema).optional(),
+  missing_facts: z.array(MissingFactSchema).optional(),
+  recommended_actions: z.array(AnalysisRecommendedActionSchema).optional(),
 });
 
 export type LegalAIOutput = z.infer<typeof LegalAIOutputSchema>;

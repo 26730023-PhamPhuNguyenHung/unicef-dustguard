@@ -25,18 +25,22 @@ import {
   Upload,
   ExternalLink,
   RotateCcw,
+  FolderCheck,
+  Printer,
+  CheckSquare,
 } from 'lucide-react';
 import { Case, CaseStatus, StaffAssignment } from '@dustguard-operations/shared';
 
 const TABS = [
   { id: 'overview', label: 'Tổng quan', icon: <FileText className="w-4 h-4" /> },
-  { id: 'signals', label: 'Tín hiệu', icon: <Radio className="w-4 h-4" /> },
-  { id: 'evidence', label: 'Bằng chứng', icon: <Image className="w-4 h-4" /> },
-  { id: 'legal', label: 'Pháp lý', icon: <Shield className="w-4 h-4" /> },
-  { id: 'iot', label: 'IoT Quan trắc', icon: <Radio className="w-4 h-4" /> },
-  { id: 'inspection', label: 'Kiểm tra', icon: <ClipboardCheck className="w-4 h-4" /> },
-  { id: 'actions', label: 'Khắc phục', icon: <Wrench className="w-4 h-4" /> },
   { id: 'timeline', label: 'Dòng thời gian', icon: <Clock className="w-4 h-4" /> },
+  { id: 'signals', label: 'Phản ánh', icon: <Radio className="w-4 h-4" /> },
+  { id: 'iot', label: 'IoT Quan trắc', icon: <Radio className="w-4 h-4" /> },
+  { id: 'legal', label: 'Pháp lý', icon: <Shield className="w-4 h-4" /> },
+  { id: 'inspection', label: 'Kiểm tra', icon: <ClipboardCheck className="w-4 h-4" /> },
+  { id: 'evidence', label: 'Bằng chứng', icon: <Image className="w-4 h-4" /> },
+  { id: 'actions', label: 'Khắc phục', icon: <Wrench className="w-4 h-4" /> },
+  { id: 'dossier', label: 'Hồ sơ', icon: <FolderCheck className="w-4 h-4" /> },
 ];
 
 export const CaseDetailPage: React.FC = () => {
@@ -74,6 +78,16 @@ export const CaseDetailPage: React.FC = () => {
   const [actionDesc, setActionDesc] = useState('');
   const [actionParty, setActionParty] = useState('');
   const [actionDue, setActionDue] = useState('');
+
+  // Create Task Modal State
+  const [taskModalOpen, setTaskModalOpen] = useState(false);
+  const [taskTitle, setTaskTitle] = useState('');
+  const [taskType, setTaskType] = useState('FIELD_INSPECTION');
+  const [taskPriority, setTaskPriority] = useState('NORMAL');
+  const [taskDue, setTaskDue] = useState('');
+  const [taskNotes, setTaskNotes] = useState('');
+  const [taskAssigneeId, setTaskAssigneeId] = useState('');
+  const [submittingTask, setSubmittingTask] = useState(false);
 
   const [submitting, setSubmitting] = useState(false);
 
@@ -136,6 +150,49 @@ export const CaseDetailPage: React.FC = () => {
       error('Phân công thất bại', err.detail);
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleOpenTaskModal = async () => {
+    try {
+      if (staffList.length === 0) {
+        const res = await api.admin.users();
+        const staffMembers = res.users.filter((u: any) => u.role === 'staff' && u.active === 1);
+        setStaffList(staffMembers);
+        if (staffMembers.length > 0) setTaskAssigneeId(staffMembers[0].id);
+      }
+      setTaskTitle(`Kiểm tra thực địa vụ việc ${caseData?.case?.case_code}`);
+      setTaskModalOpen(true);
+    } catch {
+      setTaskModalOpen(true);
+    }
+  };
+
+  const handleCreateTaskSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!id) return;
+    try {
+      setSubmittingTask(true);
+      const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+      await api.tasks.create({
+        case_id: id,
+        title: taskTitle,
+        description: taskNotes || `Nhiệm vụ nghiệp vụ xử lý hồ sơ ${caseData?.case?.case_code}`,
+        task_type: taskType,
+        priority: taskPriority,
+        due_at: taskDue || tomorrow,
+        assigned_to: taskAssigneeId || undefined,
+        notes: taskNotes,
+      });
+      success('Tạo nhiệm vụ thành công', 'Nhiệm vụ mới đã được chuyển vào hàng đợi vận hành');
+      setTaskModalOpen(false);
+      setTaskTitle('');
+      setTaskNotes('');
+      loadCaseDetail();
+    } catch (err: any) {
+      error('Lỗi tạo nhiệm vụ', err.detail);
+    } finally {
+      setSubmittingTask(false);
     }
   };
 
@@ -288,6 +345,74 @@ export const CaseDetailPage: React.FC = () => {
         onPrimaryAction={handlePrimaryCtaClick}
         onSecondaryAction={() => handleOpenAssignModal()}
       />
+
+      {/* Primary Operations Action Bar (Section 6) */}
+      <div className="civic-card p-3 bg-white border border-slate-200 flex flex-wrap items-center justify-between gap-2 shadow-xs">
+        <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+          Thao tác trực tiếp:
+        </span>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            icon={<User className="w-3.5 h-3.5" />}
+            onClick={handleOpenAssignModal}
+          >
+            Phân công
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            icon={<CheckSquare className="w-3.5 h-3.5" />}
+            onClick={handleOpenTaskModal}
+          >
+            Tạo nhiệm vụ
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            icon={<Shield className="w-3.5 h-3.5" />}
+            onClick={() => navigate(`/cases/${currentCase.id}/legal`)}
+          >
+            Yêu cầu pháp chế
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            icon={<Calendar className="w-3.5 h-3.5" />}
+            onClick={() => navigate(`/cases/${currentCase.id}/inspection/new`)}
+          >
+            Lên lịch kiểm tra
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            icon={<Upload className="w-3.5 h-3.5" />}
+            onClick={() => setUploadModalOpen(true)}
+          >
+            Thêm bằng chứng
+          </Button>
+          {currentCase.status !== 'CLOSED' ? (
+            <Button
+              variant="danger"
+              size="sm"
+              icon={<CheckCircle2 className="w-3.5 h-3.5" />}
+              onClick={() => setCloseModalOpen(true)}
+            >
+              Đóng vụ việc
+            </Button>
+          ) : (
+            <Button
+              variant="outline"
+              size="sm"
+              icon={<RotateCcw className="w-3.5 h-3.5" />}
+              onClick={() => setReopenModalOpen(true)}
+            >
+              Mở lại vụ việc
+            </Button>
+          )}
+        </div>
+      </div>
 
       {/* Next Action Engine Banner (Section 16 & 58) */}
       {nextActionData && (
@@ -818,11 +943,147 @@ export const CaseDetailPage: React.FC = () => {
         </div>
       )}
 
-      {/* TAB 7: TIMELINE */}
+      {/* TAB: TIMELINE */}
       {activeTab === 'timeline' && (
         <div className="civic-card p-6">
           <h3 className="text-base font-bold text-slate-900 mb-6">Dòng thời gian Vụ việc (SSOT Timeline)</h3>
           <TimelineView timeline={timeline} />
+        </div>
+      )}
+
+      {/* TAB 9: DOSSIER (Hồ sơ Vụ việc & Quyết định xử lý) */}
+      {activeTab === 'dossier' && (
+        <div className="civic-card p-6 space-y-6">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-4">
+            <div>
+              <div className="flex items-center gap-2">
+                <FolderCheck className="w-5 h-5 text-dustguard-teal" />
+                <h3 className="text-base font-bold text-slate-900">Hồ Sơ Nghiệp Vụ Vụ Việc (Case Dossier & Decision Pack)</h3>
+              </div>
+              <p className="text-xs text-slate-500 mt-0.5">Tập hợp toàn bộ chứng cứ pháp lý, biên bản hiện trường và tiến trình xử lý vụ việc</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                icon={<Printer className="w-4 h-4" />}
+                onClick={() => window.print()}
+              >
+                In Hồ Sơ
+              </Button>
+              <Button
+                variant="primary"
+                size="sm"
+                icon={<FileText className="w-4 h-4" />}
+                onClick={() => {
+                  const token = localStorage.getItem('dustguard_token');
+                  const url = `/api/cases/${currentCase.id}/decision-pack${token ? `?token=${encodeURIComponent(token)}` : ''}`;
+                  window.open(url, '_blank');
+                }}
+              >
+                Tải Decision Pack JSON
+              </Button>
+            </div>
+          </div>
+
+          {/* Dossier sections grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            {/* 1. Legal Review Summary */}
+            <div className="p-4 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
+              <span className="font-bold text-slate-800 uppercase tracking-wider block text-[11px]">
+                1. Thẩm tra Pháp lý & Căn cứ Xử lý
+              </span>
+              {legalReviews.length > 0 ? (
+                <div className="space-y-1">
+                  <p className="font-semibold text-slate-900">Trạng thái: <span className="text-dustguard-teal">{legalReviews[0].status}</span></p>
+                  <p className="text-slate-700">{legalReviews[0].summary}</p>
+                  {legalReviews[0].legal_basis_note && (
+                    <p className="text-slate-500 font-mono text-[11px]">Căn cứ: {legalReviews[0].legal_basis_note}</p>
+                  )}
+                  <p className="text-[11px] text-slate-400">Chuyên viên: {legalReviews[0].reviewer_name}</p>
+                </div>
+              ) : (
+                <p className="text-slate-400 italic">Chưa có kết luận thẩm tra pháp lý.</p>
+              )}
+            </div>
+
+            {/* 2. Field Inspections Summary */}
+            <div className="p-4 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
+              <span className="font-bold text-slate-800 uppercase tracking-wider block text-[11px]">
+                2. Thanh tra Hiện trường ({inspections.length} đợt)
+              </span>
+              {inspections.length > 0 ? (
+                <div className="space-y-1.5">
+                  {inspections.map((insp: any) => (
+                    <div key={insp.id} className="p-2 bg-white rounded border border-slate-200 flex items-center justify-between">
+                      <div>
+                        <p className="font-semibold text-slate-800">{insp.template_name}</p>
+                        <p className="text-[11px] text-slate-500">Ngày: {insp.scheduled_date} • Cán bộ: {insp.inspector_name}</p>
+                      </div>
+                      <span className={`px-2 py-0.5 rounded font-bold text-[10px] ${
+                        insp.status === 'COMPLETED' ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-700'
+                      }`}>
+                        {insp.status}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-slate-400 italic">Chưa có đợt kiểm tra hiện trường nào.</p>
+              )}
+            </div>
+
+            {/* 3. Evidence Integrity Summary */}
+            <div className="p-4 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
+              <span className="font-bold text-slate-800 uppercase tracking-wider block text-[11px]">
+                3. Toàn vẹn Bằng chứng Số ({evidence.length} tệp)
+              </span>
+              {evidence.length > 0 ? (
+                <div className="space-y-1">
+                  <p className="text-slate-700">Tất cả tệp minh chứng đều được tính toán mã băm SHA-256 đối chứng.</p>
+                  <div className="max-h-32 overflow-y-auto space-y-1">
+                    {evidence.map((ev: any) => (
+                      <div key={ev.id} className="text-[11px] font-mono text-slate-600 bg-white p-1.5 rounded border border-slate-200 truncate">
+                        ✓ {ev.file_name} [{ev.source_type}] - {ev.sha256.substring(0, 16)}...
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <p className="text-slate-400 italic">Chưa có bằng chứng số nào được tải lên.</p>
+              )}
+            </div>
+
+            {/* 4. Remediation & Closure Summary */}
+            <div className="p-4 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
+              <span className="font-bold text-slate-800 uppercase tracking-wider block text-[11px]">
+                4. Khắc phục & Nghiệm thu ({actions.length} yêu cầu)
+              </span>
+              {actions.length > 0 ? (
+                <div className="space-y-1">
+                  {actions.map((act: any) => (
+                    <div key={act.id} className="p-2 bg-white rounded border border-slate-200 flex items-center justify-between">
+                      <span className="font-medium text-slate-800 truncate">{act.title}</span>
+                      <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
+                        act.status === 'VERIFIED' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
+                      }`}>
+                        {act.status}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-slate-400 italic">Không có yêu cầu khắc phục nào được ghi nhận.</p>
+              )}
+              {closure && (
+                <div className="pt-2 border-t border-slate-200 text-emerald-800">
+                  <p className="font-bold">Đã đóng vụ việc ngày: {closure.closed_at}</p>
+                  <p className="text-[11px]">Lý do: {closure.closure_reason}</p>
+                  <p className="text-[11px]">Người ký duyệt: {closure.closed_by_name}</p>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       )}
 
@@ -1056,6 +1317,113 @@ export const CaseDetailPage: React.FC = () => {
             </Button>
             <Button type="submit" variant="primary" loading={submitting}>
               Ban Hành Yêu Cầu
+            </Button>
+          </div>
+        </form>
+      </Modal>
+
+      {/* MODAL: CREATE OPERATIONAL TASK */}
+      <Modal
+        isOpen={taskModalOpen}
+        onClose={() => setTaskModalOpen(false)}
+        title="Tạo Nhiệm Vụ Vận Hành Mới"
+        maxWidth="lg"
+      >
+        <form onSubmit={handleCreateTaskSubmit} className="space-y-4 text-xs sm:text-sm">
+          <div>
+            <label className="block font-semibold text-slate-700 mb-1">
+              Tiêu đề nhiệm vụ <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              required
+              value={taskTitle}
+              onChange={e => setTaskTitle(e.target.value)}
+              placeholder="VD: Kiểm tra thực địa tại công trình..."
+              className="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-dustguard-red text-xs sm:text-sm"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block font-semibold text-slate-700 mb-1">Loại nhiệm vụ</label>
+              <select
+                value={taskType}
+                onChange={e => setTaskType(e.target.value)}
+                className="w-full p-2.5 border border-slate-300 rounded-lg bg-white outline-none focus:ring-2 focus:ring-dustguard-red text-xs sm:text-sm"
+              >
+                <option value="FIELD_INSPECTION">Kiểm tra hiện trường (FIELD_INSPECTION)</option>
+                <option value="VERIFICATION">Xác minh thông tin (VERIFICATION)</option>
+                <option value="LEGAL_REVIEW">Rà soát pháp lý (LEGAL_REVIEW)</option>
+                <option value="CHECKLIST_PREP">Chuẩn bị checklist (CHECKLIST_PREP)</option>
+                <option value="EVIDENCE_COLLECTION">Thu thập bằng chứng (EVIDENCE_COLLECTION)</option>
+                <option value="CONTRACTOR_LIAISON">Liên hệ nhà thầu (CONTRACTOR_LIAISON)</option>
+                <option value="REMEDIATION_FOLLOWUP">Theo dõi khắc phục (REMEDIATION_FOLLOWUP)</option>
+                <option value="REINSPECTION">Tái kiểm tra (REINSPECTION)</option>
+                <option value="DOSSIER_COMPLETION">Hoàn thiện hồ sơ (DOSSIER_COMPLETION)</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block font-semibold text-slate-700 mb-1">Mức độ ưu tiên</label>
+              <select
+                value={taskPriority}
+                onChange={e => setTaskPriority(e.target.value)}
+                className="w-full p-2.5 border border-slate-300 rounded-lg bg-white outline-none focus:ring-2 focus:ring-dustguard-red text-xs sm:text-sm"
+              >
+                <option value="LOW">Thấp (LOW)</option>
+                <option value="NORMAL">Bình thường (NORMAL)</option>
+                <option value="HIGH">Cao (HIGH)</option>
+                <option value="URGENT">Khẩn cấp (URGENT)</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block font-semibold text-slate-700 mb-1">Cán bộ phụ trách</label>
+              <select
+                value={taskAssigneeId}
+                onChange={e => setTaskAssigneeId(e.target.value)}
+                className="w-full p-2.5 border border-slate-300 rounded-lg bg-white outline-none focus:ring-2 focus:ring-dustguard-red text-xs sm:text-sm"
+              >
+                <option value="">-- Chưa giao (Hàng đợi chung) --</option>
+                {staffList.map(st => (
+                  <option key={st.id} value={st.id}>
+                    {st.full_name} ({st.department})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block font-semibold text-slate-700 mb-1">Hạn hoàn thành</label>
+              <input
+                type="date"
+                value={taskDue}
+                onChange={e => setTaskDue(e.target.value)}
+                className="w-full p-2.5 border border-slate-300 rounded-lg outline-none text-xs sm:text-sm"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block font-semibold text-slate-700 mb-1">Ghi chú chỉ đạo</label>
+            <textarea
+              rows={3}
+              value={taskNotes}
+              onChange={e => setTaskNotes(e.target.value)}
+              placeholder="Yêu cầu cụ thể cho cán bộ xử lý..."
+              className="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-dustguard-red text-xs sm:text-sm"
+            />
+          </div>
+
+          <div className="pt-3 border-t border-slate-200 flex justify-end gap-2">
+            <Button type="button" variant="outline" onClick={() => setTaskModalOpen(false)}>
+              Hủy
+            </Button>
+            <Button type="submit" variant="primary" loading={submittingTask}>
+              Tạo Nhiệm Vụ
             </Button>
           </div>
         </form>

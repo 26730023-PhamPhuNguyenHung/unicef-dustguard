@@ -56,6 +56,8 @@ export function seedDatabase() {
   console.log('[Database Seed] Starting database seeding...');
 
   const tables = [
+    'human_decisions',
+    'analysis_runs',
     'automation_runs',
     'automation_rules',
     'iot_events',

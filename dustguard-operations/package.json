@@ -6,7 +6,8 @@
   "scripts": {
     "setup": "node scripts/setup.js",
     "dev": "node scripts/dev.js",
-    "test": "npx tsx --test tests/operations-api.test.js",
+    "test": "npx tsx --test --test-concurrency=1 tests/operations-api.test.js tests/evidence-grounded-intelligence.test.js",
+    "test:provenance": "npx tsx --test tests/evidence-grounded-intelligence.test.js",
     "test:responsive": "node scripts/verify-responsive.js",
     "build": "npx vite build apps/web",
     "db:migrate": "npx tsx apps/server/src/db/migrate.ts",

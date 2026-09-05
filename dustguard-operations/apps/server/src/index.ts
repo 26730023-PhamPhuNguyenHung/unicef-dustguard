@@ -22,6 +22,8 @@ import { signalsRouter } from './modules/signals/signals.router.js';
 import { tasksRouter } from './modules/tasks/tasks.router.js';
 import { iotRouter } from './modules/iot/iot.router.js';
 import { automationsRouter } from './modules/automations/automations.router.js';
+import { reportsRouter } from './modules/reports/reports.router.js';
+import { searchRouter } from './modules/search/search.router.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -92,6 +94,10 @@ app.use('/api/remediation', actionsRouter);
 
 // Evidence upload
 app.use('/api/evidence', evidenceRouter);
+
+// Reports & Unified Search
+app.use('/api/reports', reportsRouter);
+app.use('/api/search', searchRouter);
 
 // Notifications & Integrations & Admin
 app.use('/api/notifications', notificationsRouter);

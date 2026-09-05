@@ -29,6 +29,8 @@ import { SupervisorWorkloadPage } from './pages/SupervisorWorkloadPage';
 import { AdminUsersPage } from './pages/AdminUsersPage';
 import { AdminAuditPage } from './pages/AdminAuditPage';
 import { AdminSettingsPage } from './pages/AdminSettingsPage';
+import { EvidencePage } from './pages/EvidencePage';
+import { ReportsPage } from './pages/ReportsPage';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, loading } = useAuth();
@@ -105,6 +107,12 @@ export function App() {
 
               {/* Automations */}
               <Route path="automations" element={<AutomationsPage />} />
+
+              {/* Evidence Management */}
+              <Route path="evidence" element={<EvidencePage />} />
+
+              {/* Operational Reports */}
+              <Route path="reports" element={<ReportsPage />} />
 
               {/* Staff & Admin */}
               <Route path="notifications" element={<NotificationsPage />} />

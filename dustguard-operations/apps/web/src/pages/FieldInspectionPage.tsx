@@ -35,6 +35,20 @@ export const FieldInspectionPage: React.FC = () => {
   const [overrideReason, setOverrideReason] = useState('');
   const [overrideModalOpen, setOverrideModalOpen] = useState(false);
 
+  // Arrival Confirmation State (Section 13 C)
+  const [arrivalTime, setArrivalTime] = useState(new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }));
+  const [arrivalGps, setArrivalGps] = useState('');
+  const [arrivalOverrideReason, setArrivalOverrideReason] = useState('');
+  const [gettingGps, setGettingGps] = useState(false);
+
+  // Measurements & In-situ Data (Section 13 B & 14)
+  const [pm25Measured, setPm25Measured] = useState('');
+  const [weatherCondition, setWeatherCondition] = useState('Nắng nhẹ, gió thoảng');
+  const [contractorRep, setContractorRep] = useState('');
+
+  // Draft Save State (Section 13 E)
+  const [draftSavedAt, setDraftSavedAt] = useState('');
+
   useEffect(() => {
     if (id) loadInspection();
   }, [id]);
@@ -46,11 +60,69 @@ export const FieldInspectionPage: React.FC = () => {
       setData(res.inspection);
       setItems(res.items);
       setInspectionNote(res.inspection.note || '');
+
+      // Check local draft
+      const draftRaw = localStorage.getItem(`dustguard_draft_inspection_${id}`);
+      if (draftRaw) {
+        try {
+          const draft = JSON.parse(draftRaw);
+          if (draft.items && draft.items.length > 0) {
+            setItems(draft.items);
+            if (draft.inspectionNote) setInspectionNote(draft.inspectionNote);
+            if (draft.arrivalTime) setArrivalTime(draft.arrivalTime);
+            if (draft.arrivalGps) setArrivalGps(draft.arrivalGps);
+            if (draft.arrivalOverrideReason) setArrivalOverrideReason(draft.arrivalOverrideReason);
+            if (draft.pm25Measured) setPm25Measured(draft.pm25Measured);
+            if (draft.weatherCondition) setWeatherCondition(draft.weatherCondition);
+            if (draft.contractorRep) setContractorRep(draft.contractorRep);
+            if (draft.savedAt) setDraftSavedAt(new Date(draft.savedAt).toLocaleTimeString('vi-VN'));
+          }
+        } catch {}
+      }
     } catch (err: any) {
       error('Lỗi', err.detail);
     } finally {
       setLoading(false);
     }
+  };
+
+  // Auto-save draft to localStorage (Section 13 E)
+  useEffect(() => {
+    if (id && items.length > 0 && !loading) {
+      const draft = {
+        items,
+        inspectionNote,
+        arrivalTime,
+        arrivalGps,
+        arrivalOverrideReason,
+        pm25Measured,
+        weatherCondition,
+        contractorRep,
+        savedAt: new Date().toISOString(),
+      };
+      localStorage.setItem(`dustguard_draft_inspection_${id}`, JSON.stringify(draft));
+      setDraftSavedAt(new Date().toLocaleTimeString('vi-VN'));
+    }
+  }, [id, items, inspectionNote, arrivalTime, arrivalGps, arrivalOverrideReason, pm25Measured, weatherCondition, contractorRep, loading]);
+
+  const handleGetGps = () => {
+    if (!navigator.geolocation) {
+      setArrivalOverrideReason('Thiết bị không hỗ trợ Geolocation HTML5');
+      return;
+    }
+    setGettingGps(true);
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        setArrivalGps(`${pos.coords.latitude.toFixed(6)}, ${pos.coords.longitude.toFixed(6)}`);
+        setGettingGps(false);
+        success('Định vị thành công', 'Đã ghi nhận tọa độ GPS tại hiện trường');
+      },
+      () => {
+        setGettingGps(false);
+        setArrivalOverrideReason('Không thể lấy tín hiệu GPS thực địa (mất sóng/từ chối quyền)');
+      },
+      { timeout: 8000 }
+    );
   };
 
   const handleStatusChange = (itemId: string, status: InspectionItemStatus) => {
@@ -78,6 +150,15 @@ export const FieldInspectionPage: React.FC = () => {
 
     setSubmitting(true);
     try {
+      const compositeNote = [
+        inspectionNote,
+        `--- THÔNG SỐ ĐO & THỰC ĐỊA ---`,
+        `Giờ đến: ${arrivalTime} | Tọa độ GPS: ${arrivalGps || 'Xác nhận thủ công: ' + arrivalOverrideReason}`,
+        pm25Measured ? `Nồng độ bụi đo tại chỗ (TSP/PM2.5): ${pm25Measured} µg/m³` : '',
+        `Thời tiết: ${weatherCondition}`,
+        contractorRep ? `Đại diện nhà thầu làm việc: ${contractorRep}` : '',
+      ].filter(Boolean).join('\n');
+
       await api.inspections.submit(id!, {
         items: items.map(it => ({
           item_id: it.id,
@@ -85,9 +166,12 @@ export const FieldInspectionPage: React.FC = () => {
           note: it.note,
           evidence_asset_id: it.evidence_asset_id,
         })),
-        note: inspectionNote,
+        note: compositeNote,
         override_reason: overrideReason || undefined,
       });
+
+      // Clear draft on successful submission
+      localStorage.removeItem(`dustguard_draft_inspection_${id}`);
 
       success('Hoàn thành kiểm tra', 'Biên bản thực địa đã được ghi nhận vào hệ thống');
       navigate(`/inspections/${id}/result`);
@@ -123,9 +207,16 @@ export const FieldInspectionPage: React.FC = () => {
               </h1>
             </div>
           </div>
-          <span className="text-xs font-bold text-slate-600 bg-slate-100 px-2.5 py-1 rounded-full">
-            {completedCount}/{items.length} xong
-          </span>
+          <div className="text-right">
+            <span className="text-xs font-bold text-slate-600 bg-slate-100 px-2.5 py-1 rounded-full block">
+              {completedCount}/{items.length} xong
+            </span>
+            {draftSavedAt && (
+              <span className="text-[10px] text-emerald-700 block mt-0.5 font-medium">
+                ✓ Đã lưu nháp {draftSavedAt}
+              </span>
+            )}
+          </div>
         </div>
 
         {/* Progress bar */}
@@ -134,6 +225,79 @@ export const FieldInspectionPage: React.FC = () => {
             className="bg-dustguard-red h-full transition-all duration-300"
             style={{ width: `${(completedCount / Math.max(1, items.length)) * 100}%` }}
           />
+        </div>
+      </div>
+
+      {/* Arrival Confirmation & In-situ Measurements (Section 13 C & B) */}
+      <div className="civic-card p-4 space-y-3 bg-white border border-slate-200">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+          <span className="text-xs font-bold text-slate-800 uppercase flex items-center gap-1.5">
+            <MapPin className="w-4 h-4 text-dustguard-red" />
+            Xác nhận có mặt tại hiện trường (Arrival Check-in)
+          </span>
+          <span className="text-[11px] font-mono text-slate-500">Giờ: {arrivalTime}</span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+          <div>
+            <label className="block text-slate-600 font-medium mb-1">Tọa độ GPS hiện trường:</label>
+            <div className="flex gap-1.5">
+              <input
+                type="text"
+                value={arrivalGps}
+                onChange={e => setArrivalGps(e.target.value)}
+                placeholder="10.8231, 106.6297"
+                className="flex-1 p-2 border border-slate-300 rounded text-xs font-mono outline-none"
+              />
+              <Button type="button" variant="outline" size="sm" loading={gettingGps} onClick={handleGetGps}>
+                Lấy GPS
+              </Button>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-slate-600 font-medium mb-1">Xác nhận thủ công (nếu mất GPS):</label>
+            <input
+              type="text"
+              value={arrivalOverrideReason}
+              onChange={e => setArrivalOverrideReason(e.target.value)}
+              placeholder="VD: Cán bộ đã có mặt tại cổng chính công trình..."
+              className="w-full p-2 border border-slate-300 rounded text-xs outline-none"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs pt-1 border-t border-slate-100">
+          <div>
+            <label className="block text-slate-600 font-medium mb-1">Đo nhanh bụi TSP/PM2.5:</label>
+            <input
+              type="number"
+              value={pm25Measured}
+              onChange={e => setPm25Measured(e.target.value)}
+              placeholder="µg/m³ (tùy chọn)"
+              className="w-full p-2 border border-slate-300 rounded text-xs outline-none"
+            />
+          </div>
+          <div>
+            <label className="block text-slate-600 font-medium mb-1">Thời tiết / Hướng gió:</label>
+            <input
+              type="text"
+              value={weatherCondition}
+              onChange={e => setWeatherCondition(e.target.value)}
+              placeholder="VD: Gió cấp 3, nắng gắt"
+              className="w-full p-2 border border-slate-300 rounded text-xs outline-none"
+            />
+          </div>
+          <div>
+            <label className="block text-slate-600 font-medium mb-1">Đại diện đơn vị thi công:</label>
+            <input
+              type="text"
+              value={contractorRep}
+              onChange={e => setContractorRep(e.target.value)}
+              placeholder="Họ tên, SĐT liên hệ"
+              className="w-full p-2 border border-slate-300 rounded text-xs outline-none"
+            />
+          </div>
         </div>
       </div>
 

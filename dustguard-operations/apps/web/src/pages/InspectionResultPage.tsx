@@ -92,14 +92,14 @@ export const InspectionResultPage: React.FC = () => {
       <div className="civic-card p-6 space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
-            Phát hiện vi phạm tại hiện trường ({findings.length})
+            Ghi nhận hiện trường không đạt chuẩn ({findings.length})
           </h3>
           <span className="text-xs text-slate-400">Phân loại vận hành</span>
         </div>
 
         {findings.length === 0 ? (
           <div className="text-center py-6 text-emerald-700 text-sm font-medium bg-emerald-50 rounded border border-emerald-200">
-            Tuyệt vời! Không ghi nhận vi phạm nào tại hiện trường.
+            Tuyệt vời! Toàn bộ các hạng mục kiểm tra đều đạt chuẩn quy định môi trường.
           </div>
         ) : (
           <div className="space-y-3">
@@ -124,20 +124,74 @@ export const InspectionResultPage: React.FC = () => {
           </div>
         )}
 
+        {/* Recommended Next Action Matrix (Section 14) */}
+        <div className="pt-4 border-t border-slate-200 space-y-3">
+          <div className="flex items-center gap-2">
+            <Wrench className="w-4 h-4 text-dustguard-red" />
+            <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+              Đề xuất Bước Tiếp Theo (Recommended Next Action - Section 14)
+            </h4>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+            {failCount > 0 ? (
+              <>
+                <Link
+                  to={`/cases/${inspection.case_id}`}
+                  className="p-3 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-between transition-colors shadow-2xs"
+                >
+                  <div>
+                    <strong className="text-slate-900 block">1. Ban hành Yêu cầu Khắc phục</strong>
+                    <span className="text-[11px] text-slate-500">Yêu cầu nhà thầu giăng lưới, dập bụi trong 48h</span>
+                  </div>
+                  <Wrench className="w-4 h-4 text-dustguard-red shrink-0" />
+                </Link>
+
+                <Link
+                  to={`/cases/${inspection.case_id}/legal`}
+                  className="p-3 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-between transition-colors shadow-2xs"
+                >
+                  <div>
+                    <strong className="text-slate-900 block">2. Chuyển Rà soát Pháp chế</strong>
+                    <span className="text-[11px] text-slate-500">Lập phiếu lập luận đối chiếu NĐ 45/2022</span>
+                  </div>
+                  <FileCheck2 className="w-4 h-4 text-dustguard-teal shrink-0" />
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link
+                  to={`/cases/${inspection.case_id}`}
+                  className="p-3 bg-white hover:bg-slate-50 border border-emerald-200 rounded-lg flex items-center justify-between transition-colors shadow-2xs"
+                >
+                  <div>
+                    <strong className="text-emerald-900 block">1. Xem xét Kết thúc Hồ sơ</strong>
+                    <span className="text-[11px] text-slate-500">Hiện trường đạt chuẩn, chuyển phê duyệt đóng</span>
+                  </div>
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                </Link>
+
+                <Link
+                  to={`/cases/${inspection.case_id}`}
+                  className="p-3 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-between transition-colors shadow-2xs"
+                >
+                  <div>
+                    <strong className="text-slate-900 block">2. Về Chi tiết Vụ việc</strong>
+                    <span className="text-[11px] text-slate-500">Xem dòng thời gian và quản lý tổng thể</span>
+                  </div>
+                  <ArrowLeft className="w-4 h-4 text-slate-600 shrink-0" />
+                </Link>
+              </>
+            )}
+          </div>
+        </div>
+
         <div className="pt-4 border-t border-slate-200 flex items-center justify-between">
           <Link to={`/cases/${inspection.case_id}`}>
             <Button variant="outline">
               &larr; Về Hồ Sơ Vụ Việc
             </Button>
           </Link>
-
-          {failCount > 0 && (
-            <Link to={`/cases/${inspection.case_id}`}>
-              <Button variant="primary" icon={<Wrench className="w-4 h-4" />}>
-                Ban Hành Yêu Cầu Khắc Phục
-              </Button>
-            </Link>
-          )}
         </div>
       </div>
     </div>

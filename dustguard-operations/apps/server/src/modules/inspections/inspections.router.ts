@@ -325,15 +325,15 @@ inspectionsRouter.post('/:id/submit', requirePermission('inspection:submit'), (r
         const findingId = `fnd-${crypto.randomUUID().substring(0, 8)}`;
         run(
           `INSERT INTO inspection_findings (id, inspection_id, case_id, category, finding, severity, legal_section_id, evidence_asset_id, staff_note, created_at)
-           VALUES (?, ?, ?, 'Vi phạm kiểm soát bụi', ?, 'MEDIUM', ?, ?, ?, datetime('now'))`,
+           VALUES (?, ?, ?, 'Dấu hiệu không đạt chuẩn kiểm soát bụi', ?, 'MEDIUM', ?, ?, ?, datetime('now'))`,
           [
             findingId,
             id,
             inspection.case_id,
-            `Tiêu chuẩn không đạt: ${fi.label}`,
+            `Ghi nhận hiện trường không đạt: ${fi.label}`,
             fi.legal_id || null,
             fi.evidence_asset_id || null,
-            fi.note || 'Cán bộ phát hiện không đạt chuẩn quy chuẩn môi trường',
+            fi.note || 'Cán bộ ghi nhận hiện trường chưa đạt yêu cầu kỹ thuật môi trường',
           ]
         );
       }

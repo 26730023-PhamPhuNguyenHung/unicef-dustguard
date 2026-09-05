@@ -142,3 +142,33 @@
   2. Ở phía Frontend, khi gọi `window.open()`, chủ động trích xuất token từ localStorage và đính kèm vào URL.
   3. Hỗ trợ cơ chế phân quyền định dạng thông minh: trả về `text/html; charset=utf-8` khi trình duyệt mở trực tiếp (`Accept: text/html`) và trả về JSON có cấu trúc khi gọi qua API (`Accept: application/json` hoặc `?format=json`).
 
+---
+
+### 10. Xung Đột Dữ Liệu Khi Chạy Nhiều File Test Cùng Lúc Trên File SQLite Duy Nhất
+- **Vấn đề**: `node:test` theo mặc định thực thi các file test (`tests/*.test.js`) song song (parallel). Khi nhiều file test cùng gọi hàm `seedDatabase()` trong hook `before()`, các tiến trình đồng thời thực thi lệnh `DROP TABLE` và `INSERT INTO users`, gây lỗi `UNIQUE constraint failed: users.email` hoặc để lại dữ liệu rác từ bài test trước (`human_decisions` không được drop).
+- **Giải pháp chuẩn hóa**:
+  1. Khi chạy test suite trên SQLite file cục bộ, luôn thêm cờ `--test-concurrency=1` trong lệnh test (`npx tsx --test --test-concurrency=1 ...`).
+  2. Mọi bảng mới thêm vào schema (`analysis_runs`, `human_decisions`) bắt buộc phải được khai báo ngay vào mảng bảng cần DROP trong hàm `seedDatabase()` để đảm bảo môi trường kiểm thử hoàn toàn độc lập (idempotent & isolated).
+
+---
+
+### 11. Chuỗi Dữ Kiện Nguồn Gốc (Provenance Model) & Ngữ Nghĩa Thực Tế
+- **Nguyên tắc cốt lõi**: `SOURCE → FACT → EVIDENCE → INFERENCE → HUMAN DECISION`.
+- AI không phải là nguồn dữ liệu và không phải là người ra quyết định.
+- **Phân định rõ ràng**:
+  - `COMMUNITY_CLAIM`: semantic_type = `CLAIM`, verification_state = `UNVERIFIED`. Tuyệt đối không hiển thị phản ánh cộng đồng như dữ kiện đã xác nhận.
+  - `INSPECTION_OBSERVATION`: semantic_type = `OBSERVATION`. Ghi nhận từ cán bộ thực địa.
+  - `IOT_ANOMALY`: semantic_type = `TELEMETRY`. Chỉ là tín hiệu viễn thám gợi ý khảo sát, cấm tự động suy luận thành vi phạm pháp luật.
+  - `EVIDENCE_ASSET`: semantic_type = `DOCUMENT`. Phải qua kiểm tra đối chiếu mã băm SHA-256 với tệp thực tế trên đĩa cứng mới đạt `integrity_state = 'VERIFIED'`. Tệp bị can thiệp sẽ mang trạng thái `TAMPERED` hoặc `FILE_MISSING` và bị loại bỏ khỏi căn cứ pháp lý.
+  - `HUMAN_DECISION`: Chỉ khi có bản ghi hợp lệ do cán bộ con người ký duyệt mới được phép mang `semantic_type = 'HUMAN_DECISION'` và đưa mức kết luận lên `HUMAN_CONFIRMED`.
+
+---
+
+### 12. Động Cơ Dữ Kiện Còn Thiếu (Missing Fact Engine) & Biến Khoảng Trống Thành Tác Vụ Thực
+- **Vấn đề**: Khi AI gặp một điều kiện pháp lý chưa đủ bằng chứng (ví dụ: chưa có ảnh chụp trạm rửa xe, chưa kiểm tra lưới chắn bụi), mô hình AI truyền thống thường tự suy đoán (hallucinate) hoặc bỏ qua.
+- **Giải pháp chuẩn hóa**:
+  - Hệ thống tự động phát hiện dữ kiện còn thiếu (`MissingFact`) dựa trên đối chiếu giữa quy chuẩn pháp quy và các facts đã xác thực.
+  - Cung cấp CTA trực quan trên giao diện: `+ Tạo Tác vụ Xác minh (/tasks)` hoặc `+ Gắn vào Checklist`.
+  - Khi người dùng click, hệ thống tạo một `Task` thực sự trong bảng `tasks` của SQLite với hạn chót 48h, gán cho cán bộ hiện trường liên quan và liên kết sâu tới vụ việc.
+
+

@@ -10,6 +10,7 @@ import {
   LegalDocument,
   LegalSection,
 } from '../../shared.js';
+import { CaseAnalysisService } from '../cases/analysis.service.js';
 
 export const legalRouter = Router();
 
@@ -128,93 +129,63 @@ legalRouter.get('/sections/:id', (req, res) => {
   res.json({ section });
 });
 
-// POST /api/cases/:id/legal/analyze - Assistive AI Provider & Local Rule Engine Fallback
+// POST /api/cases/:id/legal/analyze - Assistive AI Provider & Provenance Rule Engine
 legalRouter.post('/:id/legal/analyze', requireAuth, (req: AuthRequest, res, next) => {
   try {
     const { id } = req.params;
-    const targetCase = get<any>(`SELECT * FROM cases WHERE id = ?`, [id]);
-    if (!targetCase) {
-      res.status(404).json({ error: 'Không tìm thấy hồ sơ' });
-      return;
-    }
+    const result = CaseAnalysisService.runAnalysis({
+      caseId: id,
+      userId: req.user!.id,
+      userRole: req.user!.role,
+      userName: req.user!.full_name,
+    });
 
-    // Provider check: Fallback rule engine with FTS knowledge matching
-    const searchTerms = [
-      targetCase.title,
-      targetCase.description,
-      targetCase.contractor_name || '',
-    ].join(' ');
+    const relevantProvisions = (result.output.evidence_matrix || []).flatMap(em =>
+      em.legal_provisions.map(lp => ({
+        legalSectionId: lp.id,
+        reason: `Căn cứ điều khoản: ${lp.number} - ${lp.heading} (${lp.excerpt})`,
+      }))
+    );
 
-    // Match real sections from FTS5
-    let matchedSections: any[] = [];
-    try {
-      matchedSections = query(
-        `SELECT id, heading, section_number, content
-         FROM legal_sections_fts
-         WHERE legal_sections_fts MATCH 'bụi OR "rửa xe" OR "che chắn" OR "phun sương"'
-         LIMIT 5`
-      );
-    } catch {
-      matchedSections = query(`SELECT id, heading, section_number, content FROM legal_sections LIMIT 5`);
-    }
-
-    // Build assistive response strictly abiding by Zod Schema
-    const provisions = matchedSections.slice(0, 3).map(s => ({
-      legalSectionId: s.id,
-      reason: `Căn cứ có thể liên quan: ${s.section_number} - ${s.heading} (${s.content.substring(0, 100)}...)`,
+    const potentialIssues = result.output.findings.map(f => ({
+      title: f.statement,
+      reason: `Căn cứ dữ liệu thực tế từ ${f.source_ids.length} nguồn chứng cứ đối chứng. Độ tin cậy tính toán: ${Math.round(f.confidence * 100)}%.`,
     }));
 
-    const potentialIssues = [
-      {
-        title: 'Có dấu hiệu phát tán bụi không kiểm soát ra môi trường xung quanh',
-        reason: 'Theo thông tin phản ánh hiện trường, hoạt động thi công chưa có biện pháp bao che dập bụi phù hợp với quy chuẩn.',
-      },
-    ];
-
-    if (searchTerms.toLowerCase().includes('xe') || searchTerms.toLowerCase().includes('bùn') || searchTerms.toLowerCase().includes('vận chuyển')) {
-      potentialIssues.push({
-        title: 'Có dấu hiệu phương tiện vận chuyển không rửa sạch bùn đất trước khi ra đường',
-        reason: 'Phản ánh ghi nhận bùn đất vương vãi trên lòng đường công cộng.',
-      });
-    }
-
-    const aiOutput: LegalAIOutput = {
-      summary: `Đối chiếu hồ sơ ${targetCase.case_code} với quy định pháp luật môi trường hiện hành: Phát hiện các dấu hiệu cần cán bộ xác minh thực địa về biện pháp che chắn công trình và quy trình rửa xe vận chuyển.`,
-      potentialIssues,
-      relevantProvisions: provisions,
-      missingInformation: [
-        'Biên bản đo nồng độ bụi thực tế (TSP / PM2.5) tại ranh giới công trình giáp khu dân cư.',
-        'Ảnh chụp xác thực hoạt động của trạm rửa xe tự động tại các cổng ra vào.',
-        'Hồ sơ đăng ký kế hoạch bảo vệ môi trường đã được cấp phép.',
+    const formattedOutput: LegalAIOutput = {
+      summary: `Kết quả thẩm tra căn cứ dữ liệu thực tế (SSOT Provenance): Phân loại kết luận "${result.output.conclusion_level}". Ghi nhận ${result.output.findings.length} nhận định có đối chứng nguồn và ${result.output.missing_facts.length} dữ kiện còn thiếu cần xác minh thêm.`,
+      potentialIssues: potentialIssues.length > 0 ? potentialIssues : [
+        {
+          title: 'Chưa đủ dữ liệu hiện trường để xác lập căn cứ vi phạm',
+          reason: 'Hồ sơ đang thiếu biên bản kiểm tra thực địa và kết quả đo đạc chuẩn.',
+        },
       ],
-      suggestedChecklistItems: [
-        'Kiểm tra độ phủ và tình trạng lưới chống bụi toàn bộ chu vi công trình.',
-        'Kiểm tra hoạt động thực tế của cầu rửa xe hoặc vòi rửa cao áp tại cổng ra vào.',
-        'Kiểm tra hệ thống phun sương dập bụi tự động theo Quyết định 29/2021/QĐ-UBND.',
-        'Kiểm tra việc che đậy bạt phủ đối với các bãi tập kết vật liệu rời.',
-      ],
-      confidence: 0.88,
-      disclaimer:
-        'Lưu ý nghiệp vụ: Phân tích của Trợ lý Pháp lý chỉ mang tính chất tham vấn hỗ trợ chuyên môn, không thay thế kết luận thẩm tra của cán bộ pháp chế và kết quả thanh tra thực tế tại hiện trường.',
+      relevantProvisions,
+      missingInformation: result.output.missing_facts.map(m => m.fact),
+      suggestedChecklistItems: result.output.missing_facts.map(m => m.recommended_verification_action),
+      confidence: result.output.findings[0]?.confidence ?? 0.3,
+      disclaimer: result.output.disclaimer,
+      conclusion_level: result.output.conclusion_level,
+      findings: result.output.findings,
+      missing_facts: result.output.missing_facts,
+      recommended_actions: result.output.recommended_actions,
     };
 
-    // Strict validation with Zod
-    const validated = LegalAIOutputSchema.parse(aiOutput);
-
-    // Save to legal_analyses table
-    const analysisId = `la-${crypto.randomUUID()}`;
+    // Save backward compatibility to legal_analyses table
+    const analysisId = result.analysisRunId;
     run(
       `INSERT INTO legal_analyses (id, case_id, analysis_type, provider, model, prompt_version, input_snapshot, output_json, created_by, created_at)
-       VALUES (?, ?, 'CASE_LEGAL_INTELLIGENCE', 'DUSTGUARD_LOCAL_ENGINE', 'rule-fts5-assist-v1', '1.0', ?, ?, ?, datetime('now'))`,
-      [analysisId, id, JSON.stringify({ title: targetCase.title, desc: targetCase.description }), JSON.stringify(validated), req.user!.id]
+       VALUES (?, ?, 'CASE_LEGAL_INTELLIGENCE', 'DUSTGUARD_PROVENANCE_ENGINE', 'provenance-v2.0', '2.0', ?, ?, ?, datetime('now'))`,
+      [analysisId, id, JSON.stringify({ caseId: id }), JSON.stringify(formattedOutput), req.user!.id]
     );
 
     res.json({
       analysis: {
         id: analysisId,
-        output: validated,
-        provider: 'DUSTGUARD_LOCAL_ENGINE (FTS5 + Rule Fallback)',
-        created_at: new Date().toISOString(),
+        output: formattedOutput,
+        evidence_matrix: result.output.evidence_matrix,
+        provider: result.provider,
+        created_at: result.created_at,
       },
     });
   } catch (err) {

@@ -7,12 +7,15 @@ import {
   CaseCreateSchema,
   CaseTransitionSchema,
   CaseAssignSchema,
+  HumanDecisionSubmitSchema,
   canTransitionCase,
   Case,
   CaseStatus,
   CaseTimeline,
   StaffAssignment,
 } from '../../shared.js';
+import { CaseFactService } from './caseFact.service.js';
+import { CaseAnalysisService } from './analysis.service.js';
 
 export const casesRouter = Router();
 
@@ -252,6 +255,12 @@ casesRouter.get('/:id', (req: AuthRequest, res) => {
     [caseId]
   );
 
+  // Human Decisions
+  const humanDecisions = query(
+    `SELECT * FROM human_decisions WHERE case_id = ? ORDER BY created_at DESC`,
+    [caseId]
+  );
+
   res.json({
     case: enriched,
     timeline,
@@ -261,6 +270,7 @@ casesRouter.get('/:id', (req: AuthRequest, res) => {
     inspections,
     actions,
     closure,
+    humanDecisions,
   });
 });
 
@@ -828,4 +838,163 @@ casesRouter.get('/:id/next-action', (req, res) => {
   }
   res.json({ success: true, data: nextAction });
 });
+
+// GET /api/cases/:id/facts - Aggregated provenance facts from SQLite
+casesRouter.get('/:id/facts', requireAuth, (req, res) => {
+  const { id } = req.params;
+  const facts = CaseFactService.aggregateCaseFacts(id);
+  res.json({ success: true, facts, total: facts.length });
+});
+
+// POST /api/cases/:id/analysis - Strict 8-step evidence-grounded intelligence
+casesRouter.post('/:id/analysis', requireAuth, (req: AuthRequest, res, next) => {
+  try {
+    const { id } = req.params;
+    const result = CaseAnalysisService.runAnalysis({
+      caseId: id,
+      userId: req.user!.id,
+      userRole: req.user!.role,
+      userName: req.user!.full_name,
+    });
+    res.json({ success: true, ...result, analysis: result });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// POST /api/cases/:id/decisions - Human Decision Layer
+casesRouter.post('/:id/decisions', requireAuth, (req: AuthRequest, res, next) => {
+  try {
+    const { id } = req.params;
+    const data = HumanDecisionSubmitSchema.parse(req.body);
+    const decId = `hdec-${crypto.randomUUID().substring(0, 8)}`;
+    const facts = CaseFactService.aggregateCaseFacts(id);
+
+    transaction(() => {
+      run(
+        `INSERT INTO human_decisions (id, case_id, decision_type, actor_id, actor_name, actor_role, reason, analysis_run_id, source_snapshot_json, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
+        [
+          decId,
+          id,
+          data.decision_type,
+          req.user!.id,
+          req.user!.full_name,
+          req.user!.role,
+          data.reason,
+          data.analysis_run_id || null,
+          JSON.stringify(facts),
+        ]
+      );
+
+      // State transitions triggered by authoritative decisions
+      let nextStatus: string | null = null;
+      let eventType = `HUMAN_DECISION_${data.decision_type}`;
+      let stage = 'DECISION';
+
+      if (data.decision_type === 'SEND_TO_FIELD_INSPECTION') {
+        nextStatus = 'INSPECTION_PLANNED';
+        stage = 'INSPECTION';
+      } else if (data.decision_type === 'SEND_TO_LEGAL_REVIEW') {
+        nextStatus = 'LEGAL_REVIEW';
+        stage = 'LEGAL';
+      } else if (data.decision_type === 'CLOSE_INSUFFICIENT_EVIDENCE') {
+        nextStatus = 'CLOSED';
+        stage = 'CLOSURE';
+        run(`UPDATE cases SET closed_at = datetime('now') WHERE id = ?`, [id]);
+      }
+
+      if (nextStatus) {
+        run(`UPDATE cases SET status = ?, updated_at = datetime('now') WHERE id = ?`, [nextStatus, id]);
+      }
+
+      // Record timeline
+      run(
+        `INSERT INTO case_timeline (id, case_id, event_type, actor_id, actor_name, actor_role, stage, description, metadata_json, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
+        [
+          `tml-${crypto.randomUUID().substring(0, 8)}`,
+          id,
+          eventType,
+          req.user!.id,
+          req.user!.full_name,
+          req.user!.role,
+          stage,
+          `Cán bộ ${req.user!.full_name} (${req.user!.role}) ban hành quyết định "${data.decision_type}". Lý do: ${data.reason}`,
+          JSON.stringify({ decision_id: decId, decision_type: data.decision_type }),
+        ]
+      );
+
+      // Audit log
+      run(
+        `INSERT INTO audit_logs (id, user_id, action, entity_type, entity_id, metadata_json, ip_address, created_at)
+         VALUES (?, ?, 'HUMAN_DECISION_RECORDED', 'CASE', ?, ?, ?, datetime('now'))`,
+        [
+          `aud-${crypto.randomUUID().substring(0, 8)}`,
+          req.user!.id,
+          id,
+          JSON.stringify({ decision_id: decId, decision_type: data.decision_type, reason: data.reason }),
+          req.ip || '127.0.0.1',
+        ]
+      );
+    });
+
+    const inserted = get(`SELECT * FROM human_decisions WHERE id = ?`, [decId]);
+    res.status(201).json({ success: true, decision: inserted });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// POST /api/cases/:id/missing-facts/create-task - Create real SQLite verification task from missing fact
+casesRouter.post('/:id/missing-facts/create-task', requireAuth, (req: AuthRequest, res, next) => {
+  try {
+    const { id } = req.params;
+    const { fact, reason_needed, recommended_verification_action, priority = 'NORMAL' } = req.body;
+    if (!fact) {
+      res.status(400).json({ error: 'Nội dung dữ kiện cần xác minh không được để trống' });
+      return;
+    }
+
+    const taskId = `task-mf-${crypto.randomUUID().substring(0, 8)}`;
+    const dueDays = priority === 'URGENT' ? 1 : 2;
+    const title = `Xác minh dữ kiện thiếu: ${fact.substring(0, 60)}`;
+    const desc = `${recommended_verification_action || 'Tiến hành xác minh thực tế'}. Căn cứ yêu cầu: ${reason_needed || 'Bổ sung hồ sơ minh chứng'}.`;
+
+    run(
+      `INSERT INTO tasks (id, case_id, title, description, task_type, source, source_entity_type, source_entity_id, assigned_to, status, priority, due_at, created_at)
+       VALUES (?, ?, ?, ?, 'VERIFICATION', 'LEGAL', 'missing_facts', ?, ?, 'OPEN', ?, datetime('now', '+${dueDays} days'), datetime('now'))`,
+      [
+        taskId,
+        id,
+        title,
+        desc,
+        id,
+        req.user!.id,
+        priority,
+      ]
+    );
+
+    // Timeline
+    run(
+      `INSERT INTO case_timeline (id, case_id, event_type, actor_id, actor_name, actor_role, stage, description, metadata_json, created_at)
+       VALUES (?, ?, 'TASK_CREATED_FROM_MISSING_FACT', ?, ?, ?, 'LEGAL', ?, ?, datetime('now'))`,
+      [
+        `tml-${crypto.randomUUID().substring(0, 8)}`,
+        id,
+        req.user!.id,
+        req.user!.full_name,
+        req.user!.role,
+        `Khởi tạo nhiệm vụ xác minh thực địa từ dữ kiện còn thiếu: "${fact}"`,
+        JSON.stringify({ taskId, fact }),
+      ]
+    );
+
+    const task = get(`SELECT * FROM tasks WHERE id = ?`, [taskId]);
+    res.status(201).json({ success: true, task });
+  } catch (err) {
+    next(err);
+  }
+});
+
 

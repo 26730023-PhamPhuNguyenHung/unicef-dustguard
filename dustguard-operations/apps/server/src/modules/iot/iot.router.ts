@@ -76,16 +76,26 @@ iotRouter.get('/devices/:id', requireAuth, (req: Request, res: Response) => {
     [device.id]
   );
 
-  // Fetch nearby signals/cases
-  const nearbySignals = query<any>(
-    `SELECT * FROM signals WHERE source_type = 'IOT' ORDER BY observed_at DESC LIMIT 10`
+  // Fetch real related cases linked via case_signals or direct source
+  const relatedCases = query<any>(
+    `SELECT c.*, cs.linked_at, cs.notes as link_notes
+     FROM cases c
+     JOIN case_signals cs ON c.id = cs.case_id
+     JOIN signals s ON cs.signal_id = s.id
+     WHERE s.source_type = 'IOT' AND (s.external_source_id = ? OR s.external_source_id = ?)
+     UNION
+     SELECT c.*, c.created_at as linked_at, 'Nguồn phát hiện trực tiếp' as link_notes
+     FROM cases c
+     WHERE c.source = 'IOT' AND (c.source_reference = ? OR c.source_reference = ?)
+     ORDER BY updated_at DESC LIMIT 10`,
+    [device.id, device.device_code, device.id, device.device_code]
   );
 
   const payload = {
     device,
     latestReading: readings[0] || null,
     recentEvents: events,
-    relatedCases: [],
+    relatedCases,
     readings,
     events,
     nearbySignals,
@@ -97,6 +107,159 @@ iotRouter.get('/devices/:id', requireAuth, (req: Request, res: Response) => {
     data: payload,
     ...payload,
   });
+});
+
+// 2b. Create Case from IoT Anomaly
+iotRouter.post('/devices/:id/create-case', requireAuth, (req: any, res: Response) => {
+  const { id } = req.params;
+  const { title, description, priority = 'HIGH' } = req.body;
+  const device = queryOne<any>(`SELECT * FROM iot_devices WHERE id = ? OR device_code = ?`, [id, id]);
+  if (!device) {
+    res.status(404).json({ success: false, error: 'Không tìm thấy thiết bị IoT' });
+    return;
+  }
+
+  const caseId = `case-${crypto.randomUUID().substring(0, 8)}`;
+  const countRow = queryOne<{ c: number }>(`SELECT count(*) as c FROM cases`);
+  const nextNum = (countRow?.c || 0) + 1;
+  const case_code = `DG-2026-OP-${String(nextNum).padStart(3, '0')}`;
+
+  const caseTitle = title || `Cảnh báo ô nhiễm bụi từ trạm quan trắc ${device.name} (${device.device_code})`;
+  const caseDesc = description || `Hệ thống tự động ghi nhận cảnh báo bất thường/vượt ngưỡng từ trạm quan trắc ${device.name} tại ${device.location_text || 'vị trí đặt trạm'}. Cần điều phối cán bộ xác minh thực địa.`;
+
+  transaction(() => {
+    // 1. Insert Case
+    run(
+      `INSERT INTO cases (id, case_code, title, description, location_text, district, latitude, longitude, source, source_reference, priority, status, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'IOT', ?, ?, 'NEW', datetime('now'), datetime('now'))`,
+      [
+        caseId,
+        case_code,
+        caseTitle,
+        caseDesc,
+        device.location_text || 'Khu vực đặt cảm biến',
+        device.district || 'Thành phố Thủ Đức',
+        device.latitude || 10.8231,
+        device.longitude || 106.6297,
+        device.device_code,
+        priority,
+      ]
+    );
+
+    // 2. Insert Signal
+    const signalId = `sig-${crypto.randomUUID().substring(0, 8)}`;
+    run(
+      `INSERT INTO signals (id, source_type, external_source_id, signal_type, title, description, location_text, latitude, longitude, observed_at, received_at, integrity_status, created_at)
+       VALUES (?, 'IOT', ?, 'SENSOR_ANOMALY', ?, ?, ?, ?, ?, datetime('now'), datetime('now'), 'VALID', datetime('now'))`,
+      [
+        signalId,
+        device.device_code,
+        caseTitle,
+        caseDesc,
+        device.location_text || '',
+        device.latitude || 10.8231,
+        device.longitude || 106.6297,
+      ]
+    );
+
+    // 3. Link Case & Signal
+    run(
+      `INSERT INTO case_signals (id, case_id, signal_id, linked_at, linked_by, notes)
+       VALUES (?, ?, ?, datetime('now'), ?, 'Tự động liên kết từ trạm quan trắc')`,
+      [`cs-${crypto.randomUUID().substring(0, 8)}`, caseId, signalId, req.user?.id || null]
+    );
+
+    // 4. Create Initial Triage/Verification Task
+    const taskId = `task-${crypto.randomUUID().substring(0, 8)}`;
+    const dueAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    run(
+      `INSERT INTO tasks (id, case_id, title, description, task_type, source, source_entity_type, source_entity_id, status, priority, due_at, created_at)
+       VALUES (?, ?, ?, ?, 'VERIFICATION', 'IOT', 'iot_devices', ?, 'OPEN', ?, ?, datetime('now'))`,
+      [
+        taskId,
+        caseId,
+        `Xác minh bất thường nồng độ bụi trạm ${device.device_code}`,
+        `Cán bộ khẩn trương kiểm tra thực địa xung quanh trạm đo ${device.name} để xác định nguồn phát tán bụi và công trình lân cận.`,
+        device.id,
+        priority,
+        dueAt,
+      ]
+    );
+
+    // 5. Timeline
+    run(
+      `INSERT INTO case_timeline (id, case_id, event_type, actor_id, actor_name, actor_role, stage, description, created_at)
+       VALUES (?, ?, 'CASE_CREATED_FROM_IOT', ?, ?, ?, 'INTAKE', ?, datetime('now'))`,
+      [
+        `tml-${crypto.randomUUID().substring(0, 8)}`,
+        caseId,
+        req.user?.id || 'system',
+        req.user?.full_name || 'Hệ thống IoT',
+        req.user?.role || 'system',
+        `Hồ sơ được khởi tạo từ cảnh báo trạm quan trắc ${device.name} (${device.device_code}).`,
+      ]
+    );
+  });
+
+  const createdCase = queryOne(`SELECT * FROM cases WHERE id = ?`, [caseId]);
+  res.status(201).json({ success: true, case: createdCase });
+});
+
+// 2c. Link IoT Device to Existing Case
+iotRouter.post('/devices/:id/link-case', requireAuth, (req: any, res: Response) => {
+  const { id } = req.params;
+  const { case_id, notes } = req.body;
+  if (!case_id) {
+    res.status(400).json({ success: false, error: 'Thiếu mã hồ sơ vụ việc case_id' });
+    return;
+  }
+  const device = queryOne<any>(`SELECT * FROM iot_devices WHERE id = ? OR device_code = ?`, [id, id]);
+  if (!device) {
+    res.status(404).json({ success: false, error: 'Không tìm thấy thiết bị IoT' });
+    return;
+  }
+  const targetCase = queryOne<any>(`SELECT * FROM cases WHERE id = ?`, [case_id]);
+  if (!targetCase) {
+    res.status(404).json({ success: false, error: 'Không tìm thấy hồ sơ vụ việc' });
+    return;
+  }
+
+  // Insert Signal
+  const signalId = `sig-${crypto.randomUUID().substring(0, 8)}`;
+  run(
+    `INSERT INTO signals (id, source_type, external_source_id, signal_type, title, description, location_text, latitude, longitude, observed_at, received_at, integrity_status, created_at)
+     VALUES (?, 'IOT', ?, 'SENSOR_DATA', ?, ?, ?, ?, ?, datetime('now'), datetime('now'), 'VALID', datetime('now'))`,
+    [
+      signalId,
+      device.device_code,
+      `Dữ liệu từ trạm ${device.name}`,
+      `Liên kết dữ liệu cảm biến trạm ${device.device_code} vào hồ sơ ${targetCase.case_code}`,
+      device.location_text || '',
+      device.latitude || 10.8231,
+      device.longitude || 106.6297,
+    ]
+  );
+
+  run(
+    `INSERT OR IGNORE INTO case_signals (id, case_id, signal_id, linked_at, linked_by, notes)
+     VALUES (?, ?, ?, datetime('now'), ?, ?)`,
+    [`cs-${crypto.randomUUID().substring(0, 8)}`, case_id, signalId, req.user?.id || null, notes || 'Liên kết trạm quan trắc bổ sung chứng cứ']
+  );
+
+  run(
+    `INSERT INTO case_timeline (id, case_id, event_type, actor_id, actor_name, actor_role, stage, description, created_at)
+     VALUES (?, ?, 'IOT_DEVICE_LINKED', ?, ?, ?, 'MONITORING', ?, datetime('now'))`,
+    [
+      `tml-${crypto.randomUUID().substring(0, 8)}`,
+      case_id,
+      req.user?.id || 'system',
+      req.user?.full_name || 'Cán bộ vận hành',
+      req.user?.role || 'staff',
+      `Đã liên kết dữ liệu giám sát từ trạm ${device.name} (${device.device_code}) vào hồ sơ vụ việc.`,
+    ]
+  );
+
+  res.json({ success: true, message: 'Đã liên kết trạm quan trắc vào vụ việc thành công' });
 });
 
 // 3. Historical Readings

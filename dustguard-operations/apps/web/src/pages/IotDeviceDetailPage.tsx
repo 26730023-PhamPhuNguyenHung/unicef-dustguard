@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { api } from '../api/client';
 import { useToast } from '../context/ToastContext';
 import {
@@ -14,15 +14,32 @@ import {
   ArrowLeft,
   ExternalLink,
   ShieldAlert,
+  Plus,
+  Link as LinkIcon,
 } from 'lucide-react';
 import { Button } from '../components/common/Button';
+import { Modal } from '../components/common/Modal';
 
 export const IotDeviceDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const { addToast } = useToast();
+  const navigate = useNavigate();
+  const { success, error } = useToast();
   const [deviceData, setDeviceData] = useState<any>(null);
   const [readings, setReadings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Modals state
+  const [createCaseModalOpen, setCreateCaseModalOpen] = useState(false);
+  const [newCaseTitle, setNewCaseTitle] = useState('');
+  const [newCaseDesc, setNewCaseDesc] = useState('');
+  const [newCasePriority, setNewCasePriority] = useState('HIGH');
+  const [submittingCase, setSubmittingCase] = useState(false);
+
+  const [linkCaseModalOpen, setLinkCaseModalOpen] = useState(false);
+  const [availableCases, setAvailableCases] = useState<any[]>([]);
+  const [selectedCaseId, setSelectedCaseId] = useState('');
+  const [linkNotes, setLinkNotes] = useState('');
+  const [submittingLink, setSubmittingLink] = useState(false);
 
   useEffect(() => {
     if (id) loadDetail();
@@ -42,9 +59,61 @@ export const IotDeviceDetailPage: React.FC = () => {
       const rRes: any = await api.iot.readings(id!, { limit: '20' });
       setReadings(Array.isArray(rRes) ? rRes : rRes.readings || rRes.data || []);
     } catch (err: any) {
-      addToast(err.detail || 'Không thể tải thông tin chi tiết trạm quan trắc', 'error');
+      error('Lỗi tải dữ liệu', err.detail || 'Không thể tải thông tin chi tiết trạm quan trắc');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleOpenLinkModal = async () => {
+    try {
+      const res = await api.cases.list({ status: 'NEW,TRIAGED,ASSIGNED,INSPECTION_PLANNED,ACTION_REQUIRED' });
+      setAvailableCases(res.cases || []);
+      if (res.cases && res.cases.length > 0) {
+        setSelectedCaseId(res.cases[0].id);
+      }
+      setLinkCaseModalOpen(true);
+    } catch (err: any) {
+      error('Lỗi danh sách vụ việc', err.detail);
+    }
+  };
+
+  const handleCreateCaseSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!id) return;
+    try {
+      setSubmittingCase(true);
+      const res = await api.iot.createCase(id, {
+        title: newCaseTitle,
+        description: newCaseDesc,
+        priority: newCasePriority,
+      });
+      success('Tạo vụ việc thành công', `Đã tạo hồ sơ ${res.case.case_code} từ cảnh báo trạm đo`);
+      setCreateCaseModalOpen(false);
+      navigate(`/cases/${res.case.id}`);
+    } catch (err: any) {
+      error('Lỗi tạo vụ việc', err.detail);
+    } finally {
+      setSubmittingCase(false);
+    }
+  };
+
+  const handleLinkCaseSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!id || !selectedCaseId) return;
+    try {
+      setSubmittingLink(true);
+      await api.iot.linkCase(id, {
+        case_id: selectedCaseId,
+        notes: linkNotes,
+      });
+      success('Liên kết thành công', 'Dữ liệu trạm đo đã được gắn vào hồ sơ vụ việc');
+      setLinkCaseModalOpen(false);
+      loadDetail();
+    } catch (err: any) {
+      error('Lỗi liên kết', err.detail);
+    } finally {
+      setSubmittingLink(false);
     }
   };
 
@@ -109,12 +178,34 @@ export const IotDeviceDetailPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="text-right">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+          <div className="text-left sm:text-right">
             <p className="text-xs text-slate-500 font-medium">Trạng thái cảm biến</p>
             <p className={`text-base font-bold ${device.status === 'ONLINE' ? 'text-emerald-700' : 'text-rose-700'}`}>
               {device.status === 'ONLINE' ? 'TRỰC TUYẾN' : device.status === 'FAULTY' ? 'LỖI FLATLINE' : 'MẤT KẾT NỐI'}
             </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              icon={<LinkIcon className="w-3.5 h-3.5" />}
+              onClick={handleOpenLinkModal}
+            >
+              Gắn vào Vụ việc
+            </Button>
+            <Button
+              variant="primary"
+              size="sm"
+              icon={<Plus className="w-3.5 h-3.5" />}
+              onClick={() => {
+                setNewCaseTitle(`Cảnh báo ô nhiễm bụi từ trạm ${device.device_code}`);
+                setNewCaseDesc(`Ghi nhận cảnh báo bất thường/vượt ngưỡng từ trạm quan trắc ${device.name} tại ${device.location_text || 'vị trí lắp đặt'}. Cần điều phối cán bộ kiểm tra thực địa.`);
+                setCreateCaseModalOpen(true);
+              }}
+            >
+              Tạo Vụ việc từ trạm
+            </Button>
           </div>
         </div>
       </div>
@@ -266,6 +357,128 @@ export const IotDeviceDetailPage: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* MODAL: CREATE CASE FROM IOT */}
+      <Modal
+        isOpen={createCaseModalOpen}
+        onClose={() => setCreateCaseModalOpen(false)}
+        title="Khởi Tạo Vụ Việc Mới Từ Cảnh Báo IoT"
+        maxWidth="lg"
+      >
+        <form onSubmit={handleCreateCaseSubmit} className="space-y-4 text-xs sm:text-sm">
+          <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-xs text-red-900">
+            <p className="font-bold">Trạm quan trắc: {device.name} ({device.device_code})</p>
+            <p className="mt-0.5">Vị trí: {device.location_text || 'Chưa cập nhật tọa độ'}</p>
+          </div>
+
+          <div>
+            <label className="block font-semibold text-slate-700 mb-1">
+              Tiêu đề vụ việc <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              required
+              value={newCaseTitle}
+              onChange={e => setNewCaseTitle(e.target.value)}
+              className="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-dustguard-red text-xs sm:text-sm"
+            />
+          </div>
+
+          <div>
+            <label className="block font-semibold text-slate-700 mb-1">
+              Mô tả chi tiết tình huống <span className="text-red-500">*</span>
+            </label>
+            <textarea
+              required
+              rows={3}
+              value={newCaseDesc}
+              onChange={e => setNewCaseDesc(e.target.value)}
+              className="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-dustguard-red text-xs sm:text-sm"
+            />
+          </div>
+
+          <div>
+            <label className="block font-semibold text-slate-700 mb-1">Mức độ ưu tiên</label>
+            <select
+              value={newCasePriority}
+              onChange={e => setNewCasePriority(e.target.value)}
+              className="w-full p-2.5 border border-slate-300 rounded-lg bg-white outline-none focus:ring-2 focus:ring-dustguard-red text-xs sm:text-sm"
+            >
+              <option value="NORMAL">Bình thường (NORMAL)</option>
+              <option value="HIGH">Cao (HIGH)</option>
+              <option value="URGENT">Khẩn cấp (URGENT)</option>
+            </select>
+          </div>
+
+          <div className="pt-3 border-t border-slate-200 flex justify-end gap-2">
+            <Button type="button" variant="outline" onClick={() => setCreateCaseModalOpen(false)}>
+              Hủy
+            </Button>
+            <Button type="submit" variant="primary" loading={submittingCase}>
+              Tạo Vụ Việc & Phân Công Nhiệm Vụ
+            </Button>
+          </div>
+        </form>
+      </Modal>
+
+      {/* MODAL: LINK IOT TO CASE */}
+      <Modal
+        isOpen={linkCaseModalOpen}
+        onClose={() => setLinkCaseModalOpen(false)}
+        title="Gắn Dữ Liệu Trạm Đo Vào Vụ Việc Đang Mở"
+        maxWidth="lg"
+      >
+        <form onSubmit={handleLinkCaseSubmit} className="space-y-4 text-xs sm:text-sm">
+          <div>
+            <label className="block font-semibold text-slate-700 mb-1">
+              Chọn vụ việc đang mở <span className="text-red-500">*</span>
+            </label>
+            {availableCases.length === 0 ? (
+              <p className="p-3 bg-slate-50 border border-slate-200 rounded text-slate-500 text-xs">
+                Không có vụ việc nào đang trong trạng thái xử lý phù hợp.
+              </p>
+            ) : (
+              <select
+                required
+                value={selectedCaseId}
+                onChange={e => setSelectedCaseId(e.target.value)}
+                className="w-full p-2.5 border border-slate-300 rounded-lg bg-white outline-none focus:ring-2 focus:ring-dustguard-teal text-xs sm:text-sm"
+              >
+                {availableCases.map(c => (
+                  <option key={c.id} value={c.id}>
+                    [{c.case_code}] {c.title} ({c.district})
+                  </option>
+                ))}
+              </select>
+            )}
+          </div>
+
+          <div>
+            <label className="block font-semibold text-slate-700 mb-1">Ghi chú mục đích liên kết</label>
+            <textarea
+              rows={2}
+              value={linkNotes}
+              onChange={e => setLinkNotes(e.target.value)}
+              placeholder="VD: Trạm đo nằm cách công trình 120m về hướng gió nam..."
+              className="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-dustguard-teal text-xs sm:text-sm"
+            />
+          </div>
+
+          <div className="pt-3 border-t border-slate-200 flex justify-end gap-2">
+            <Button type="button" variant="outline" onClick={() => setLinkCaseModalOpen(false)}>
+              Hủy
+            </Button>
+            <Button
+              type="submit"
+              variant="teal"
+              loading={submittingLink}
+              disabled={availableCases.length === 0}
+            >
+              Xác Nhận Liên Kết
+            </Button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 };

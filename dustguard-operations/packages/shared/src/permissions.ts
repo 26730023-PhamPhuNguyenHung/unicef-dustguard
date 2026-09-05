@@ -102,6 +102,8 @@ export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
   ],
   legal_reviewer: [
     'case:view',
+    'task:view',
+    'task:update',
     'legal:view',
     'legal:import',
     'legal:search',

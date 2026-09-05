@@ -111,6 +111,18 @@ export const api = {
         `/api/cases/${id}/next-action`
       ),
     decisionPack: (id: string) => request<any>(`/api/cases/${id}/decision-pack`),
+    facts: (id: string) => request<{ success: boolean; facts: any[]; total: number }>(`/api/cases/${id}/facts`),
+    analysis: (id: string) => request<any>(`/api/cases/${id}/analysis`, { method: 'POST' }),
+    submitDecision: (id: string, data: any) =>
+      request<{ success: boolean; decision: any }>(`/api/cases/${id}/decisions`, {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }),
+    createTaskFromMissingFact: (id: string, data: any) =>
+      request<{ success: boolean; task: any }>(`/api/cases/${id}/missing-facts/create-task`, {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }),
   },
 
   legal: {
@@ -212,6 +224,18 @@ export const api = {
 
   evidence: {
     list: (caseId: string) => request<{ evidence: any[] }>(`/api/cases/${caseId}/evidence`),
+    all: (params: Record<string, string | undefined> = {}) => {
+      const sp = new URLSearchParams();
+      Object.entries(params).forEach(([k, v]) => {
+        if (v) sp.append(k, v);
+      });
+      return request<{ evidence: any[]; total: number }>(`/api/evidence?${sp.toString()}`);
+    },
+    verifyHash: (id: string) =>
+      request<{ verified: boolean; calculated_sha256: string; stored_sha256: string; error?: string }>(
+        `/api/evidence/${id}/verify-hash`,
+        { method: 'POST' }
+      ),
     upload: (caseId: string, file: File, sourceType: string = 'CASE', sourceId?: string) => {
       const formData = new FormData();
       formData.append('case_id', caseId);
@@ -284,6 +308,16 @@ export const api = {
       });
       return request<{ readings: any[] }>(`/api/iot/devices/${id}/readings?${sp.toString()}`);
     },
+    createCase: (id: string, data: any) =>
+      request<{ success: boolean; case: any }>(`/api/iot/devices/${id}/create-case`, {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }),
+    linkCase: (id: string, data: any) =>
+      request<{ success: boolean; message: string }>(`/api/iot/devices/${id}/link-case`, {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }),
   },
 
   automations: {
@@ -323,4 +357,17 @@ export const api = {
         body: JSON.stringify(data),
       }),
   },
+
+  reports: {
+    overview: (range: string = '30d') =>
+      request<{ success: boolean; range: string; data: any }>(`/api/reports/overview?range=${range}`),
+  },
+
+  search: (q: string) =>
+    request<{
+      success: boolean;
+      query: string;
+      results: { cases: any[]; tasks: any[]; legal: any[]; iot: any[] };
+      total: number;
+    }>(`/api/search?q=${encodeURIComponent(q)}`),
 };

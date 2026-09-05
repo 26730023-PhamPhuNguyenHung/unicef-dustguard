@@ -89,6 +89,7 @@ CREATE TABLE IF NOT EXISTS evidence_assets (
   mime_type TEXT NOT NULL,
   file_size INTEGER NOT NULL,
   sha256 TEXT NOT NULL,
+  integrity_status TEXT NOT NULL DEFAULT 'UNVERIFIED' CHECK (integrity_status IN ('UNVERIFIED', 'VERIFIED', 'TAMPERED', 'FILE_MISSING')),
   uploaded_by TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   captured_at TEXT,
   created_at TEXT NOT NULL
@@ -351,11 +352,12 @@ CREATE TABLE IF NOT EXISTS tasks (
   case_id TEXT REFERENCES cases(id) ON DELETE CASCADE,
   title TEXT NOT NULL,
   description TEXT NOT NULL,
+  task_type TEXT NOT NULL DEFAULT 'GENERAL' CHECK (task_type IN ('TRIAGE', 'VERIFICATION', 'LEGAL_REVIEW', 'CHECKLIST_PREP', 'FIELD_INSPECTION', 'EVIDENCE_COLLECTION', 'CONTRACTOR_LIAISON', 'REMEDIATION_FOLLOWUP', 'REINSPECTION', 'DOSSIER_COMPLETION', 'CLOSURE_APPROVAL', 'GENERAL')),
   source TEXT NOT NULL CHECK (source IN ('MANUAL', 'CASE', 'LEGAL', 'INSPECTION', 'IOT', 'AUTOMATION')),
   source_entity_type TEXT,
   source_entity_id TEXT,
-  assigned_to TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  status TEXT NOT NULL DEFAULT 'OPEN' CHECK (status IN ('OPEN', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED')),
+  assigned_to TEXT REFERENCES users(id) ON DELETE CASCADE,
+  status TEXT NOT NULL DEFAULT 'TODO' CHECK (status IN ('TODO', 'OPEN', 'IN_PROGRESS', 'BLOCKED', 'WAITING', 'DONE', 'COMPLETED', 'CANCELLED')),
   priority TEXT NOT NULL DEFAULT 'NORMAL' CHECK (priority IN ('LOW', 'NORMAL', 'HIGH', 'URGENT')),
   due_at TEXT NOT NULL,
   created_at TEXT NOT NULL,
@@ -430,6 +432,42 @@ CREATE TABLE IF NOT EXISTS automation_runs (
   completed_at TEXT
 );
 
+-- 33. Analysis Runs (Immutable Snapshots for AI/Rule Intelligence Provenance)
+CREATE TABLE IF NOT EXISTS analysis_runs (
+  id TEXT PRIMARY KEY,
+  case_id TEXT NOT NULL REFERENCES cases(id) ON DELETE CASCADE,
+  created_at TEXT NOT NULL,
+  created_by TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  model TEXT NOT NULL,
+  prompt_version TEXT NOT NULL,
+  fact_snapshot_json TEXT NOT NULL,
+  legal_snapshot_json TEXT NOT NULL,
+  output_json TEXT NOT NULL,
+  validation_status TEXT NOT NULL CHECK (validation_status IN ('VALID', 'REJECTED', 'FAILED'))
+);
+
+-- 34. Human Decisions (Authoritative Human Decision Layer SSOT)
+CREATE TABLE IF NOT EXISTS human_decisions (
+  id TEXT PRIMARY KEY,
+  case_id TEXT NOT NULL REFERENCES cases(id) ON DELETE CASCADE,
+  decision_type TEXT NOT NULL CHECK (decision_type IN (
+    'ACCEPT_ASSESSMENT',
+    'REQUEST_MORE_VERIFICATION',
+    'REJECT_ASSESSMENT',
+    'SEND_TO_FIELD_INSPECTION',
+    'SEND_TO_LEGAL_REVIEW',
+    'CLOSE_INSUFFICIENT_EVIDENCE',
+    'CONFIRM_VIOLATION'
+  )),
+  actor_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  actor_name TEXT NOT NULL,
+  actor_role TEXT NOT NULL,
+  reason TEXT NOT NULL,
+  analysis_run_id TEXT REFERENCES analysis_runs(id) ON DELETE SET NULL,
+  source_snapshot_json TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);
+
 -- Indexes for lightning fast queries
 CREATE INDEX IF NOT EXISTS idx_cases_status ON cases(status);
 CREATE INDEX IF NOT EXISTS idx_cases_assigned_staff ON cases(assigned_staff_id);
@@ -452,4 +490,7 @@ CREATE INDEX IF NOT EXISTS idx_tasks_case_id ON tasks(case_id);
 CREATE INDEX IF NOT EXISTS idx_iot_readings_device ON iot_readings(device_id, recorded_at);
 CREATE INDEX IF NOT EXISTS idx_iot_events_device ON iot_events(device_id, created_at);
 CREATE INDEX IF NOT EXISTS idx_automation_runs_rule ON automation_runs(rule_id, started_at);
+CREATE INDEX IF NOT EXISTS idx_analysis_runs_case ON analysis_runs(case_id, created_at);
+CREATE INDEX IF NOT EXISTS idx_human_decisions_case ON human_decisions(case_id, created_at);
+
 
