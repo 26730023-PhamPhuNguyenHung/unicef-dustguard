@@ -183,3 +183,17 @@
 - **Giải pháp chuẩn hóa**:
   1. Thêm tham số `runMigrations(initSystemConfig = true)`. Khi gọi từ `seedDatabase()`, truyền `runMigrations(false)` để việc seeding chịu trách nhiệm nạp dữ liệu một lần duy nhất, sạch sẽ và nhất quán.
   2. Tại thanh Header, chuyển thanh tìm kiếm dạng mở rộng sang kích hoạt từ `lg:block` ($\ge 1024\text{px}$) và giữ nút icon tìm kiếm nhỏ gọn tại `lg:hidden`, giúp Tablet 768px hiển thị hoàn hảo (`scrollWidth: 753px <= 768px`) và đạt 75/75 test responsive pass 100%.
+
+---
+
+### 15. UI Quality Watch Không Chặn (Non-Blocking) & Tuân Thủ Chuẩn Touch Target Di Động Civic Tech
+- **Vấn đề**:
+  1. Trong quá trình phát triển chức năng cốt lõi (Core Business Domain) và kiểm thử trình duyệt, nếu dừng quy trình mỗi khi gặp lỗi UI phụ sẽ làm vỡ mạch và chậm tiến độ. Tuy nhiên, nếu bỏ qua hoàn toàn, các lỗi như text clipping, nút bấm bị đè hoặc touch target quá nhỏ ($< 44\text{px}$) trên mobile sẽ tồn đọng đến khi ra thực địa ngoài nắng.
+  2. Tại trang `LegalWorkspacePage`, các tab điều hướng (`matrix`, `worksheet`, `checklist`) ban đầu được định dạng `py-1.5 px-2`, dẫn tới chiều cao nút bấm thực tế chỉ đạt $28\text{px}$ trên viewport di động ($430\times 932$).
+- **Giải pháp chuẩn hóa**:
+  1. **Cơ chế Watch Non-Blocking**: Thực hiện ghi nhận toàn bộ bất thường giao diện vào `artifacts/ui-anomalies.json` theo ma trận 5 viewports ($390\times 844$, $430\times 932$, $768\times 1024$, $1366\times 768$, $1440\times 900$) qua headless `agent-browser` mà không ngắt luồng nghiệp vụ.
+  2. **UI Cleanup Pass Sau Khi Logic Pass**: Sau khi toàn bộ test logic và nghiệp vụ đạt 100%, tiến hành rà soát file `ui-anomalies.json` và sửa tận gốc (Root Cause):
+     - Nâng cấp các nút tab thành `min-h-[44px] py-2.5 px-3 touch-target flex items-center justify-center gap-1.5`.
+     - Tối ưu nhãn trên mobile: Ẩn bớt từ dài trên màn hình nhỏ và hiển thị đầy đủ trên màn hình lớn (`<span className="hidden sm:inline">...</span><span className="sm:hidden">...</span>`).
+  3. **Tái Kiểm Thử & Nghiệm Thu Khắt Khe**: Chạy lại toàn bộ 70 trường hợp ($14\text{ routes} \times 5\text{ viewports}$) qua `agent-browser`, xác minh kích thước thực tế $\ge 44\text{px}$, 0 tràn ngang, và chỉ chuyển trạng thái sang `"fixed"` khi trình duyệt thực tế pass 100%.
+
