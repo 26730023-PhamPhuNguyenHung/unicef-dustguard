@@ -9,6 +9,12 @@ import { TimelineView } from '../components/case/TimelineView';
 import { Button } from '../components/common/Button';
 import { Modal } from '../components/common/Modal';
 import {
+  RecordWorkspace,
+  RecordHeader,
+  RecordNavigation,
+  RecordContent,
+} from '../components/workspace';
+import {
   FileText,
   Radio,
   Image,
@@ -344,23 +350,70 @@ export const CaseDetailPage: React.FC = () => {
 
   const { case: currentCase, timeline, assignments, evidence, legalReviews, inspections, actions, closure } = caseData;
 
+  const RECORD_TABS = [
+    { id: 'overview', label: 'Tổng quan', icon: <FileText className="w-4 h-4" /> },
+    { id: 'dossier', label: 'Hồ sơ', icon: <FolderCheck className="w-4 h-4" /> },
+    { id: 'legal', label: 'Pháp lý', icon: <Shield className="w-4 h-4" /> },
+    { id: 'inspection', label: 'Hiện trường', icon: <ClipboardCheck className="w-4 h-4" />, count: inspections?.length },
+    { id: 'actions', label: 'Khắc phục', icon: <Wrench className="w-4 h-4" />, count: actions?.length },
+    { id: 'timeline', label: 'Lịch sử', icon: <Clock className="w-4 h-4" /> },
+    { id: 'evidence', label: 'Bằng chứng', icon: <Image className="w-4 h-4" />, count: evidence?.length },
+    { id: 'iot', label: 'IoT Quan trắc', icon: <Radio className="w-4 h-4" /> },
+    { id: 'signals', label: 'Phản ánh', icon: <Radio className="w-4 h-4" /> },
+  ];
+
   return (
-    <div className="space-y-6">
-      {/* Case Header (Section 37) */}
-      <CaseHeader
-        caseData={currentCase}
-        onPrimaryAction={handlePrimaryCtaClick}
-        onSecondaryAction={() => handleOpenAssignModal()}
+    <RecordWorkspace>
+      {/* Standardized Record Header */}
+      <RecordHeader
+        backTo="/cases"
+        backLabel="Danh sách vụ việc"
+        code={currentCase.case_code || currentCase.id}
+        status={currentCase.status}
+        title={currentCase.title}
+        metadata={
+          <>
+            <span className="flex items-center gap-1">
+              <MapPin className="w-3.5 h-3.5 text-ink-400" />
+              <span>{currentCase.location_text}</span>
+            </span>
+            {currentCase.contractor_name && (
+              <>
+                <span className="text-ink-300">•</span>
+                <span>Nhà thầu: <strong className="text-ink-700">{currentCase.contractor_name}</strong></span>
+              </>
+            )}
+            <span className="text-ink-300">•</span>
+            <span>Cập nhật: {new Date(currentCase.updated_at).toLocaleDateString('vi-VN')}</span>
+          </>
+        }
+        primaryAction={
+          <Button
+            variant="primary"
+            size="md"
+            onClick={handlePrimaryCtaClick}
+            className="shadow-xs font-semibold"
+          >
+            {nextActionData?.title || 'Xử lý vụ việc'}
+          </Button>
+        }
+        badges={
+          currentCase.priority === 'URGENT' && (
+            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-rose-700 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded">
+              Khẩn cấp
+            </span>
+          )
+        }
       />
 
-      {/* Primary Operations Action Bar (Section 6) */}
+      {/* Secondary Operations Action Bar */}
       <div className="civic-card p-3 bg-white border border-slate-200 flex flex-wrap items-center justify-between gap-2 shadow-xs">
-        <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+        <span className="text-xs font-bold text-ink-500 uppercase tracking-wider">
           Thao tác trực tiếp:
         </span>
         <div className="flex flex-wrap items-center gap-2">
           <Button
-            variant="outline"
+            variant="secondary"
             size="sm"
             icon={<User className="w-3.5 h-3.5" />}
             onClick={handleOpenAssignModal}
@@ -368,7 +421,7 @@ export const CaseDetailPage: React.FC = () => {
             Phân công
           </Button>
           <Button
-            variant="outline"
+            variant="secondary"
             size="sm"
             icon={<CheckSquare className="w-3.5 h-3.5" />}
             onClick={handleOpenTaskModal}
@@ -376,15 +429,15 @@ export const CaseDetailPage: React.FC = () => {
             Tạo nhiệm vụ
           </Button>
           <Button
-            variant="outline"
+            variant="secondary"
             size="sm"
             icon={<Shield className="w-3.5 h-3.5" />}
             onClick={() => navigate(`/cases/${currentCase.id}/legal`)}
           >
-            Yêu cầu pháp chế
+            Thẩm tra pháp lý
           </Button>
           <Button
-            variant="outline"
+            variant="secondary"
             size="sm"
             icon={<Calendar className="w-3.5 h-3.5" />}
             onClick={() => navigate(`/cases/${currentCase.id}/inspection/new`)}
@@ -392,7 +445,7 @@ export const CaseDetailPage: React.FC = () => {
             Lên lịch kiểm tra
           </Button>
           <Button
-            variant="outline"
+            variant="secondary"
             size="sm"
             icon={<Upload className="w-3.5 h-3.5" />}
             onClick={() => setUploadModalOpen(true)}
@@ -410,7 +463,7 @@ export const CaseDetailPage: React.FC = () => {
             </Button>
           ) : (
             <Button
-              variant="outline"
+              variant="secondary"
               size="sm"
               icon={<RotateCcw className="w-3.5 h-3.5" />}
               onClick={() => setReopenModalOpen(true)}
@@ -421,7 +474,7 @@ export const CaseDetailPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Next Action Engine Banner (Section 16 & 58) */}
+      {/* Next Action Engine Banner */}
       {nextActionData && (
         <div className="civic-card p-4 border-l-4 border-l-dustguard-red bg-rose-50/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">
@@ -442,13 +495,13 @@ export const CaseDetailPage: React.FC = () => {
           <div className="flex items-center gap-2 shrink-0">
             {nextActionData.route && (
               <Link to={nextActionData.route}>
-                <Button variant="danger" size="sm">
+                <Button variant="primary" size="sm">
                   {nextActionData.title}
                 </Button>
               </Link>
             )}
             <Button
-              variant="outline"
+              variant="secondary"
               size="sm"
               onClick={() => {
                 const token = localStorage.getItem('dustguard_token');
@@ -463,38 +516,15 @@ export const CaseDetailPage: React.FC = () => {
         </div>
       )}
 
-      {/* 8 Tabs (Section 15) */}
-      <div className="border-b border-slate-200 overflow-x-auto scrollbar-thin">
-        <nav className="flex space-x-3 pb-px">
-          {TABS.map(tab => {
-            const isActive = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 whitespace-nowrap px-4 py-2.5 text-xs sm:text-sm font-semibold border-b-2 transition-colors touch-target ${
-                  isActive
-                    ? 'border-dustguard-red text-dustguard-red'
-                    : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
-                }`}
-              >
-                <span>{tab.icon}</span>
-                <span>{tab.label}</span>
-                {tab.id === 'evidence' && evidence.length > 0 && (
-                  <span className="bg-slate-100 text-slate-700 text-[10px] px-1.5 py-0.2 rounded-full font-bold">
-                    {evidence.length}
-                  </span>
-                )}
-                {tab.id === 'actions' && actions.length > 0 && (
-                  <span className="bg-slate-100 text-slate-700 text-[10px] px-1.5 py-0.2 rounded-full font-bold">
-                    {actions.length}
-                  </span>
-                )}
-              </button>
-            );
-          })}
-        </nav>
-      </div>
+      {/* Record Navigation */}
+      <RecordNavigation
+        tabs={RECORD_TABS}
+        activeTab={activeTab}
+        onTabChange={tabId => setActiveTab(tabId)}
+      />
+
+      {/* Record Content */}
+      <RecordContent>
 
       {/* TAB 1: OVERVIEW */}
       {activeTab === 'overview' && (
@@ -768,7 +798,7 @@ export const CaseDetailPage: React.FC = () => {
               <p className="text-xs text-slate-500">Đối chiếu điều khoản luật và xác lập căn cứ pháp lý vi phạm</p>
             </div>
             <Link to={`/cases/${currentCase.id}/legal`}>
-              <Button variant="teal" size="sm" icon={<ExternalLink className="w-4 h-4" />}>
+              <Button variant="primary" size="sm" icon={<ExternalLink className="w-4 h-4" />}>
                 Mở Giao diện 3 Cột Toàn Màn hình
               </Button>
             </Link>
@@ -1460,6 +1490,7 @@ export const CaseDetailPage: React.FC = () => {
           </div>
         </form>
       </Modal>
-    </div>
+    </RecordContent>
+    </RecordWorkspace>
   );
 };

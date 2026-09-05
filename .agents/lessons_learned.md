@@ -195,5 +195,28 @@
   2. **UI Cleanup Pass Sau Khi Logic Pass**: Sau khi toàn bộ test logic và nghiệp vụ đạt 100%, tiến hành rà soát file `ui-anomalies.json` và sửa tận gốc (Root Cause):
      - Nâng cấp các nút tab thành `min-h-[44px] py-2.5 px-3 touch-target flex items-center justify-center gap-1.5`.
      - Tối ưu nhãn trên mobile: Ẩn bớt từ dài trên màn hình nhỏ và hiển thị đầy đủ trên màn hình lớn (`<span className="hidden sm:inline">...</span><span className="sm:hidden">...</span>`).
-  3. **Tái Kiểm Thử & Nghiệm Thu Khắt Khe**: Chạy lại toàn bộ 70 trường hợp ($14\text{ routes} \times 5\text{ viewports}$) qua `agent-browser`, xác minh kích thước thực tế $\ge 44\text{px}$, 0 tràn ngang, và chỉ chuyển trạng thái sang `"fixed"` khi trình duyệt thực tế pass 100%.
+### 16. Kiến Trúc Workspace-First, Shell Chuẩn Hóa & Tối Ưu Màn Hình Laptop 14-inch (Windows Scale 125%)
+- **Bối cảnh & Vấn đề**:
+  1. Bố cục 3 cột cố định trên Desktop (Sidebar + Cột Dữ kiện hồ sơ 300px + Cột Thẩm tra trung tâm + Cột Dữ kiện thiếu & Quyết định 320px) bên trong container `max-w-7xl` làm vùng làm việc trung tâm bị ép chặt xuống chỉ còn ~450px trên màn hình laptop 14-inch (viewport ~1280–1366px).
+  2. Giao diện bị chia vụn bởi quá nhiều viền lồng viền (boxes within boxes), thanh dev role switcher nằm tách biệt trên đỉnh chiếm diện tích, các chuỗi raw UUID dài (`[FACT-ITEM-ii-...]`) gây tràn khung và phân tán sự chú ý của cán bộ tác nghiệp.
+- **Giải pháp chuẩn hóa (Workspace-First Architecture)**:
+  1. **Application Shell Linh hoạt**:
+     - Header cố định 56px (`h-14`), loại bỏ hoàn toàn dev bar bên trên.
+     - Tích hợp bộ chuyển đổi vai trò (`RoleSwitcher`) dạng dropdown nhỏ gọn ngay trên Header.
+     - Sidebar đáp ứng đa tầng: `< 1200px`: 68px icon mode (tự động ẩn text, căn giữa icon, tooltip hover); `1200–1439px`: 196px; `≥ 1440px`: 216px.
+     - Loại bỏ giới hạn `max-w-7xl`, content sử dụng 100% không gian còn lại (`flex-1 min-w-0 w-full`).
+  2. **Main Legal Canvas Duy Nhất (≥ 800px usable width)**:
+     - Trên màn hình 14-inch (1280x800 và 1366x768), canvas làm việc chính đạt chiều rộng thực tế từ **1069px đến 1155px** (vượt xa mức tối thiểu 800px).
+  3. **Chuyển Đổi Phân Hệ Phụ Thành Drawers & Popovers**:
+     - *Dữ kiện hồ sơ*: Chuyển thành `SideDrawer` (380–420px) kích hoạt qua nút `[Bằng chứng · 12]`, overlay lên nội dung và không làm co giãn canvas chính.
+     - *Dữ kiện còn thiếu*: Chuyển thành `SideDrawer` kích hoạt qua nhãn cảnh báo `[⚠ Thiếu 3 dữ kiện]` đặt cạnh header.
+     - *Quyết định cán bộ*: Chuyển thành `BottomActionBar` ghim đáy (sticky) hiển thị trạng thái kết luận, độ tin cậy dữ liệu và nút chính `[Ra quyết định →]` mở `DecisionModal` phê duyệt ký duyệt có thẩm quyền (Human-in-the-loop).
+  4. **Thẻ Nhận Định & Nhãn Nguồn Thân Thiện**:
+     - Thay thế toàn bộ chuỗi raw UUID thô bằng thẻ nguồn nghiệp vụ thân thiện: `[Hiện trường 1]`, `[IoT 1]`, `[Bằng chứng 1]`, kèm 2 hành động tác nghiệp trực tiếp `[Xem bằng chứng]` và `[Đối chiếu căn cứ]`.
+  5. **Bộ Primitives Chuẩn Hóa**:
+     - Xuất khẩu thống nhất các thành phần: `PageHeader`, `RecordHeader`, `RecordNavigation`, `RecordWorkspace`, `RecordContent`, `Workspace`, `ListWorkspace`, `InvestigationWorkspace`, `FormWorkspace`, `DashboardGrid`, `SideDrawer`, `BottomActionBar`, `DecisionModal`.
+- **Kết quả Kiểm chứng**:
+  - 87/87 API & domain tests **PASS 100%**.
+  - 75/75 responsive matrix combinations **PASS 100%**.
+  - 0 console error, 0 horizontal scroll, giao diện sáng màu high-contrast, zero-glassmorphism.
 

@@ -460,7 +460,7 @@ export const IotDeviceDetailPage: React.FC = () => {
               value={linkNotes}
               onChange={e => setLinkNotes(e.target.value)}
               placeholder="VD: Trạm đo nằm cách công trình 120m về hướng gió nam..."
-              className="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-dustguard-teal text-xs sm:text-sm"
+              className="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-dustguard-red text-xs sm:text-sm"
             />
           </div>
 
@@ -470,7 +470,7 @@ export const IotDeviceDetailPage: React.FC = () => {
             </Button>
             <Button
               type="submit"
-              variant="teal"
+              variant="primary"
               loading={submittingLink}
               disabled={availableCases.length === 0}
             >

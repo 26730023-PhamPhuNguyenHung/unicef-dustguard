@@ -7,7 +7,28 @@
 
 ## 📅 Các Mốc Phát Triển Chính (Milestones)
 
-### 1. [2026-09-05] `operations-v1.7`: UI Quality Watch Non-Blocking Pipeline & Mobile Touch Target Compliance
+### 1. [2026-09-05] `operations-v1.8`: Workspace-First Architecture Refactor (14-inch Windows Scale 125% Usable Canvas & Standard Primitives)
+- **Mục tiêu**: Tái cấu trúc toàn diện DustGuard Operations theo nguyên tắc **WORKSPACE-FIRST**, tối ưu hóa tuyệt đối cho máy tính xách tay 14 inch ở mức scale Windows 125% (viewport ~1280–1366px), chuẩn hóa Application Shell và hệ thống primitives tác nghiệp.
+- **Phạm vi hoàn tất**:
+  - **Global Application Shell**:
+    - Chuẩn hóa Header cao 56px (`h-14`), xóa bỏ hoàn toàn dev bar bên trên. Tích hợp gọn gàng bộ chuyển đổi vai trò (`RoleSwitcher`) ngay trong Header.
+    - Sidebar đa tầng thích ứng chính xác: `< 1200px`: 68px icon mode (căn giữa icon, tooltip hover); `1200–1439px`: 196px; `≥ 1440px`: 216px.
+    - Bỏ giới hạn `max-w-7xl`, content sử dụng 100% không gian còn lại (`flex-1 min-w-0 w-full`).
+  - **Legal / Investigation Workspace (`/cases/:id/legal`)**:
+    - Loại bỏ vĩnh viễn bố cục 3 cột cố định gây chật chội. Main Legal Canvas đạt độ rộng hữu dụng thực tế **1069px** (ở 1280px) và **1155px** (ở 1366px), vượt xa yêu cầu $\ge 800\text{px}$.
+    - Chuyển "Dữ kiện hồ sơ" thành `SideDrawer` trượt từ phải (380–420px) kích hoạt qua nút `[Bằng chứng · 12]`, overlay lên nội dung và không co giãn canvas chính.
+    - Chuyển "Dữ kiện còn thiếu" thành `SideDrawer` kích hoạt qua trigger `[⚠ Thiếu 3 dữ kiện]` cạnh header với 2 CTA nghiệp vụ tạo tác vụ xác minh hoặc gắn checklist.
+    - Chuyển "Quyết định cán bộ" thành `BottomActionBar` ghim đáy hiển thị cấp độ kết luận, thanh tiến trình độ tin cậy và nút `[Ra quyết định →]` mở `DecisionModal` có thẩm quyền ký duyệt (Human-in-the-loop).
+    - Rút gọn toàn bộ raw UUIDs thành các thẻ nguồn thân thiện: `[Hiện trường 1]`, `[IoT 1]`, `[Bằng chứng 1]`.
+  - **Record Workspace Standardized**:
+    - Chuẩn hóa cấu trúc `<RecordHeader />`, `<RecordNavigation />`, `<RecordContent />` cho `CaseDetailPage`, `ProjectsPage`, `ContractorsPage`.
+    - Bộ thư viện layout reusable: `PageHeader`, `RecordHeader`, `RecordNavigation`, `RecordWorkspace`, `Workspace`, `ListWorkspace`, `InvestigationWorkspace`, `FormWorkspace`, `DashboardGrid`, `SideDrawer`, `BottomActionBar`, `DecisionModal`.
+  - **Nghiệm Thu Khắt Khe**:
+    - `npm test`: **87/87 tests PASS 100%**.
+    - `npm run test:responsive`: **75/75 viewport combinations PASS 100%** (390px, 430px, 768px, 1366px, 1440px).
+    - Kiểm thử trực tiếp qua `agent-browser`: Xác minh độ rộng canvas, hoạt động của drawer, quy trình ký duyệt quyết định và lưu trữ bền vững vào D1/SQLite.
+
+### 2. [2026-09-05] `operations-v1.7`: UI Quality Watch Non-Blocking Pipeline & Mobile Touch Target Compliance
 - **Mục tiêu**: Thiết lập và vận hành quy trình giám sát chất lượng giao diện (UI Quality Watch) ở chế độ Không Chặn (Non-Blocking) xuyên suốt quá trình kiểm thử trình duyệt thực tế trên ma trận 5 viewports và 14 routes tác nghiệp, khắc phục tận gốc các bất thường giao diện và nâng chuẩn tiếp cận Civic Tech.
 - **Phạm vi hoàn tất**:
   - **Giám sát Non-Blocking Tự Động Hóa**: Xây dựng kịch bản `dustguard-operations/scripts/run-ui-quality-watch.mjs` quét tự động 70 trường hợp (5 viewports $\times$ 14 routes) bao gồm: Text clipping, Button clipping/overlap, Horizontal overflow, Responsive breakpoints, và Visual consistency.

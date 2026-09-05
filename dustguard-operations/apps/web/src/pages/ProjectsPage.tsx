@@ -15,6 +15,7 @@ import {
   FileSpreadsheet,
 } from 'lucide-react';
 import { Project, Contractor } from '@dustguard-operations/shared';
+import { PageHeader } from '../components/workspace';
 
 export const ProjectsPage: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -113,28 +114,27 @@ export const ProjectsPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-            <HardHat className="w-5 h-5 text-dustguard-red" />
-            Quản lý Công trình & Dự án Xây dựng
-          </h1>
-          <p className="text-xs text-slate-600 mt-1">
-            Danh mục công trường xây dựng, nguồn phát sinh bụi và đối tượng giám sát theo thời gian thực.
-          </p>
-        </div>
-
-        <Button
-          variant="primary"
-          onClick={() => setModalOpen(true)}
-          className="flex items-center gap-1.5 self-start sm:self-auto font-bold shadow-xs"
-        >
-          <Plus className="w-4 h-4" />
-          Thêm công trình
-        </Button>
-      </div>
+    <div className="space-y-4 sm:space-y-5">
+      {/* Standardized Page Header */}
+      <PageHeader
+        title="Quản lý Công trình & Dự án Xây dựng"
+        description="Danh mục công trường xây dựng, nguồn phát sinh bụi và đối tượng giám sát theo thời gian thực."
+        badge={
+          <span className="p-1.5 rounded-md bg-dustguard-redSoft text-dustguard-red">
+            <HardHat className="w-4 h-4" />
+          </span>
+        }
+        actions={
+          <Button
+            variant="primary"
+            onClick={() => setModalOpen(true)}
+            className="font-semibold shadow-xs"
+            icon={<Plus className="w-4 h-4" />}
+          >
+            Thêm công trình
+          </Button>
+        }
+      />
 
       {/* Filter & Search Bar */}
       <div className="civic-card p-3 flex flex-col sm:flex-row items-center gap-3">

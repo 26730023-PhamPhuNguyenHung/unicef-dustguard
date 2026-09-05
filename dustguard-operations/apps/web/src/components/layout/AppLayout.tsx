@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth, DEV_ACCOUNTS } from '../../context/AuthContext';
 import { api } from '../../api/client';
-import { DevRoleSwitcher } from '../common/DevRoleSwitcher';
 import { CommandPalette } from '../common/CommandPalette';
 import {
   LayoutDashboard,
@@ -18,9 +17,7 @@ import {
   Menu,
   X,
   FileCheck2,
-  ShieldAlert,
   CheckSquare,
-  Cpu,
   FileUp,
   Zap,
   Settings,
@@ -28,12 +25,12 @@ import {
   BarChart3,
   HardHat,
   Radio,
-  FileText,
   Scale,
   Building2,
   Megaphone,
+  ChevronDown,
 } from 'lucide-react';
-import { getRoleLabel } from '@dustguard-operations/shared';
+import { Role, getRoleLabel } from '@dustguard-operations/shared';
 import { PublicReportModal } from '../case/PublicReportModal';
 
 interface NavSection {
@@ -48,7 +45,7 @@ interface NavSection {
 }
 
 export const AppLayout: React.FC = () => {
-  const { user, logout, can } = useAuth();
+  const { user, logout, can, switchRole } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -79,154 +76,177 @@ export const AppLayout: React.FC = () => {
     navigate('/login');
   };
 
-  // 4 Logical Operational Sections (Section 3 of Specification)
+  // 4 Logical Operational Sections (Consistent Information Architecture)
   const navSections: NavSection[] = [
     {
       title: 'VẬN HÀNH',
       items: [
-        { label: 'Tổng quan', path: '/dashboard', icon: <LayoutDashboard className="w-4 h-4" />, perm: 'dashboard:view' },
-        { label: 'Vụ việc', path: '/cases', icon: <Inbox className="w-4 h-4" />, perm: 'case:view' },
-        { label: 'Công trình', path: '/projects', icon: <HardHat className="w-4 h-4" />, perm: 'case:view' },
-        { label: 'Nhà thầu', path: '/contractors', icon: <Building2 className="w-4 h-4" />, perm: 'case:view' },
-        { label: 'Nhiệm vụ', path: '/tasks', icon: <CheckSquare className="w-4 h-4" />, perm: 'task:view' },
-        { label: 'Hiện trường', path: '/inspections', icon: <ClipboardCheck className="w-4 h-4" />, perm: 'inspection:perform' },
-        { label: 'Khắc phục', path: '/actions', icon: <Wrench className="w-4 h-4" />, perm: 'action:create' },
+        { label: 'Tổng quan', path: '/dashboard', icon: <LayoutDashboard className="w-4 h-4 shrink-0" />, perm: 'dashboard:view' },
+        { label: 'Vụ việc', path: '/cases', icon: <Inbox className="w-4 h-4 shrink-0" />, perm: 'case:view' },
+        { label: 'Công trình', path: '/projects', icon: <HardHat className="w-4 h-4 shrink-0" />, perm: 'case:view' },
+        { label: 'Nhà thầu', path: '/contractors', icon: <Building2 className="w-4 h-4 shrink-0" />, perm: 'case:view' },
+        { label: 'Nhiệm vụ', path: '/tasks', icon: <CheckSquare className="w-4 h-4 shrink-0" />, perm: 'task:view' },
+        { label: 'Hiện trường', path: '/inspections', icon: <ClipboardCheck className="w-4 h-4 shrink-0" />, perm: 'inspection:perform' },
+        { label: 'Khắc phục', path: '/actions', icon: <Wrench className="w-4 h-4 shrink-0" />, perm: 'action:create' },
       ],
     },
     {
       title: 'TRÍ TUỆ PHÁP LÝ',
       items: [
-        { label: 'Phân tích pháp lý', path: '/tasks?tab=LEGAL', icon: <Scale className="w-4 h-4" />, perm: 'legal:view' },
-        { label: 'Thư viện pháp lý', path: '/legal/library', icon: <BookOpen className="w-4 h-4" />, perm: 'legal:view' },
-        { label: 'Nhập văn bản pháp lý', path: '/legal/import', icon: <FileUp className="w-4 h-4" />, perm: 'legal:import' },
+        { label: 'Phân tích pháp lý', path: '/tasks?tab=LEGAL', icon: <Scale className="w-4 h-4 shrink-0" />, perm: 'legal:view' },
+        { label: 'Thư viện pháp lý', path: '/legal/library', icon: <BookOpen className="w-4 h-4 shrink-0" />, perm: 'legal:view' },
+        { label: 'Nhập văn bản pháp lý', path: '/legal/import', icon: <FileUp className="w-4 h-4 shrink-0" />, perm: 'legal:import' },
       ],
     },
     {
       title: 'GIÁM SÁT',
       items: [
-        { label: 'IoT & Cảnh báo', path: '/iot', icon: <Radio className="w-4 h-4" />, perm: 'iot:view' },
-        { label: 'Bằng chứng số', path: '/evidence', icon: <ShieldCheck className="w-4 h-4" />, perm: 'evidence:view' },
+        { label: 'IoT & Cảnh báo', path: '/iot', icon: <Radio className="w-4 h-4 shrink-0" />, perm: 'iot:view' },
+        { label: 'Bằng chứng số', path: '/evidence', icon: <ShieldCheck className="w-4 h-4 shrink-0" />, perm: 'evidence:view' },
       ],
     },
     {
       title: 'QUẢN TRỊ & BÁO CÁO',
       items: [
-        { label: 'Báo cáo vận hành', path: '/reports', icon: <BarChart3 className="w-4 h-4" />, perm: 'dashboard:view' },
-        { label: 'Điều phối tải việc', path: '/supervisor/workload', icon: <Users className="w-4 h-4" />, perm: 'workload:view' },
-        { label: 'Tự động hóa', path: '/automations', icon: <Zap className="w-4 h-4" />, perm: 'automation:view' },
-        { label: 'Người dùng', path: '/admin/users', icon: <User className="w-4 h-4" />, perm: 'user:manage' },
-        { label: 'Nhật ký hệ thống', path: '/admin/audit', icon: <FileCheck2 className="w-4 h-4" />, perm: 'audit:view' },
-        { label: 'Cấu hình hệ thống', path: '/admin/settings', icon: <Settings className="w-4 h-4" />, perm: 'system:config' },
+        { label: 'Báo cáo vận hành', path: '/reports', icon: <BarChart3 className="w-4 h-4 shrink-0" />, perm: 'dashboard:view' },
+        { label: 'Điều phối tải việc', path: '/supervisor/workload', icon: <Users className="w-4 h-4 shrink-0" />, perm: 'workload:view' },
+        { label: 'Tự động hóa', path: '/automations', icon: <Zap className="w-4 h-4 shrink-0" />, perm: 'automation:view' },
+        { label: 'Người dùng', path: '/admin/users', icon: <User className="w-4 h-4 shrink-0" />, perm: 'user:manage' },
+        { label: 'Nhật ký hệ thống', path: '/admin/audit', icon: <FileCheck2 className="w-4 h-4 shrink-0" />, perm: 'audit:view' },
+        { label: 'Cấu hình hệ thống', path: '/admin/settings', icon: <Settings className="w-4 h-4 shrink-0" />, perm: 'system:config' },
       ],
     },
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-cream text-ink-900">
-      {/* Dev Mode Banner */}
-      <DevRoleSwitcher />
-
+    <div className="min-h-screen flex flex-col bg-page text-ink-900 overflow-x-hidden w-full">
       {/* Global Command Palette (Ctrl+K) */}
       <CommandPalette isOpen={commandPaletteOpen} onClose={() => setCommandPaletteOpen(false)} />
 
-      {/* Top Header */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
-          {/* Logo & Platform Name */}
-          <div className="flex items-center gap-3 flex-shrink-0">
+      {/* Top Header - Standardized Workspace Shell (56px, Full-width, Zero Debug Clutter) */}
+      <header className="h-14 bg-surface border-b border-slate-200/90 sticky top-0 z-30 shadow-xs w-full">
+        <div className="w-full px-3 sm:px-5 lg:px-6 h-full flex items-center justify-between gap-3">
+          {/* Left: Logo & Product Name */}
+          <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 touch-target"
+              className="lg:hidden p-1.5 sm:p-2 rounded-md text-ink-600 hover:bg-surface-subtle touch-target"
               aria-label="Mở menu"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
 
-            <Link to="/dashboard" className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-lg bg-dustguard-red flex items-center justify-center text-white shadow-xs font-bold text-lg">
+            <Link to="/dashboard" className="flex items-center gap-2 sm:gap-2.5 select-none">
+              <div className="w-8 h-8 rounded-md bg-dustguard-red flex items-center justify-center text-white shadow-xs font-bold text-sm tracking-wider shrink-0">
                 DG
               </div>
               <div className="hidden sm:block">
-                <span className="font-bold text-slate-900 text-base tracking-tight block leading-tight">
+                <span className="font-bold text-ink-900 text-sm sm:text-base tracking-tight block leading-none">
                   DustGuard Operations
                 </span>
-                <span className="text-[11px] text-slate-500 font-medium block">
-                  Hệ thống Quản lý Vụ việc & Giám sát Hiện trường
+                <span className="text-[10px] text-ink-500 font-medium block mt-0.5 leading-none">
+                  Quản lý Vụ việc & Giám sát Hiện trường
                 </span>
               </div>
             </Link>
           </div>
 
-          {/* Center Search Input Trigger */}
-          <div className="flex-1 max-w-md hidden lg:block">
+          {/* Center: Search Input Trigger */}
+          <div className="flex-1 max-w-md hidden md:block">
             <button
+              type="button"
               onClick={() => setCommandPaletteOpen(true)}
-              className="w-full flex items-center justify-between px-3 py-1.5 text-xs bg-slate-100 hover:bg-slate-200/80 border border-slate-300 rounded-lg text-slate-500 transition-colors group"
+              className="w-full flex items-center justify-between px-3 py-1.5 text-xs bg-surface-subtle hover:bg-stone-200/70 border border-slate-200/90 rounded-md text-ink-500 transition-colors group cursor-pointer"
             >
               <span className="flex items-center gap-2">
-                <Search className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-600" />
-                <span>Tìm nhanh vụ việc, nhiệm vụ, điều luật, trạm IoT...</span>
+                <Search className="w-3.5 h-3.5 text-ink-400 group-hover:text-ink-600" />
+                <span className="truncate">Tìm nhanh vụ việc, nhiệm vụ, điều luật, trạm IoT...</span>
               </span>
-              <kbd className="px-1.5 py-0.5 bg-white border border-slate-300 rounded font-mono text-[10px] text-slate-600 shadow-2xs">
+              <kbd className="px-1.5 py-0.5 bg-white border border-slate-200 rounded font-mono text-[10px] text-ink-500 shadow-2xs">
                 Ctrl K
               </kbd>
             </button>
           </div>
 
-          {/* Right Header: Notifications & User profile */}
-          <div className="flex items-center gap-2.5 flex-shrink-0">
-            {/* Mobile / Tablet Search Button */}
+          {/* Right: Role Switcher, Actions, Notifications & Profile */}
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+            {/* Search Icon Trigger for < md */}
             <button
+              type="button"
               onClick={() => setCommandPaletteOpen(true)}
-              className="lg:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100"
+              className="md:hidden p-2 rounded-md text-ink-600 hover:bg-surface-subtle"
               aria-label="Tìm kiếm"
             >
               <Search className="w-5 h-5" />
             </button>
 
+            {/* Public Citizen Report Trigger */}
             <button
               type="button"
               onClick={() => setPublicReportOpen(true)}
-              className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-dustguard-red border border-rose-200 rounded-lg text-xs font-semibold transition-colors"
+              className="hidden 2xl:inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-surface hover:bg-surface-subtle text-ink-700 border border-slate-200/90 rounded-md text-xs font-medium transition-colors cursor-pointer"
               title="Tiếp nhận phản ánh hiện trường từ người dân (Public Citizen Report)"
             >
-              <Megaphone className="w-3.5 h-3.5" />
+              <Megaphone className="w-3.5 h-3.5 text-dustguard-red" />
               <span>Báo cáo dân cư</span>
             </button>
 
+            {/* Integrated Role Switcher (Compact, Clean, Zero Dev Banner) */}
+            {user && (
+              <div className="relative inline-flex items-center">
+                <select
+                  aria-label="Chuyển đổi vai trò nghiệp vụ"
+                  value={user.role}
+                  onChange={e => switchRole(e.target.value as Role)}
+                  className="text-xs font-semibold bg-surface-subtle hover:bg-stone-200/60 text-ink-800 border border-slate-200/90 rounded-md py-1.5 pl-2.5 pr-7 appearance-none cursor-pointer outline-none focus:ring-1 focus:ring-dustguard-red transition-colors"
+                >
+                  {(Object.keys(DEV_ACCOUNTS) as Role[]).map(r => (
+                    <option key={r} value={r}>
+                      {DEV_ACCOUNTS[r].label}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="w-3.5 h-3.5 text-ink-400 absolute right-2 pointer-events-none" />
+              </div>
+            )}
+
+            {/* Notifications */}
             <Link
               to="/notifications"
-              className="relative p-2 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 touch-target"
+              className="relative p-2 rounded-md text-ink-600 hover:bg-surface-subtle hover:text-ink-900 touch-target"
               aria-label="Thông báo"
             >
-              <Bell className="w-5 h-5" />
+              <Bell className="w-4.5 h-4.5" />
               {unreadCount > 0 && (
-                <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-rose-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-dustguard-red text-white text-[10px] font-bold rounded-full flex items-center justify-center">
                   {unreadCount > 9 ? '9+' : unreadCount}
                 </span>
               )}
             </Link>
 
+            {/* Current User */}
             {user ? (
-              <div className="flex items-center gap-2.5 border-l border-slate-200 pl-2.5">
+              <div className="flex items-center gap-1.5 sm:gap-2 border-l border-slate-200 pl-1.5 sm:pl-2">
                 <Link to="/profile" className="flex items-center gap-2 text-left hover:opacity-85 transition-opacity">
-                  <div className="w-8 h-8 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-bold text-xs border border-slate-300">
+                  <div className="w-7.5 h-7.5 rounded-full bg-surface-subtle text-ink-700 flex items-center justify-center font-bold text-xs border border-slate-200">
                     {user.full_name.charAt(0)}
                   </div>
-                  <div className="hidden lg:block">
-                    <p className="text-xs font-bold text-slate-800 leading-tight truncate max-w-[130px]">
+                  <div className="hidden min-[1366px]:block">
+                    <p className="text-xs font-bold text-ink-900 leading-tight truncate max-w-[120px]">
                       {user.full_name}
                     </p>
-                    <p className="text-[10px] text-slate-500 font-medium leading-tight">
+                    <p className="text-[10px] text-ink-500 font-medium leading-tight">
                       {getRoleLabel(user.role)}
                     </p>
                   </div>
                 </Link>
 
                 <button
+                  type="button"
                   onClick={handleLogout}
-                  className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-slate-100 touch-target"
+                  className="p-1.5 text-ink-400 hover:text-dustguard-red rounded-md hover:bg-surface-subtle cursor-pointer"
                   title="Đăng xuất"
+                  aria-label="Đăng xuất"
                 >
                   <LogOut className="w-4 h-4" />
                 </button>
@@ -234,7 +254,7 @@ export const AppLayout: React.FC = () => {
             ) : (
               <Link
                 to="/login"
-                className="text-xs font-semibold bg-dustguard-red text-white px-3 py-1.5 rounded-lg hover:bg-dustguard-redHover"
+                className="text-xs font-semibold bg-dustguard-red text-white px-3 py-1.5 rounded-md hover:bg-dustguard-redHover"
               >
                 Đăng nhập
               </Link>
@@ -243,36 +263,43 @@ export const AppLayout: React.FC = () => {
         </div>
       </header>
 
-      {/* Main Container */}
-      <div className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex gap-6">
-        {/* Desktop Sidebar (Grouped by 4 Operational Areas) */}
-        <aside className="hidden lg:block w-60 flex-shrink-0">
-          <nav className="civic-card p-3 space-y-4 sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto">
-            {navSections.map(section => {
+      {/* Main Workspace Layout (Full-width, Responsive Sidebar: 68px / 196px / 216px) */}
+      <div className="flex-1 flex w-full min-w-0">
+        {/* Desktop Sidebar */}
+        <aside className="hidden lg:block w-[68px] min-[1200px]:w-[196px] min-[1440px]:w-[216px] shrink-0 border-r border-slate-200/90 bg-surface min-h-[calc(100vh-3.5rem)] sticky top-14 self-start max-h-[calc(100vh-3.5rem)] overflow-y-auto scrollbar-thin">
+          <nav className="p-2 space-y-3">
+            {navSections.map((section, sIdx) => {
               const visibleItems = section.items.filter(item => can(item.perm as any));
               if (visibleItems.length === 0) return null;
 
               return (
-                <div key={section.title} className="space-y-1">
-                  <div className="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                <div key={section.title} className="space-y-0.5">
+                  {/* Title in expanded mode */}
+                  <div className="hidden min-[1200px]:block px-2 py-1 text-[10px] font-bold text-ink-400 uppercase tracking-wider">
                     {section.title}
                   </div>
+                  {/* Divider in icon mode (< 1200px) */}
+                  {sIdx > 0 && (
+                    <div className="min-[1200px]:hidden h-px bg-slate-200/80 my-2 mx-1" />
+                  )}
+
                   {visibleItems.map(item => {
                     const isActive = location.pathname === item.path || (item.path !== '/dashboard' && location.pathname.startsWith(`${item.path}/`));
                     return (
                       <Link
                         key={item.path}
                         to={item.path}
-                        className={`flex items-center gap-2.5 px-3 py-2 rounded-md text-xs font-medium transition-colors touch-target ${
+                        title={item.label}
+                        className={`flex items-center justify-center min-[1200px]:justify-start gap-2.5 px-2.5 py-2 rounded-md text-xs font-medium transition-colors ${
                           isActive
-                            ? 'bg-rose-50 text-dustguard-red font-bold border-l-4 border-dustguard-red shadow-2xs'
-                            : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
+                            ? 'bg-dustguard-redSoft text-dustguard-red font-bold border-l-3 border-dustguard-red shadow-2xs'
+                            : 'text-ink-700 hover:bg-surface-subtle hover:text-ink-900'
                         }`}
                       >
-                        <span className={isActive ? 'text-dustguard-red' : 'text-slate-500'}>
+                        <span className={isActive ? 'text-dustguard-red shrink-0' : 'text-ink-400 shrink-0'}>
                           {item.icon}
                         </span>
-                        <span className="truncate">{item.label}</span>
+                        <span className="hidden min-[1200px]:inline truncate">{item.label}</span>
                       </Link>
                     );
                   })}
@@ -285,12 +312,12 @@ export const AppLayout: React.FC = () => {
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
           <div className="lg:hidden fixed inset-0 z-40">
-            <div className="fixed inset-0 bg-slate-900/50" onClick={() => setMobileMenuOpen(false)} />
-            <div className="relative w-72 max-w-full bg-white h-full shadow-2xl p-4 flex flex-col justify-between overflow-y-auto">
+            <div className="fixed inset-0 bg-ink-900/40" onClick={() => setMobileMenuOpen(false)} />
+            <div className="relative w-72 max-w-full bg-surface h-full shadow-lg p-4 flex flex-col justify-between overflow-y-auto">
               <div className="space-y-4">
                 <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-                  <span className="font-bold text-slate-900 text-sm">Danh mục chức năng</span>
-                  <button onClick={() => setMobileMenuOpen(false)} className="p-1 text-slate-500">
+                  <span className="font-bold text-ink-900 text-sm">Danh mục chức năng</span>
+                  <button onClick={() => setMobileMenuOpen(false)} className="p-1 text-ink-500">
                     <X className="w-5 h-5" />
                   </button>
                 </div>
@@ -302,107 +329,56 @@ export const AppLayout: React.FC = () => {
 
                     return (
                       <div key={section.title} className="space-y-1">
-                        <div className="px-2 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                        <div className="px-2 py-0.5 text-[10px] font-bold text-ink-400 uppercase tracking-wider">
                           {section.title}
                         </div>
-                        {visibleItems.map(item => (
-                          <Link
-                            key={item.path}
-                            to={item.path}
-                            onClick={() => setMobileMenuOpen(false)}
-                            className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-slate-700 hover:bg-slate-100"
-                          >
-                            <span className="text-slate-500">{item.icon}</span>
-                            <span>{item.label}</span>
-                          </Link>
-                        ))}
+                        {visibleItems.map(item => {
+                          const isActive = location.pathname === item.path || (item.path !== '/dashboard' && location.pathname.startsWith(`${item.path}/`));
+                          return (
+                            <Link
+                              key={item.path}
+                              to={item.path}
+                              onClick={() => setMobileMenuOpen(false)}
+                              className={`flex items-center gap-2.5 px-3 py-2 rounded-md text-xs font-medium transition-colors ${
+                                isActive
+                                  ? 'bg-dustguard-redSoft text-dustguard-red font-bold border-l-3 border-dustguard-red'
+                                  : 'text-ink-700 hover:bg-surface-subtle hover:text-ink-900'
+                              }`}
+                            >
+                              <span className={isActive ? 'text-dustguard-red shrink-0' : 'text-ink-400 shrink-0'}>
+                                {item.icon}
+                              </span>
+                              <span className="truncate">{item.label}</span>
+                            </Link>
+                          );
+                        })}
                       </div>
                     );
                   })}
                 </nav>
               </div>
 
-              {user && (
-                <div className="border-t border-slate-200 pt-4">
-                  <p className="text-xs font-bold text-slate-800">{user.full_name}</p>
-                  <p className="text-[11px] text-slate-500">{user.email}</p>
-                  <button
-                    onClick={handleLogout}
-                    className="mt-3 flex items-center gap-2 text-xs text-rose-600 font-semibold"
-                  >
-                    <LogOut className="w-4 h-4" /> Đăng xuất
-                  </button>
-                </div>
-              )}
+              <div className="pt-4 border-t border-slate-200">
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-2 text-xs font-semibold text-rose-700 w-full px-2 py-1.5 rounded hover:bg-rose-50 cursor-pointer"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span>Đăng xuất tài khoản</span>
+                </button>
+              </div>
             </div>
           </div>
         )}
 
-        {/* Page Content */}
-        <main className="flex-1 min-w-0 pb-16 lg:pb-0">
+        {/* Dynamic Route Content (Full width fluid canvas) */}
+        <main className="flex-1 min-w-0 w-full p-4 sm:p-5 lg:p-6 overflow-x-hidden">
           <Outlet />
         </main>
       </div>
 
-      {/* Mobile Bottom Navigation */}
-      <nav className="lg:hidden fixed bottom-0 inset-x-0 bg-white border-t border-slate-200 z-30 flex items-center justify-around h-14 shadow-lg px-2">
-        <Link
-          to="/dashboard"
-          className={`flex flex-col items-center justify-center flex-1 py-1 ${
-            location.pathname === '/dashboard' ? 'text-dustguard-red font-bold' : 'text-slate-500'
-          }`}
-        >
-          <LayoutDashboard className="w-4 h-4" />
-          <span className="text-[10px] mt-0.5">Tổng quan</span>
-        </Link>
-        <Link
-          to="/cases"
-          className={`flex flex-col items-center justify-center flex-1 py-1 ${
-            location.pathname.startsWith('/cases') ? 'text-dustguard-red font-bold' : 'text-slate-500'
-          }`}
-        >
-          <Inbox className="w-4 h-4" />
-          <span className="text-[10px] mt-0.5">Vụ việc</span>
-        </Link>
-        <Link
-          to="/tasks"
-          className={`flex flex-col items-center justify-center flex-1 py-1 ${
-            location.pathname === '/tasks' ? 'text-dustguard-red font-bold' : 'text-slate-500'
-          }`}
-        >
-          <CheckSquare className="w-4 h-4" />
-          <span className="text-[10px] mt-0.5">Nhiệm vụ</span>
-        </Link>
-        <Link
-          to="/inspections"
-          className={`flex flex-col items-center justify-center flex-1 py-1 ${
-            location.pathname.startsWith('/inspections') ? 'text-dustguard-red font-bold' : 'text-slate-500'
-          }`}
-        >
-          <ClipboardCheck className="w-4 h-4" />
-          <span className="text-[10px] mt-0.5">Hiện trường</span>
-        </Link>
-        <Link
-          to="/reports"
-          className={`flex flex-col items-center justify-center flex-1 py-1 ${
-            location.pathname.startsWith('/reports') ? 'text-dustguard-red font-bold' : 'text-slate-500'
-          }`}
-        >
-          <BarChart3 className="w-4 h-4" />
-          <span className="text-[10px] mt-0.5">Báo cáo</span>
-        </Link>
-      </nav>
-
-      {/* Public Citizen Report Modal */}
-      <PublicReportModal
-        isOpen={publicReportOpen}
-        onClose={() => setPublicReportOpen(false)}
-        onSuccess={() => {
-          if (location.pathname.startsWith('/cases')) {
-            window.location.reload();
-          }
-        }}
-      />
+      {/* Citizen Public Report Modal */}
+      <PublicReportModal isOpen={publicReportOpen} onClose={() => setPublicReportOpen(false)} />
     </div>
   );
 };

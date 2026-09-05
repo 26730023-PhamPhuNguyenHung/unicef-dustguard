@@ -13,6 +13,7 @@ import {
   X,
   CheckCircle2,
 } from 'lucide-react';
+import { PageHeader } from '../components/workspace';
 import { Contractor } from '@dustguard-operations/shared';
 
 export const ContractorsPage: React.FC = () => {
@@ -86,28 +87,27 @@ export const ContractorsPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-            <Building2 className="w-5 h-5 text-dustguard-teal" />
-            Danh bạ Đơn vị Thi công & Nhà thầu
-          </h1>
-          <p className="text-xs text-slate-600 mt-1">
-            Đơn vị chịu trách nhiệm tuân thủ quy chuẩn bảo vệ môi trường và thực hiện các biện pháp khắc phục.
-          </p>
-        </div>
-
-        <Button
-          variant="primary"
-          onClick={() => setModalOpen(true)}
-          className="flex items-center gap-1.5 self-start sm:self-auto font-bold shadow-xs"
-        >
-          <Plus className="w-4 h-4" />
-          Thêm nhà thầu
-        </Button>
-      </div>
+    <div className="space-y-4 sm:space-y-5">
+      {/* Standardized Page Header */}
+      <PageHeader
+        title="Danh bạ Đơn vị Thi công & Nhà thầu"
+        description="Đơn vị chịu trách nhiệm tuân thủ quy chuẩn bảo vệ môi trường và thực hiện các biện pháp khắc phục vi phạm."
+        badge={
+          <span className="p-1.5 rounded-md bg-dustguard-redSoft text-dustguard-red">
+            <Building2 className="w-4 h-4" />
+          </span>
+        }
+        actions={
+          <Button
+            variant="primary"
+            onClick={() => setModalOpen(true)}
+            className="font-semibold shadow-xs"
+            icon={<Plus className="w-4 h-4" />}
+          >
+            Thêm nhà thầu
+          </Button>
+        }
+      />
 
       {/* Filter & Search Bar */}
       <div className="civic-card p-3 flex flex-col sm:flex-row items-center gap-3">

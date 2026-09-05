@@ -77,7 +77,7 @@ export const DashboardPage: React.FC = () => {
             </Button>
           </Link>
           <Link to="/legal/library">
-            <Button variant="teal" size="sm" icon={<Shield className="w-4 h-4" />}>
+            <Button variant="secondary" size="sm" icon={<Shield className="w-4 h-4" />}>
               Tra cứu Pháp lý
             </Button>
           </Link>

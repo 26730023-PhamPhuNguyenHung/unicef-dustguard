@@ -63,10 +63,10 @@ export const LegalLibraryPage: React.FC = () => {
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               placeholder="Nhập từ khóa tìm kiếm toàn văn: che chắn, rửa xe, phát tán bụi, PM2.5, xử phạt..."
-              className="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-dustguard-teal outline-none"
+              className="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-dustguard-red outline-none"
             />
           </div>
-          <Button type="submit" variant="teal" loading={searching}>
+          <Button type="submit" variant="primary" loading={searching}>
             Tra cứu Toàn văn FTS5
           </Button>
         </form>

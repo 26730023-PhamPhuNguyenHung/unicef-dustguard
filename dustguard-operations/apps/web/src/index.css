@@ -2,6 +2,77 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ==========================================================================
+   DUSTGUARD OPERATIONS — DESIGN SYSTEM TOKENS (SSOT: LANDING PAGE MATCH)
+   Style: High-Contrast Light Mode, Warm Neutral Tone, Editorial Typography
+   Zero-Glassmorphism, High-Legibility, Touch Targets >= 44px
+   ========================================================================== */
+
+:root {
+  /* Core Surface & Page Tokens */
+  --dg-page-bg: #F7F6F3;
+  --dg-surface: #FFFFFF;
+  --dg-surface-subtle: #F2EFE9;
+  --dg-surface-muted: #EBE7DF;
+  --dg-dark: #171313;
+  --dg-dark-surface: #221D1D;
+  --dg-dark-subtle: #2D2727;
+
+  /* Typography Colors */
+  --dg-foreground: #171313;
+  --dg-muted: #5C5550;
+  --dg-muted-light: #7E7771;
+  --dg-text-inverse: #FAF8F5;
+
+  /* Brand Accents (DustGuard Seal Red) - SINGLE PRIMARY SOURCE OF TRUTH */
+  --dg-primary: #9F241F;
+  --dg-primary-hover: #7E1C18;
+  --dg-primary-soft: #FDF2F1;
+  --dg-primary-subtle: #FDF2F1;
+  --dg-primary-border: #F8D3D1;
+
+  /* Semantic Feedback */
+  --dg-success: #1B7A4B;
+  --dg-success-soft: #EDF7F2;
+  --dg-success-border: #A3E6C5;
+
+  --dg-warning: #B45309;
+  --dg-warning-soft: #FEF3C7;
+  --dg-warning-border: #FDE68A;
+
+  --dg-danger: #9F241F;
+  --dg-danger-hover: #7E1C18;
+  --dg-danger-soft: #FDF2F1;
+
+  --dg-info: #1E3A5F;
+  --dg-info-soft: #F0F4F8;
+  --dg-info-border: #CBD5E1;
+
+  /* Secondary Civic Tag (Teal is strictly accent/badge only - NEVER primary CTA) */
+  --dg-teal: #0D6F64;
+  --dg-teal-soft: #E6F4F2;
+  --dg-teal-border: #A7F3D0;
+
+  /* Borders & Dividers */
+  --dg-border: rgba(23, 19, 19, 0.10);
+  --dg-border-subtle: rgba(23, 19, 19, 0.06);
+  --dg-border-strong: rgba(23, 19, 19, 0.18);
+  --dg-border-dark: rgba(255, 255, 255, 0.12);
+
+  /* Shadows (Subtle Crisp Layering) */
+  --dg-shadow-xs: 0 1px 2px rgba(23, 19, 19, 0.04);
+  --dg-shadow-sm: 0 2px 6px rgba(23, 19, 19, 0.06);
+  --dg-shadow-md: 0 8px 24px -4px rgba(23, 19, 19, 0.08);
+  --dg-shadow-lg: 0 16px 36px -8px rgba(23, 19, 19, 0.12);
+
+  /* Radius Scale */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+}
+
 @layer base {
   html {
     scrollbar-gutter: stable;
@@ -9,43 +80,70 @@
   }
 
   body {
-    background-color: #FDFBF7;
-    color: #0F172A;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: var(--dg-page-bg);
+    color: var(--dg-foreground);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   h1, h2, h3, h4, h5, h6 {
     text-wrap: pretty;
-    letter-spacing: -0.015em;
+    letter-spacing: -0.02em;
+    color: var(--dg-foreground);
   }
 }
 
-/* Civic High-Contrast utility classes - Strict No Glassmorphism */
+/* Civic Cards & Surface Primitives */
 .civic-card {
-  background-color: #FFFFFF;
-  border: 1px solid #E2E8F0;
-  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.05);
-  border-radius: 0.5rem;
+  background-color: var(--dg-surface);
+  border: 1px solid var(--dg-border);
+  box-shadow: var(--dg-shadow-xs);
+  border-radius: var(--radius-md);
 }
 
 .civic-card-interactive {
-  background-color: #FFFFFF;
-  border: 1px solid #E2E8F0;
-  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.05);
-  border-radius: 0.5rem;
-  transition: border-color 150ms ease, box-shadow 150ms ease;
+  background-color: var(--dg-surface);
+  border: 1px solid var(--dg-border);
+  box-shadow: var(--dg-shadow-xs);
+  border-radius: var(--radius-md);
+  transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
 }
 
 .civic-card-interactive:hover {
-  border-color: #CBD5E1;
-  box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.08);
+  border-color: var(--dg-border-strong);
+  box-shadow: var(--dg-shadow-sm);
+  transform: translateY(-1px);
 }
 
+/* Minimum 44px Touch Target */
 .touch-target {
   min-height: 44px;
   min-width: 44px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+}
+
+/* Red Subtle Active Item */
+.dg-item-active {
+  background-color: var(--dg-primary-soft);
+  color: var(--dg-primary);
+  border-left: 3px solid var(--dg-primary);
+}
+
+/* Custom crisp scrollbar */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: rgba(23, 19, 19, 0.15);
+  border-radius: 9999px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(23, 19, 19, 0.25);
 }

@@ -214,7 +214,7 @@ export const LegalImportPage: React.FC = () => {
                 value={title}
                 onChange={e => setTitle(e.target.value)}
                 placeholder="Ví dụ: Nghị định số 45/2022/NĐ-CP..."
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-dustguard-teal outline-none"
+                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-dustguard-red outline-none"
                 required
               />
             </div>
@@ -226,7 +226,7 @@ export const LegalImportPage: React.FC = () => {
                 value={docNumber}
                 onChange={e => setDocNumber(e.target.value)}
                 placeholder="45/2022/NĐ-CP"
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-dustguard-teal outline-none font-mono"
+                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-dustguard-red outline-none font-mono"
                 required
               />
             </div>
@@ -239,7 +239,7 @@ export const LegalImportPage: React.FC = () => {
               value={authority}
               onChange={e => setAuthority(e.target.value)}
               placeholder="Chính phủ / Bộ Tài nguyên và Môi trường"
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-dustguard-teal outline-none"
+              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-dustguard-red outline-none"
             />
           </div>
 
@@ -252,13 +252,13 @@ export const LegalImportPage: React.FC = () => {
               onChange={e => setTextContent(e.target.value)}
               rows={8}
               placeholder="Dán toàn văn văn bản hoặc điều khoản tại đây..."
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-dustguard-teal outline-none font-mono leading-relaxed"
+              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-dustguard-red outline-none font-mono leading-relaxed"
               required
             />
           </div>
 
           <div className="flex justify-end">
-            <Button type="submit" variant="teal" loading={parsing} icon={<Sparkles className="w-4 h-4" />}>
+            <Button type="submit" variant="primary" loading={parsing} icon={<Sparkles className="w-4 h-4" />}>
               Bóc tách cấu trúc pháp lý (Scanner)
             </Button>
           </div>

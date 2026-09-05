@@ -185,7 +185,7 @@ export const ActionsListPage: React.FC = () => {
                 <div className="flex flex-wrap items-center gap-2 self-end md:self-center flex-shrink-0">
                   {act.status === 'SUBMITTED' && hasSubmissions && (
                     <Link to={`/actions/${act.submissions![0].id}/remediation`}>
-                      <Button variant="teal" size="sm">
+                      <Button variant="primary" size="sm">
                         Thẩm duyệt báo cáo &rarr;
                       </Button>
                     </Link>
