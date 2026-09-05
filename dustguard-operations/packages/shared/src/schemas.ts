@@ -98,6 +98,8 @@ export const CaseCreateSchema = z.object({
   longitude: z.number(),
   source: z.enum(['COMMUNITY', 'IOT', 'STAFF', 'MANUAL', 'IMPORT']).default('MANUAL'),
   source_reference: z.string().optional(),
+  project_id: z.string().optional(),
+  contractor_id: z.string().optional(),
   contractor_name: z.string().optional(),
   priority: z.enum(['LOW', 'NORMAL', 'HIGH', 'URGENT']).default('NORMAL'),
 });

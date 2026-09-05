@@ -2,11 +2,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { db, DB_PATH } from './connection.js';
+import { ensureSystemConfiguration } from './systemConfig.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export function runMigrations(): void {
+export function runMigrations(initSystemConfig = true): void {
   console.log(`[Database Migration] Running migrations on ${DB_PATH}...`);
   const schemaPath = path.join(__dirname, 'schema.sql');
   const sql = fs.readFileSync(schemaPath, 'utf-8');
@@ -28,11 +29,35 @@ export function runMigrations(): void {
       db.exec(`ALTER TABLE evidence_assets ADD COLUMN integrity_status TEXT NOT NULL DEFAULT 'UNVERIFIED';`);
       console.log('[Database Migration] Added integrity_status column to evidence_assets table.');
     }
+    const casesTableInfo = db.prepare(`PRAGMA table_info(cases)`).all() as Array<{ name: string }>;
+    if (!casesTableInfo.some(col => col.name === 'project_id')) {
+      db.exec(`ALTER TABLE cases ADD COLUMN project_id TEXT REFERENCES projects(id) ON DELETE SET NULL;`);
+      console.log('[Database Migration] Added project_id column to cases table.');
+    }
+    if (!casesTableInfo.some(col => col.name === 'contractor_id')) {
+      db.exec(`ALTER TABLE cases ADD COLUMN contractor_id TEXT REFERENCES contractors(id) ON DELETE SET NULL;`);
+      console.log('[Database Migration] Added contractor_id column to cases table.');
+    }
+
+    const iotTableInfo = db.prepare(`PRAGMA table_info(iot_devices)`).all() as Array<{ name: string }>;
+    if (!iotTableInfo.some(col => col.name === 'project_id')) {
+      db.exec(`ALTER TABLE iot_devices ADD COLUMN project_id TEXT REFERENCES projects(id) ON DELETE SET NULL;`);
+      console.log('[Database Migration] Added project_id column to iot_devices table.');
+    }
   } catch (err: any) {
     console.warn('[Database Migration] Notice on schema evolutions:', err.message);
   }
 
-  console.log('[Database Migration] Schema migrated successfully with 34 tables & FTS5!');
+  // Initialize statutory system configurations if empty
+  if (initSystemConfig) {
+    try {
+      ensureSystemConfiguration();
+    } catch (err: any) {
+      console.warn('[Database Migration] Notice on system config initialization:', err.message);
+    }
+  }
+
+  console.log('[Database Migration] Schema migrated successfully with 36 tables & FTS5!');
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

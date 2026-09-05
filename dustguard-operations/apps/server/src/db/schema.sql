@@ -24,6 +24,41 @@ CREATE TABLE IF NOT EXISTS sessions (
   created_at TEXT NOT NULL
 );
 
+-- 2b. Contractors (Đơn vị thi công / Nhà thầu / Chủ nguồn thải)
+CREATE TABLE IF NOT EXISTS contractors (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  contact_person TEXT,
+  phone TEXT,
+  email TEXT,
+  address TEXT,
+  tax_id TEXT,
+  notes TEXT,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+
+-- 2c. Projects / Construction Sites (Công trình xây dựng đô thị)
+CREATE TABLE IF NOT EXISTS projects (
+  id TEXT PRIMARY KEY,
+  code TEXT UNIQUE NOT NULL,
+  name TEXT NOT NULL,
+  address TEXT NOT NULL,
+  district TEXT NOT NULL,
+  province TEXT NOT NULL DEFAULT 'TP. Hồ Chí Minh',
+  latitude REAL,
+  longitude REAL,
+  contractor_id TEXT REFERENCES contractors(id) ON DELETE SET NULL,
+  contractor_name TEXT,
+  project_owner TEXT,
+  status TEXT NOT NULL DEFAULT 'ACTIVE' CHECK (status IN ('ACTIVE', 'SUSPENDED', 'COMPLETED', 'PLANNED')),
+  start_date TEXT,
+  end_date TEXT,
+  notes TEXT,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+
 -- 3. Cases (SSOT)
 CREATE TABLE IF NOT EXISTS cases (
   id TEXT PRIMARY KEY,
@@ -43,6 +78,8 @@ CREATE TABLE IF NOT EXISTS cases (
     'REINSPECTION', 'READY_TO_CLOSE', 'CLOSED', 'REOPENED'
   )),
   assigned_staff_id TEXT REFERENCES users(id) ON DELETE SET NULL,
+  project_id TEXT REFERENCES projects(id) ON DELETE SET NULL,
+  contractor_id TEXT REFERENCES contractors(id) ON DELETE SET NULL,
   contractor_name TEXT,
   priority TEXT NOT NULL DEFAULT 'NORMAL' CHECK (priority IN ('LOW', 'NORMAL', 'HIGH', 'URGENT')),
   created_at TEXT NOT NULL,
@@ -352,7 +389,7 @@ CREATE TABLE IF NOT EXISTS tasks (
   case_id TEXT REFERENCES cases(id) ON DELETE CASCADE,
   title TEXT NOT NULL,
   description TEXT NOT NULL,
-  task_type TEXT NOT NULL DEFAULT 'GENERAL' CHECK (task_type IN ('TRIAGE', 'VERIFICATION', 'LEGAL_REVIEW', 'CHECKLIST_PREP', 'FIELD_INSPECTION', 'EVIDENCE_COLLECTION', 'CONTRACTOR_LIAISON', 'REMEDIATION_FOLLOWUP', 'REINSPECTION', 'DOSSIER_COMPLETION', 'CLOSURE_APPROVAL', 'GENERAL')),
+  task_type TEXT NOT NULL DEFAULT 'GENERAL' CHECK (task_type IN ('TRIAGE', 'VERIFICATION', 'FIELD_VERIFY', 'LEGAL_REVIEW', 'CHECKLIST_PREP', 'FIELD_INSPECTION', 'EVIDENCE_COLLECTION', 'CONTRACTOR_LIAISON', 'REMEDIATION_FOLLOWUP', 'REINSPECTION', 'DOSSIER_COMPLETION', 'CLOSURE_APPROVAL', 'GENERAL')),
   source TEXT NOT NULL CHECK (source IN ('MANUAL', 'CASE', 'LEGAL', 'INSPECTION', 'IOT', 'AUTOMATION')),
   source_entity_type TEXT,
   source_entity_id TEXT,
@@ -376,6 +413,7 @@ CREATE TABLE IF NOT EXISTS iot_devices (
   last_seen_at TEXT,
   firmware_version TEXT DEFAULT '1.0.0',
   secret_reference TEXT NOT NULL,
+  project_id TEXT REFERENCES projects(id) ON DELETE SET NULL,
   is_simulated INTEGER NOT NULL DEFAULT 0,
   created_at TEXT NOT NULL,
   updated_at TEXT NOT NULL

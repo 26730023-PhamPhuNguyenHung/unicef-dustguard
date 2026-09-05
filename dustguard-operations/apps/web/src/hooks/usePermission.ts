@@ -14,7 +14,7 @@ export const RequirePermission: React.FC<{
 }> = ({ permission, fallback = null, children }) => {
   const hasPermission = usePermission(permission);
   if (!hasPermission) {
-    return <>{fallback}</>;
+    return React.createElement(React.Fragment, null, fallback);
   }
-  return <>{children}</>;
+  return React.createElement(React.Fragment, null, children);
 };

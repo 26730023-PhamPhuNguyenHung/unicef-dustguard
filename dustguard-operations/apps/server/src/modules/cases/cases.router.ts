@@ -168,9 +168,11 @@ casesRouter.get('/:id', (req: AuthRequest, res) => {
   const { id } = req.params;
 
   const rawCase = get<any>(
-    `SELECT c.*, u.full_name as assigned_staff_name
+    `SELECT c.*, u.full_name as assigned_staff_name, p.name as project_name, ct.name as contractor_ref_name
      FROM cases c
      LEFT JOIN users u ON c.assigned_staff_id = u.id
+     LEFT JOIN projects p ON c.project_id = p.id
+     LEFT JOIN contractors ct ON c.contractor_id = ct.id
      WHERE c.id = ? OR c.case_code = ?`,
     [id, id]
   );
@@ -280,6 +282,12 @@ casesRouter.post('/', requireAuth, (req: AuthRequest, res, next) => {
     const data = CaseCreateSchema.parse(req.body);
     const id = `case-${crypto.randomUUID().substring(0, 8)}`;
     
+    let contractorName = data.contractor_name;
+    if (!contractorName && data.contractor_id) {
+      const cRow = get<{ name: string }>(`SELECT name FROM contractors WHERE id = ?`, [data.contractor_id]);
+      if (cRow) contractorName = cRow.name;
+    }
+
     // Generate sequential code DG-2026-OP-XXX
     const countRow = get<{ c: number }>(`SELECT count(*) as c FROM cases`);
     const nextNum = (countRow?.c || 0) + 1;
@@ -287,8 +295,8 @@ casesRouter.post('/', requireAuth, (req: AuthRequest, res, next) => {
 
     transaction(() => {
       run(
-        `INSERT INTO cases (id, case_code, title, description, location_text, district, latitude, longitude, source, source_reference, contractor_name, priority, status, created_at, updated_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'NEW', datetime('now'), datetime('now'))`,
+        `INSERT INTO cases (id, case_code, title, description, location_text, district, latitude, longitude, source, source_reference, project_id, contractor_id, contractor_name, priority, status, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'NEW', datetime('now'), datetime('now'))`,
         [
           id,
           case_code,
@@ -300,7 +308,9 @@ casesRouter.post('/', requireAuth, (req: AuthRequest, res, next) => {
           data.longitude,
           data.source,
           data.source_reference || null,
-          data.contractor_name || null,
+          data.project_id || null,
+          data.contractor_id || null,
+          contractorName || null,
           data.priority,
         ]
       );
@@ -337,19 +347,21 @@ casesRouter.patch('/:id', requireAuth, (req: AuthRequest, res, next) => {
       return;
     }
 
-    const { title, description, contractor_name, priority, district, location_text } = req.body;
+    const { title, description, contractor_name, contractor_id, project_id, priority, district, location_text } = req.body;
 
     run(
       `UPDATE cases
        SET title = COALESCE(?, title),
            description = COALESCE(?, description),
            contractor_name = COALESCE(?, contractor_name),
+           contractor_id = COALESCE(?, contractor_id),
+           project_id = COALESCE(?, project_id),
            priority = COALESCE(?, priority),
            district = COALESCE(?, district),
            location_text = COALESCE(?, location_text),
            updated_at = datetime('now')
        WHERE id = ?`,
-      [title, description, contractor_name, priority, district, location_text, id]
+      [title, description, contractor_name, contractor_id, project_id, priority, district, location_text, id]
     );
 
     run(

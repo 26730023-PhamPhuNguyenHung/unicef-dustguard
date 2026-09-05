@@ -186,7 +186,7 @@ export class CaseAnalysisService {
           ? [
               {
                 id: matchedLaw.id,
-                number: matchedLaw.section_number,
+                number: `${matchedLaw.section_number} (${matchedLaw.document_number})`,
                 heading: matchedLaw.heading,
                 excerpt: matchedLaw.content.substring(0, 150) + '...',
               },
@@ -233,7 +233,7 @@ export class CaseAnalysisService {
           ? [
               {
                 id: matchedLaw.id,
-                number: matchedLaw.section_number,
+                number: `${matchedLaw.section_number} (${matchedLaw.document_number})`,
                 heading: matchedLaw.heading,
                 excerpt: matchedLaw.content.substring(0, 150) + '...',
               },

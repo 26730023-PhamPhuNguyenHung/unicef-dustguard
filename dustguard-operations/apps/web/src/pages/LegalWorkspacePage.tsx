@@ -370,7 +370,7 @@ export const LegalWorkspacePage: React.FC = () => {
 
                   // Semantic badge styles
                   let badgeStyle = 'bg-slate-100 text-slate-700 border-slate-300';
-                  let semanticLabel = fact.semantic_type;
+                  let semanticLabel: string = fact.semantic_type;
 
                   if (fact.semantic_type === 'CLAIM') {
                     badgeStyle = 'bg-amber-50 text-amber-900 border-amber-300';
@@ -783,7 +783,7 @@ export const LegalWorkspacePage: React.FC = () => {
                       <Button
                         type="button"
                         variant="teal"
-                        size="xs"
+                        size="sm"
                         loading={creatingTaskFact === mf.fact}
                         onClick={() => handleCreateTaskFromMissingFact(mf)}
                       >
@@ -792,7 +792,7 @@ export const LegalWorkspacePage: React.FC = () => {
                       <Button
                         type="button"
                         variant="outline"
-                        size="xs"
+                        size="sm"
                         onClick={() => handleAddMissingFactToChecklist(mf)}
                       >
                         + Gắn vào Checklist

@@ -5,7 +5,7 @@ import { ShieldAlert, UserCheck } from 'lucide-react';
 
 export const DevRoleSwitcher: React.FC = () => {
   // Only render in DEV mode (Section 41)
-  if (!import.meta.env.DEV) {
+  if (!(import.meta as any).env?.DEV) {
     return null;
   }
 

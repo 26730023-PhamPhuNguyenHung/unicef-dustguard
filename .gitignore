@@ -27,6 +27,9 @@ user.env
 *.db-wal
 prisma/*.db-shm
 prisma/*.db-wal
+dustguard-operations/data/test-*.db
+dustguard-operations/apps/server/uploads/*
+!dustguard-operations/apps/server/uploads/.gitkeep
 
 # CodeLens Graph local index
 .codelens/

@@ -117,10 +117,14 @@ inspectionsRouter.get('/:id', requireAuth, (req, res) => {
   res.json({ inspection, items, findings });
 });
 
-// POST /api/cases/:id/inspections - Plan and schedule new inspection
-inspectionsRouter.post('/:id/inspections', requirePermission('inspection:create'), (req: AuthRequest, res, next) => {
+// Handler for creating/planning an inspection
+const handleCreateInspection = (req: AuthRequest, res: Response, next: any) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id || req.body.case_id;
+    if (!id) {
+      res.status(400).json({ error: 'case_id là bắt buộc' });
+      return;
+    }
     const data = InspectionCreateSchema.parse({ ...req.body, case_id: id });
 
     const targetCase = get<any>(`SELECT * FROM cases WHERE id = ?`, [id]);
@@ -203,11 +207,15 @@ inspectionsRouter.post('/:id/inspections', requirePermission('inspection:create'
 
     const created = get(`SELECT * FROM inspections WHERE id = ?`, [inspectionId]);
     const items = query(`SELECT * FROM inspection_items WHERE inspection_id = ?`, [inspectionId]);
-    res.status(201).json({ inspection: created, items });
+    res.status(201).json({ success: true, inspection: created, items });
   } catch (err) {
     next(err);
   }
-});
+};
+
+// POST /api/cases/:id/inspections & POST /api/inspections
+inspectionsRouter.post('/:id/inspections', requirePermission('inspection:create'), handleCreateInspection);
+inspectionsRouter.post('/', requirePermission('inspection:create'), handleCreateInspection);
 
 // PATCH /api/inspections/:id - Update field inspection checklist items (draft mode)
 inspectionsRouter.patch('/:id', requirePermission('inspection:perform'), (req: AuthRequest, res, next) => {

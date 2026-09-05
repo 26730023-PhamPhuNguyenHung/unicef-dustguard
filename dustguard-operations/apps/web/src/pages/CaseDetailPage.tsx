@@ -22,6 +22,7 @@ import {
   Plus,
   CheckCircle2,
   AlertTriangle,
+  AlertCircle,
   Upload,
   ExternalLink,
   RotateCcw,
@@ -125,9 +126,15 @@ export const CaseDetailPage: React.FC = () => {
   const handleOpenAssignModal = async () => {
     try {
       const res = await api.admin.users();
-      const staffMembers = res.users.filter((u: any) => u.role === 'staff' && u.active === 1);
+      const staffMembers = (res.users || []).filter(
+        (u: any) => ['staff', 'inspector', 'admin', 'supervisor', 'legal'].includes(u.role) && u.active === 1
+      );
       setStaffList(staffMembers);
-      if (staffMembers.length > 0) setSelectedStaffId(staffMembers[0].id);
+      if (staffMembers.length > 0) {
+        setSelectedStaffId(staffMembers[0].id);
+      } else {
+        setSelectedStaffId('');
+      }
       setAssignModalOpen(true);
     } catch {
       error('Lỗi', 'Không thể lấy danh sách cán bộ');
@@ -1094,23 +1101,43 @@ export const CaseDetailPage: React.FC = () => {
         title="Phân Công Cán Bộ Thụ Lý Vụ Việc"
       >
         <form onSubmit={handleAssignSubmit} className="space-y-4 text-xs sm:text-sm">
-          <div>
-            <label className="block font-semibold text-slate-700 mb-1">
-              Chọn Cán bộ tiếp nhận <span className="text-red-500">*</span>
-            </label>
-            <select
-              required
-              value={selectedStaffId}
-              onChange={e => setSelectedStaffId(e.target.value)}
-              className="w-full p-2.5 border border-slate-300 rounded-lg outline-none bg-white focus:ring-2 focus:ring-dustguard-red"
-            >
-              {staffList.map(st => (
-                <option key={st.id} value={st.id}>
-                  {st.full_name} ({st.department}) - Đang thụ lý: {st.assigned_cases_count || 0} hồ sơ
-                </option>
-              ))}
-            </select>
-          </div>
+          {staffList.length === 0 ? (
+            <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg text-slate-800 space-y-2">
+              <div className="flex items-center gap-2 font-bold text-amber-900 text-xs">
+                <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
+                Chưa có cán bộ phù hợp
+              </div>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Hệ thống chưa ghi nhận tài khoản cán bộ vận hành nào. Vui lòng tạo tài khoản cán bộ mới tại danh mục Quản lý Người dùng để thực hiện phân công vụ việc.
+              </p>
+              <div className="pt-1">
+                <Link
+                  to="/admin/users"
+                  className="inline-flex items-center text-xs font-semibold text-dustguard-red hover:underline"
+                >
+                  Quản lý nhân sự & Người dùng &rarr;
+                </Link>
+              </div>
+            </div>
+          ) : (
+            <div>
+              <label className="block font-semibold text-slate-700 mb-1">
+                Chọn Cán bộ tiếp nhận <span className="text-red-500">*</span>
+              </label>
+              <select
+                required
+                value={selectedStaffId}
+                onChange={e => setSelectedStaffId(e.target.value)}
+                className="w-full p-2.5 border border-slate-300 rounded-lg outline-none bg-white focus:ring-2 focus:ring-dustguard-red"
+              >
+                {staffList.map(st => (
+                  <option key={st.id} value={st.id}>
+                    {st.full_name} ({st.department}) - Đang thụ lý: {st.assigned_cases_count || 0} hồ sơ
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <div>
             <label className="block font-semibold text-slate-700 mb-1">Ghi chú chỉ đạo</label>
@@ -1127,7 +1154,12 @@ export const CaseDetailPage: React.FC = () => {
             <Button type="button" variant="outline" onClick={() => setAssignModalOpen(false)}>
               Hủy
             </Button>
-            <Button type="submit" variant="primary" loading={submitting}>
+            <Button
+              type="submit"
+              variant="primary"
+              loading={submitting}
+              disabled={staffList.length === 0}
+            >
               Xác nhận Phân công
             </Button>
           </div>

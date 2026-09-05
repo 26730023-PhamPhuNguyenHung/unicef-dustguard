@@ -55,6 +55,66 @@ iotRouter.get('/devices', requireAuth, (req: Request, res: Response) => {
   res.json({ success: true, data: processed, devices: processed });
 });
 
+// 1b. Register New IoT Device
+iotRouter.post('/devices', requireAuth, (req: Request, res: Response) => {
+  const {
+    device_code,
+    name,
+    location_text,
+    latitude = 10.7769,
+    longitude = 106.7009,
+    project_id,
+    secret_reference,
+    firmware_version = '1.0.0',
+    is_simulated = 0,
+  } = req.body;
+
+  if (!device_code || !name || !location_text) {
+    res.status(400).json({
+      success: false,
+      error: { code: 'VALIDATION_ERROR', message: 'Mã thiết bị, tên trạm và vị trí đặt là bắt buộc' },
+    });
+    return;
+  }
+
+  const existing = queryOne(`SELECT id FROM iot_devices WHERE device_code = ?`, [device_code]);
+  if (existing) {
+    res.status(400).json({
+      success: false,
+      error: { code: 'DUPLICATE_CODE', message: `Mã thiết bị ${device_code} đã tồn tại trong hệ thống` },
+    });
+    return;
+  }
+
+  const id = `dev-${crypto.randomUUID().substring(0, 8)}`;
+  const secretKey = secret_reference || crypto.randomBytes(16).toString('hex');
+
+  run(
+    `INSERT INTO iot_devices (id, device_code, name, location_text, latitude, longitude, status, firmware_version, secret_reference, project_id, is_simulated, created_at, updated_at)
+     VALUES (?, ?, ?, ?, ?, ?, 'OFFLINE', ?, ?, ?, ?, datetime('now'), datetime('now'))`,
+    [
+      id,
+      device_code.trim(),
+      name.trim(),
+      location_text.trim(),
+      Number(latitude) || 10.7769,
+      Number(longitude) || 106.7009,
+      firmware_version,
+      secretKey,
+      project_id || null,
+      is_simulated ? 1 : 0,
+    ]
+  );
+
+  const created = queryOne(`SELECT * FROM iot_devices WHERE id = ?`, [id]);
+  res.status(201).json({
+    success: true,
+    message: 'Đăng ký trạm quan trắc IoT thành công!',
+    device: created,
+    secret_key: secretKey,
+  });
+});
+
 // 2. Device Detail
 iotRouter.get('/devices/:id', requireAuth, (req: Request, res: Response) => {
   const { id } = req.params;
@@ -89,6 +149,10 @@ iotRouter.get('/devices/:id', requireAuth, (req: Request, res: Response) => {
      WHERE c.source = 'IOT' AND (c.source_reference = ? OR c.source_reference = ?)
      ORDER BY updated_at DESC LIMIT 10`,
     [device.id, device.device_code, device.id, device.device_code]
+  );
+
+  const nearbySignals = query<any>(
+    `SELECT * FROM signals WHERE status != 'ARCHIVED' ORDER BY created_at DESC LIMIT 5`
   );
 
   const payload = {

@@ -30,8 +30,11 @@ import {
   Radio,
   FileText,
   Scale,
+  Building2,
+  Megaphone,
 } from 'lucide-react';
 import { getRoleLabel } from '@dustguard-operations/shared';
+import { PublicReportModal } from '../case/PublicReportModal';
 
 interface NavSection {
   title: string;
@@ -50,6 +53,7 @@ export const AppLayout: React.FC = () => {
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
+  const [publicReportOpen, setPublicReportOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
@@ -82,6 +86,8 @@ export const AppLayout: React.FC = () => {
       items: [
         { label: 'Tổng quan', path: '/dashboard', icon: <LayoutDashboard className="w-4 h-4" />, perm: 'dashboard:view' },
         { label: 'Vụ việc', path: '/cases', icon: <Inbox className="w-4 h-4" />, perm: 'case:view' },
+        { label: 'Công trình', path: '/projects', icon: <HardHat className="w-4 h-4" />, perm: 'case:view' },
+        { label: 'Nhà thầu', path: '/contractors', icon: <Building2 className="w-4 h-4" />, perm: 'case:view' },
         { label: 'Nhiệm vụ', path: '/tasks', icon: <CheckSquare className="w-4 h-4" />, perm: 'task:view' },
         { label: 'Hiện trường', path: '/inspections', icon: <ClipboardCheck className="w-4 h-4" />, perm: 'inspection:perform' },
         { label: 'Khắc phục', path: '/actions', icon: <Wrench className="w-4 h-4" />, perm: 'action:create' },
@@ -176,6 +182,16 @@ export const AppLayout: React.FC = () => {
               aria-label="Tìm kiếm"
             >
               <Search className="w-5 h-5" />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setPublicReportOpen(true)}
+              className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-dustguard-red border border-rose-200 rounded-lg text-xs font-semibold transition-colors"
+              title="Tiếp nhận phản ánh hiện trường từ người dân (Public Citizen Report)"
+            >
+              <Megaphone className="w-3.5 h-3.5" />
+              <span>Báo cáo dân cư</span>
             </button>
 
             <Link
@@ -376,6 +392,17 @@ export const AppLayout: React.FC = () => {
           <span className="text-[10px] mt-0.5">Báo cáo</span>
         </Link>
       </nav>
+
+      {/* Public Citizen Report Modal */}
+      <PublicReportModal
+        isOpen={publicReportOpen}
+        onClose={() => setPublicReportOpen(false)}
+        onSuccess={() => {
+          if (location.pathname.startsWith('/cases')) {
+            window.location.reload();
+          }
+        }}
+      />
     </div>
   );
 };

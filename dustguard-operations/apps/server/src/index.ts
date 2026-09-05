@@ -24,6 +24,12 @@ import { iotRouter } from './modules/iot/iot.router.js';
 import { automationsRouter } from './modules/automations/automations.router.js';
 import { reportsRouter } from './modules/reports/reports.router.js';
 import { searchRouter } from './modules/search/search.router.js';
+import { projectsRouter } from './modules/projects/projects.router.js';
+import { contractorsRouter } from './modules/contractors/contractors.router.js';
+import { runMigrations } from './db/migrate.js';
+
+// Auto-run schema migrations and statutory configurations on server startup
+runMigrations();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -58,6 +64,10 @@ app.get('/api/health', (req, res) => {
 // Mount modular routers
 app.use('/api/auth', authRouter);
 app.use('/api/dashboard', dashboardRouter);
+
+// Projects & Contractors Registry
+app.use('/api/projects', projectsRouter);
+app.use('/api/contractors', contractorsRouter);
 
 // Signals & Tasks
 app.use('/api/signals', signalsRouter);

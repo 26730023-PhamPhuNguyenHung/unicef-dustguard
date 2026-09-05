@@ -132,7 +132,7 @@ export const ActionsListPage: React.FC = () => {
                 <div className="space-y-2 flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="font-mono font-bold text-dustguard-red bg-red-50 px-2 py-0.5 rounded border border-red-200">
-                      {act.case_code}
+                      {(act as any).case_code || act.case_id}
                     </span>
                     <span className={`px-2 py-0.5 rounded font-bold text-[10px] ${
                       act.status === 'VERIFIED'

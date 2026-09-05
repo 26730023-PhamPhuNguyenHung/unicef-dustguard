@@ -15,6 +15,7 @@ interface ToastContextType {
   success: (title: string, message?: string) => void;
   error: (title: string, message?: string) => void;
   info: (title: string, message?: string) => void;
+  addToast: (message: string, type?: ToastType) => void;
 }
 
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
@@ -38,9 +39,13 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const success = useCallback((title: string, message?: string) => toast(title, message, 'success'), [toast]);
   const error = useCallback((title: string, message?: string) => toast(title, message, 'error'), [toast]);
   const info = useCallback((title: string, message?: string) => toast(title, message, 'info'), [toast]);
+  const addToast = useCallback((message: string, type: ToastType = 'info') => {
+    const title = type === 'error' ? 'Lỗi hệ thống' : type === 'success' ? 'Thành công' : 'Thông báo';
+    toast(title, message, type);
+  }, [toast]);
 
   return (
-    <ToastContext.Provider value={{ toast, success, error, info }}>
+    <ToastContext.Provider value={{ toast, success, error, info, addToast }}>
       {children}
       <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-md w-full pointer-events-none px-4">
         {toasts.map(t => (

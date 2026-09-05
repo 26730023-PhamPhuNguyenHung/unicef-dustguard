@@ -219,19 +219,25 @@ export const DashboardPage: React.FC = () => {
                 </Link>
               </div>
               <div className="space-y-2">
-                {supervisor.unassignedCases.slice(0, 3).map((c: Case) => (
-                  <div key={c.id} className="p-2 bg-slate-50 rounded border border-slate-200 flex items-center justify-between gap-2 text-xs">
-                    <div className="min-w-0 flex-1">
-                      <span className="font-mono font-bold text-slate-800">{c.case_code}</span>
-                      <p className="font-medium text-slate-900 truncate">{c.title}</p>
+                {supervisor.unassignedCases.length === 0 ? (
+                  <p className="text-xs text-slate-500 py-3 text-center italic">
+                    Không có hồ sơ nào chưa được phân công.
+                  </p>
+                ) : (
+                  supervisor.unassignedCases.slice(0, 3).map((c: Case) => (
+                    <div key={c.id} className="p-2 bg-slate-50 rounded border border-slate-200 flex items-center justify-between gap-2 text-xs">
+                      <div className="min-w-0 flex-1">
+                        <span className="font-mono font-bold text-slate-800">{c.case_code}</span>
+                        <p className="font-medium text-slate-900 truncate">{c.title}</p>
+                      </div>
+                      <Link to={`/cases/${c.id}`} className="flex-shrink-0">
+                        <Button variant="primary" size="sm" className="h-7 text-xs px-2.5">
+                          Giao việc
+                        </Button>
+                      </Link>
                     </div>
-                    <Link to={`/cases/${c.id}`} className="flex-shrink-0">
-                      <Button variant="primary" size="sm" className="h-7 text-xs px-2.5">
-                        Giao việc
-                      </Button>
-                    </Link>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </div>
 
@@ -241,22 +247,28 @@ export const DashboardPage: React.FC = () => {
                 Tải công việc cán bộ hiện trường
               </span>
               <div className="space-y-2">
-                {supervisor.staffWorkload.slice(0, 4).map((st: any) => (
-                  <div key={st.id} className="flex items-center justify-between text-xs p-1.5 border-b border-slate-100 last:border-0">
-                    <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-bold text-[10px]">
-                        {st.full_name.charAt(0)}
+                {supervisor.staffWorkload.length === 0 ? (
+                  <p className="text-xs text-slate-500 py-3 text-center italic">
+                    Chưa có tài khoản cán bộ hiện trường nào.
+                  </p>
+                ) : (
+                  supervisor.staffWorkload.slice(0, 4).map((st: any) => (
+                    <div key={st.id} className="flex items-center justify-between text-xs p-1.5 border-b border-slate-100 last:border-0">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-bold text-[10px]">
+                          {st.full_name.charAt(0)}
+                        </div>
+                        <span className="font-medium text-slate-800">{st.full_name}</span>
                       </div>
-                      <span className="font-medium text-slate-800">{st.full_name}</span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-slate-500">{st.department}</span>
+                        <span className="font-bold bg-slate-100 px-2 py-0.5 rounded text-slate-800">
+                          {st.active_cases_count} hồ sơ
+                        </span>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-slate-500">{st.department}</span>
-                      <span className="font-bold bg-slate-100 px-2 py-0.5 rounded text-slate-800">
-                        {st.active_cases_count} hồ sơ
-                      </span>
-                    </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </div>
           </div>
@@ -278,8 +290,8 @@ export const DashboardPage: React.FC = () => {
         </div>
 
         {myQueue.length === 0 ? (
-          <div className="civic-card p-8 text-center text-slate-500 text-sm">
-            Hiện tại đồng chí không có vụ việc nào đang chờ xử lý.
+          <div className="civic-card p-6 text-center text-slate-500 text-xs">
+            Hiện tại đồng chí không có vụ việc nào đang chờ xử lý. Hồ sơ sẽ xuất hiện khi có phản ánh hoặc phân công mới.
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -324,24 +336,30 @@ export const DashboardPage: React.FC = () => {
         </h2>
 
         <div className="civic-card divide-y divide-slate-100">
-          {recentActivities.map((act: any) => (
-            <div key={act.id} className="p-3.5 flex items-start gap-3 text-xs hover:bg-slate-50/50 transition-colors">
-              <div className="w-2 h-2 rounded-full bg-dustguard-red mt-1.5 flex-shrink-0" />
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between gap-2">
-                  <Link to={`/cases/${act.case_id}`} className="font-bold text-slate-900 hover:text-dustguard-red">
-                    [{act.case_code}] {act.description}
-                  </Link>
-                  <time className="text-slate-400 font-mono text-[11px] flex-shrink-0">
-                    {new Date(act.created_at).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
-                  </time>
-                </div>
-                <div className="text-slate-500 mt-0.5">
-                  Thực hiện bởi <strong>{act.actor_name || 'Hệ thống'}</strong> • Giai đoạn: {act.stage}
+          {recentActivities.length === 0 ? (
+            <div className="p-6 text-center text-slate-500 text-xs">
+              Chưa có hồ sơ đang xử lý. Dòng thời gian và nhật ký hoạt động sẽ tự động cập nhật khi có phản ánh hoặc vụ việc mới phát sinh.
+            </div>
+          ) : (
+            recentActivities.map((act: any) => (
+              <div key={act.id} className="p-3.5 flex items-start gap-3 text-xs hover:bg-slate-50/50 transition-colors">
+                <div className="w-2 h-2 rounded-full bg-dustguard-red mt-1.5 flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <Link to={`/cases/${act.case_id}`} className="font-bold text-slate-900 hover:text-dustguard-red">
+                      [{act.case_code}] {act.description}
+                    </Link>
+                    <time className="text-slate-400 font-mono text-[11px] flex-shrink-0">
+                      {new Date(act.created_at).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
+                    </time>
+                  </div>
+                  <div className="text-slate-500 mt-0.5">
+                    Thực hiện bởi <strong>{act.actor_name || 'Hệ thống'}</strong> • Giai đoạn: {act.stage}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </section>
     </div>

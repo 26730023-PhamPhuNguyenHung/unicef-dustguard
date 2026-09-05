@@ -6,6 +6,9 @@ import { AppLayout } from './components/layout/AppLayout';
 
 // Pages
 import { LoginPage } from './pages/LoginPage';
+import { SetupPage } from './pages/SetupPage';
+import { ProjectsPage } from './pages/ProjectsPage';
+import { ContractorsPage } from './pages/ContractorsPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { CaseInboxPage } from './pages/CaseInboxPage';
 import { CaseDetailPage } from './pages/CaseDetailPage';
@@ -57,6 +60,7 @@ export function App() {
         <AuthProvider>
           <Routes>
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/setup" element={<SetupPage />} />
 
             <Route
               path="/"
@@ -69,6 +73,10 @@ export function App() {
               <Route index element={<Navigate to="/dashboard" replace />} />
               <Route path="dashboard" element={<DashboardPage />} />
               
+              {/* Projects & Contractors */}
+              <Route path="projects" element={<ProjectsPage />} />
+              <Route path="contractors" element={<ContractorsPage />} />
+
               {/* Tasks */}
               <Route path="tasks" element={<TasksPage />} />
 

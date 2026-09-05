@@ -86,6 +86,9 @@ export function seedDatabase() {
     'staff_assignments',
     'case_timeline',
     'cases',
+    'contractors',
+    'projects',
+    'system_configs',
     'sessions',
     'users',
   ];
@@ -101,7 +104,7 @@ export function seedDatabase() {
   } catch (e) {}
   db.exec('PRAGMA foreign_keys = ON;');
 
-  runMigrations();
+  runMigrations(false);
 
   const evidenceMap = ensureEvidenceFiles();
   const passwordHash = bcrypt.hashSync('password123', 8);

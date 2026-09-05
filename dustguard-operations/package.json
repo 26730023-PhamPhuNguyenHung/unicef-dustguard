@@ -6,12 +6,14 @@
   "scripts": {
     "setup": "node scripts/setup.js",
     "dev": "node scripts/dev.js",
-    "test": "npx tsx --test --test-concurrency=1 tests/operations-api.test.js tests/evidence-grounded-intelligence.test.js",
+    "test": "npx tsx --test --test-concurrency=1 tests/operations-api.test.js tests/evidence-grounded-intelligence.test.js tests/empty-db-startup.test.js tests/empty-db-api.test.js tests/no-seed-runtime-dependency.test.js tests/real-data-lifecycle.test.js",
     "test:provenance": "npx tsx --test tests/evidence-grounded-intelligence.test.js",
     "test:responsive": "node scripts/verify-responsive.js",
     "build": "npx vite build apps/web",
     "db:migrate": "npx tsx apps/server/src/db/migrate.ts",
-    "db:seed": "npx tsx apps/server/src/db/seed.ts"
+    "db:seed": "npx tsx apps/server/src/db/seed.ts",
+    "db:seed:demo": "npx tsx apps/server/src/db/seed.ts",
+    "seed:demo": "npx tsx apps/server/src/db/seed.ts"
   },
   "keywords": [
     "dustguard",

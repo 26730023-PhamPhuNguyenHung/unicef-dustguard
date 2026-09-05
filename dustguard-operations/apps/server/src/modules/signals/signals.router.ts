@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { query, queryOne, run, transaction } from '../../db/connection.js';
-import { requireAuth } from '../../middleware/auth.js';
+import { requireAuth, AuthRequest } from '../../middleware/auth.js';
 import { requireCapability } from '../../middleware/rbac.js';
 
 export const signalsRouter = Router();
@@ -198,7 +198,7 @@ signalsRouter.get('/:id/matches', requireAuth, (req: Request, res: Response) => 
 });
 
 // 5. Link Signal to Case
-signalsRouter.post('/:id/link-case', requireAuth, requireCapability('case:update'), (req: Request, res: Response) => {
+signalsRouter.post('/:id/link-case', requireAuth, requireCapability('case:update'), (req: AuthRequest, res: Response) => {
   const { id } = req.params;
   const { case_id, notes = '' } = req.body;
 
@@ -229,7 +229,7 @@ signalsRouter.post('/:id/link-case', requireAuth, requireCapability('case:update
         `tm-${Date.now()}`,
         case_id,
         req.user?.id || null,
-        req.user?.fullName || 'Hệ thống',
+        req.user?.full_name || 'Hệ thống',
         req.user?.role || 'staff',
         `Liên kết tín hiệu [${signal.source_type}] "${signal.title}" vào vụ việc`,
         JSON.stringify({ signal_id: id, source: signal.source_type }),
@@ -258,3 +258,154 @@ signalsRouter.post('/:id/link-case', requireAuth, requireCapability('case:update
     },
   });
 });
+
+// 6. Public Community Report Submission (No auth required)
+signalsRouter.post('/public-report', (req: Request, res: Response) => {
+  const {
+    title,
+    description = '',
+    location_text,
+    latitude = 10.7769,
+    longitude = 106.7009,
+    project_id,
+    reporter_name = 'Người dân',
+    reporter_phone,
+    photos = [],
+  } = req.body;
+
+  if (!title || !location_text) {
+    res.status(400).json({
+      success: false,
+      error: { code: 'VALIDATION_ERROR', message: 'Tiêu đề và địa điểm phản ánh là bắt buộc' },
+    });
+    return;
+  }
+
+  const signalId = `sig-pub-${Date.now()}`;
+  const payload = {
+    reporter_name,
+    reporter_phone,
+    project_id,
+    photos,
+  };
+
+  run(
+    `INSERT INTO signals (id, source_type, external_source_id, signal_type, title, description, location_text, latitude, longitude, observed_at, received_at, payload_json, integrity_status, created_at)
+     VALUES (?, 'COMMUNITY', ?, 'DUST_PLUME', ?, ?, ?, ?, ?, datetime('now'), datetime('now'), ?, 'VALID', datetime('now'))`,
+    [
+      signalId,
+      `PUB-REP-${Date.now()}`,
+      title,
+      description,
+      location_text,
+      Number(latitude) || 10.7769,
+      Number(longitude) || 106.7009,
+      JSON.stringify(payload),
+    ]
+  );
+
+  const created = queryOne<any>(`SELECT * FROM signals WHERE id = ?`, [signalId]);
+  res.status(201).json({
+    success: true,
+    message: 'Gửi phản ánh môi trường thành công! Cán bộ địa bàn sẽ tiếp nhận và xử lý.',
+    data: created,
+    signal: created,
+  });
+});
+
+// 7. Triage Signal into an Official Case
+signalsRouter.post('/:id/create-case', requireAuth, (req: AuthRequest, res: Response) => {
+  const { id } = req.params;
+  const signal = queryOne<any>(`SELECT * FROM signals WHERE id = ?`, [id]);
+
+  if (!signal) {
+    res.status(404).json({ success: false, error: { code: 'NOT_FOUND', message: 'Không tìm thấy phản ánh / tín hiệu' } });
+    return;
+  }
+
+  // Check if signal is already linked to an active case
+  const existingLink = queryOne<any>(`SELECT case_id FROM case_signals WHERE signal_id = ?`, [id]);
+  if (existingLink) {
+    const existingCase = queryOne<any>(`SELECT * FROM cases WHERE id = ?`, [existingLink.case_id]);
+    if (existingCase) {
+      res.json({
+        success: true,
+        message: 'Tín hiệu đã được liên kết với hồ sơ vụ việc trước đó.',
+        case: existingCase,
+      });
+      return;
+    }
+  }
+
+  const { priority = 'NORMAL', assigned_staff_id, project_id, contractor_id, contractor_name } = req.body;
+
+  const countRow = queryOne<{ c: number }>(`SELECT count(*) as c FROM cases`);
+  const nextNum = (countRow?.c || 0) + 1;
+  const case_code = `DG-2026-OP-${String(nextNum).padStart(3, '0')}`;
+  const caseId = `case-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
+
+  let district = 'TP.HCM';
+  if (signal.location_text.includes('Quận') || signal.location_text.includes('Huyện') || signal.location_text.includes('Thủ Đức')) {
+    const parts = signal.location_text.split(',');
+    for (const p of parts) {
+      if (p.includes('Quận') || p.includes('Huyện') || p.includes('Thủ Đức')) {
+        district = p.trim();
+        break;
+      }
+    }
+  }
+
+  transaction(() => {
+    run(
+      `INSERT INTO cases (id, case_code, title, description, location_text, district, latitude, longitude, source, source_reference, source_report_count, status, assigned_staff_id, project_id, contractor_id, contractor_name, priority, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 'NEW', ?, ?, ?, ?, ?, datetime('now'), datetime('now'))`,
+      [
+        caseId,
+        case_code,
+        signal.title,
+        signal.description || 'Tiếp nhận xử lý từ phản ánh của người dân',
+        signal.location_text,
+        district,
+        signal.latitude,
+        signal.longitude,
+        signal.source_type,
+        signal.id,
+        assigned_staff_id || null,
+        project_id || null,
+        contractor_id || null,
+        contractor_name || null,
+        priority,
+      ]
+    );
+
+    // Link case and signal
+    run(
+      `INSERT INTO case_signals (id, case_id, signal_id, linked_at, linked_by, notes)
+       VALUES (?, ?, ?, datetime('now'), ?, 'Khởi tạo hồ sơ vụ việc từ tín hiệu phản ánh')`,
+      [`cs-${Date.now()}`, caseId, signal.id, req.user?.id || null]
+    );
+
+    // Timeline event
+    run(
+      `INSERT INTO case_timeline (id, case_id, event_type, actor_id, actor_name, actor_role, stage, description, metadata_json, created_at)
+       VALUES (?, ?, 'CASE_CREATED_FROM_SIGNAL', ?, ?, ?, 'INTAKE', ?, ?, datetime('now'))`,
+      [
+        `tm-${Date.now()}`,
+        caseId,
+        req.user?.id || null,
+        req.user?.full_name || 'Cán bộ tiếp nhận',
+        req.user?.role || 'staff',
+        `Tiếp nhận phản ánh [${signal.source_type}] "${signal.title}" và khởi tạo vụ việc ${case_code}`,
+        JSON.stringify({ signal_id: signal.id, case_code }),
+      ]
+    );
+  });
+
+  const createdCase = queryOne<any>(`SELECT * FROM cases WHERE id = ?`, [caseId]);
+  res.status(201).json({
+    success: true,
+    message: `Tiếp nhận phản ánh thành công! Đã tạo vụ việc ${case_code}.`,
+    case: createdCase,
+  });
+});
+

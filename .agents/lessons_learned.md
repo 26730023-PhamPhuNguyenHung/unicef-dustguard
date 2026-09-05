@@ -164,11 +164,15 @@
 
 ---
 
-### 12. Động Cơ Dữ Kiện Còn Thiếu (Missing Fact Engine) & Biến Khoảng Trống Thành Tác Vụ Thực
-- **Vấn đề**: Khi AI gặp một điều kiện pháp lý chưa đủ bằng chứng (ví dụ: chưa có ảnh chụp trạm rửa xe, chưa kiểm tra lưới chắn bụi), mô hình AI truyền thống thường tự suy đoán (hallucinate) hoặc bỏ qua.
+### 13. Vận Hành Hoàn Toàn Độc Lập Khỏi Seed (Zero-Seed Production Operability)
+- **Vấn đề**:
+  1. Khi xóa hoặc không chạy `seed.ts`, hệ thống có thể bị sập do: thiếu tài khoản quản trị đầu tiên để đăng nhập; các dropdown chọn nhà thầu/công trình không có dữ liệu và không có màn hình thêm mới; các bảng dashboard ném lỗi vì giả định dữ liệu luôn tồn tại; mẫu biên bản thanh tra bị mất.
+  2. Trong Node.js ESM, các lệnh `import ... from ...` tĩnh luôn bị hoisted lên đầu tệp trước mọi dòng code chạy thực thi. Do đó nếu gán `process.env.DB_PATH = '...'` trong file test, `connection.ts` vẫn đọc biến môi trường cũ nếu bị import tĩnh ở top-level.
 - **Giải pháp chuẩn hóa**:
-  - Hệ thống tự động phát hiện dữ kiện còn thiếu (`MissingFact`) dựa trên đối chiếu giữa quy chuẩn pháp quy và các facts đã xác thực.
-  - Cung cấp CTA trực quan trên giao diện: `+ Tạo Tác vụ Xác minh (/tasks)` hoặc `+ Gắn vào Checklist`.
-  - Khi người dùng click, hệ thống tạo một `Task` thực sự trong bảng `tasks` của SQLite với hạn chót 48h, gán cho cán bộ hiện trường liên quan và liên kết sâu tới vụ việc.
+  1. **Phân tách Cấu hình Hệ thống Luật định (Category D)**: Toàn bộ văn bản quy phạm (Luật BVMT, NĐ 45/2022, QCVN 05:2023, QĐ 29/2021) và mẫu biên bản thanh tra được trích xuất thành Cấu hình Hệ thống (`systemConfig.ts`) và tự động nạp qua migrations, phân biệt tuyệt đối với Dữ liệu Tác nghiệp Demo (`seed.ts`).
+  2. **Bootstrap Wizard An Toàn (`/setup` & `POST /api/auth/bootstrap`)**: Cho phép tạo Super Admin khi DB rỗng (`is_initialized = false`) và tự động khóa vĩnh viễn (403 Forbidden) ngay sau khi có ít nhất 1 người dùng.
+  3. **Tự Tạo Đầy Đủ Thực Thể Qua UI**: Xây dựng đầy đủ màn hình và API cho Nhà thầu (`/contractors`), Công trình xây dựng (`/projects`), Cổng tiếp nhận báo cáo dân cư công khai (`POST /api/signals/public-report`), Chuyển hóa tin báo thành vụ việc (`POST /api/signals/:id/create-case`), và Đăng ký thiết bị IoT (`POST /api/iot/devices`).
+  4. **Dynamic Import trong Isolated Tests**: Trong các bài test cơ sở dữ liệu cô lập, luôn đặt `process.env.DB_PATH = isolatedPath;` trước, sau đó dùng `await import('./connection.js')` và `await import('./migrate.js')` để đảm bảo kết nối SQLite trỏ đúng file database cô lập.
+
 
 

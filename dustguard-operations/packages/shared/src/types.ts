@@ -40,6 +40,8 @@ export interface Case {
   status: CaseStatus;
   assigned_staff_id?: string;
   assigned_staff_name?: string;
+  project_id?: string;
+  contractor_id?: string;
   contractor_name?: string;
   priority?: 'LOW' | 'NORMAL' | 'HIGH' | 'URGENT';
   created_at: string;
@@ -553,6 +555,47 @@ export interface AnalysisRun {
   legal_snapshot_json: string;
   output_json: string;
   validation_status: 'VALID' | 'REJECTED' | 'FAILED';
+}
+
+export interface Contractor {
+  id: string;
+  name: string;
+  contact_person?: string;
+  phone?: string;
+  email?: string;
+  tax_id?: string;
+  address?: string;
+  notes?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Project {
+  id: string;
+  name: string;
+  code?: string;
+  address: string;
+  district: string;
+  province?: string;
+  latitude?: number;
+  longitude?: number;
+  contractor_id?: string;
+  contractor_name?: string;
+  owner_name?: string;
+  status: 'PLANNING' | 'ACTIVE' | 'SUSPENDED' | 'COMPLETED';
+  start_date?: string;
+  end_date?: string;
+  notes?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SetupStatusResponse {
+  is_initialized: boolean;
+  user_count: number;
+  role_count: number;
+  template_count: number;
+  legal_corpus_count: number;
 }
 
 

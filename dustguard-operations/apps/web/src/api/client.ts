@@ -49,6 +49,19 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
 
 export const api = {
   auth: {
+    setupStatus: () =>
+      request<{
+        is_initialized: boolean;
+        user_count: number;
+        role_count: number;
+        template_count: number;
+        legal_corpus_count: number;
+      }>('/api/auth/setup-status'),
+    bootstrap: (body: any) =>
+      request<{ success: boolean; user: any; token: string }>('/api/auth/bootstrap', {
+        method: 'POST',
+        body: JSON.stringify(body),
+      }),
     login: (body: { username: string; password: string }) =>
       request<{ user: any; token: string; permissions: string[] }>('/api/auth/login', {
         method: 'POST',
@@ -289,6 +302,16 @@ export const api = {
         method: 'POST',
         body: JSON.stringify(data),
       }),
+    publicReport: (data: any) =>
+      request<{ success: boolean; signal: any; message: string }>('/api/signals/public-report', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }),
+    createCase: (id: string, data: any) =>
+      request<{ success: boolean; case: any; message: string }>(`/api/signals/${id}/create-case`, {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }),
   },
 
   iot: {
@@ -308,6 +331,11 @@ export const api = {
       });
       return request<{ readings: any[] }>(`/api/iot/devices/${id}/readings?${sp.toString()}`);
     },
+    registerDevice: (data: any) =>
+      request<{ success: boolean; device: any }>('/api/iot/devices', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }),
     createCase: (id: string, data: any) =>
       request<{ success: boolean; case: any }>(`/api/iot/devices/${id}/create-case`, {
         method: 'POST',
@@ -370,4 +398,47 @@ export const api = {
       results: { cases: any[]; tasks: any[]; legal: any[]; iot: any[] };
       total: number;
     }>(`/api/search?q=${encodeURIComponent(q)}`),
+
+  projects: {
+    list: (params: Record<string, string | undefined> = {}) => {
+      const sp = new URLSearchParams();
+      Object.entries(params).forEach(([k, v]) => {
+        if (v !== undefined && v !== '') sp.append(k, v);
+      });
+      return request<{ projects: any[]; total: number }>(`/api/projects?${sp.toString()}`);
+    },
+    get: (id: string) => request<any>(`/api/projects/${id}`),
+    create: (data: any) =>
+      request<{ success: boolean; project: any }>('/api/projects', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }),
+    update: (id: string, data: any) =>
+      request<{ success: boolean; project: any }>(`/api/projects/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify(data),
+      }),
+  },
+
+  contractors: {
+    list: (params: Record<string, string | undefined> = {}) => {
+      const sp = new URLSearchParams();
+      Object.entries(params).forEach(([k, v]) => {
+        if (v !== undefined && v !== '') sp.append(k, v);
+      });
+      return request<{ contractors: any[]; total: number }>(`/api/contractors?${sp.toString()}`);
+    },
+    get: (id: string) => request<any>(`/api/contractors/${id}`),
+    create: (data: any) =>
+      request<{ success: boolean; contractor: any }>('/api/contractors', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }),
+    update: (id: string, data: any) =>
+      request<{ success: boolean; contractor: any }>(`/api/contractors/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify(data),
+      }),
+  },
 };
+

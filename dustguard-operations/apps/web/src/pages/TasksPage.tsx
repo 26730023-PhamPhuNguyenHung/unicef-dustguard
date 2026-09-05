@@ -86,7 +86,7 @@ export const TasksPage: React.FC = () => {
     try {
       const [uRes, cRes] = await Promise.allSettled([
         api.admin.users(),
-        api.cases.list({ pageSize: 50 }),
+        api.cases.list({ pageSize: '50' }),
       ]);
       if (uRes.status === 'fulfilled' && uRes.value?.users) {
         setUsersList(uRes.value.users);
@@ -646,7 +646,7 @@ export const TasksPage: React.FC = () => {
                     onChange={e => setNewAssignee(e.target.value)}
                     className="w-full text-xs border border-slate-300 rounded px-3 py-2 bg-white text-slate-800"
                   >
-                    <option value="">Giao cho tôi ({user?.fullName})</option>
+                    <option value="">Giao cho tôi ({user?.full_name})</option>
                     {usersList.map(u => (
                       <option key={u.id} value={u.id}>
                         {u.full_name} ({u.role})
