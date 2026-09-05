@@ -30,6 +30,8 @@ prisma/*.db-wal
 dustguard-operations/data/test-*.db
 dustguard-operations/apps/server/uploads/*
 !dustguard-operations/apps/server/uploads/.gitkeep
+artifacts/
+dustguard-operations/artifacts/
 
 # CodeLens Graph local index
 .codelens/

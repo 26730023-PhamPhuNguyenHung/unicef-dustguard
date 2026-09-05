@@ -174,5 +174,12 @@
   3. **Tự Tạo Đầy Đủ Thực Thể Qua UI**: Xây dựng đầy đủ màn hình và API cho Nhà thầu (`/contractors`), Công trình xây dựng (`/projects`), Cổng tiếp nhận báo cáo dân cư công khai (`POST /api/signals/public-report`), Chuyển hóa tin báo thành vụ việc (`POST /api/signals/:id/create-case`), và Đăng ký thiết bị IoT (`POST /api/iot/devices`).
   4. **Dynamic Import trong Isolated Tests**: Trong các bài test cơ sở dữ liệu cô lập, luôn đặt `process.env.DB_PATH = isolatedPath;` trước, sau đó dùng `await import('./connection.js')` và `await import('./migrate.js')` để đảm bảo kết nối SQLite trỏ đúng file database cô lập.
 
+---
 
-
+### 14. Phân Tách Khởi Tạo Cấu Hình Luật Định Khỏi Dữ Liệu Demo & Responsive Tablet 768px
+- **Vấn đề**:
+  1. Khi chạy hàm `seedDatabase()`, nếu `runMigrations()` tự động gọi `ensureSystemConfiguration()`, các văn bản pháp luật mẫu sẽ được chèn trước. Sau đó hàm seed tiếp tục chèn cùng ID đó, dẫn đến lỗi `UNIQUE constraint failed: legal_documents.id`.
+  2. Tại độ phân giải Tablet 768px (`md` breakpoint), thanh tìm kiếm toàn cục rộng 448px (`md:block`) kích hoạt cùng lúc với logo (260px) và thông tin tài khoản (220px), đẩy chiều rộng header lên 826px, gây lỗi tràn ngang 58px.
+- **Giải pháp chuẩn hóa**:
+  1. Thêm tham số `runMigrations(initSystemConfig = true)`. Khi gọi từ `seedDatabase()`, truyền `runMigrations(false)` để việc seeding chịu trách nhiệm nạp dữ liệu một lần duy nhất, sạch sẽ và nhất quán.
+  2. Tại thanh Header, chuyển thanh tìm kiếm dạng mở rộng sang kích hoạt từ `lg:block` ($\ge 1024\text{px}$) và giữ nút icon tìm kiếm nhỏ gọn tại `lg:hidden`, giúp Tablet 768px hiển thị hoàn hảo (`scrollWidth: 753px <= 768px`) và đạt 75/75 test responsive pass 100%.

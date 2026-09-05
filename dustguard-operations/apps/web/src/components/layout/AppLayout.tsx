@@ -158,7 +158,7 @@ export const AppLayout: React.FC = () => {
           </div>
 
           {/* Center Search Input Trigger */}
-          <div className="flex-1 max-w-md hidden md:block">
+          <div className="flex-1 max-w-md hidden lg:block">
             <button
               onClick={() => setCommandPaletteOpen(true)}
               className="w-full flex items-center justify-between px-3 py-1.5 text-xs bg-slate-100 hover:bg-slate-200/80 border border-slate-300 rounded-lg text-slate-500 transition-colors group"
@@ -175,10 +175,10 @@ export const AppLayout: React.FC = () => {
 
           {/* Right Header: Notifications & User profile */}
           <div className="flex items-center gap-2.5 flex-shrink-0">
-            {/* Mobile Search Button */}
+            {/* Mobile / Tablet Search Button */}
             <button
               onClick={() => setCommandPaletteOpen(true)}
-              className="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100"
+              className="lg:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100"
               aria-label="Tìm kiếm"
             >
               <Search className="w-5 h-5" />

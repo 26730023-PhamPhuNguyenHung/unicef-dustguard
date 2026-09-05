@@ -433,41 +433,42 @@ export const LegalWorkspacePage: React.FC = () => {
         {/* =================================================================== */}
         <div className="lg:col-span-5 space-y-4">
           {/* Sub-nav Tabs */}
-          <div className="flex items-center gap-1 bg-white p-1 rounded-lg border border-slate-200 shadow-2xs">
+          <div className="flex items-center gap-1.5 bg-white p-1.5 rounded-lg border border-slate-200 shadow-2xs">
             <button
               type="button"
               onClick={() => setCenterTab('matrix')}
-              className={`flex-1 py-1.5 px-2 text-xs font-bold rounded flex items-center justify-center gap-1.5 transition-colors ${
+              className={`flex-1 min-h-[44px] py-2.5 px-3 text-xs font-bold rounded-md flex items-center justify-center gap-1.5 transition-colors touch-target ${
                 centerTab === 'matrix'
                   ? 'bg-dustguard-teal text-white shadow-xs'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
               }`}
             >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Ma Trận Bằng Chứng (Evidence Matrix)</span>
+              <Sparkles className="w-4 h-4 shrink-0" />
+              <span className="hidden sm:inline">Ma Trận Bằng Chứng (Evidence Matrix)</span>
+              <span className="sm:hidden">Ma Trận</span>
             </button>
             <button
               type="button"
               onClick={() => setCenterTab('worksheet')}
-              className={`flex-1 py-1.5 px-2 text-xs font-bold rounded flex items-center justify-center gap-1.5 transition-colors ${
+              className={`flex-1 min-h-[44px] py-2.5 px-3 text-xs font-bold rounded-md flex items-center justify-center gap-1.5 transition-colors touch-target ${
                 centerTab === 'worksheet'
                   ? 'bg-slate-900 text-white shadow-xs'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
               }`}
             >
-              <Scale className="w-3.5 h-3.5" />
+              <Scale className="w-4 h-4 shrink-0" />
               <span>Phiếu Lập Luận</span>
             </button>
             <button
               type="button"
               onClick={() => setCenterTab('checklist')}
-              className={`flex-1 py-1.5 px-2 text-xs font-bold rounded flex items-center justify-center gap-1.5 transition-colors ${
+              className={`flex-1 min-h-[44px] py-2.5 px-3 text-xs font-bold rounded-md flex items-center justify-center gap-1.5 transition-colors touch-target ${
                 centerTab === 'checklist'
                   ? 'bg-slate-900 text-white shadow-xs'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
               }`}
             >
-              <ListChecks className="w-3.5 h-3.5" />
+              <ListChecks className="w-4 h-4 shrink-0" />
               <span>Tạo Checklist</span>
             </button>
           </div>
