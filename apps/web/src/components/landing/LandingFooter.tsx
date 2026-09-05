@@ -41,10 +41,10 @@ export const LandingFooter: React.FC<LandingFooterProps> = ({ lang }) => {
             </div>
           </div>
 
-          {/* Cột 2: Cổng Người Dân & Thanh Niên */}
+          {/* Cột 2: Phía Cộng đồng & Thanh niên */}
           <div className="space-y-3">
             <h4 className="font-bold text-white text-xs uppercase tracking-wider">
-              {lang === 'vi' ? 'Cổng Cộng Đồng' : 'Community'}
+              {lang === 'vi' ? 'Phía Cộng Đồng' : 'Community Side'}
             </h4>
             <ul className="space-y-2 text-[11px]">
               <li>
@@ -67,13 +67,18 @@ export const LandingFooter: React.FC<LandingFooterProps> = ({ lang }) => {
                   {lang === 'vi' ? 'Mạng lưới CLB & Tín chỉ thanh niên' : 'Youth Volunteer Clubs'}
                 </Link>
               </li>
+              <li>
+                <Link to="/login" className="hover:text-white transition-colors font-medium text-amber-400">
+                  {lang === 'vi' ? 'Đăng nhập Cộng đồng' : 'Community Login'}
+                </Link>
+              </li>
             </ul>
           </div>
 
-          {/* Cột 3: Cổng Tác Nghiệp Cán Bộ */}
+          {/* Cột 3: Phía Chuyên trách & Vận hành */}
           <div className="space-y-3">
             <h4 className="font-bold text-white text-xs uppercase tracking-wider">
-              {lang === 'vi' ? 'Cổng Cán Bộ & Pháp Chế' : 'Operations'}
+              {lang === 'vi' ? 'Phía Chuyên Trách' : 'Professional Side'}
             </h4>
             <ul className="space-y-2 text-[11px]">
               <li>
@@ -88,9 +93,15 @@ export const LandingFooter: React.FC<LandingFooterProps> = ({ lang }) => {
                 </a>
               </li>
               <li>
-                <Link to="/evidence" className="hover:text-white transition-colors">
-                  Kho Bằng chứng số SHA-256
-                </Link>
+                <a
+                  href="http://localhost:3002/evidence"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:text-white flex items-center gap-1 transition-colors"
+                >
+                  <span>Kho Bằng chứng số SHA-256</span>
+                  <ExternalLink className="w-3 h-3 opacity-60" />
+                </a>
               </li>
               <li>
                 <a
@@ -99,18 +110,18 @@ export const LandingFooter: React.FC<LandingFooterProps> = ({ lang }) => {
                   rel="noreferrer"
                   className="hover:text-white flex items-center gap-1 transition-colors"
                 >
-                  <span>Mẫu biểu Thanh tra NĐ 45/2022</span>
+                  <span>Thanh tra hiện trường QCVN 18</span>
                   <ExternalLink className="w-3 h-3 opacity-60" />
                 </a>
               </li>
               <li>
                 <a
-                  href="http://localhost:3002/supervisor/workload"
+                  href="http://localhost:3002/login"
                   target="_blank"
                   rel="noreferrer"
-                  className="hover:text-white flex items-center gap-1 transition-colors"
+                  className="hover:text-white flex items-center gap-1 transition-colors font-medium text-sky-400"
                 >
-                  <span>Giám sát hạn chót SLA 48h</span>
+                  <span>Đăng nhập Cán bộ Chuyên môn</span>
                   <ExternalLink className="w-3 h-3 opacity-60" />
                 </a>
               </li>
@@ -123,10 +134,54 @@ export const LandingFooter: React.FC<LandingFooterProps> = ({ lang }) => {
               {lang === 'vi' ? 'Căn Cứ Pháp Lý' : 'Statutory Basis'}
             </h4>
             <ul className="space-y-2 text-[11px] text-slate-400">
-              <li>Luật Bảo vệ Môi trường 2020 (Điều 64)</li>
-              <li>Nghị định số 45/2022/NĐ-CP (Điều 15)</li>
-              <li>Thông tư 02/2022/TT-BTNMT</li>
-              <li>Quy chuẩn QCVN 05:2023/BTNMT</li>
+              <li>
+                <a
+                  href="https://thuvienphapluat.vn/van-ban/Tai-nguyen-Moi-truong/Luat-so-72-2020-QH14-Bao-ve-moi-truong-2020-431147.aspx"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-white flex items-center gap-1 transition-colors"
+                  title="Luật số 72/2020/QH14 Bảo vệ môi trường 2020"
+                >
+                  <span>Luật BVMT 2020 (Điều 64)</span>
+                  <ExternalLink className="w-3 h-3 opacity-60 shrink-0" />
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://thuvienphapluat.vn/van-ban/Vi-pham-hanh-chinh/Nghi-dinh-45-2022-ND-CP-xu-phat-vi-pham-hanh-chinh-linh-vuc-bao-ve-moi-truong-484772.aspx"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-white flex items-center gap-1 transition-colors"
+                  title="Nghị định 45/2022/NĐ-CP xử phạt vi phạm hành chính lĩnh vực bảo vệ môi trường"
+                >
+                  <span>Nghị định 45/2022/NĐ-CP (Điều 15)</span>
+                  <ExternalLink className="w-3 h-3 opacity-60 shrink-0" />
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://thuvienphapluat.vn/van-ban/Tai-nguyen-Moi-truong/Thong-tu-02-2022-TT-BTNMT-huong-dan-Luat-Bao-ve-moi-truong-500694.aspx"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-white flex items-center gap-1 transition-colors"
+                  title="Thông tư 02/2022/TT-BTNMT hướng dẫn Luật Bảo vệ môi trường"
+                >
+                  <span>Thông tư 02/2022/TT-BTNMT</span>
+                  <ExternalLink className="w-3 h-3 opacity-60 shrink-0" />
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://thuvienphapluat.vn/hoi-dap-phap-luat/quy-chuan-quoc-gia-ve-chat-luong-khong-khi-qcvn-052023btnmt-138003428.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-white flex items-center gap-1 transition-colors"
+                  title="Quy chuẩn quốc gia về chất lượng không khí QCVN 05:2023/BTNMT"
+                >
+                  <span>Quy chuẩn QCVN 05:2023/BTNMT</span>
+                  <ExternalLink className="w-3 h-3 opacity-60 shrink-0" />
+                </a>
+              </li>
             </ul>
           </div>
 

@@ -3,6 +3,7 @@ import { ReportRepository, CaseRepository, AuditRepository, NotificationReposito
 import { sqliteClient } from '../db/sqlite-client.js';
 import { updateCaseStatusSchema, moderatorRejectReportSchema } from '@dustguard/shared';
 import { authenticateToken, requireRole, AuthRequest } from '../middlewares/auth.js';
+import { forwardCaseToOperations } from '../utils/handoff.js';
 
 const router = Router();
 
@@ -293,7 +294,11 @@ router.post('/reports/:id/merge', (req: AuthRequest, res: Response): void => {
 
 // 5. Cập nhật trạng thái case (cho Kanban điều phối)
 router.patch('/cases/:id/status', (req: AuthRequest, res: Response): void => {
-  const validated = updateCaseStatusSchema.safeParse(req.body);
+  const rawBody = {
+    ...req.body,
+    newStatus: req.body.newStatus || req.body.status
+  };
+  const validated = updateCaseStatusSchema.safeParse(rawBody);
   if (!validated.success) {
     res.status(400).json({ success: false, error: { code: 'VALIDATION_ERROR', message: validated.error.errors[0]?.message } });
     return;
@@ -329,6 +334,24 @@ router.patch('/cases/:id/status', (req: AuthRequest, res: Response): void => {
     metadata: { newStatus: validated.data.newStatus },
     ipAddress: req.ip
   });
+
+  // Tự động kích hoạt bàn giao có trách nhiệm sang Side B (Operations) nếu trạng thái là forwarded
+  if (validated.data.newStatus === 'forwarded') {
+    forwardCaseToOperations(updatedCase).then((result) => {
+      if (result.success) {
+        AuditRepository.log({
+          actorId: req.user!.id,
+          action: 'INSTITUTIONAL_HANDOFF',
+          entityType: 'case',
+          entityId: req.params.id,
+          metadata: { target: 'Operations Service', externalCaseId: updatedCase.id },
+          ipAddress: req.ip
+        });
+      }
+    }).catch((err) => {
+      console.warn('[Handoff Background Error]', err);
+    });
+  }
 
   res.json({ success: true, data: updatedCase });
 });

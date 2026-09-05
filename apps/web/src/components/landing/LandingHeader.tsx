@@ -50,31 +50,39 @@ export const LandingHeader: React.FC<LandingHeaderProps> = ({ lang, onToggleLang
         </nav>
 
         {/* ACTION PHẢI */}
-        <div className="hidden sm:flex items-center gap-4">
+        <div className="hidden sm:flex items-center gap-3">
           {/* Language Toggle */}
           <button
             type="button"
             onClick={onToggleLang}
-            className="text-[13px] font-semibold text-[#64748B] hover:text-[#0F172A] px-2 py-1 rounded transition-colors"
+            className="text-[13px] font-semibold text-[#64748B] hover:text-[#0F172A] px-2 py-1 rounded transition-colors mr-1"
           >
             {lang === 'vi' ? 'EN' : 'VI'}
           </button>
 
-          {/* Secondary: Cổng cán bộ */}
+          {/* Login Button */}
+          <Link
+            to="/login"
+            className="text-[13px] font-semibold text-[#475569] hover:text-[#0F172A] hover:bg-[#EAE6DF]/60 px-3 py-2 rounded-lg transition-colors"
+          >
+            {lang === 'vi' ? 'Đăng nhập' : 'Log in'}
+          </Link>
+
+          {/* Secondary CTA: Dành cho Đơn vị Xử lý (Side B) */}
           <a
             href="http://localhost:3002"
             target="_blank"
             rel="noreferrer"
-            className="text-[13px] font-semibold text-[#334155] hover:text-[#0F172A] hover:bg-[#EAE6DF]/60 px-3.5 py-2 rounded-lg transition-colors flex items-center gap-1"
+            className="text-[13px] font-semibold text-[#0369A1] hover:text-[#0C4A6E] hover:bg-[#E0F2FE]/70 px-3.5 py-2 rounded-lg transition-colors flex items-center gap-1 border border-[#BAE6FD]/80"
           >
-            <span>{lang === 'vi' ? 'Cổng cán bộ' : 'Staff portal'}</span>
-            <ArrowUpRight className="w-3.5 h-3.5 opacity-50" />
+            <span>{lang === 'vi' ? 'Đơn vị xử lý' : 'Operations'}</span>
+            <ArrowUpRight className="w-3.5 h-3.5 opacity-70" />
           </a>
 
-          {/* Primary CTA: Gửi phản ánh */}
+          {/* Primary CTA: Gửi phản ánh (Side A) */}
           <Link
             to="/reports/new"
-            className="text-[13px] font-semibold text-white bg-[#B42318] hover:bg-[#91180D] px-4 py-2 rounded-lg shadow-xs transition-all flex items-center gap-1.5"
+            className="text-[13px] font-semibold text-white bg-[#B42318] hover:bg-[#91180D] px-4 py-2 rounded-lg shadow-xs transition-all flex items-center gap-1.5 active:scale-95"
           >
             <Send className="w-3.5 h-3.5" />
             <span>{lang === 'vi' ? 'Gửi phản ánh' : 'Report dust'}</span>
@@ -87,7 +95,7 @@ export const LandingHeader: React.FC<LandingHeaderProps> = ({ lang, onToggleLang
             to="/reports/new"
             className="text-[12px] font-semibold text-white bg-[#B42318] px-3 py-1.5 rounded-lg shadow-xs"
           >
-            {lang === 'vi' ? 'Gửi phản ánh' : 'Report'}
+            {lang === 'vi' ? 'Gửi tin' : 'Report'}
           </Link>
           <button
             type="button"
@@ -117,24 +125,34 @@ export const LandingHeader: React.FC<LandingHeaderProps> = ({ lang, onToggleLang
             ))}
           </div>
 
-          <div className="pt-3 border-t border-[#EAE6DF] flex items-center justify-between">
-            <a
-              href="http://localhost:3002"
-              target="_blank"
-              rel="noreferrer"
-              className="text-[13px] font-semibold text-[#334155] flex items-center gap-1"
+          <div className="pt-3 border-t border-[#EAE6DF] flex flex-col gap-2.5">
+            <Link
+              to="/login"
+              onClick={() => setMobileOpen(false)}
+              className="w-full text-center py-2.5 text-xs font-bold rounded-xl border border-border-subtle bg-white text-content-main"
             >
-              <span>{lang === 'vi' ? 'Cổng cán bộ điều hành' : 'Staff portal'}</span>
-              <ArrowUpRight className="w-3.5 h-3.5" />
-            </a>
+              {lang === 'vi' ? 'Đăng nhập nền tảng' : 'Log in'}
+            </Link>
 
-            <button
-              type="button"
-              onClick={onToggleLang}
-              className="text-[13px] font-bold text-[#B42318] px-2.5 py-1 border border-[#EAE6DF] rounded-md bg-white"
-            >
-              {lang === 'vi' ? 'Tiếng Anh (EN)' : 'Tiếng Việt (VI)'}
-            </button>
+            <div className="flex items-center justify-between pt-1">
+              <a
+                href="http://localhost:3002"
+                target="_blank"
+                rel="noreferrer"
+                className="text-[13px] font-semibold text-[#0369A1] flex items-center gap-1"
+              >
+                <span>{lang === 'vi' ? 'Cổng Đơn vị Xử lý' : 'Operations'}</span>
+                <ArrowUpRight className="w-3.5 h-3.5" />
+              </a>
+
+              <button
+                type="button"
+                onClick={onToggleLang}
+                className="text-[13px] font-bold text-[#B42318] px-2.5 py-1 border border-[#EAE6DF] rounded-md bg-white"
+              >
+                {lang === 'vi' ? 'Tiếng Anh (EN)' : 'Tiếng Việt (VI)'}
+              </button>
+            </div>
           </div>
         </div>
       )}

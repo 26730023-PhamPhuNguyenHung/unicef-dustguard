@@ -117,12 +117,17 @@ export const IotDevicesPage: React.FC = () => {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-            <Cpu className="w-6 h-6 text-dustguard-teal" />
-            Mạng lưới Cảm biến Quan trắc Bụi IoT
-          </h1>
-          <p className="text-sm text-slate-600">
-            Theo dõi trạng thái trạm cảm biến hiện trường ESP32 + APM2000, kiểm soát chữ ký HMAC-SHA256 và phát hiện cảm biến chết lâm sàng (Flatline)
+          <div className="flex items-center gap-2.5">
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+              <Cpu className="w-6 h-6 text-dustguard-teal" />
+              Mạng lưới Cảm biến Quan trắc Bụi IoT
+            </h1>
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-300">
+              Thử nghiệm Hiện trường (Hardware Pilot)
+            </span>
+          </div>
+          <p className="text-sm text-slate-600 mt-1">
+            Giai đoạn thử nghiệm kết nối thiết bị cảm biến bụi PM2.5 / PM10 (ESP32 + APM2000), kiểm soát xác thực chữ ký và cảnh báo suy giảm tín hiệu thực tế.
           </p>
         </div>
 

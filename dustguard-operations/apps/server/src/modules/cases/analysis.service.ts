@@ -10,6 +10,10 @@ import {
   EvidenceMatrixRow,
   AnalysisOutput,
   AnalysisOutputSchema,
+  CompletenessGroup,
+  AIAssessment,
+  ContradictionItem,
+  NextPriorityAction,
 } from '../../shared.js';
 
 export interface RunAnalysisOptions {

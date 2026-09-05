@@ -7,7 +7,7 @@ interface AuthContextType {
   user: User | null;
   permissions: Permission[];
   loading: boolean;
-  login: (username: string, password?: string) => Promise<void>;
+  login: (username: string, password?: string) => Promise<User>;
   logout: () => Promise<void>;
   switchRole: (role: Role) => Promise<void>;
   can: (permission: Permission) => boolean;
@@ -49,7 +49,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [fetchCurrentUser]);
 
-  const login = async (username: string, password = 'password123') => {
+  const login = async (username: string, password = 'password123'): Promise<User> => {
     setLoading(true);
     try {
       const res = await api.auth.login({ username, password });
@@ -57,6 +57,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.removeItem('dustguard_dev_user_id');
       setUser(res.user);
       setPermissions(res.permissions as Permission[]);
+      return res.user;
     } finally {
       setLoading(false);
     }

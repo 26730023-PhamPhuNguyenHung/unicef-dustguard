@@ -28,8 +28,8 @@ export const CaseCoordinationPage: React.FC = () => {
 
   const fetchCases = () => {
     setLoading(true);
-    apiRequest<{ cases: any[] }>('/cases')
-      .then((res) => setCases(res.cases || []))
+    apiRequest<any>('/cases')
+      .then((res) => setCases(Array.isArray(res) ? res : res.cases || []))
       .catch(console.error)
       .finally(() => setLoading(false));
   };
@@ -46,6 +46,7 @@ export const CaseCoordinationPage: React.FC = () => {
       await apiRequest(`/moderator/cases/${editingCase.id}/status`, {
         method: 'PATCH',
         body: JSON.stringify({
+          newStatus,
           status: newStatus,
           title: updateTitle || `Chuyển trạng thái sang ${CASE_STATUS_LABELS[newStatus]?.label}`,
           content: updateNote || 'Cập nhật tiến độ xử lý vụ việc từ ban điều phối.'

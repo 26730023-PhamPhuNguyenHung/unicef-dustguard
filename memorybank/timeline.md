@@ -7,6 +7,89 @@
 
 ## 📅 Các Mốc Phát Triển Chính (Milestones)
 
+### 0. [2026-09-05] `final-production-readiness-hardening`: Vòng Thẩm Định & Gia Cố Cuối Cùng Toàn Diện (Final Production Readiness Audit)
+- **Mục tiêu**: Gia cố toàn diện hệ thống DustGuard VN đạt chuẩn sẵn sàng vận hành thực tế; loại bỏ 100% fake mock/placeholder/random data; thiết lập các chốt chặn nghiệp vụ (Business Domain Invariants); bảo đảm chu trình khép kín End-to-End thật từ Cộng đồng (Side A) sang Chuyên trách (Side B).
+- **Phạm vi hoàn tất**:
+  - **Kiểm kê & Phân loại Tính năng Toàn diện**: Ban hành `docs/audit/FINAL_PRODUCTION_READINESS.md` kiểm kê 27 tính năng cốt lõi. Ban hành `docs/audit/MOCK_AND_PLACEHOLDER_AUDIT.md` và `docs/DEVELOPMENT_ONLY_FEATURES.md`.
+  - **Loại bỏ Hoàn toàn Fake Mock & Cryptographic Hardening**:
+    - Thay thế cơ chế tạo mã băm ngẫu nhiên (`Math.random()`) bằng thuật toán băm SHA-256 thuần chuẩn FIPS 180-4 (`sha256Pure` trong `apps/web/src/utils/crypto.ts`) tính toán trực tiếp từ mảng byte nhị phân của file tải lên.
+    - Loại bỏ biến giả lập `confidencePercent` trong `LegalWorkspacePage.tsx`; bổ sung banner công bố quy chế thẩm tra đối soát quy chuẩn FTS5 minh bạch.
+    - Gắn nhãn `"Thử nghiệm Hiện trường (Hardware Pilot)"` cho phân hệ IoT.
+  - **Khắc phục Lỗi Lệch Contract & Trực Quan Hóa Dữ liệu**:
+    - Sửa lỗi bóc tách `cases` trong `CaseCoordinationPage.tsx` giúp 5 cột Kanban hiển thị chính xác toàn bộ vụ việc từ CSDL SQLite.
+    - Đồng bộ contract `updateCaseStatusSchema` (`newStatus` & `status`) giữa Frontend và Backend.
+  - **Kiểm Chứng Toàn Bộ Chu Trình Khép Kín E2E (Primary User Journey PASS)**:
+    1. *Citizen* tạo phản ánh mới `DG-C-2026-3778` $\rightarrow$ Persist bền vững trong `dustguard-community.db`.
+    2. *Moderator* thẩm tra tại `/moderator/inbox`, duyệt và tạo vụ việc `DG-C-2026-9874`.
+    3. *Moderator* chuyển trạng thái sang `forwarded` trên Kanban $\rightarrow$ Tự động kích hoạt Webhook Idempotent Handoff.
+    4. *Operations Intake* tự động tạo hồ sơ `case-c9e1557d` trong `dustguard-operations.db`.
+    5. *Staff* phân loại vụ việc sang `TRIAGED`.
+    6. *Supervisor* phân công thụ lý chính cho cán bộ `usr-staff-1` $\rightarrow$ Vụ việc chuyển sang `ASSIGNED`.
+    7. *Staff* ban hành yêu cầu khắc phục `act-7dab930b` (SLA 48h) $\rightarrow$ Vụ việc chuyển sang `ACTION_REQUIRED`.
+    8. *Staff/Contractor* nộp báo cáo khắc phục `rem-c528925e`.
+    9. *Supervisor* phê duyệt nghiệm thu `APPROVED` $\rightarrow$ Vụ việc chuyển sang `READY_TO_CLOSE`.
+    10. *Business Invariant Gatekeeper*: Chặn đóng hồ sơ khi thiếu kết luận pháp lý (400 Bad Request).
+    11. *Legal Reviewer* hoàn tất thẩm tra quy chuẩn pháp lý căn cứ NĐ 45/2022 và Luật BVMT 2020.
+    12. *Supervisor* ký quyết định đóng vụ việc $\rightarrow$ Hồ sơ chính thức chuyển sang `CLOSED` với đầy đủ bằng chứng và timeline.
+  - **Kiểm tra Biên dịch & Type-check**: Cả 3 build (`apps/server`, `apps/web`, `dustguard-operations`) PASS 100% (0 errors). P0 Defect = 0.
+
+- **Mục tiêu**: Loại bỏ triệt để tư duy cổng portal rời rạc 5 role (`/citizen`, `/staff`, `/contractor`, `/executive`, `/admin`); quy hoạch lại Landing Page, Cổng Đăng nhập (Login Gateway), Auth Redirects, Route Guards và Admin Entry về 2 phía duy nhất: **Side A (Cộng đồng - Community)** và **Side B (Chuyên trách - Professional / Operations)**.
+- **Phạm vi hoàn tất**:
+  - **Landing Page 2-Side Information Architecture**:
+    - Header: Chuẩn hóa 2 hành động chính "Gửi phản ánh" (Side A) và "Đơn vị xử lý" (Side B), bổ sung nút Đăng nhập thông minh.
+    - Hero: Giữ nguyên tinh thần thương hiệu với cặp CTA chính (`/reports/new` vs Cổng điều hành Port 3002). Tối ưu hóa kích thước đạt chuẩn Above-the-fold trên màn hình laptop `1366x768`.
+    - Section 2 Phía (Thay thế RoleStories cũ): Thiết kế Two-Side Model ("Phía Cộng đồng" vs "Phía Chuyên trách"), xóa bỏ việc liệt kê thẻ vai trò kỹ thuật.
+    - Footer: Tái cấu trúc 2 cột sản phẩm phân định rõ Side A và Side B.
+  - **Cổng Đăng Nhập Thông Minh (2-Side Gateway)**:
+    - Sửa `apps/web/src/pages/LoginPage.tsx`: Chia 2 tab độc lập "Phía Cộng đồng" và "Đơn vị Xử lý", xóa bỏ hoàn toàn bộ 4-5 nút chọn role cũ.
+    - Không tạo Auth DB thứ ba: Giữ nguyên 2 DB vật lý độc lập (`dustguard-community.db` và `dustguard-operations.db`).
+  - **Phân Giải Điều Hướng Theo Năng Lực (Capability-Based SSOT)**:
+    - Tạo `apps/web/src/utils/auth-redirect.ts`: Phân giải điều hướng tự động dựa trên quyền hạn (`observation:moderate` $\to$ `/moderator/dashboard`, `community:admin` $\to$ `/admin/overview`, `observation:create` $\to$ `/reports`).
+    - Hỗ trợ bảo toàn Deep-Link (`state: { from: location }`): Người dùng truy cập URL bảo mật chưa đăng nhập được chuyển hướng về đúng URL ban đầu sau khi đăng nhập thành công.
+  - **Tầng Chuyển Tiếp Tuyến Đường Cũ (Legacy Migration Layer)**:
+    - Bổ sung cấu hình route trong `apps/web/src/App.tsx` tự động chuyển hướng 100% các liên kết cũ (`/citizen/*`, `/community/*`, `/staff/*`, `/contractor/*`, `/executive/*`) sang các tuyến đường mới tương đương hoặc sang Cổng Operations (Port 3002).
+  - **Tài Liệu Kiến Trúc & Kiểm Toán**:
+    - Ban hành `docs/audit/LEGACY-ENTRY-POINTS.md` ghi nhận toàn bộ các điểm truy cập cũ.
+    - Ban hành `docs/SSOT/PRODUCT-ENTRY-SSOT.md` xác lập SSOT cho kiến trúc entry và auth redirect.
+  - **Kiểm Thử Thực Tế Đa Màn Hình & Trực Quan**:
+    - Cả 3 build (`apps/server`, `apps/web`, `dustguard-operations`) PASS 100% không cảnh báo.
+    - Kiểm thử tự động qua `agent-browser` trên 4 viewports (`1440x900`, `1366x768`, `1280x800`, `390x844`): 0 horizontal overflow (`scrollWidth <= innerWidth`), Hero CTA nằm gọn trên first fold, deep-link restoration hoạt động hoàn hảo.
+
+- **Mục tiêu**: Audit toàn bộ User Flow + Role Model + Route Matrix + Auth + API + Database thực tế; xóa bỏ sự tồn tại song song mơ hồ giữa Legacy 5-Group Monolith (`app/`) và Mô hình 2 Phía mới (`apps/` Community vs `dustguard-operations/`); thiết lập Canonical Architecture SSOT duy nhất.
+- **Phạm vi hoàn tất**:
+  - **Audit 01 - Tài liệu Kiến trúc**: Tạo `docs/audit/01-SSOT-SOURCES.md` khảo sát 10 specs lịch sử, chỉ rõ tài liệu còn sống vs stale.
+  - **Audit 02 - Kiểm kê Vai trò**: Tạo `docs/audit/02-ROLE-INVENTORY.md` kiểm kê 14 role strings trên 4 tầng: Frontend, Backend, DB và Tests.
+  - **Audit 03 - Ma trận Tuyến đường**: Tạo `docs/audit/03-ROUTE-APP-INVENTORY.md` kiểm kê mọi route trên 3 phân hệ, giải phẫu bản chất `/staff/cases` (Legacy D1).
+  - **Audit 04 - Ánh xạ Vai trò**: Tạo `docs/audit/03-ROLE-MAPPING.md` map 5 nhóm cũ $\to$ 2 Phía, chuyển từ Role-based sang 28 Capabilities chuẩn tắc.
+  - **Audit 05 - Xung đột Ngữ nghĩa**: Tạo `docs/audit/04-DOMAIN-COLLISION-MATRIX.md` phân định rõ: `Report != Case`, `Community Case != Operations Case`, `Observation != Inspection`.
+  - **Audit 06 - Khảo sát Thực tế CSDL**: Tạo `docs/audit/05-DATABASE-REALITY.md` dùng `node:sqlite` kiểm toán 3 CSDL (`dustguard-community.db` 21 bảng, `dustguard-operations.db` 41 bảng, D1 `dev.db` 60 bảng với 22 bảng rỗng). Xác minh tính độc lập khỏi `seed.ts` (Seed Independence PASS).
+  - **Audit 07 - Kế hoạch Chuyển giao**: Tạo `docs/audit/06-LEGACY-DISPOSITION-PLAN.md` định đoạt dứt khoát KEEP/ADAPT/MERGE/REDIRECT/DEPRECATE.
+  - **Master Canonical SSOT**: Ban hành `docs/SSOT/USER-FLOW-SSOT.md` xác lập nguồn chân lý tối cao cho toàn hệ thống.
+  - **Kết nối Bàn giao Thực tế (Handoff P0)**: Tích hợp `forwardCaseToOperations` trong `apps/server/src/routes/moderator.routes.ts`, tự động chuyển giao hồ sơ sang `dustguard-operations` idempotent khi trạng thái là `'forwarded'`.
+  - **Kiểm thử**: Cả 3 build (`apps/server`, `apps/web`, `dustguard-operations`) PASS 100% với 0 lỗi; test suites `operations-api.test.js` PASS 32/32 tests, test domain invariants PASS 100%.
+
+### 1. [2026-09-05] `landing-problem-story-refinement`: Tinh Chỉnh Sắc Nét Section Thực Trạng ("Phản ánh không khó. Theo dõi đến kết quả mới khó.")
+- **Mục tiêu**: Xóa bỏ triệt để hiện tượng faded/disabled look ở các thẻ vấn đề bên trái; nâng cấp độ tương phản văn bản; khẳng định màu đỏ thương hiệu `#C72A20` ở dòng 2 tiêu đề; nâng cấp quy trình đối chiếu bên phải đạt chuẩn pitch-deck/competition.
+- **Phạm vi hoàn tất**:
+  - **Khắc phục Root Cause Faded/Disabled Look**:
+    - Xác định nguyên nhân: Thẻ vấn đề trước đó thiếu background riêng, text phụ màu xám nhạt (`#475569` / `#6B5F58`) chìm vào nền kem; animation GSAP chạy chậm dở dang gây hiểu lầm là thẻ bị disabled; tiêu đề dòng 2 bị áp màu xám slate (`#64748B`).
+    - Khắc phục: Card opacity cố định `1`; áp dụng nền trắng ngà ấm `rgba(255, 255, 255, 0.90)`, viền `rgba(145, 110, 90, 0.20)`, shadow ấm mềm mại `0 10px 30px rgba(40,25,15,0.045)`, radius 22px. Card 02 có subtle tint ấm `#FFF9F6` với viền `#E8C8C0`.
+    - Circular badge 32px nền trắng, số đỏ `#C72A20` font-mono đậm nét; icon đỏ đậm đặt trong hộp nhỏ tinh tế.
+    - Màu chữ: Tiêu đề near-black `#15171C` (`text-[17.5px]` font-bold), nội dung `#524A43` (`text-[15px]` leading-[1.65]) dễ đọc vượt trội.
+  - **Nâng Cấp Visual Hierarchy & Hai Cột Đối Chiếu**:
+    - Tiêu đề chính: Dòng 1 đen tuyền `#15171C`, dòng 2 ĐỎ DUSTGUARD `#C72A20`, font-black, `tracking-[-0.035em]`, `leading-[1.04]`, `text-wrap: pretty`.
+    - Cột trái ~40% (5 cols) và Cột phải ~60% (7 cols) cân đối; vertical rhythm 18-20px giữa các thẻ.
+    - Box 1 (Truyền thống đứt gãy): 4 bước rõ nét, bước 04 "Mất dấu" nổi bật với nền pale-red `#FEE2E2`, viền đứt đoạn `#EF4444`, icon XCircle đỏ `#DC2626`.
+    - Box 2 (DustGuard khép kín): Viền đỏ `border-[1.5px] border-[#C72A20]/28`, shadow đỏ nhẹ `0 14px 45px rgba(199,42,32,0.07)`, 3 bước đầu với red status dot, bước 04 nghiệm thu xanh mint `#ECFDF5` với Checkmark xanh `#059669`.
+    - System verification state: ShieldCheck xanh lá, badge "Closed-Loop" sắc nét, không bị nhạt nhòa.
+  - **Tối Ưu GSAP & Micro-Interactions**:
+    - Thay thế chuỗi timeline chậm bằng `gsap.fromTo` dứt khoát (<0.55s), tự động `clearProps: 'transform,opacity'` khi hoàn tất.
+    - Animate progress bar đỏ bằng `scaleX: 0 -> 1` và pop checkmark bước 04 `scale: 0.88 -> 1`.
+  - **Đồng Bộ & Đa Màn Hình**:
+    - Đồng bộ mã nguồn hoàn chỉnh cho cả `apps/web/src/components/landing/ProblemStory.tsx` và `app/src/components/landing/ProblemStory.jsx`.
+    - Kiểm tra trực quan thực tế bằng `agent-browser` tại `1440x900`, `1366x768`, `390x844`: 0 overflow, computed card opacity = 1, text không rớt vụn.
+    - Build `@dustguard/web` PASS 100%, test suite `app` PASS 100% (248/248 unit tests + 43/43 UI tests).
+
 ### 1. [2026-09-05] `gsap-hero-v1.0`: Living Evidence Stage & GSAP Case Story Orchestration
 - **Mục tiêu**: Nâng cấp toàn diện Hero Right-Side Visual thành một "Live Case Story" sống động, kể câu chuyện minh chứng khép kín (Phát hiện → Tiếp nhận → Khắc phục → Tái kiểm) bằng GSAP Timeline mượt mà.
 - **Phạm vi hoàn tất**:

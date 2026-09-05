@@ -7,7 +7,7 @@ interface AuthContextType {
   token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<UserDto>;
   register: (data: any) => Promise<void>;
   logout: () => void;
   devSwitchRole: (role: UserRole) => Promise<void>;
@@ -44,7 +44,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     fetchCurrentUser();
   }, [token]);
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string): Promise<UserDto> => {
     const res = await apiRequest<{ token: string; user: UserDto }>('/auth/login', {
       method: 'POST',
       body: JSON.stringify({ email, password })
@@ -52,6 +52,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem('dustguard_token', res.token);
     setToken(res.token);
     setUser(res.user);
+    return res.user;
   };
 
   const register = async (data: any) => {

@@ -7,7 +7,95 @@
 
 ## 📅 Bài học từ Dự án: DustGuard Operations (2026-09-05)
 
-### 1. Kỹ Thuật Dàn Dựng GSAP Cho Civic-Tech Storytelling (Living Case Story)
+### 0. Final Production Hardening: Khép Vòng Chu Trình 2-Side & Thiết Lập Chốt Chặn Nghiệp Vụ Thực Tế
+- **Vấn đề**:
+  - Khi bóc tách API response, sự không thống nhất giữa việc trả về mảng trực tiếp `res.data = [...]` và việc frontend kỳ vọng đối tượng bọc `res.cases = [...]` dễ dẫn đến việc màn hình hiển thị rỗng (0 items) dù cơ sở dữ liệu có đầy đủ dữ liệu (Bug Kanban rỗng tại `CaseCoordinationPage.tsx`).
+  - Sử dụng chuỗi giả lập `Math.random()` để fallback khi tính toán mã băm SHA-256 (tại `crypto.ts`) gây tổn hại nghiêm trọng đến tính liêm chính của bằng chứng số (evidence integrity).
+  - Nguy cơ đóng khống hồ sơ trên giấy (Paper compliance): Nếu không có chốt chặn nghiệp vụ (Business Invariant Gate), cán bộ có thể đóng vụ việc trước khi có kết luận thẩm tra pháp lý hoặc trước khi nhà thầu thực sự khắc phục vi phạm.
+- **Giải pháp chuẩn hóa**:
+  1. **Nguyên tắc "Be Conservative in What You Send, Liberal in What You Accept"**:
+     - Frontend phải luôn xử lý cả 2 trường hợp: `Array.isArray(res) ? res : res.cases || []`.
+     - Backend schema validation phải chấp nhận cả tên trường cũ và mới (`newStatus` và `status`) để ngăn ngừa lỗi gãy luồng đột ngột.
+  2. **Liêm chính Mật mã Tuyệt đối (Zero Pseudo-Randomness)**:
+     - Triển khai thuật toán băm SHA-256 thuần (`sha256Pure`) chuẩn FIPS 180-4 để đảm bảo dù Web Crypto API có bị trình duyệt chặn, file tải lên vẫn luôn được tính mã băm từ mảng byte thật 100%.
+  3. **Chốt Chặn Nghiệp Vụ Bắt Buộc (Business Invariant Gates)**:
+     - Tại `cases.router.ts`: Chặn đứng hành động đóng hồ sơ nếu chưa có kết luận thẩm tra pháp lý chính thức (`status = 'REVIEWED'`) từ chuyên viên pháp chế và toàn bộ yêu cầu khắc phục chưa được nghiệm thu (`status = 'VERIFIED'`).
+
+### 1. Migration 02: Cổng Đăng Nhập 2 Phía & Bảo Toàn Deep-Link Theo Năng Lực (Capabilities)
+- **Vấn đề**:
+  - Giao diện đăng nhập cũ hiển thị 4-5 nút chọn role cố định (`citizen`, `member`, `moderator`, `admin`), biến sản phẩm thành một tập hợp các app rời rạc thay vì một nền tảng thống nhất.
+  - Khi người dùng truy cập một liên kết được chia sẻ (deep-link như `/reports/detail/123` hoặc `/tasks`), hệ thống cũ hoặc hiển thị trang Forbidden 403 ngay lập tức khi chưa đăng nhập, hoặc sau khi đăng nhập bị ép buộc quay về trang chủ dashboard mặc định, làm mất trắng ngữ cảnh công việc của người dùng.
+  - Tư duy tạo một CSDL Auth dùng chung thứ ba (SSO giả mạo) thường bị cám dỗ nhưng sẽ làm vỡ ranh giới kiến trúc độc lập giữa phân hệ Civic công cộng và phân hệ Pháp lý nghiệp vụ nội bộ.
+- **Giải pháp chuẩn hóa**:
+  1. **Gateway Thông Minh (Product Gateway Pattern)**:
+     - Trang `/login` chỉ đóng vai trò phân luồng thị giác giữa 2 không gian chính: Phía Cộng đồng (Side A) và Đơn vị Xử lý (Side B).
+     - Không can thiệp hay gộp CSDL Auth: Side A tiếp tục sử dụng JWT từ `apps/server`, Side B sử dụng JWT/Session từ `dustguard-operations`.
+  2. **Bảo Toàn Deep-Link & Phân Giải Năng Lực Chuẩn**:
+     - Trong `ProtectedRoute`, phân biệt dứt khoát mã HTTP: Nếu chưa đăng nhập (401), điều hướng về `/login` kèm `state: { from: location }`. Chỉ hiển thị `<ForbiddenPage>` khi người dùng ĐÃ đăng nhập nhưng THIẾU năng lực thực thi.
+     - Sau khi đăng nhập thành công, kiểm tra `requestedPath`: Nếu có URL deep-link hợp lệ, lập tức trả người dùng về đúng trang đó. Nếu không có, hàm `resolveCommunityHome()` hoặc `resolveOperationsHome()` sẽ phân giải trang đích tối ưu theo gói năng lực cao nhất mà tài khoản sở hữu.
+  3. **Xóa Sổ Cổng Role-Picker**:
+     - Nút đăng nhập nhanh (Quick Login) chỉ phục vụ môi trường kiểm thử/demo và được tổ chức theo cấp độ năng lực thực tế, không dùng để định nghĩa kiến trúc sản phẩm.
+
+### 1. Không Đồng Nhất "Side" Với "Role" & Chuẩn Hóa Phân Quyền Theo Năng Lực (Capabilities)
+- **Vấn đề**:
+  - Codebase cũ bị nhầm lẫn nghiêm trọng giữa **Phía trải nghiệm sản phẩm (Product Side)** và **Vai trò người dùng (User Role)**, dẫn đến việc tạo ra 5-6 web apps riêng rẽ (`/citizen`, `/staff`, `/contractor`, `/executive`, `/community`, `/admin`).
+  - Phân quyền kiểu cũ phụ thuộc vào kiểm tra chuỗi URL `isRoleAllowedForPath(role, path)` hoặc `if (user.role === 'staff')` rải rác khắp nơi, làm xuất hiện các cổng portal thừa thãi (như `/contractor/*` trong khi nhà thầu chỉ cần liên kết Quick-Token) và các route trùng lặp nặng nề (`/staff/cases` song song với `/cases`).
+  - Dữ liệu bị phân mảnh: Một bên gọi là `complaints`, một bên gọi là `reports`; cán bộ đi kiểm tra thì gọi là `task` gây nhầm với nhiệm vụ của thanh niên tình nguyện.
+- **Giải pháp chuẩn hóa**:
+  1. **Tách bạch rõ rệt giữa Product Side và Capabilities**:
+     - Hệ thống chỉ có **2 Phía (2 Sides)**: **Side A (Community)** và **Side B (Professional)**.
+     - Role không phải là ứng dụng độc lập, mà là một **gói Năng lực (Bundle of Capabilities)**. Ví dụ: `staff` sở hữu `case:triage`, `inspection:create`, `action:create`...
+     - Cấm tuyệt đối kiểm tra `role` cứng trên giao diện; mọi component/nút bấm đều kiểm tra qua `can('action:name')`.
+  2. **Giao thức Bàn giao Có trách nhiệm (Institutional Handoff)**:
+     - Không cố gộp 2 CSDL thành một monolith cồng kềnh; tách biệt `dustguard-community.db` (Public/Civic) và `dustguard-operations.db` (Nội bộ/Pháp lý).
+     - Cầu nối duy nhất là endpoint webhook idempotent: `POST /api/integrations/community/cases` kèm mã băm SHA-256 payload hash để chống trùng lặp.
+  3. **Phân định rõ ràng các cặp thực thể dễ nhầm lẫn**:
+     - `Report != Case`: Phản ánh ban đầu của cá nhân người dân khác với Hồ sơ vụ việc được gom nhóm.
+     - `Observation != Inspection`: Quan sát cảm quan của cộng đồng khác với Thanh tra công vụ theo 10 tiêu chuẩn QCVN 18/BXD của cán bộ.
+
+### 1. Tinh Chỉnh Sắc Nét Section Thực Trạng ("Phản ánh không khó. Theo dõi đến kết quả mới khó.") (2026-09-05)
+- **Vấn đề**:
+  - Thẻ vấn đề bên trái trông bị mờ/disabled, văn bản chìm vào nền kem do thiếu container background riêng biệt, text phụ có độ tương phản quá thấp (`#475569`).
+  - Tiêu đề dòng 2 bị áp màu xám slate (`#64748B`), làm yếu đi thông điệp cốt lõi và nhận diện thương hiệu màu đỏ DustGuard.
+  - Animation GSAP entrance ban đầu nối tiếp qua timeline quá chậm (>1.2s), khiến trong quá trình cuộn nhanh, thẻ cuối cùng bị "kẹt" ở trạng thái tweening dở dang với opacity thấp, tạo cảm giác thẻ bị vô hiệu hóa có chủ ý.
+- **Giải pháp chuẩn hóa**:
+  1. **Tuyệt đối không dùng Opacity tổng thể để tạo phân cấp thị giác**:
+     - Mọi card container duy trì `opacity: 1`.
+     - Phân cấp được tạo bởi màu nền ngà ấm (`rgba(255, 255, 255, 0.90)` cho card 01 & 03; `#FFF9F6` cho card 02), viền nhẹ `rgba(145, 110, 90, 0.20)` và shadow ấm `0 10px 30px rgba(40,25,15,0.045)`.
+     - Số hiệu đặt trong circular badge 32px nền trắng, số đỏ `#C72A20` font-mono đậm; icon đỏ trong hộp bo góc tinh tế.
+     - Tiêu đề near-black `#15171C`, văn bản `#524A43` đảm bảo độ tương phản cao, đọc rõ ràng dưới mọi điều kiện ánh sáng.
+  2. **Đồng bộ màu sắc thương hiệu Civic Red**:
+     - Dòng 2 tiêu đề: `text-[#C72A20]` font-black, chặt chẽ với `tracking-[-0.035em]` và `leading-[1.04]`.
+     - Màu xanh lá chỉ dùng duy nhất cho phản hồi thành công/nghiệm thu (bước 04 và thanh xác thực cuối), không biến thành màu chủ đạo thứ hai.
+  3. **Kỷ luật GSAP Entrance Animation**:
+     - Sử dụng `gsap.fromTo` với thời gian ngắn gọn (<0.45s) và stagger nhẹ (0.06s).
+     - Luôn đính kèm `clearProps: 'transform,opacity'` trong callback hoàn tất tween để trả lại CSS thuần túy cho trình duyệt, chống hiện tượng inline opacity làm mờ phần tử vĩnh viễn.
+
+### 1. Red-Led Civic Palette & High-Impact GSAP Live Case Engine (2026-09-05)
+- **Vấn đề**:
+  - Landing page bị cảm giác "dull gray / blue-gray" lạnh lẽo, corporate và generic do dùng quá nhiều màu xám slate (`#64748B`, `#475569`) ở tiêu đề dòng 2 ("Theo dõi đến kết quả mới khó"), làm suy yếu năng lượng của thương hiệu.
+  - Animation GSAP ban đầu chỉ là fade-in/slide-up thông thường, thẻ hồ sơ nhìn như một card tĩnh được gán animation sau khi xong layout, thiếu concept "Live Case Engine" và không tạo được khoảnh khắc "wow".
+  - Đường line nối và các phản ứng thị giác giữa các bước còn rời rạc.
+- **Giải pháp chuẩn hóa**:
+  1. **Hệ màu Red-Led Civic Palette ấm & Tương phản cao**:
+     - Warm Background: `#FBF7F2`, Surface: `#FFFCF8`, Borders: `#E7DED6`.
+     - Deep Ink Text: `#111827`, Warm Muted Text: `#6B5F58` và `#7A6B62` (loại bỏ hoàn toàn cold slate gray).
+     - Red Accent độc tôn: `#B42318` (chính), `#991B1B` (hover/viền đậm), `#FDE8E6` (nền badge nhẹ). Tỷ lệ vàng: **75% warm neutral, 20% deep ink, 5% red accent**.
+     - Xóa bỏ hoàn toàn chữ xám lớn làm emphasis ở tiêu đề dòng 2 (Hero & Section 2 chuyển sang màu đỏ DustGuard `#B42318`). Xanh lá chỉ dùng duy nhất cho trạng thái verified/thành công.
+  2. **Live Case Engine — Kịch bản chuyển động có hồn (Choreography ~4.8s)**:
+     - 0.20s: Điểm sự cố đô thị (`● GPS 20.9852° N`) xuất hiện kèm 1 vòng pulse duy nhất (`scale: 0.6 -> 2.2, opacity: 0.35 -> 0`).
+     - 0.55s: *The Red Signal Trace* — Đường vẽ SVG đỏ mảnh thanh thoát uốn cong từ điểm sự cố nối trực tiếp vào đầu hồ sơ case.
+     - 0.90s: Vỏ thẻ hồ sơ trồi lên (`y: 26 -> 0`, `opacity: 0 -> 1`), mã `DG-2026-OP-014` khóa cứng vào CSDL (tracking expansion).
+     - 1.55s - 2.35s: Các bước 01 Phát hiện $\to$ 02 Tiếp nhận (chip "Đã chuyển xử lý" trượt vào, header border nháy đỏ nhẹ) $\to$ 03 Khắc phục (lớp khói bụi giảm độ đục, marker can thiệp hiện lên).
+     - 2.80s: Màn wipe Before $\to$ After bằng clip-path chất lượng cao (1.1s) với nền mặt đường sạch trung tính, không biến thành hộp xanh nhân tạo.
+     - 3.80s - 4.55s: 04 Tái kiểm hoàn tất, viền Card chuyển mượt sang xanh verified `#A7F3D0`, badge bung nở với `back.out(1.4)` và 1 vòng ripple xanh, nhãn chân thẻ: *"Đã hoàn tất bước tái kiểm"*.
+  3. **Section 2 Broken Flow vs Closed Loop Trace**:
+     - Quy trình cũ: Ảnh $\to$ Tin nhắn $\to$ Excel $\to$ đường SVG vẽ dừng lại để lộ khoảng đứt gãy trước dấu `? (Mất dấu)`.
+     - Quy trình DustGuard: Đường SVG đỏ liền mạch nối trọn vẹn 3 chặng Tọa độ $\to$ Phân công $\to$ Tái kiểm.
+  4. **Desktop Parallax Siêu Tốc Bằng `gsap.quickTo()`**:
+     - Không setState trong sự kiện mousemove; dùng `gsap.quickTo()` cho tọa độ X/Y với độ dịch tối đa 2px (card), 5px (lưới bản đồ) và 4px (pin tín hiệu), giữ chuẩn 60fps mượt mà.
+
+### 2. Kỹ Thuật Dàn Dựng GSAP Cho Civic-Tech Storytelling (Living Case Story)
 - **Vấn đề**:
   - Các khối minh chứng dạng hai hộp tĩnh màu vàng (Trước) và xanh (Sau) dễ làm mất đi tính liên tục của quy trình; người dùng phải tự đọc chữ và so sánh thủ công trong đầu.
   - Animation CSS đơn thuần khó đồng bộ mượt mà giữa tiến trình dòng thời gian (4 bước) và chuyển động quét hiện trường (wipe reveal).

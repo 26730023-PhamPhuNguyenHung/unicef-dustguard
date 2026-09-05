@@ -353,10 +353,16 @@ export const LegalWorkspacePage: React.FC = () => {
     return f.semantic_type === (factFilter as any);
   });
 
-  const confidencePercent = Math.round((analysis?.confidence || 0.44) * 100);
-
   return (
     <div className="w-full min-w-0 space-y-4 pb-16">
+      {/* Disclaimer Quy chế Pháp lý & Đối soát Dữ kiện */}
+      <div className="bg-amber-50/80 border border-amber-200/90 rounded-lg p-3 text-xs text-amber-900 flex items-start gap-2.5">
+        <Info className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+        <div>
+          <span className="font-bold">Không gian Thẩm tra & Đối soát Quy chuẩn:</span> Dữ liệu FTS5 và ma trận dữ kiện hỗ trợ cán bộ trong quá trình chuẩn bị hồ sơ thanh tra. Kết quả mang tính chất tham khảo chuyên môn, không thay thế quyết định xử lý vi phạm chính thức tại thực địa.
+        </div>
+      </div>
+
       {/* =================================================================== */}
       {/* 1. LEGAL HEADER (Clean, Compact, Dominant Red CTA & Triggers)       */}
       {/* =================================================================== */}
@@ -1194,7 +1200,7 @@ export const LegalWorkspacePage: React.FC = () => {
       {/* =================================================================== */}
       <BottomActionBar
         conclusionLevel={analysis?.conclusion_level || 'PRELIMINARY'}
-        confidencePercent={analysis?.completeness_score ?? confidencePercent}
+        confidencePercent={analysis?.completeness_score ? Math.round(analysis.completeness_score * 100) : 0}
         secondaryLabel="Yêu cầu xác minh"
         onSecondaryAction={() => {
           setActionModalMode('CREATE_VERIFICATION_TASK');

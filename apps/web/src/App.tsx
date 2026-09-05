@@ -220,8 +220,23 @@ export const App: React.FC = () => {
                     }
                   />
 
-                  {/* 403 Forbidden Route */}
-                  <Route path="/403" element={<ForbiddenPage />} />
+                  {/* Legacy Route Redirect Layer (Chuyển tiếp chuẩn tắc sang 2-Side Model) */}
+                  <Route path="/citizen/reports" element={<Navigate to="/reports" replace />} />
+                  <Route path="/citizen/report/new" element={<Navigate to="/reports/new" replace />} />
+                  <Route path="/citizen/report" element={<Navigate to="/reports/new" replace />} />
+                  <Route path="/citizen/track" element={<Navigate to="/reports" replace />} />
+                  <Route path="/citizen/map" element={<Navigate to="/map" replace />} />
+                  <Route path="/citizen/profile" element={<Navigate to="/profile" replace />} />
+                  <Route path="/citizen/*" element={<Navigate to="/dashboard" replace />} />
+
+                  <Route path="/community/tasks" element={<Navigate to="/tasks" replace />} />
+                  <Route path="/community/contributions" element={<Navigate to="/contributions" replace />} />
+                  <Route path="/community/clubs" element={<Navigate to="/communities" replace />} />
+                  <Route path="/community/*" element={<Navigate to="/communities" replace />} />
+
+                  <Route path="/staff/*" element={<Navigate to="/dashboard" replace />} />
+                  <Route path="/contractor/*" element={<Navigate to="/dashboard" replace />} />
+                  <Route path="/executive/*" element={<Navigate to="/dashboard" replace />} />
 
                   {/* Fallback */}
                   <Route path="*" element={<Navigate to="/dashboard" replace />} />

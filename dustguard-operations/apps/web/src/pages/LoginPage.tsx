@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth, DEV_ACCOUNTS } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { Button } from '../components/common/Button';
-import { Shield, Lock, User, CheckCircle2, AlertTriangle, Sparkles } from 'lucide-react';
+import { Shield, Lock, User, CheckCircle2, AlertTriangle, Sparkles, ArrowLeft } from 'lucide-react';
 import { Role } from '@dustguard-operations/shared';
 import { api } from '../api/client';
 
@@ -16,6 +16,9 @@ export const LoginPage: React.FC = () => {
   const { login } = useAuth();
   const { success, error } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const requestedPath = (location.state as any)?.from?.pathname || null;
 
   useEffect(() => {
     api.auth
@@ -40,9 +43,25 @@ export const LoginPage: React.FC = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await login(username, password);
+      const loggedInUser = await login(username, password);
       success('Đăng nhập thành công', `Chào mừng quay trở lại hệ thống`);
-      navigate('/dashboard');
+
+      if (requestedPath && requestedPath !== '/login' && requestedPath !== '/') {
+        navigate(requestedPath, { replace: true });
+        return;
+      }
+
+      // Phân giải theo Capability
+      const role = loggedInUser?.role;
+      if (role === 'supervisor') {
+        navigate('/supervisor/workload');
+      } else if (role === 'legal_reviewer') {
+        navigate('/cases');
+      } else if (role === 'admin') {
+        navigate('/admin/users');
+      } else {
+        navigate('/dashboard');
+      }
     } catch (err: any) {
       error('Đăng nhập thất bại', err.detail || 'Vui lòng kiểm tra lại thông tin');
     } finally {

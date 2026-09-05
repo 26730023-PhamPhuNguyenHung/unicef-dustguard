@@ -1,4 +1,5 @@
 import React from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.js';
 import { usePermission } from '../../utils/permissions.js';
 import { Permission } from '@dustguard/shared';
@@ -18,6 +19,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 }) => {
   const { user, isLoading } = useAuth();
   const { can } = usePermission();
+  const location = useLocation();
 
   if (isLoading) {
     return (
@@ -27,7 +29,12 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     );
   }
 
-  // 1. Kiểm tra Permission nếu có
+  // 1. Chưa đăng nhập (401 Unauthorized) -> Chuyển hướng về /login và lưu lại trang đang muốn vào
+  if (!user) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  // 2. Đã đăng nhập nhưng thiếu Permission (403 Forbidden)
   if (permission && !can(permission)) {
     return <ForbiddenPage requiredPermission={permission} />;
   }

@@ -50,8 +50,9 @@ export const Hero: React.FC<HeroProps> = ({ lang }) => {
                 : 'Every citizen observation becomes a structured case with unique ID, verifiable evidence trail, and tracked through full remediation.'}
             </p>
 
-            {/* CTAS */}
+            {/* CTAS: 2 HƯỚNG SỬ DỤNG CHÍNH */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
+              {/* Phía Cộng đồng (Primary) */}
               <Link
                 to="/reports/new"
                 className="h-12 px-6 rounded-xl bg-[#B42318] hover:bg-[#91180D] text-white font-bold text-[15px] shadow-sm flex items-center justify-center gap-2 transition-all active:scale-[0.99] w-full sm:w-auto"
@@ -60,12 +61,23 @@ export const Hero: React.FC<HeroProps> = ({ lang }) => {
                 <span>{lang === 'vi' ? 'Gửi phản ánh' : 'Report dust'}</span>
               </Link>
 
+              {/* Phía Chuyên trách (Secondary) */}
+              <a
+                href="http://localhost:3002"
+                target="_blank"
+                rel="noreferrer"
+                className="h-12 px-5 rounded-xl bg-white hover:bg-[#F0F9FF] text-[#0369A1] font-bold text-[14px] flex items-center justify-center gap-1.5 transition-colors w-full sm:w-auto border border-[#BAE6FD]"
+              >
+                <span>{lang === 'vi' ? 'Dành cho đơn vị xử lý' : 'For authorities'}</span>
+                <ArrowRight className="w-4 h-4 text-[#0369A1]" />
+              </a>
+
+              {/* Xem hồ sơ mẫu */}
               <a
                 href="#case-preview"
-                className="h-12 px-5 rounded-xl bg-transparent hover:bg-[#F2ECE4] text-[#0F172A] font-semibold text-[15px] flex items-center justify-center gap-1.5 transition-colors w-full sm:w-auto border border-[#E2DCD5] sm:border-transparent"
+                className="h-12 px-4 rounded-xl bg-transparent hover:bg-[#F2ECE4] text-[#64748B] hover:text-[#0F172A] font-semibold text-[14px] flex items-center justify-center gap-1 transition-colors w-full sm:w-auto"
               >
-                <span>{lang === 'vi' ? 'Xem một hồ sơ thực tế' : 'View a live case story'}</span>
-                <ArrowRight className="w-4 h-4 text-[#B42318]" />
+                <span>{lang === 'vi' ? 'Hồ sơ mẫu' : 'Live case'}</span>
               </a>
             </div>
 
