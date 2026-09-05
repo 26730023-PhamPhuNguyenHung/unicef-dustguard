@@ -7,7 +7,27 @@
 
 ## 📅 Các Mốc Phát Triển Chính (Milestones)
 
-### 1. [2026-09-05] `landing-v2.0`: Redesign Landing Page — Visual Quality First & Civic Editorial Storytelling
+### 1. [2026-09-05] `gsap-hero-v1.0`: Living Evidence Stage & GSAP Case Story Orchestration
+- **Mục tiêu**: Nâng cấp toàn diện Hero Right-Side Visual thành một "Live Case Story" sống động, kể câu chuyện minh chứng khép kín (Phát hiện → Tiếp nhận → Khắc phục → Tái kiểm) bằng GSAP Timeline mượt mà.
+- **Phạm vi hoàn tất**:
+  - **GSAP Timeline Orchestration (~3.8s)**:
+    - Sử dụng `gsap.timeline()`, `gsap.context()` trong React và cleanup bằng `ctx.revert()`.
+    - Tôn trọng `prefers-reduced-motion`: tự động hiển thị ngay trạng thái cuối (final verified) nếu người dùng bật giảm chuyển động.
+    - Animation chuỗi nhịp nhàng: Card xuất hiện → 4 Nodes Timeline lần lượt sáng theo tiến trình → After scene thực hiện wipe reveal (`clipPath: inset(0% 0% 0% 0%)`) kèm scanning wipe line phát sáng → Verified status badge nở nhẹ kèm ripple ring.
+  - **Before / After Shared Evidence Frame**:
+    - Gộp chung thành một khung hình lớn chiếm trọn trọng tâm card (radius 18px), loại bỏ 2 hộp màu vàng/xanh rời rạc.
+    - Giảm 40% text vụn, giữ câu chuyện cô đọng: *"Bụi phát sinh khi xe chở đất rời công trình"* (Before) $\rightarrow$ *"Đã bổ sung rửa bánh xe và làm ẩm mặt đường"* (After).
+  - **Manual User Comparison Control**:
+    - Nút bấm `[↺ Xem lúc phát hiện]` $\leftrightarrow$ `[↺ Xem sau xử lý]` cho phép người dùng tự tay chuyển đổi so sánh hai trạng thái bằng GSAP tween tức thời bất cứ lúc nào.
+  - **Subtle Map / Civic Data Background**:
+    - Lớp nền lưới tọa độ contour đô thị (`civic-grid`) trôi nhẹ nhàng 10px trong 20s (`repeat: -1, yoyo: true`), tạo chiều sâu không gian cao cấp.
+  - **Micro-interactions & Mobile Polish**:
+    - Hover nâng nhẹ card `y: -4`, subtle pointer parallax (tối đa $\pm 4$px / 0.3deg) trên desktop.
+    - Tối ưu mobile 390px/375px: chống cắt đôi mã vụ việc `DG-2026-OP-014`, không tràn ngang.
+  - **Nghiệm Thu Khép Kín**:
+    - `npm --prefix apps/web run build`: **PASS 100%**.
+    - `npm --prefix app run test:critical`: **PASS 100%** (93/93 tests).
+    - Đo kiểm trực quan `agent-browser`: After State hoàn tất, Before Manual State trơn tru, mobile 390px hiển thị chuẩn mực.
 - **Mục tiêu**: Redesign toàn diện Landing Page theo tinh thần *"Civic-tech product + Human-centered storytelling + Modern editorial landing page"*. Chuyển dịch triệt để khỏi giao diện dạng Dashboard/Admin sang giao diện truyền thông đẳng cấp đi thi đấu/pitching.
 - **Phạm vi hoàn tất**:
   - **Kiến trúc Editorial & Visual Hierarchy**:

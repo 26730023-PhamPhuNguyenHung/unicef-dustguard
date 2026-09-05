@@ -7,7 +7,26 @@
 
 ## 📅 Bài học từ Dự án: DustGuard Operations (2026-09-05)
 
-### 1. Thiết Kế Landing Page Civic-Tech Đẳng Cấp Đi Thi (Visual Quality First & Editorial Storytelling)
+### 1. Kỹ Thuật Dàn Dựng GSAP Cho Civic-Tech Storytelling (Living Case Story)
+- **Vấn đề**:
+  - Các khối minh chứng dạng hai hộp tĩnh màu vàng (Trước) và xanh (Sau) dễ làm mất đi tính liên tục của quy trình; người dùng phải tự đọc chữ và so sánh thủ công trong đầu.
+  - Animation CSS đơn thuần khó đồng bộ mượt mà giữa tiến trình dòng thời gian (4 bước) và chuyển động quét hiện trường (wipe reveal).
+  - Nguy cơ memory leak hoặc xung đột DOM nếu không dọn dẹp (revert) các tween GSAP khi component React re-render.
+- **Giải pháp chuẩn hóa**:
+  1. **GSAP Context & Cleanup Chặt Chẽ**:
+     - Luôn bọc toàn bộ chuỗi animation trong `const ctx = gsap.context(() => { ... }, containerRef)` và `return () => ctx.revert()` trong `useEffect()`.
+     - Tôn trọng `window.matchMedia('(prefers-reduced-motion: reduce)').matches`: nếu người dùng bật giảm chuyển động, lập tức áp dụng trạng thái hoàn tất bằng `gsap.set()`, tránh chạy tween không mong muốn.
+  2. **Orchestration Timeline & Clip-Path Wipe**:
+     - Gom Before và After vào một khung hình trực quan dùng chung (`Evidence Stage`), After nằm đè lên Before với `clipPath: inset(0% 100% 0% 0%)`.
+     - Đồng bộ thanh tiến trình 4 nodes: `Phát hiện (0.6s) → Tiếp nhận (1.2s) → Khắc phục (1.8s) → Tái kiểm & Wipe (2.4s - 3.3s)`.
+     - Kèm vạch quét phát sáng (`scanLineRef`) trôi dọc theo mép wipe tạo hiệu ứng phân tích trắc địa chân thực.
+  3. **Trao Quyền Chủ Động So Sánh Cho Người Dùng (Manual Comparison)**:
+     - Sau khi animation tự động chạy xong 1 lần duy nhất, kích hoạt nút bấm `[↺ Xem lúc phát hiện]` $\leftrightarrow$ `[↺ Xem sau xử lý]` cho phép người dùng click để wipe qua lại tức thời bằng GSAP tween (`duration: 0.55s, ease: 'power2.inOut'`).
+  4. **Ambient Drift & Bounded Pointer Parallax**:
+     - Lớp nền lưới tọa độ contour đô thị (`civic-grid`) trôi nhẹ nhàng 10px trong 20s (`repeat: -1, yoyo: true`), tạo chiều sâu không gian cao cấp.
+     - Hiệu ứng parallax theo con trỏ chuột desktop khống chế nghiêm ngặt trong giới hạn tối đa $\pm 4$px và xoay $\pm 0.3^\circ$, tránh biến dạng 3D thô thiển.
+
+### 2. Thiết Kế Landing Page Civic-Tech Đẳng Cấp Đi Thi (Visual Quality First & Editorial Storytelling)
 - **Vấn đề**:
   - Landing page ban đầu bị ảnh hưởng bởi tư duy Dashboard/Admin Panel: nhồi nhét quá nhiều border, thẻ card nhỏ, badge, KPI cards vụn (4 thẻ SLA / Bằng chứng / Tín chỉ / Kết quả) làm nghẹt thở first viewport.
   - Header quá dài với nhiều menu ngang cồng kềnh và border pill bao quanh.
