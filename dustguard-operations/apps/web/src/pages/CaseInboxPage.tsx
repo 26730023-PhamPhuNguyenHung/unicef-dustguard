@@ -17,8 +17,9 @@ import {
   FileCheck2,
   RefreshCw,
   RotateCcw,
+  Building2,
 } from 'lucide-react';
-import { Case } from '@dustguard-operations/shared';
+import { Case, Project } from '@dustguard-operations/shared';
 
 const TABS = [
   { id: 'all', label: 'Tất cả' },
@@ -45,6 +46,7 @@ export const CaseInboxPage: React.FC = () => {
   const [selectedDistrict, setSelectedDistrict] = useState(searchParams.get('district') || '');
   const [selectedFlag, setSelectedFlag] = useState(searchParams.get('flag') || '');
   const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [projects, setProjects] = useState<Project[]>([]);
   const { success, error } = useToast();
 
   // Form for manual new case creation
@@ -58,12 +60,17 @@ export const CaseInboxPage: React.FC = () => {
     source: 'MANUAL',
     contractor_name: '',
     priority: 'NORMAL',
+    project_id: '',
   });
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     loadCases();
   }, [searchParams]);
+
+  useEffect(() => {
+    api.projects.list().then(res => setProjects(res.projects || [])).catch(() => {});
+  }, []);
 
   const loadCases = async () => {
     try {
@@ -262,6 +269,32 @@ export const CaseInboxPage: React.FC = () => {
         <div className="civic-card p-12 text-center text-slate-400 animate-pulse text-sm">
           Đang tải danh sách hồ sơ vụ việc...
         </div>
+      ) : total === 0 && !searchTerm && !selectedFlag && currentTab === 'all' ? (
+        <div className="civic-card p-12 text-center max-w-md mx-auto space-y-3">
+          <div className="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto">
+            <AlertCircle className="w-6 h-6 text-dustguard-red" />
+          </div>
+          <h3 className="font-bold text-base text-slate-900">Chưa có hồ sơ nào</h3>
+          <p className="text-xs text-slate-500 leading-relaxed">
+            Hệ thống vận hành bằng dữ liệu thực tế và chưa ghi nhận vụ việc môi trường nào. Bắt đầu bằng cách tạo hồ sơ vụ việc đầu tiên hoặc thêm công trình giám sát.
+          </p>
+          <div className="pt-2 flex flex-wrap items-center justify-center gap-2">
+            <Button
+              variant="primary"
+              size="sm"
+              icon={<Plus className="w-3.5 h-3.5" />}
+              onClick={() => setCreateModalOpen(true)}
+              className="font-bold shadow-xs"
+            >
+              Tạo hồ sơ đầu tiên
+            </Button>
+            <Link to="/projects">
+              <Button variant="outline" size="sm" icon={<Building2 className="w-3.5 h-3.5" />}>
+                Thêm công trình
+              </Button>
+            </Link>
+          </div>
+        </div>
       ) : cases.length === 0 ? (
         <div className="civic-card p-12 text-center text-slate-500">
           <p className="text-base font-semibold">Không tìm thấy vụ việc phù hợp</p>
@@ -343,6 +376,51 @@ export const CaseInboxPage: React.FC = () => {
         maxWidth="lg"
       >
         <form onSubmit={handleCreateCase} className="space-y-4 text-xs sm:text-sm">
+          {/* Liên kết công trình / dự án đã đăng ký */}
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <label className="block font-semibold text-slate-700">
+                Công trình / Dự án liên quan
+              </label>
+              <Link
+                to="/projects"
+                className="text-xs text-dustguard-red hover:underline flex items-center gap-1 font-medium"
+                onClick={() => setCreateModalOpen(false)}
+              >
+                <Building2 className="w-3.5 h-3.5" />
+                <span>+ Thêm công trình mới</span>
+              </Link>
+            </div>
+            <select
+              value={newCaseForm.project_id}
+              onChange={e => {
+                const pId = e.target.value;
+                const p = projects.find(proj => proj.id === pId);
+                if (p) {
+                  setNewCaseForm({
+                    ...newCaseForm,
+                    project_id: p.id,
+                    location_text: p.address,
+                    district: p.district,
+                    contractor_name: p.contractor_name || newCaseForm.contractor_name,
+                    latitude: p.latitude || newCaseForm.latitude,
+                    longitude: p.longitude || newCaseForm.longitude,
+                  });
+                } else {
+                  setNewCaseForm({ ...newCaseForm, project_id: '' });
+                }
+              }}
+              className="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-dustguard-red bg-white"
+            >
+              <option value="">-- Chọn công trình đã đăng ký (hoặc nhập tự do bên dưới) --</option>
+              {projects.map(p => (
+                <option key={p.id} value={p.id}>
+                  {p.name} ({p.address}, {p.district})
+                </option>
+              ))}
+            </select>
+          </div>
+
           <div>
             <label className="block font-semibold text-slate-700 mb-1">
               Tiêu đề vụ việc <span className="text-red-500">*</span>

@@ -54,19 +54,21 @@ export const DecisionWorkspaceDrawer: React.FC<DecisionWorkspaceDrawerProps> = (
   useEffect(() => {
     if (isOpen) {
       // Initialize default decision and draft reasoning based on evidence completeness
+      const entityName = c.contractor_name || c.title || 'công trình';
       if (missingFacts.length > 0) {
         setSelectedDecision('REQUEST_MORE_VERIFICATION');
+        const missingLabels = missingFacts.slice(0, 2).map((m: any) => m.fact || m).join(', ');
         setReason(
-          `Hồ sơ ghi nhận ${claimFacts.length} phản ánh phát tán bụi và ${verifiedEvidence.length} ảnh minh chứng, nhưng còn thiếu ảnh kiểm tra trạm rửa bánh xe tại cổng ra vào theo Điều 15 NĐ 45/2022/NĐ-CP. Yêu cầu đoàn kiểm tra xác minh thực địa trước khi ban hành kết luận xử lý.`
+          `Hồ sơ ghi nhận ${claimFacts.length} phản ánh và ${verifiedEvidence.length} ảnh minh chứng tại ${entityName}, nhưng còn thiếu các dữ kiện: ${missingLabels || 'xác minh thực địa'}. Yêu cầu đoàn kiểm tra xác minh hiện trường trước khi ban hành kết luận xử lý.`
         );
       } else {
         setSelectedDecision('ACCEPT_ASSESSMENT');
         setReason(
-          `Đã có đầy đủ căn cứ và bằng chứng đối chiếu đạt chuẩn quy định tại Khoản 1 Điều 15 Nghị định 45/2022/NĐ-CP. Thống nhất ban hành yêu cầu nhà thầu triển khai biện pháp che chắn và vận hành trạm rửa xe trong 48h.`
+          `Đã có đầy đủ căn cứ và bằng chứng đối chiếu đối với ${entityName}. Thống nhất phê duyệt hồ sơ và ban hành yêu cầu đơn vị thi công tuân thủ quy chuẩn kiểm soát bụi trong 48h.`
         );
       }
     }
-  }, [isOpen, analysis]);
+  }, [isOpen, analysis, caseData]);
 
   if (!isOpen) return null;
 
@@ -152,34 +154,74 @@ export const DecisionWorkspaceDrawer: React.FC<DecisionWorkspaceDrawerProps> = (
               <span className="w-5 h-5 rounded-full bg-slate-800 text-white flex items-center justify-center text-[10px] font-bold">3</span>
               CHỨNG CỨ ĐÃ ĐỐI CHIẾU:
             </span>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-              <div className="p-2.5 bg-white rounded-lg border border-slate-200 flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span className="font-medium text-slate-800">
-                  ✓ {verifiedEvidence.length || 2} ảnh hiện trường đối soát SHA-256
-                </span>
-              </div>
+            <div className="space-y-1.5 text-xs">
+              {/* Minh chứng ảnh */}
+              {verifiedEvidence.length > 0 ? (
+                <div className="p-2.5 bg-white rounded-lg border border-slate-200 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <span className="font-semibold text-slate-800">
+                      {verifiedEvidence.length} tệp ảnh minh chứng toàn vẹn SHA-256
+                    </span>
+                  </div>
+                  <span className="text-emerald-700 text-[11px] font-bold">ĐÃ ĐỐI CHỨNG</span>
+                </div>
+              ) : (
+                <div className="p-2.5 bg-white rounded-lg border border-amber-200 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
+                    <span className="font-medium text-amber-900">
+                      Chưa có tệp ảnh minh chứng thực địa (cần bổ sung)
+                    </span>
+                  </div>
+                  <span className="text-amber-700 text-[11px] font-bold">THIẾU</span>
+                </div>
+              )}
 
-              <div className="p-2.5 bg-white rounded-lg border border-slate-200 flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span className="font-medium text-slate-800">
-                  ✓ Chuỗi số liệu quan trắc viễn thám IoT
-                </span>
-              </div>
+              {/* Viễn thám IoT */}
+              {telemetryFacts.length > 0 ? (
+                <div className="p-2.5 bg-white rounded-lg border border-slate-200 flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span className="font-medium text-slate-800">
+                    ✓ Có {telemetryFacts.length} chuỗi số liệu quan trắc viễn thám IoT
+                  </span>
+                </div>
+              ) : (
+                <div className="p-2.5 bg-slate-50 rounded-lg border border-slate-200 flex items-center gap-2 text-slate-500">
+                  <span className="text-slate-400">○</span>
+                  <span>Chưa liên kết trạm cảm biến viễn thám IoT</span>
+                </div>
+              )}
 
-              <div className="p-2.5 bg-white rounded-lg border border-slate-200 flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span className="font-medium text-slate-800">
-                  ✓ Hồ sơ đăng ký bảo vệ môi trường công trình
-                </span>
-              </div>
+              {/* Hồ sơ công trình */}
+              {c.contractor_name || c.title ? (
+                <div className="p-2.5 bg-white rounded-lg border border-slate-200 flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span className="font-medium text-slate-800">
+                    ✓ Hồ sơ công trình: {c.contractor_name || c.title}
+                  </span>
+                </div>
+              ) : (
+                <div className="p-2.5 bg-slate-50 rounded-lg border border-slate-200 flex items-center gap-2 text-slate-500">
+                  <span className="text-slate-400">○</span>
+                  <span>Chưa xác định đơn vị thi công</span>
+                </div>
+              )}
 
-              <div className="p-2.5 bg-white rounded-lg border border-amber-200/90 flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
-                <span className="font-medium text-amber-900">
-                  ⚠ {claimFacts.length || 1} phản ánh cộng đồng chưa xác minh
-                </span>
-              </div>
+              {/* Phản ánh cộng đồng */}
+              {claimFacts.length > 0 ? (
+                <div className="p-2.5 bg-white rounded-lg border border-amber-200/90 flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
+                  <span className="font-medium text-amber-900">
+                    ⚠ {claimFacts.length} phản ánh cộng đồng ghi nhận trong hồ sơ
+                  </span>
+                </div>
+              ) : (
+                <div className="p-2.5 bg-slate-50 rounded-lg border border-slate-200 flex items-center gap-2 text-slate-500">
+                  <span className="text-slate-400">○</span>
+                  <span>Chưa có phản ánh từ cộng đồng dân cư</span>
+                </div>
+              )}
             </div>
           </div>
 

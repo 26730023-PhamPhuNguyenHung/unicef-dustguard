@@ -72,8 +72,13 @@ export const DashboardPage: React.FC = () => {
 
         <div className="flex items-center gap-2.5">
           <Link to="/cases">
-            <Button variant="outline" size="sm" icon={<Inbox className="w-4 h-4" />}>
-              Xem Hộp việc
+            <Button variant="primary" size="sm" icon={<Inbox className="w-4 h-4" />}>
+              Tạo vụ việc mới
+            </Button>
+          </Link>
+          <Link to="/projects">
+            <Button variant="outline" size="sm">
+              Công trình
             </Button>
           </Link>
           <Link to="/legal/library">
@@ -83,6 +88,37 @@ export const DashboardPage: React.FC = () => {
           </Link>
         </div>
       </div>
+
+      {/* Zero-Data / Empty Database Operational Banner */}
+      {recentActivities.length === 0 && myQueue.length === 0 && metrics.new_cases === 0 && (
+        <div className="p-4 sm:p-5 bg-amber-50/70 rounded-xl border border-amber-300 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 bg-amber-100 text-amber-800 rounded-lg shrink-0">
+              <AlertTriangle className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="font-bold text-slate-900 text-sm">
+                Cơ sở dữ liệu vận hành sẵn sàng (Zero-Seed Ready)
+              </h3>
+              <p className="text-xs text-slate-600 mt-0.5">
+                Chưa có hồ sơ vụ việc nào. Mọi chỉ số KPI phản ánh trung thực trạng thái 0 từ CSDL D1. Hãy tạo hồ sơ hoặc đăng ký công trình đầu tiên.
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <Link to="/cases">
+              <Button variant="primary" size="sm" icon={<Inbox className="w-4 h-4" />}>
+                Tạo hồ sơ đầu tiên
+              </Button>
+            </Link>
+            <Link to="/projects">
+              <Button variant="outline" size="sm">
+                Thêm công trình
+              </Button>
+            </Link>
+          </div>
+        </div>
+      )}
 
       {/* 1. VIỆC CẦN TÔI XỬ LÝ (Section 10) */}
       <section className="space-y-3">

@@ -267,7 +267,7 @@ export const EvidenceDetailDrawer: React.FC<EvidenceDetailDrawerProps> = ({
             </div>
           </div>
 
-          {/* Section: LIÊN KẾT VỤ VIỆC */}
+          {/* Section: LIÊN KẾT VỤ VIỆC (Evidence Graph động) */}
           <div className="space-y-2 p-4 bg-white rounded-xl border border-slate-200">
             <span className="font-bold text-slate-900 text-xs uppercase tracking-wide block">
               Liên kết vụ việc (Evidence Graph):
@@ -277,31 +277,43 @@ export const EvidenceDetailDrawer: React.FC<EvidenceDetailDrawerProps> = ({
               <div className="p-2.5 bg-slate-50 rounded-lg border border-slate-200 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="font-mono font-bold text-slate-800 bg-slate-200 px-2 py-0.5 rounded text-[11px]">
-                    FND-01
+                    {fact.related_finding_id || 'FND-TBD'}
                   </span>
-                  <span className="text-slate-800 font-semibold">Kiểm soát phát tán bụi công trình</span>
+                  <span className="text-slate-800 font-semibold">
+                    {fact.related_finding_id ? 'Phát hiện hiện trường liên kết' : 'Chưa liên kết phát hiện vi phạm'}
+                  </span>
                 </div>
-                <span className="text-slate-500 text-[11px]">Nhận định chính</span>
+                <span className="text-slate-500 text-[11px]">
+                  {fact.related_finding_id ? 'Đã liên kết' : 'Chờ phân tích'}
+                </span>
               </div>
 
               <div className="p-2.5 bg-slate-50 rounded-lg border border-slate-200 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="font-mono font-bold text-red-900 bg-red-100 px-2 py-0.5 rounded text-[11px]">
-                    REQ-03
+                    {fact.related_legal_section ? 'LAW' : 'CHƯA GÁN'}
                   </span>
-                  <span className="text-slate-800 font-semibold">Làm sạch phương tiện trước khi ra đường (Điều 15)</span>
+                  <span className="text-slate-800 font-semibold">
+                    {fact.related_legal_section || 'Đang rà soát quy chuẩn môi trường'}
+                  </span>
                 </div>
-                <span className="text-red-700 text-[11px] font-semibold">Quy chuẩn bắt buộc</span>
+                <span className="text-red-700 text-[11px] font-semibold">
+                  {fact.related_legal_section ? 'Căn cứ áp dụng' : 'Chưa viện dẫn'}
+                </span>
               </div>
 
               <div className="p-2.5 bg-slate-50 rounded-lg border border-slate-200 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="font-mono font-bold text-blue-900 bg-blue-100 px-2 py-0.5 rounded text-[11px]">
-                    TASK-018
+                    {fact.metadata?.task_id ? String(fact.metadata.task_id).substring(0, 8) : 'TÁC VỤ'}
                   </span>
-                  <span className="text-slate-800 font-semibold">Kiểm tra hiện trường đột xuất</span>
+                  <span className="text-slate-800 font-semibold">
+                    {fact.metadata?.task_id ? `Nhiệm vụ #${fact.metadata.task_id}` : 'Tác vụ xác minh thực địa'}
+                  </span>
                 </div>
-                <span className="text-blue-700 text-[11px] font-semibold">Đang thụ lý</span>
+                <span className="text-blue-700 text-[11px] font-semibold">
+                  {fact.verification_state === 'VERIFIED' ? 'Đã xác minh' : 'Cần đối soát'}
+                </span>
               </div>
             </div>
           </div>

@@ -19,6 +19,8 @@ import {
   X,
   FileCheck,
   Hash,
+  Upload,
+  Plus,
 } from 'lucide-react';
 import { Button } from '../components/common/Button';
 
@@ -31,6 +33,14 @@ export const EvidencePage: React.FC = () => {
   const [selectedAsset, setSelectedAsset] = useState<any | null>(null);
   const [verifyingId, setVerifyingId] = useState<string | null>(null);
   const [verificationResult, setVerificationResult] = useState<any | null>(null);
+
+  // Upload modal state
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [availableCases, setAvailableCases] = useState<any[]>([]);
+  const [uploadCaseId, setUploadCaseId] = useState('');
+  const [uploadSourceType, setUploadSourceType] = useState('CASE');
+  const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     loadEvidence();
@@ -49,6 +59,45 @@ export const EvidencePage: React.FC = () => {
       addToast(err.detail || 'Không thể tải thư viện bằng chứng', 'error');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const openUploadModal = async () => {
+    try {
+      const res = await api.cases.list({ limit: '100' });
+      const cases = res.cases || [];
+      setAvailableCases(cases);
+      if (cases.length > 0 && !uploadCaseId) {
+        setUploadCaseId(cases[0].id);
+      }
+      setIsUploadModalOpen(true);
+    } catch (err: any) {
+      addToast('Không thể lấy danh sách vụ việc để gán bằng chứng', 'error');
+      setIsUploadModalOpen(true);
+    }
+  };
+
+  const handleUpload = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!uploadCaseId) {
+      addToast('Vui lòng chọn hoặc nhập mã vụ việc liên kết', 'error');
+      return;
+    }
+    if (!uploadFile) {
+      addToast('Vui lòng chọn một tệp hình ảnh hoặc tài liệu', 'error');
+      return;
+    }
+    try {
+      setUploading(true);
+      await api.evidence.upload(uploadCaseId, uploadFile, uploadSourceType);
+      addToast('Tải lên bằng chứng và niêm phong SHA-256 thành công!', 'success');
+      setIsUploadModalOpen(false);
+      setUploadFile(null);
+      loadEvidence();
+    } catch (err: any) {
+      addToast(err.detail || 'Lỗi khi tải lên bằng chứng', 'error');
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -104,6 +153,16 @@ export const EvidencePage: React.FC = () => {
           <p className="text-sm text-slate-600 mt-1">
             Trung tâm quản lý, tra cứu và kiểm định tính toàn vẹn của tất cả tài liệu, hình ảnh hiện trường và biên bản giám sát
           </p>
+        </div>
+        <div>
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={openUploadModal}
+            icon={<Upload className="w-4 h-4" />}
+          >
+            Tải lên bằng chứng
+          </Button>
         </div>
       </div>
 
@@ -167,12 +226,37 @@ export const EvidencePage: React.FC = () => {
           <p>Đang tải danh mục bằng chứng số...</p>
         </div>
       ) : evidenceList.length === 0 ? (
-        <div className="civic-card p-12 text-center text-slate-500 space-y-3">
-          <FileCheck className="w-10 h-10 text-slate-400 mx-auto" />
-          <h3 className="font-bold text-slate-800 text-base">Không tìm thấy tài liệu bằng chứng nào</h3>
-          <p className="text-xs text-slate-500 max-w-sm mx-auto">
-            Không có tệp bằng chứng nào phù hợp với điều kiện tìm kiếm hoặc chưa có hồ sơ nào được tải lên.
-          </p>
+        <div className="civic-card p-12 text-center text-slate-500 space-y-4">
+          <FileCheck className="w-12 h-12 text-slate-400 mx-auto" />
+          <div className="space-y-1">
+            <h3 className="font-bold text-slate-800 text-base">Chưa có tài liệu bằng chứng nào</h3>
+            <p className="text-xs text-slate-500 max-w-sm mx-auto">
+              Hệ thống chưa ghi nhận tệp bằng chứng nào hoặc không có tệp nào phù hợp với bộ lọc tìm kiếm hiện tại.
+            </p>
+          </div>
+          <div className="flex items-center justify-center gap-3 pt-2">
+            {(sourceFilter !== 'ALL' || searchQuery) ? (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setSourceFilter('ALL');
+                  setSearchQuery('');
+                }}
+                icon={<RotateCcw className="w-3.5 h-3.5" />}
+              >
+                Đặt lại bộ lọc
+              </Button>
+            ) : null}
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={openUploadModal}
+              icon={<Upload className="w-3.5 h-3.5" />}
+            >
+              Tải lên bằng chứng đầu tiên
+            </Button>
+          </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -429,6 +513,113 @@ export const EvidencePage: React.FC = () => {
                 Đóng
               </Button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* DIRECT UPLOAD MODAL */}
+      {isUploadModalOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-none flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg shadow-2xl max-w-md w-full border border-slate-200 animate-in fade-in">
+            <div className="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+              <h3 className="font-bold text-slate-900 text-base flex items-center gap-2">
+                <Upload className="w-4 h-4 text-dustguard-teal" />
+                Tải lên Bằng chứng Mới
+              </h3>
+              <button
+                onClick={() => setIsUploadModalOpen(false)}
+                className="text-slate-400 hover:text-slate-600 p-1"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleUpload} className="p-5 space-y-4 text-xs">
+              <div>
+                <label className="block font-bold text-slate-800 mb-1">
+                  Vụ việc liên kết <span className="text-rose-600">*</span>
+                </label>
+                {availableCases.length > 0 ? (
+                  <select
+                    value={uploadCaseId}
+                    onChange={e => setUploadCaseId(e.target.value)}
+                    required
+                    className="w-full px-3 py-2 border border-slate-300 rounded bg-white text-slate-900 font-medium"
+                  >
+                    <option value="">-- Chọn vụ việc cần đính kèm --</option>
+                    {availableCases.map(c => (
+                      <option key={c.id} value={c.id}>
+                        [{c.code}] {c.title}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <div className="space-y-1">
+                    <input
+                      type="text"
+                      value={uploadCaseId}
+                      onChange={e => setUploadCaseId(e.target.value)}
+                      placeholder="Nhập mã ID vụ việc (hoặc tạo vụ việc trước)..."
+                      required
+                      className="w-full px-3 py-2 border border-slate-300 rounded bg-white text-slate-900"
+                    />
+                    <p className="text-[11px] text-amber-700">
+                      Chưa có danh sách vụ việc. Bạn có thể nhập trực tiếp ID vụ việc hoặc qua trang Vụ việc để tạo mới.
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-800 mb-1">Nguồn phát sinh bằng chứng</label>
+                <select
+                  value={uploadSourceType}
+                  onChange={e => setUploadSourceType(e.target.value)}
+                  className="w-full px-3 py-2 border border-slate-300 rounded bg-white text-slate-900 font-medium"
+                >
+                  <option value="CASE">Hồ sơ phản ánh ban đầu (CASE)</option>
+                  <option value="INSPECTION">Biên bản thanh tra hiện trường (INSPECTION)</option>
+                  <option value="FINDING">Ghi nhận vi phạm không đạt (FINDING)</option>
+                  <option value="REMEDIATION">Minh chứng khắc phục (REMEDIATION)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-800 mb-1">
+                  Tệp tin bằng chứng <span className="text-rose-600">*</span>
+                </label>
+                <input
+                  type="file"
+                  accept="image/*,.pdf,.doc,.docx"
+                  onChange={e => setUploadFile(e.target.files?.[0] || null)}
+                  required
+                  className="w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-3 file:rounded file:border file:border-slate-300 file:text-xs file:font-semibold file:bg-slate-100 hover:file:bg-slate-200"
+                />
+                <p className="text-[11px] text-slate-500 mt-1">
+                  Hệ thống tự động niêm phong toàn vẹn bằng chuẩn băm SHA-256 khi lưu trữ.
+                </p>
+              </div>
+
+              <div className="pt-3 border-t border-slate-200 flex justify-end gap-2">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => setIsUploadModalOpen(false)}
+                >
+                  Hủy
+                </Button>
+                <Button
+                  type="submit"
+                  variant="primary"
+                  size="sm"
+                  loading={uploading}
+                  icon={<Upload className="w-3.5 h-3.5" />}
+                >
+                  Tải lên & Niêm phong
+                </Button>
+              </div>
+            </form>
           </div>
         </div>
       )}

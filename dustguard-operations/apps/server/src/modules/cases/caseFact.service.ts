@@ -49,6 +49,21 @@ export class CaseFactService {
 
     const hasCompletedInspection = inspections.some(i => i.status === 'COMPLETED');
 
+    // Truy vấn các phát hiện vi phạm thực tế đã lập trong hồ sơ
+    const caseFindings = query<any>(
+      `SELECT f.id, f.finding, f.severity, f.legal_section_id, ls.section_number
+       FROM inspection_findings f
+       JOIN inspections i ON f.inspection_id = i.id
+       LEFT JOIN legal_sections ls ON f.legal_section_id = ls.id
+       WHERE i.case_id = ?
+       ORDER BY f.created_at ASC`,
+      [caseId]
+    );
+    const primaryFinding = caseFindings.length > 0 ? caseFindings[0] : null;
+    const primaryFindingCode = primaryFinding
+      ? `FND-${primaryFinding.id.replace(/\D/g, '').substring(0, 4) || 'OBS'}`
+      : undefined;
+
     facts.push({
       id: `FACT-META-${targetCase.id}`,
       friendly_code: `META-${targetCase.case_code || targetCase.id.substring(0, 8)}`,
@@ -126,7 +141,7 @@ export class CaseFactService {
           confidence_label: 'TRUNG BÌNH',
           disclaimer: 'Trích xuất tự động hỗ trợ rà soát, không phải kết luận vi phạm.',
         },
-        related_finding_id: 'FND-01',
+        related_finding_id: primaryFindingCode,
         related_legal_section: 'Khoản 1 Điều 15 Nghị định 45/2022/NĐ-CP',
       });
     }
@@ -172,7 +187,7 @@ export class CaseFactService {
           potential_relevance: 'Điều 15 NĐ 45/2022/NĐ-CP',
           confidence_label: 'TRUNG BÌNH',
         },
-        related_finding_id: 'FND-01',
+        related_finding_id: primaryFindingCode,
         related_legal_section: 'Điều 15 Nghị định 45/2022/NĐ-CP',
       });
     }
@@ -218,7 +233,7 @@ export class CaseFactService {
             field_verified: isVerified,
             inspector_note: isVerified ? `Đã xác nhận bởi cán bộ ${insp.inspector_name || 'thanh tra'}` : 'Chưa hoàn tất kiểm tra',
           },
-          related_finding_id: 'FND-01',
+          related_finding_id: primaryFindingCode,
           related_legal_section: it.legal_section_number ? `Điều ${it.legal_section_number}` : 'Điều 15 NĐ 45/2022',
         });
       }
@@ -233,6 +248,7 @@ export class CaseFactService {
       );
 
       for (const f of findingsList) {
+        const fndCode = `FND-${f.id.replace(/\D/g, '').substring(0, 4) || 'OBS'}`;
         facts.push({
           id: `FACT-FIND-${f.id}`,
           friendly_code: `FND-OBS-${f.id.replace(/\D/g, '').substring(0, 4) || '01'}`,
@@ -260,7 +276,7 @@ export class CaseFactService {
             field_verified: true,
             inspector_note: 'Đã có cán bộ lập biên bản vi phạm thực địa',
           },
-          related_finding_id: 'FND-01',
+          related_finding_id: fndCode,
           related_legal_section: f.legal_section_number ? `Điều ${f.legal_section_number}` : 'Điều 15 NĐ 45/2022',
         });
       }
@@ -328,7 +344,7 @@ export class CaseFactService {
           potential_relevance: 'Minh chứng đối chiếu Điều 15 NĐ 45/2022/NĐ-CP',
           confidence_label: 'CAO',
         },
-        related_finding_id: 'FND-01',
+        related_finding_id: primaryFindingCode,
         related_legal_section: 'Khoản 1 Điều 15 NĐ 45/2022/NĐ-CP',
       });
     }
@@ -378,7 +394,7 @@ export class CaseFactService {
           potential_relevance: 'Chỉ báo nghi vấn phát tán bụi công trình',
           confidence_label: 'TRUNG BÌNH',
         },
-        related_finding_id: 'FND-01',
+        related_finding_id: primaryFindingCode,
       });
     }
 

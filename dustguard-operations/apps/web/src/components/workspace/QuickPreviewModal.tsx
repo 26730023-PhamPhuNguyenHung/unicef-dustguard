@@ -73,8 +73,8 @@ export const QuickPreviewModal: React.FC<QuickPreviewModalProps> = ({
     location_text: fact.metadata?.district || 'Gần công trình',
   }) as AccompanyingData;
 
-  const relatedFinding = fact.related_finding_id || 'FND-01 · Kiểm soát phát tán bụi';
-  const relatedLaw = fact.related_legal_section || 'Điều 15 Nghị định 45/2022/NĐ-CP';
+  const relatedFinding = fact.related_finding_id || 'Chưa liên kết phát hiện vi phạm';
+  const relatedLaw = fact.related_legal_section || 'Quy chuẩn bảo vệ môi trường công trình';
 
   return (
     <div

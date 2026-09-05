@@ -7,7 +7,31 @@
 
 ## 📅 Các Mốc Phát Triển Chính (Milestones)
 
-### 1. [2026-09-05] `operations-v1.9`: Specialized Decision-Support Modal Suite & Civic Intelligence Realignment
+### 1. [2026-09-05] `operations-v2.0`: Complete Zero-Seed Real-Data Operations & Production Evidence Grounding
+- **Mục tiêu**: Loại bỏ hoàn toàn 100% sự phụ thuộc vào dữ liệu mẫu (seed/fake data), vận hành hệ thống trơn tru từ Zero-Data (Database rỗng là first-class state), niêm phong chứng cứ số SHA-256 thực địa và đảm bảo tính bền vững (Persistence) tuyệt đối của dữ liệu thực tế.
+- **Phạm vi hoàn tất**:
+  - **Loại Bỏ Hoàn Toàn Hardcode Dữ Liệu Demo**:
+    - Quét sạch toàn bộ các chuỗi hardcode: `case-013`, `case-001`, `TASK-018`, `FND-01`, `REQ-03`, `dev_admin_token`, `user_tran`, `user_le`. Chỉ cho phép tồn tại trong `seed.ts` cho mục đích demo tùy chọn.
+    - Cập nhật `caseFact.service.ts` và `analysis.service.ts`: Mã kết luận và finding được sinh động theo vụ việc (`FND-${caseSuffix}-${index}`) từ biên bản thanh tra thực tế, gán `undefined` nếu chưa có biên bản thực địa.
+    - Giao diện `ActionModal.tsx` nạp danh sách cán bộ thực tế qua API `/api/admin/users`, hỗ trợ đưa vào hàng đợi chung nếu chưa chỉ định.
+    - Giao diện `DecisionWorkspaceDrawer.tsx` và `EvidenceDetailDrawer.tsx` tính toán dựa trên `facts` thực tế của vụ việc, loại bỏ các tick xanh và liên kết ảo.
+  - **Quản Lý Bằng Chứng Thực Địa & Upload Trực Tiếp**:
+    - Nâng cấp `EvidencePage.tsx`: Thêm nút `[+ Tải lên bằng chứng]` trên Header, Modal tải lên trực tiếp cho phép chọn vụ việc liên kết, nguồn phát sinh và tệp tin thực tế, tự động niêm phong băm SHA-256 trên server và đối soát tệp trên đĩa cứng.
+    - Thiết kế Empty State thân thiện kèm nút CTA `[Tải lên bằng chứng đầu tiên]` khi kho lưu trữ chưa có tệp tin nào.
+    - Nâng cấp `LegalWorkspacePage.tsx`: Tích hợp nút tải lên bằng chứng ảnh trực tiếp trong SideDrawer Dữ kiện hồ sơ.
+  - **Xử Lý Hồ Sơ Thiếu Dữ Kiện (Zero-AI Hallucination)**:
+    - Hồ sơ mới chỉ có phản ánh ban đầu tự động nhận diện cấp độ kết luận `INSUFFICIENT_EVIDENCE` hoặc `INSUFFICIENT_DATA`.
+    - Hiển thị danh sách nhóm dữ kiện còn thiếu (Ảnh sau khắc phục, Biên bản hiện trường, Dữ liệu IoT) và cung cấp CTA trực tiếp `[Tạo tác vụ xác minh hiện trường]`.
+  - **Quy Trình Khởi Tạo Không Seed (Zero-Seed Onboarding)**:
+    - Khi CSDL rỗng (`user_count === 0`): Hệ thống tự động chuyển hướng hoặc hiển thị thông báo hướng dẫn vào `/setup` để kích hoạt Super Admin đầu tiên.
+    - Khóa vĩnh viễn endpoint `/api/auth/bootstrap` với mã 403 Forbidden ngay sau khi tạo tài khoản quản trị đầu tiên để chống tấn công chiếm quyền (Anti-takeover).
+    - `DashboardPage.tsx` và `CaseInboxPage.tsx` cung cấp Operational Banners và Empty States hướng dẫn tạo thực thể đầu tiên (Nhà thầu, Công trình, Vụ việc).
+  - **Bộ Kiểm Thử Toàn Diện & Nghiệm Thu**:
+    - Xây dựng `scripts/verify-zero-seed-e2e.js`: Kịch bản 12 bước tự động kiểm thử toàn trình từ DB rỗng -> Bootstrap -> Đăng nhập -> Tạo Nhà thầu -> Tạo Công trình -> Tạo Vụ việc -> Tải bằng chứng SHA-256 -> Phân tích pháp lý thiếu dữ kiện -> Tạo Task -> Kiểm tra bền vững SQLite (100% PASS).
+    - Tích hợp vào `npm test`: **87/87 Unit & Integration tests PASS** + **12/12 E2E Real-Data Steps PASS**.
+    - Frontend build Vite: **PASS 100%** (0 TypeScript error, 0 lint error).
+
+### 2. [2026-09-05] `operations-v1.9`: Specialized Decision-Support Modal Suite & Civic Intelligence Realignment
 - **Mục tiêu**: Thay thế toàn bộ popup dạng "xem DB record" bằng 4 lớp giao diện hỗ trợ cán bộ ra quyết định; loại bỏ việc "gắn chữ AI vào rule engine", tách bạch rõ ràng giữa tính toán xác thực (deterministic) và trợ lý tham vấn (AI Assistant).
 - **Phạm vi hoàn tất**:
   - **Phân tách 4 Loại Giao Diện Tác Nghiệp**:

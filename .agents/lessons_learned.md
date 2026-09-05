@@ -7,7 +7,26 @@
 
 ## 📅 Bài học từ Dự án: DustGuard Operations (2026-09-05)
 
-### 1. Phân Tách 4 Lớp Giao Diện Hỗ Trợ Quyết Định & Tách Bạch Rule Engine Khỏi AI Assistant (2026-09-05)
+### 1. Loại Bỏ Phụ Thuộc Seed & Thiết Kế Database Rỗng Như Một First-Class State (2026-09-05)
+- **Vấn đề**:
+  - Nhiều hệ thống web hoạt động trơn tru trong quá trình phát triển nhờ dữ liệu seed mẫu sẵn có (`case-013`, `case-001`, `TASK-018`, `FND-01`, `user_tran`), nhưng lập tức sụp đổ hoặc vỡ giao diện khi khởi tạo trên môi trường sản xuất thực tế với cơ sở dữ liệu rỗng.
+  - Các modal, drawer hoặc rule engine fallback về mã cứng (`case-013`, `FND-01`), tạo ra cảm giác "giả mạo thành công" (fake success), gây sai lệch dữ liệu thanh tra thực tế.
+  - Form tạo user mặc định điền mật khẩu cố định (`password123`) hoặc API không có cơ chế chặn tái khởi tạo dẫn đến rủi ro chiếm quyền (Takeover).
+- **Giải pháp chuẩn hóa**:
+  1. **Database Rỗng Là First-Class State**:
+     - Khi `user_count === 0`, toàn bộ UI tự động nhận diện hệ thống mới tinh, hiển thị Operational Banner hướng dẫn và chuyển hướng đến `/setup` để khởi tạo Super Admin đầu tiên.
+     - Sau khi tài khoản đầu tiên được kích hoạt, khóa vĩnh viễn endpoint `/api/auth/bootstrap` với mã 403 Forbidden.
+  2. **Zero-Seed Empty States & Actionable CTAs**:
+     - Mọi danh mục chính (`/cases`, `/projects`, `/contractors`, `/evidence`, `/tasks`) đều có Empty State rõ ràng với CTA tạo thực thể đầu tiên (không bao giờ để màn hình trắng hay báo lỗi).
+     - Cho phép tải lên bằng chứng trực tiếp qua giao diện (`EvidencePage`, `LegalWorkspacePage`) và niêm phong mã băm SHA-256 đối soát trực tiếp tệp trên đĩa cứng.
+  3. **Xử Lý Hồ Sơ Thiếu Dữ Kiện Thực Tế (Zero-Hallucination)**:
+     - Khi hồ sơ mới tạo chưa có biên bản thanh tra hay số liệu đo đạc, engine phân tích pháp lý phải trả về `conclusion_level = 'INSUFFICIENT_EVIDENCE'` hoặc `'INSUFFICIENT_DATA'`.
+     - Tuyệt đối cấm máy tự suy đoán hay kết luận `HUMAN_CONFIRMED` khi chưa có chữ ký bút phê của cán bộ thẩm quyền.
+     - Liệt kê minh bạch các nhóm dữ kiện còn thiếu và cung cấp nút bấm trực tiếp tạo nhiệm vụ kiểm tra hiện trường.
+  4. **Kiểm Thử E2E Tự Động Hóa Từ DB Rỗng**:
+     - Xây dựng test suite 12 bước chạy trên DB mới tạo hoàn toàn (migration-only): Khởi tạo -> Bootstrap -> Đăng nhập -> Tạo Nhà thầu -> Tạo Dự án -> Tạo Vụ việc -> Tải bằng chứng ảnh -> Phân tích pháp lý -> Tạo Task -> Đối soát SQLite D1 SSOT.
+
+### 2. Phân Tách 4 Lớp Giao Diện Hỗ Trợ Quyết Định & Tách Bạch Rule Engine Khỏi AI Assistant (2026-09-05)
 - **Vấn đề**:
   - Popup cũ `FACT-CLAIM-case-013` chỉ thuần túy hiển thị record trong DB (ID kỹ thuật, loại CLAIM, timestamp, nút Đóng), không trả lời được các câu hỏi then chốt của cán bộ: *Ai nói? Nói điều gì? Có đáng tin không? Hệ thống đã kiểm tra tự động gì? Liên quan gì đến kết luận? Cán bộ cần làm gì tiếp?*
   - Nguy cơ "gắn chữ AI vào rule engine": Các phép kiểm tra có ảnh hay chưa, GPS < 50m, hash SHA-256 có khớp không, IoT có dữ liệu không, deadline quá hạn... thực chất là **deterministic SQL/rule engine**, việc gắn nhãn "AI" làm hệ thống kém đáng tin và tốn kém vô ích.

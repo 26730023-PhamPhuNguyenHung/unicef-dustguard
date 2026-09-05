@@ -15,7 +15,7 @@ export const AdminUsersPage: React.FC = () => {
 
   const [newUser, setNewUser] = useState({
     username: '',
-    password: 'password123',
+    password: '',
     full_name: '',
     email: '',
     role: 'staff' as Role,

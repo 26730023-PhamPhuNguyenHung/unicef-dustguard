@@ -45,6 +45,7 @@ import {
   ChevronUp,
   FileSearch,
   ArrowRight,
+  Upload,
 } from 'lucide-react';
 import { CaseFact, SemanticType, ConclusionLevel, HumanDecisionType } from '@dustguard-operations/shared';
 
@@ -122,6 +123,24 @@ export const LegalWorkspacePage: React.FC = () => {
   ]);
   const [newChecklistItem, setNewChecklistItem] = useState('');
   const [exportingChecklist, setExportingChecklist] = useState(false);
+  const [uploadingEvidence, setUploadingEvidence] = useState(false);
+
+  const handleUploadEvidence = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !id) return;
+    try {
+      setUploadingEvidence(true);
+      await api.evidence.upload(id, file, 'CASE');
+      success('Tải lên bằng chứng thành công', `Tệp "${file.name}" đã được mã hóa băm SHA-256 và lưu vào cơ sở dữ liệu.`);
+      await loadFacts();
+      await loadWorkspace();
+    } catch (err: any) {
+      error('Lỗi tải tệp bằng chứng', err.detail || 'Không thể lưu tệp vào hệ thống');
+    } finally {
+      setUploadingEvidence(false);
+      e.target.value = '';
+    }
+  };
 
   useEffect(() => {
     if (id) {
@@ -524,6 +543,50 @@ export const LegalWorkspacePage: React.FC = () => {
                     </Button>
                   </div>
 
+                  {/* INSUFFICIENT DATA BANNER theo nguyên tắc Zero-Fake */}
+                  {(analysis.conclusion_level === 'INSUFFICIENT_EVIDENCE' || (analysis.completeness_score !== undefined && analysis.completeness_score < 50)) && (
+                    <div className="p-4 bg-amber-50 rounded-xl border border-amber-300 text-xs space-y-3 animate-fade-in">
+                      <div className="flex items-start gap-3">
+                        <div className="p-2 bg-amber-100 text-amber-800 rounded-lg shrink-0">
+                          <AlertTriangle className="w-5 h-5 text-amber-700" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-bold text-amber-950 text-sm">
+                            Hồ sơ chưa đủ dữ kiện để đưa ra nhận định vi phạm pháp lý
+                          </h4>
+                          <p className="text-amber-900 text-xs mt-1">
+                            Đã có: <strong>{analysis.completeness_fraction || `${facts.filter(f => f.verification_state === 'VERIFIED').length}/6 nhóm dữ kiện`}</strong>. Hệ thống tuân thủ nguyên tắc Zero-Fake và không đưa ra kết luận võ đoán khi thiếu căn cứ thực địa.
+                          </p>
+                          {missingFacts.length > 0 && (
+                            <div className="mt-2 text-[11px] text-amber-900 space-y-1 bg-amber-100/70 p-2.5 rounded-md border border-amber-200">
+                              <span className="font-bold block">Còn thiếu các nhóm dữ kiện:</span>
+                              <ul className="list-disc list-inside space-y-0.5 pl-1">
+                                {missingFacts.slice(0, 4).map((m: any, i: number) => (
+                                  <li key={i}>{m.fact || m}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-end gap-2 pt-2 border-t border-amber-200">
+                        <Button
+                          type="button"
+                          variant="primary"
+                          size="sm"
+                          icon={<Plus className="w-3.5 h-3.5" />}
+                          onClick={() => {
+                            setActionModalMode('CREATE_VERIFICATION_TASK');
+                            setIsActionModalOpen(true);
+                          }}
+                          className="font-bold shadow-xs"
+                        >
+                          Tạo tác vụ xác minh hiện trường
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+
                   {/* 5 Key Metric Chips */}
                   <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-xs">
                     <div className="p-3 bg-emerald-50/70 rounded-lg border border-emerald-200 text-center">
@@ -546,7 +609,7 @@ export const LegalWorkspacePage: React.FC = () => {
 
                     <div className="p-3 bg-red-50/70 rounded-lg border border-red-200 text-center">
                       <span className="text-xl font-black text-red-800 block leading-tight">
-                        {analysis.contradictions?.length || 1}
+                        {analysis.contradictions?.length || 0}
                       </span>
                       <span className="text-[11px] text-red-950 font-semibold mt-1 block">
                         Mâu thuẫn cần chú ý
@@ -555,7 +618,7 @@ export const LegalWorkspacePage: React.FC = () => {
 
                     <div className="p-3 bg-indigo-50/70 rounded-lg border border-indigo-200 text-center">
                       <span className="text-xl font-black text-indigo-800 block leading-tight">
-                        {analysis.relevantProvisions?.length || 2}
+                        {analysis.relevantProvisions?.length || 0}
                       </span>
                       <span className="text-[11px] text-indigo-950 font-semibold mt-1 block">
                         Căn cứ liên quan
@@ -596,72 +659,72 @@ export const LegalWorkspacePage: React.FC = () => {
                     </span>
 
                     <div className="space-y-2">
-                      <div className="p-2.5 bg-white rounded-md border border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 shadow-2xs">
-                        <div className="flex items-start gap-2.5">
-                          <span className="w-5 h-5 rounded-full bg-slate-800 text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">1</span>
-                          <div>
-                            <strong className="text-slate-900 block text-xs">Xác minh trạm rửa bánh xe tại cổng ra vào</strong>
-                            <span className="text-[11px] text-slate-500">Chưa có ảnh/biên bản xác thực hoạt động rửa xe theo Điều 15.</span>
-                          </div>
-                        </div>
-                        <Button
-                          type="button"
-                          variant="primary"
-                          size="sm"
-                          onClick={() => {
-                            setActionModalMode('CREATE_VERIFICATION_TASK');
-                            setIsActionModalOpen(true);
-                          }}
-                          className="shrink-0 font-bold"
+                      {(analysis.next_priorities && analysis.next_priorities.length > 0
+                        ? analysis.next_priorities
+                        : [
+                            {
+                              priority: 1,
+                              title: 'Tạo tác vụ xác minh hiện trường thực tế',
+                              description: 'Chưa có ảnh/biên bản xác thực biện pháp kiểm soát bụi tại công trình.',
+                              action_kind: 'TASK',
+                              button_label: 'Tạo nhiệm vụ',
+                            },
+                            {
+                              priority: 2,
+                              title: 'Kiểm tra tệp bằng chứng số đối soát SHA-256',
+                              description: 'Soát xét tệp hình ảnh minh chứng toàn vẹn lưu vết tại kho lưu trữ.',
+                              action_kind: 'EVIDENCE',
+                              button_label: 'Xem bằng chứng',
+                            },
+                            {
+                              priority: 3,
+                              title: 'Rà soát quy chuẩn pháp luật liên quan',
+                              description: 'Tra cứu quy định tại Luật BVMT 2020 và Nghị định 45/2022/NĐ-CP.',
+                              action_kind: 'LEGAL',
+                              button_label: 'Xem căn cứ',
+                            },
+                          ]
+                      ).map((pri: any, idx: number) => (
+                        <div
+                          key={idx}
+                          className="p-2.5 bg-white rounded-md border border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 shadow-2xs"
                         >
-                          Tạo nhiệm vụ
-                        </Button>
-                      </div>
-
-                      <div className="p-2.5 bg-white rounded-md border border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 shadow-2xs">
-                        <div className="flex items-start gap-2.5">
-                          <span className="w-5 h-5 rounded-full bg-slate-800 text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">2</span>
-                          <div>
-                            <strong className="text-slate-900 block text-xs">Kiểm tra ảnh hiện trường & đối soát SHA-256</strong>
-                            <span className="text-[11px] text-slate-500">Xem tệp minh chứng và đối chiếu 4 chiều thực địa.</span>
+                          <div className="flex items-start gap-2.5">
+                            <span className="w-5 h-5 rounded-full bg-slate-800 text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">
+                              {pri.priority || idx + 1}
+                            </span>
+                            <div>
+                              <strong className="text-slate-900 block text-xs">{pri.title}</strong>
+                              <span className="text-[11px] text-slate-500">{pri.description}</span>
+                            </div>
                           </div>
+                          <Button
+                            type="button"
+                            variant={pri.action_kind === 'TASK' ? 'primary' : 'secondary'}
+                            size="sm"
+                            onClick={() => {
+                              if (pri.action_kind === 'TASK') {
+                                setActionModalMode('CREATE_VERIFICATION_TASK');
+                                setIsActionModalOpen(true);
+                              } else if (pri.action_kind === 'EVIDENCE') {
+                                const evFact = facts.find(f => f.fact_type === 'EVIDENCE_ASSET') || facts[0];
+                                if (evFact) {
+                                  setDetailEvidenceFact(evFact);
+                                  setIsEvidenceDetailOpen(true);
+                                } else {
+                                  setIsEvidenceDrawerOpen(true);
+                                }
+                              } else {
+                                setActiveTab('worksheet');
+                                setShowFtsPanel(true);
+                              }
+                            }}
+                            className="shrink-0 font-bold"
+                          >
+                            {pri.button_label || 'Xử lý ngay'}
+                          </Button>
                         </div>
-                        <Button
-                          type="button"
-                          variant="secondary"
-                          size="sm"
-                          onClick={() => {
-                            const evFact = facts.find(f => f.fact_type === 'EVIDENCE_ASSET') || facts[0];
-                            setDetailEvidenceFact(evFact);
-                            setIsEvidenceDetailOpen(true);
-                          }}
-                          className="shrink-0 font-medium"
-                        >
-                          Xem bằng chứng
-                        </Button>
-                      </div>
-
-                      <div className="p-2.5 bg-white rounded-md border border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 shadow-2xs">
-                        <div className="flex items-start gap-2.5">
-                          <span className="w-5 h-5 rounded-full bg-slate-800 text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">3</span>
-                          <div>
-                            <strong className="text-slate-900 block text-xs">Đối chiếu căn cứ pháp lý Điều 15 NĐ 45/2022/NĐ-CP</strong>
-                            <span className="text-[11px] text-slate-500">Kiểm tra khung chế tài và hành vi vi phạm tương ứng.</span>
-                          </div>
-                        </div>
-                        <Button
-                          type="button"
-                          variant="secondary"
-                          size="sm"
-                          onClick={() => {
-                            setActiveTab('worksheet');
-                            setShowFtsPanel(true);
-                          }}
-                          className="shrink-0 font-medium"
-                        >
-                          Xem căn cứ
-                        </Button>
-                      </div>
+                      ))}
                     </div>
                   </div>
                 </div>
@@ -1179,6 +1242,27 @@ export const LegalWorkspacePage: React.FC = () => {
                 {tab.label}
               </button>
             ))}
+          </div>
+
+          {/* Nút tải lên bằng chứng trực tiếp */}
+          <div className="p-3 bg-white rounded-lg border border-dashed border-slate-300 flex items-center justify-between gap-2 shadow-2xs">
+            <div className="min-w-0">
+              <span className="font-bold text-xs text-slate-800 block">Tải ảnh minh chứng</span>
+              <span className="text-[11px] text-slate-500 block truncate">Tự động tính mã băm SHA-256 đối soát</span>
+            </div>
+            <label className="cursor-pointer shrink-0">
+              <input
+                type="file"
+                className="hidden"
+                accept="image/*,application/pdf"
+                onChange={handleUploadEvidence}
+                disabled={uploadingEvidence}
+              />
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-bold text-dustguard-red bg-red-50 border border-red-200 rounded hover:bg-red-100 transition-colors">
+                <Upload className="w-3.5 h-3.5" />
+                <span>{uploadingEvidence ? 'Đang tải...' : 'Tải lên'}</span>
+              </span>
+            </label>
           </div>
 
           {/* Compact Evidence Cards */}

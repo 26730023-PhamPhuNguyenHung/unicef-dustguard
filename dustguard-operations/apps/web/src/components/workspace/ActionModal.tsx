@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { Button } from '../common/Button';
 import { CaseFact } from '@dustguard-operations/shared';
+import { api } from '../../api/client';
 
 interface ActionModalProps {
   isOpen: boolean;
@@ -33,7 +34,8 @@ export const ActionModal: React.FC<ActionModalProps> = ({
 }) => {
   const [taskContent, setTaskContent] = useState('');
   const [reason, setReason] = useState('');
-  const [assignee, setAssignee] = useState('user_tran');
+  const [assignee, setAssignee] = useState('');
+  const [staffMembers, setStaffMembers] = useState<Array<{ id: string; full_name: string; role: string }>>([]);
   const [dueDate, setDueDate] = useState('');
   const [checklist, setChecklist] = useState({
     photo: true,
@@ -41,6 +43,21 @@ export const ActionModal: React.FC<ActionModalProps> = ({
     time: true,
   });
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      api.admin
+        .users()
+        .then(res => {
+          const active = (res.users || []).filter((u: any) => u.active === 1);
+          setStaffMembers(active);
+          if (active.length > 0 && !assignee) {
+            setAssignee(active[0].id);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     if (isOpen) {
@@ -176,9 +193,12 @@ export const ActionModal: React.FC<ActionModalProps> = ({
                 onChange={e => setAssignee(e.target.value)}
                 className="w-full p-2 bg-white border border-slate-300 rounded-lg text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-red-600"
               >
-                <option value="user_tran">Cán bộ Trần Thị Mai (Hiện trường)</option>
-                <option value="user_le">Cán bộ Lê Hoàng Nam (Giám sát)</option>
-                <option value="user_nguyen">Cán bộ Nguyễn Văn A (Thanh tra)</option>
+                <option value="">-- Chưa chỉ định (Đưa vào hàng đợi chung) --</option>
+                {staffMembers.map(st => (
+                  <option key={st.id} value={st.id}>
+                    {st.full_name} ({st.role})
+                  </option>
+                ))}
               </select>
             </div>
 

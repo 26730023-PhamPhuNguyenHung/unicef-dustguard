@@ -160,7 +160,8 @@ export class CaseAnalysisService {
         ? `Đã xác lập kết luận có hành vi không tuân thủ quy chuẩn kiểm soát bụi tại công trình ${targetCase.contractor_name || targetCase.title}`
         : `Dữ liệu thanh tra hiện trường ghi nhận ${failedItems.length} hạng mục có dấu hiệu chưa đạt chuẩn kiểm soát bụi`;
 
-      const fId = `FND-01`;
+      const caseSuffix = targetCase.case_code ? targetCase.case_code.split('-').pop() : '01';
+      const fId = `FND-${caseSuffix}-${String(findings.length + 1).padStart(2, '0')}`;
       findings.push({
         id: fId,
         statement,
@@ -207,7 +208,8 @@ export class CaseAnalysisService {
         ? `Cảm biến quan trắc ghi nhận chỉ số bất thường kết hợp ${claims.length} phản ánh cộng đồng, cần tổ chức đoàn kiểm tra xác minh`
         : `Ghi nhận ${claims.length} phản ánh cộng đồng về phát tán bụi (chưa qua xác minh kiểm tra thực địa)`;
 
-      const fId = `FND-CLAIM-01`;
+      const caseSuffix = targetCase.case_code ? targetCase.case_code.split('-').pop() : '01';
+      const fId = `FND-${caseSuffix}-CLM-${String(findings.length + 1).padStart(2, '0')}`;
       findings.push({
         id: fId,
         statement,
@@ -247,7 +249,8 @@ export class CaseAnalysisService {
     } else {
       // Chỉ có Metadata
       const metaSources = facts.filter(f => f.fact_type === 'METADATA').map(f => f.id);
-      const fId = `FND-META-01`;
+      const caseSuffix = targetCase.case_code ? targetCase.case_code.split('-').pop() : '01';
+      const fId = `FND-${caseSuffix}-META-${String(findings.length + 1).padStart(2, '0')}`;
       findings.push({
         id: fId,
         statement: 'Chưa đủ dữ liệu hiện trường để đánh giá tuân thủ quy chuẩn môi trường',
