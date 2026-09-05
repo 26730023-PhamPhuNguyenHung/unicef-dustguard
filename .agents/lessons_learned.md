@@ -7,7 +7,37 @@
 
 ## 📅 Bài học từ Dự án: DustGuard Operations (2026-09-05)
 
-### 0. UI/UX Production Hardening: Công Thái Học Laptop 1366x768, Dropdown Thay Dàn Hàng Nút Bấm & Đếm Ngược SLA Thực Địa
+### 0. Evidence-Grounded Decision Engine: Clean Domain Architecture, Sensor Verification & Declarative Explainability
+- **Vấn đề**:
+  - **Monolithic Analysis Service**: Việc dồn toàn bộ logic chuẩn hóa dữ kiện, truy vấn FTS5, đánh giá completeness, tính toán rủi ro và sinh khuyến nghị vào một file `analysis.service.ts` dài 500+ dòng khiến code khó bảo trì, khó unit test từng thành phần, và dễ gây lỗi lan truyền (coupling).
+  - **Thiếu Kiểm Định Dữ Liệu Cảm Biến (Sensor Spoofing / Faulty Data)**: Cảm biến IoT môi trường ngoài thực tế rất hay bị treo giá trị (Flatline do đứt cáp kết nối) hoặc nhảy vọt đột biến (Extreme Spike do côn trùng/hơi ẩm bám vào buồng đo quang học). Nếu nạp thẳng dữ liệu lỗi vào Rule Engine mà không qua lọc chất lượng sẽ dẫn đến cảnh báo sai lệch (False Positive).
+  - **Nguy Cơ Lỗ Hổng Code Injection qua eval() trong Rule Engine**: Khi xây dựng Rule Engine tự động, nhiều kỹ sư có xu hướng dùng `eval()` hoặc `new Function()` để tính toán biểu thức điều kiện linh hoạt. Điều này tạo ra rủi ro bảo mật nghiêm trọng (RCE) nếu điều kiện bị can thiệp.
+  - **Thiếu Tính Giải Trình (Lack of Explainability)**: Khi hệ thống đưa ra khuyến nghị hành động (Next Best Action) hoặc cảnh báo rủi ro, cán bộ không thể biết "Vì sao hệ thống đưa ra gợi ý này?", dẫn đến tâm lý e ngại hoặc từ chối sử dụng công cụ số.
+- **Giải pháp chuẩn hóa**:
+  1. **Kiến Trúc Tách Lớp Sạch (Clean Domain Separation)**:
+     - Tách nhỏ thành 11 submodules chuyên trách: `facts/`, `sensor-quality/`, `contradictions/`, `evidence/`, `legal/`, `rules/`, `risk/`, `workflow/`, `lifecycle/`, `closure/`. Mỗi file giải quyết duy nhất 1 trách nhiệm (Single Responsibility Principle) và có test suite cô lập.
+  2. **Kiểm Định Cảm Biến 4 Lớp (Sensor Quality Engine)**:
+     - Luôn kiểm tra chuỗi đo trước khi đối soát: Flatline ($\ge 4$ mẫu liên tiếp bất biến), Extreme Spike ($> 250\ \mu\text{g/m}^3$), Ngoại lai thống kê (MAD / z-score), Độ trễ gói tin ($> 2\text{h}$). Nếu vi phạm $\to$ hạ bậc chất lượng `INVALID` và kích hoạt cảnh báo mâu thuẫn (`CTR-SENSOR-01`).
+  3. **Declarative Versioned Rule Engine (Zero eval)**:
+     - Biểu diễn quy tắc hoàn toàn bằng cấu trúc JSON có phiên bản (`ruleDefinitions.json`). Dùng toán tử so sánh tường minh (`eq`, `gt`, `gte`, `contains`...) qua switch-case, triệt tiêu 100% rủi ro thực thi mã động.
+  4. **Explainability Drawer & Human Sign-off**:
+     - Mọi rule match hoặc reject đều ghi nhận `RuleTrace` giải trình chi tiết từng điều kiện thực tế vs kỳ vọng. Trên UI, cán bộ có thể bấm nút "Vì sao?" để mở ngăn kéo giải trình (Explainability Side Drawer).
+     - Kết luận vi phạm pháp lý bắt buộc phải có bước xác nhận ký duyệt của cán bộ chuyên trách (`Human Sign-off`), lưu vết bất biến trong CSDL kèm chữ ký số.
+
+### 1. Deep Audit: Router-Level Auth Enforcement, SQLite Index Optimization & Zero-Fake-AI Reality
+- **Vấn đề**:
+  - **Lỗ hổng cấp Router (P0 Data Leak)**: Các sub-router Express như `casesRouter` nếu chỉ gán `requireAuth` trên các endpoint thay đổi dữ liệu (POST, PATCH) mà không bảo vệ `GET /` và `GET /:id` thì bất kỳ người dùng vãng lai nào trên Internet cũng có thể trích xuất toàn bộ hồ sơ vi phạm môi trường nhạy cảm mà không cần đăng nhập.
+  - **Quét Toàn Bảng (Full Table Scan O(N))**: Khi thực hiện băm mật mã đối chiếu toàn vẹn tệp ảnh bằng chứng (`SELECT * FROM evidence_assets WHERE sha256 = ?`), nếu thiếu chỉ mục trên trường `sha256`, SQLite buộc phải quét toàn bộ bảng (SCAN), gây nghẽn nghiêm trọng khi dữ liệu bằng chứng tăng lên hàng ngàn bản ghi.
+  - **Ngộ Nhận Công Nghệ (Fake AI / Overclaim)**: Thói quen gọi thuật toán tìm kiếm từ khóa SQLite FTS5 (BM25) và hệ thống quy tắc nếu-thì (Expert Rule Engine) là "AI Phán Quyết / AI Vision" gây mất uy tín với cơ quan quản lý và hội đồng thẩm định chuyên môn.
+- **Giải pháp chuẩn hóa**:
+  1. **Bảo Vệ Cấp Router Tối Thượng (Router-Level Defense)**:
+     - Luôn đặt `router.use(requireAuth)` ngay sau khi khởi tạo Router cho toàn bộ các module nghiệp vụ nội bộ (`casesRouter`, `tasksRouter`, `inspectionsRouter`), biến mọi endpoint thành bảo mật theo mặc định (Secure-by-default).
+  2. **Tối Ưu Chỉ Mục Bắt Buộc Theo EXPLAIN QUERY PLAN**:
+     - Mọi trường dùng để tìm kiếm hoặc lọc duy nhất (như `sha256`, `(status, due_at)`, `(status, created_at)`) phải được đánh chỉ mục `CREATE INDEX`. Kiểm tra định kỳ bằng `EXPLAIN QUERY PLAN` để đảm bảo 100% truy vấn đạt `SEARCH ... USING INDEX`.
+  3. **Tuyên Bố Trung Thực Công Nghệ (Zero Fake AI SSOT)**:
+     - Định danh rành mạch: FTS5 là "Tra cứu Pháp điển Toàn văn"; Rule Engine là "Trợ lý Đối soát Quy chuẩn"; Điểm rủi ro là "Chỉ số Trọng số Môi trường". Toàn bộ phán quyết và kết luận vi phạm hành chính phải có chữ ký số/xác nhận của chuyên viên con người (Human-in-the-loop).
+
+### 1. UI/UX Production Hardening: Công Thái Học Laptop 1366x768, Dropdown Thay Dàn Hàng Nút Bấm & Đếm Ngược SLA Thực Địa
 - **Vấn đề**:
   - Dàn ngang 6-7 nút bấm hành động nghiệp vụ trên cùng một dòng (như `Phân công`, `Tạo nhiệm vụ`, `Thẩm tra pháp lý`, `Lên lịch kiểm tra`, `Thêm bằng chứng`, `Đóng vụ việc`) khiến giao diện bị vỡ dòng lộn xộn, đẩy các phần tử quan trọng xuống dưới khi xem trên laptop phổ thông 1366x768 (với tỉ lệ Windows scaling 125%).
   - Lỗi Node `execSync` bị treo vĩnh viễn trên Windows khi gọi các CLI chạy ngầm giữ stdout/stderr (như browser daemon) do Node đợi toàn bộ file descriptor đóng; trong khi chạy trực tiếp qua PowerShell script thì thoát đúng kỳ vọng.

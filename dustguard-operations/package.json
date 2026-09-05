@@ -6,7 +6,8 @@
   "scripts": {
     "setup": "node scripts/setup.js",
     "dev": "node scripts/dev.js",
-    "test": "npx tsx --test --test-concurrency=1 tests/operations-api.test.js tests/evidence-grounded-intelligence.test.js tests/empty-db-startup.test.js tests/empty-db-api.test.js tests/no-seed-runtime-dependency.test.js tests/real-data-lifecycle.test.js && npx tsx scripts/verify-zero-seed-e2e.js",
+    "test": "npx tsx --test --test-concurrency=1 tests/operations-api.test.js tests/evidence-grounded-decision-engine.test.js tests/evidence-grounded-intelligence.test.js tests/empty-db-startup.test.js tests/empty-db-api.test.js tests/no-seed-runtime-dependency.test.js tests/real-data-lifecycle.test.js && npx tsx scripts/verify-zero-seed-e2e.js",
+    "test:decision-engine": "npx tsx --test tests/evidence-grounded-decision-engine.test.js",
     "test:zero-seed": "npx tsx scripts/verify-zero-seed-e2e.js",
     "test:provenance": "npx tsx --test tests/evidence-grounded-intelligence.test.js",
     "test:responsive": "node scripts/verify-responsive.js",

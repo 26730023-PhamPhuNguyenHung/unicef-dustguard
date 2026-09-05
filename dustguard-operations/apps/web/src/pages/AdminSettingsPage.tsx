@@ -51,7 +51,7 @@ export const AdminSettingsPage: React.FC = () => {
       <div>
         <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Cấu hình Hệ thống & Tham số Vận hành</h1>
         <p className="text-sm text-slate-600">
-          Quản lý các ngưỡng cảnh báo thời gian thực, SLA giải quyết vụ việc, thuật toán tương quan và tích hợp AI
+          Quản lý các ngưỡng cảnh báo nồng độ bụi thời gian thực, thời hạn giải quyết hồ sơ vụ việc, quy tắc đối soát pháp điển và tham số điều hành
         </p>
       </div>
 

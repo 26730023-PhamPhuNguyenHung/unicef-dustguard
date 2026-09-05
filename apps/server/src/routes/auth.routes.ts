@@ -1,6 +1,7 @@
 import { Router, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import crypto from 'node:crypto';
 import { UserRepository, AuditRepository } from '../repositories/index.js';
 import { loginSchema, registerSchema } from '@dustguard/shared';
 import { authenticateToken, AuthRequest, JWT_SECRET } from '../middlewares/auth.js';
@@ -35,7 +36,7 @@ router.post('/register', (req, res: Response): void => {
     }
 
     const passwordHash = bcrypt.hashSync(password, 10);
-    const userId = `usr_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+    const userId = `usr_${Date.now()}_${crypto.randomUUID().substring(0, 8)}`;
     const user = UserRepository.create({
       id: userId,
       email,

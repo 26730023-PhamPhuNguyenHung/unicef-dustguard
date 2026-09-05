@@ -1,0 +1,123 @@
+[
+  {
+    "id": "RULE-WASH-STATION",
+    "title": "Kiểm soát trạm rửa bánh xe tại cổng ra vào công trình",
+    "description": "Khoản 1 Điều 15 Nghị định 45/2022/NĐ-CP yêu cầu các phương tiện thi công phải làm sạch bùn đất trước khi đi ra đường công cộng.",
+    "version": "2026.09.05",
+    "category": "ENVIRONMENTAL_STANDARD",
+    "conditionLogic": "AND",
+    "conditions": [
+      {
+        "field": "hasCompletedInspection",
+        "operator": "eq",
+        "value": true
+      },
+      {
+        "field": "hasWashFailure",
+        "operator": "eq",
+        "value": true
+      }
+    ],
+    "action": {
+      "assessmentStatus": "POSSIBLE_NON_COMPLIANCE",
+      "riskDelta": 25,
+      "recommendedAction": "ISSUE_CORRECTIVE_ACTION",
+      "findingTemplate": "Ghi nhận không vận hành trạm rửa bánh xe hoặc để xe cuốn đất cát ra đường công cộng.",
+      "flagContradiction": "CTR-WASH-01"
+    }
+  },
+  {
+    "id": "RULE-MESH-ENCLOSURE",
+    "title": "Che chắn bạt và lưới chống bụi công trình xây dựng",
+    "description": "Quy chuẩn kỹ thuật quốc gia QCVN 18:2021/BXD và Điều 15 NĐ 45/2022/NĐ-CP bắt buộc toàn bộ chu vi công trường tiếp giáp khu dân cư phải có lưới che chắn kín khít.",
+    "version": "2026.09.05",
+    "category": "ENVIRONMENTAL_STANDARD",
+    "conditionLogic": "AND",
+    "conditions": [
+      {
+        "field": "hasMeshFailure",
+        "operator": "eq",
+        "value": true
+      },
+      {
+        "field": "verifiedEvidenceCount",
+        "operator": "gte",
+        "value": 1
+      }
+    ],
+    "action": {
+      "assessmentStatus": "POSSIBLE_NON_COMPLIANCE",
+      "riskDelta": 20,
+      "recommendedAction": "ISSUE_CORRECTIVE_ACTION",
+      "findingTemplate": "Phát hiện rách hoặc thiếu lưới che chắn chống phát tán bụi tại mặt tiếp giáp khu dân cư."
+    }
+  },
+  {
+    "id": "RULE-EVIDENCE-TAMPER",
+    "title": "Loại trừ chứng cứ số học bị can thiệp hoặc sai lệch mã băm",
+    "description": "Chứng cứ số học bắt buộc phải toàn vẹn mã băm SHA-256 từ nguồn thiết bị đến kho lưu trữ.",
+    "version": "2026.09.05",
+    "category": "EVIDENCE_SUFFICIENCY",
+    "conditionLogic": "OR",
+    "conditions": [
+      {
+        "field": "tamperedEvidenceCount",
+        "operator": "gt",
+        "value": 0
+      }
+    ],
+    "action": {
+      "assessmentStatus": "CONTRADICTORY_EVIDENCE",
+      "riskDelta": 0,
+      "recommendedAction": "REQUEST_EVIDENCE",
+      "findingTemplate": "Phát hiện tệp chứng cứ bị sửa đổi hoặc thất lạc mã băm, đình chỉ sử dụng làm căn cứ pháp lý."
+    }
+  },
+  {
+    "id": "RULE-PRELIMINARY-TRIAGE",
+    "title": "Tiếp nhận phản ánh sơ bộ từ cộng đồng hoặc dữ liệu cảm biến",
+    "description": "Khi chỉ mới có phản ánh người dân hoặc cảm biến tăng cao mà chưa có biên bản thực địa, hồ sơ ở trạng thái dấu hiệu sơ bộ.",
+    "version": "2026.09.05",
+    "category": "INSPECTION_COMPLIANCE",
+    "conditionLogic": "AND",
+    "conditions": [
+      {
+        "field": "hasCompletedInspection",
+        "operator": "eq",
+        "value": false
+      },
+      {
+        "field": "claimCount",
+        "operator": "gte",
+        "value": 1
+      }
+    ],
+    "action": {
+      "assessmentStatus": "INSUFFICIENT_EVIDENCE",
+      "riskDelta": 10,
+      "recommendedAction": "SCHEDULE_INSPECTION",
+      "findingTemplate": "Ghi nhận phản ánh từ cộng đồng nhưng chưa có xác minh hiện trường chính thức."
+    }
+  },
+  {
+    "id": "RULE-HUMAN-SIGNED-OFF",
+    "title": "Quyết định xử lý chính thức đã được lãnh đạo / chuyên viên phê duyệt",
+    "description": "Cán bộ chuyên trách đã ký nhận định và ban hành biên bản chính thức.",
+    "version": "2026.09.05",
+    "category": "INSPECTION_COMPLIANCE",
+    "conditionLogic": "OR",
+    "conditions": [
+      {
+        "field": "hasHumanViolationConfirm",
+        "operator": "eq",
+        "value": true
+      }
+    ],
+    "action": {
+      "assessmentStatus": "HUMAN_CONFIRMED",
+      "riskDelta": 30,
+      "recommendedAction": "READY_FOR_HUMAN_DECISION",
+      "findingTemplate": "Cán bộ chuyên trách đã xác lập quyết định xử lý vi phạm dựa trên căn cứ đầy đủ."
+    }
+  }
+]

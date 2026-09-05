@@ -85,6 +85,7 @@ export const reports = sqliteTable('reports', {
   updatedAt: text('updated_at').notNull(),
 }, (table: any) => ({
   statusIdx: index('reports_status_idx').on(table.status),
+  statusCreatedIdx: index('reports_status_created_idx').on(table.status, table.createdAt),
   createdAtIdx: index('reports_created_at_idx').on(table.createdAt),
   reporterIdx: index('reports_reporter_idx').on(table.reporterId),
   caseIdx: index('reports_case_idx').on(table.caseId),

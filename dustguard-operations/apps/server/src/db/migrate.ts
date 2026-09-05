@@ -44,6 +44,16 @@ export function runMigrations(initSystemConfig = true): void {
       db.exec(`ALTER TABLE iot_devices ADD COLUMN project_id TEXT REFERENCES projects(id) ON DELETE SET NULL;`);
       console.log('[Database Migration] Added project_id column to iot_devices table.');
     }
+
+    const humanDecTableInfo = db.prepare(`PRAGMA table_info(human_decisions)`).all() as Array<{ name: string }>;
+    if (!humanDecTableInfo.some(col => col.name === 'supersedes_decision_id')) {
+      db.exec(`ALTER TABLE human_decisions ADD COLUMN supersedes_decision_id TEXT REFERENCES human_decisions(id) ON DELETE SET NULL;`);
+      console.log('[Database Migration] Added supersedes_decision_id column to human_decisions table.');
+    }
+    if (!humanDecTableInfo.some(col => col.name === 'references_json')) {
+      db.exec(`ALTER TABLE human_decisions ADD COLUMN references_json TEXT;`);
+      console.log('[Database Migration] Added references_json column to human_decisions table.');
+    }
   } catch (err: any) {
     console.warn('[Database Migration] Notice on schema evolutions:', err.message);
   }

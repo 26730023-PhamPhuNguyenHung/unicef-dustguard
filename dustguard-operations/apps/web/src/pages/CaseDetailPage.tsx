@@ -38,8 +38,10 @@ import {
   ChevronDown,
   Check,
   MoreHorizontal,
+  Scale,
 } from 'lucide-react';
 import { Case, CaseStatus, StaffAssignment } from '@dustguard-operations/shared';
+import { DecisionSupportSection } from '../components/decision-support/DecisionSupportSection';
 
 const TABS = [
   { id: 'overview', label: 'Tổng quan', icon: <FileText className="w-4 h-4" /> },
@@ -396,6 +398,7 @@ export const CaseDetailPage: React.FC = () => {
 
   const RECORD_TABS = [
     { id: 'overview', label: 'Tổng quan', icon: <FileText className="w-4 h-4" /> },
+    { id: 'decision-support', label: 'Hỗ trợ thẩm tra', icon: <Scale className="w-4 h-4" /> },
     { id: 'dossier', label: 'Hồ sơ', icon: <FolderCheck className="w-4 h-4" /> },
     { id: 'legal', label: 'Pháp lý', icon: <Shield className="w-4 h-4" /> },
     { id: 'inspection', label: 'Hiện trường', icon: <ClipboardCheck className="w-4 h-4" />, count: inspections?.length },
@@ -637,11 +640,21 @@ export const CaseDetailPage: React.FC = () => {
                     Thẩm tra Pháp lý (Legal Intelligence)
                   </h3>
                 </div>
-                <Link to={`/cases/${currentCase.id}/legal`}>
-                  <Button variant="outline" size="sm" className="text-xs h-7">
-                    Mở Legal Workspace &rarr;
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    className="text-xs h-7 bg-teal-700 hover:bg-teal-800 text-white"
+                    onClick={() => setActiveTab('decision-support')}
+                  >
+                    Hỗ trợ thẩm tra &rarr;
                   </Button>
-                </Link>
+                  <Link to={`/cases/${currentCase.id}/legal`}>
+                    <Button variant="outline" size="sm" className="text-xs h-7">
+                      Mở Legal Workspace
+                    </Button>
+                  </Link>
+                </div>
               </div>
 
               {legalReviews.length > 0 ? (
@@ -838,6 +851,14 @@ export const CaseDetailPage: React.FC = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* TAB: DECISION SUPPORT (HỖ TRỢ THẨM TRA) */}
+      {activeTab === 'decision-support' && (
+        <DecisionSupportSection
+          caseId={currentCase.id}
+          onRefreshCase={loadCaseDetail}
+        />
       )}
 
       {/* TAB 2: SIGNALS */}

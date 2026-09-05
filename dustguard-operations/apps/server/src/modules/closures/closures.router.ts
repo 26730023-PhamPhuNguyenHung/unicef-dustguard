@@ -54,6 +54,21 @@ closuresRouter.post('/:id/close', requirePermission('case:close'), (req: AuthReq
       return;
     }
 
+    // Check Condition 2b: Tampered or missing evidence assets (Closure Safety Gate)
+    const tamperedEvidence = query<any>(
+      `SELECT id, file_name FROM evidence_assets WHERE case_id = ? AND (integrity_status = 'TAMPERED' OR integrity_status = 'FILE_MISSING')`,
+      [id]
+    );
+    if (tamperedEvidence.length > 0) {
+      res.status(400).json({
+        type: 'https://dustguard.gov.vn/errors/closure-evidence-tampered',
+        title: 'Chứng cứ số không toàn vẹn',
+        status: 400,
+        detail: `Còn ${tamperedEvidence.length} tệp chứng cứ số bị sửa đổi hoặc mất dữ liệu mã băm SHA-256. Không thể đóng hồ sơ.`,
+      });
+      return;
+    }
+
     // Check Condition 3: Legal review exists and REVIEWED
     const reviewedCount = get<{ c: number }>(
       `SELECT count(*) as c FROM legal_reviews WHERE case_id = ? AND status = 'REVIEWED'`,

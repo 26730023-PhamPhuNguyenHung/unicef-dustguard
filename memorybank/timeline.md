@@ -7,7 +7,57 @@
 
 ## 📅 Các Mốc Phát Triển Chính (Milestones)
 
-### 0. [2026-09-05] `ui-ux-production-hardening`: Tinh Chỉnh & Nghiệm Thu Giao Diện Sáng Màu, Không Glassmorphism, 15 Minh Chứng Đa Màn Hình
+### 0. [2026-09-05] `evidence-grounded-decision-engine`: Triển Khai Toàn Diện Động Cơ Ra Quyết Định Dựa Trên Chứng Cứ & Dữ Kiện Thật
+- **Mục tiêu**: Chuyển đổi toàn diện hệ thống thẩm tra và đánh giá rủi ro thành **Evidence-Grounded Decision Support Engine** cấp production theo `"DustGuard Evidence-Grounded Decision Engine — One-shot Build Prompt.md"`.
+- **Phạm vi hoàn tất**:
+  - **Kiến trúc Module Phân Tầng Sạch (Clean Domain Separation)**:
+    - Xây dựng thư mục `dustguard-operations/apps/server/src/modules/decision-support/` gồm 11 submodules chuyên trách: `types`, `facts/factNormalizer`, `sensor-quality/sensorQualityEngine`, `contradictions/contradictionDetector`, `evidence/sufficiencyChecker` & `evidenceMatrix`, `legal/legalSearchEngine` & `statutoryEffectiveChecker`, `rules/ruleEngine`, `risk/riskScorer`, `workflow/workflowRecommender`, `lifecycle/stateMachine`, `closure/closureSafetyGate`.
+  - **Toàn Vẹn Chứng Cứ & Kiểm Định Mật Mã (Zero Fake AI)**:
+    - Xác thực mã băm SHA-256 raw bytes trên tệp đĩa; tệp bị sửa đổi hoặc mất lập tức bị đánh dấu `TAMPERED` / `FILE_MISSING` và loại khỏi căn cứ kết luận (`confidence = 0.0`).
+    - Tuyệt đối không phán quyết `VIOLATION = TRUE` bằng thuật toán máy học; con người giữ vai trò phán quyết tối cao (`human_decisions`).
+  - **Sensor Quality & Temporal Reasoning**:
+    - Kiểm định cảm biến: Chống flatline ($\ge 4$ mẫu bất biến), chống extreme spike ($> 250\ \mu\text{g/m}^3$), phát hiện ngoại lai thống kê MAD/z-score, đo lường độ trễ temporal lag.
+  - **FTS5 Pháp Điển Nâng Cao & Kiểm Tra Hiệu Lực Luật**:
+    - Tra cứu BM25 kết hợp từ điển đồng nghĩa tiếng Việt chuyên ngành bụi & xây dựng (`bụi`, `che chắn`, `rửa xe`, `vận chuyển`, `phun sương`).
+    - Kiểm tra hiệu lực văn bản pháp quy `isLawEffectiveAt(doc, timestamp)` loại trừ văn bản hết hiệu lực hoặc chưa có hiệu lực tại ngày xảy ra sự việc.
+  - **Declarative Versioned Rule Engine (No eval)**:
+    - Định nghĩa quy tắc dạng JSON `ruleDefinitions.json` (Phiên bản `2026.09.05`), không dùng `eval()`.
+    - Sinh `RuleTrace` minh bạch từng điều kiện thực tế vs kỳ vọng.
+  - **Mô Hình Rủi Ro v2 (Risk Scoring v2)**:
+    - Đa thành phần: $\text{RiskScore} = 0.35\text{Base} + 0.20\text{Spatial} + 0.15\text{Temporal} + 0.15\text{Recurrence} + 0.15\text{Impact}$.
+    - Tách biệt `RiskScore` [0..100] và `Confidence` [0.0..1.0]. Chứng minh Invariant 1: Thêm bằng chứng xấu/tampered làm giảm confidence.
+  - **Backend Closure Safety Gate & State Machine**:
+    - Chặn đóng hồ sơ tại API nếu thiếu bằng chứng, có tệp bị sửa đổi, hoặc chưa có xác nhận của cán bộ.
+  - **Giao Diện Hỗ Trợ Thẩm Tra 10 Mục & Explainability Drawer**:
+    - Tích hợp `DecisionSupportSection.tsx` vào `CaseDetailPage.tsx`.
+    - Cung cấp Explainability Drawer ("Vì sao hệ thống đưa ra gợi ý này?"), Bảng Ma trận chứng cứ 2 chiều, Form ký nhận định chuyên viên (`Human Sign-off`).
+    - Giao diện 100% Light Mode, không glassmorphism, touch target $\ge 44\text{px}$.
+  - **Kiểm Thử Toàn Diện**:
+    - Viết test suite `tests/evidence-grounded-decision-engine.test.js`: 10/10 tests PASS 100%.
+    - Regression toàn bộ 87 tests của operations + 12 bước Real Data Zero-seed E2E: PASS 100%.
+    - Ban hành báo cáo kiểm định `docs/audit/DG-DECISION-ENGINE-RUNTIME-AUDIT.md`.
+    - Chụp ảnh minh chứng runtime tại `artifacts/evidence-grounded-decision-support-runtime.png`.
+
+### 1. [2026-09-05] `deep-audit-runtime-auth-rbac-database-ai`: Triển Khai Kiểm Toán Chuyên Sâu Toàn Diện Theo Yêu Cầu PDF
+- **Mục tiêu**: Thực thi trọn vẹn tài liệu `"Dustguard Vn — Deep Product, Runtime, Auth, Rbac, Database & Ai Audit.pdf"`. Đạt chuẩn kiểm định toàn diện mã nguồn, runtime, xác thực, phân quyền, cơ sở dữ liệu và trung thực công nghệ AI.
+- **Phạm vi hoàn tất**:
+  - **4 Deliverables Bắt Buộc**:
+    1. Ban hành `docs/audit/00-ACTUAL-SYSTEM-MAP.md` phản ánh bản đồ hệ thống thực tế (Side A Port 3000/3001, Side B Port 3002/4000, Integration Webhook Handoff, D1 vs SQLite).
+    2. Ban hành `artifacts/clickable-runtime-inventory.json` kiểm kê 356 phần tử tương tác trên toàn bộ 50+ màn hình (326 working, 69 mutations, 34 queries, 162 navigations, 0 dead buttons).
+    3. Ban hành `docs/audit/AI-ACTUAL-USAGE.md` bóc tách thực tế AI: khẳng định FTS5 BM25 search + Deterministic Rule Engine, cam kết Zero Fake AI, vượt qua 4 kịch bản Grounding & Failure Testing.
+    4. Ban hành `docs/audit/FINAL_DEEP_PRODUCT_RUNTIME_AUDIT.md` tổng hợp toàn bộ kết quả kiểm định.
+  - **Xử lý Ưu tiên P0**:
+    - Phát hiện và vá dứt điểm lỗ hổng bảo mật rò rỉ hồ sơ trên `GET /api/cases` và `GET /api/cases/:id` bằng middleware `requireAuth`.
+    - Thiết lập test suite `role-permission-matrix-forensic.test.js` kiểm tra real login cho 8 vai trò, cấm rò rỉ `password_hash`, cô lập quyền hạn 403 Forbidden.
+    - Loại bỏ hoàn toàn `Math.random()` trong sinh `userId` bằng `crypto.randomUUID()`.
+  - **Xử lý Ưu tiên P1**:
+    - Tối ưu hóa hiệu năng truy vấn CSDL (`EXPLAIN QUERY PLAN`): Tạo chỉ mục `idx_evidence_sha256` loại bỏ full-table scan, chỉ mục composite `idx_actions_status_due` và `reports_status_created_idx`.
+    - Chuẩn hóa trang cấu hình hệ thống `/admin/settings` (bảo vệ quyền `system:config`, loại bỏ từ ngữ phóng đại).
+  - **Xử lý Ưu tiên P2**:
+    - Chuẩn hóa ngôn ngữ Zero Jargon UI, thiết kế Light Mode sáng màu không glassmorphism.
+    - Toàn bộ test suites (Community 24 tests, Operations 87 tests, Role Matrix 8 tests) PASS 100%. Cả 3 bản build sạch không lỗi.
+
+### 1. [2026-09-05] `ui-ux-production-hardening`: Tinh Chỉnh & Nghiệm Thu Giao Diện Sáng Màu, Không Glassmorphism, 15 Minh Chứng Đa Màn Hình
 - **Mục tiêu**: Gia cố toàn diện chất lượng hiển thị và trải nghiệm người dùng trên DustGuard VN; đạt chuẩn Pitch-Ready trước Hội đồng Đánh giá; bảo đảm Zero Mock, Zero Fake Numbers, Zero Dead CTAs, High-Contrast Light Mode, Zero Glassmorphism, 1366x768 & 390x844 responsive pass.
 - **Phạm vi hoàn tất**:
   - **Kiểm kê 42 Tuyến Đường (Phase 1)**: Ban hành `docs/audit/UI_ROUTE_INVENTORY.md` phân loại 20 route Side A và 22 route Side B.

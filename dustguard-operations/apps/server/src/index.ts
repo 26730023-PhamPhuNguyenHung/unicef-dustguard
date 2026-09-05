@@ -26,6 +26,7 @@ import { reportsRouter } from './modules/reports/reports.router.js';
 import { searchRouter } from './modules/search/search.router.js';
 import { projectsRouter } from './modules/projects/projects.router.js';
 import { contractorsRouter } from './modules/contractors/contractors.router.js';
+import { decisionSupportRouter } from './modules/decision-support/decisionSupport.router.js';
 import { runMigrations } from './db/migrate.js';
 
 // Auto-run schema migrations and statutory configurations on server startup
@@ -80,6 +81,9 @@ app.use('/api/cases', legalRouter);
 app.use('/api/cases', inspectionsRouter);
 app.use('/api/cases', actionsRouter);
 app.use('/api/cases', evidenceRouter);
+
+// Decision Support Engine (Evidence-Grounded Intelligence)
+app.use('/api', decisionSupportRouter);
 
 // Legal Library & Search & Ingestion
 app.use('/api/legal', legalRouter);

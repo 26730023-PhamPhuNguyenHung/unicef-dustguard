@@ -126,6 +126,13 @@ export const api = {
     decisionPack: (id: string) => request<any>(`/api/cases/${id}/decision-pack`),
     facts: (id: string) => request<{ success: boolean; facts: any[]; total: number }>(`/api/cases/${id}/facts`),
     analysis: (id: string) => request<any>(`/api/cases/${id}/analysis`, { method: 'POST' }),
+    decisionSupport: (id: string) => request<any>(`/api/cases/${id}/decision-support`),
+    submitHumanDecision: (id: string, data: any) =>
+      request<any>(`/api/cases/${id}/human-decisions`, {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }),
+    checkClosureSafety: (id: string) => request<any>(`/api/cases/${id}/closure-safety-check`),
     submitDecision: (id: string, data: any) =>
       request<{ success: boolean; decision: any }>(`/api/cases/${id}/decisions`, {
         method: 'POST',

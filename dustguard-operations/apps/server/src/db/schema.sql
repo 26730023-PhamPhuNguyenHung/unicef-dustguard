@@ -503,7 +503,31 @@ CREATE TABLE IF NOT EXISTS human_decisions (
   reason TEXT NOT NULL,
   analysis_run_id TEXT REFERENCES analysis_runs(id) ON DELETE SET NULL,
   source_snapshot_json TEXT NOT NULL,
+  supersedes_decision_id TEXT REFERENCES human_decisions(id) ON DELETE SET NULL,
+  references_json TEXT,
   created_at TEXT NOT NULL
+);
+
+-- 35. Decision Support Runs (Immutable Provenance Snapshot for Evidence-Grounded Engine)
+CREATE TABLE IF NOT EXISTS decision_support_runs (
+  id TEXT PRIMARY KEY,
+  case_id TEXT NOT NULL REFERENCES cases(id) ON DELETE CASCADE,
+  created_at TEXT NOT NULL,
+  created_by TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  engine_version TEXT NOT NULL,
+  rule_set_version TEXT NOT NULL,
+  legal_corpus_version TEXT NOT NULL,
+  assessment_status TEXT NOT NULL,
+  certainty TEXT NOT NULL,
+  risk_score REAL NOT NULL,
+  risk_confidence REAL NOT NULL,
+  facts_json TEXT NOT NULL,
+  evidence_matrix_json TEXT NOT NULL,
+  rule_trace_json TEXT NOT NULL,
+  contradictions_json TEXT NOT NULL,
+  missing_facts_json TEXT NOT NULL,
+  recommended_actions_json TEXT NOT NULL,
+  validation_status TEXT NOT NULL CHECK (validation_status IN ('VALID', 'REJECTED', 'FAILED'))
 );
 
 -- Indexes for lightning fast queries
@@ -514,8 +538,10 @@ CREATE INDEX IF NOT EXISTS idx_timeline_case_id ON case_timeline(case_id);
 CREATE INDEX IF NOT EXISTS idx_assignments_case_id ON staff_assignments(case_id);
 CREATE INDEX IF NOT EXISTS idx_assignments_staff ON staff_assignments(staff_user_id);
 CREATE INDEX IF NOT EXISTS idx_evidence_case_id ON evidence_assets(case_id);
+CREATE INDEX IF NOT EXISTS idx_evidence_sha256 ON evidence_assets(sha256);
 CREATE INDEX IF NOT EXISTS idx_inspections_case_id ON inspections(case_id);
 CREATE INDEX IF NOT EXISTS idx_actions_case_id ON corrective_actions(case_id);
+CREATE INDEX IF NOT EXISTS idx_actions_status_due ON corrective_actions(status, due_at);
 CREATE INDEX IF NOT EXISTS idx_findings_inspection_id ON inspection_findings(inspection_id);
 CREATE INDEX IF NOT EXISTS idx_notifications_user_unread ON notifications(user_id, read);
 CREATE INDEX IF NOT EXISTS idx_audit_created ON audit_logs(created_at);
@@ -529,6 +555,7 @@ CREATE INDEX IF NOT EXISTS idx_iot_readings_device ON iot_readings(device_id, re
 CREATE INDEX IF NOT EXISTS idx_iot_events_device ON iot_events(device_id, created_at);
 CREATE INDEX IF NOT EXISTS idx_automation_runs_rule ON automation_runs(rule_id, started_at);
 CREATE INDEX IF NOT EXISTS idx_analysis_runs_case ON analysis_runs(case_id, created_at);
+CREATE INDEX IF NOT EXISTS idx_decision_runs_case ON decision_support_runs(case_id, created_at);
 CREATE INDEX IF NOT EXISTS idx_human_decisions_case ON human_decisions(case_id, created_at);
 CREATE INDEX IF NOT EXISTS idx_cases_code ON cases(case_code);
 CREATE INDEX IF NOT EXISTS idx_cases_created_at ON cases(created_at);

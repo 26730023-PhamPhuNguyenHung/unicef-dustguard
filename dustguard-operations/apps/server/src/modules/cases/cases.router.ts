@@ -19,6 +19,9 @@ import { CaseAnalysisService } from './analysis.service.js';
 
 export const casesRouter = Router();
 
+// Toàn bộ các thao tác hồ sơ nghiệp vụ yêu cầu đăng nhập hợp lệ
+casesRouter.use(requireAuth);
+
 // Helper to compute flags and enrich case
 function enrichCase(c: any, currentUserId?: string): Case {
   // Check evidence count
