@@ -21,8 +21,10 @@ import { InspectionListPage } from './pages/InspectionListPage';
 import { InspectionPlanPage } from './pages/InspectionPlanPage';
 import { FieldInspectionPage } from './pages/FieldInspectionPage';
 import { InspectionResultPage } from './pages/InspectionResultPage';
+import { InspectionExportPage } from './pages/InspectionExportPage';
 import { ActionsListPage } from './pages/ActionsListPage';
 import { RemediationReviewPage } from './pages/RemediationReviewPage';
+import { ActionNoticeExportPage } from './pages/ActionNoticeExportPage';
 import { IotDevicesPage } from './pages/IotDevicesPage';
 import { IotDeviceDetailPage } from './pages/IotDeviceDetailPage';
 import { AutomationsPage } from './pages/AutomationsPage';
@@ -103,10 +105,12 @@ export function App() {
               <Route path="inspections/new" element={<InspectionPlanPage />} />
               <Route path="inspections/:id" element={<FieldInspectionPage />} />
               <Route path="inspections/:id/result" element={<InspectionResultPage />} />
+              <Route path="inspections/:id/export" element={<InspectionExportPage />} />
 
               {/* Corrective Actions */}
               <Route path="actions" element={<ActionsListPage />} />
               <Route path="actions/:id/remediation" element={<RemediationReviewPage />} />
+              <Route path="actions/:id/notice" element={<ActionNoticeExportPage />} />
 
               {/* IoT Telemetry */}
               <Route path="iot" element={<IotDevicesPage />} />

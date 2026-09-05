@@ -315,7 +315,7 @@ function parseVietnameseLegalText(text: string) {
     if (chapterMatch) {
       const heading = chapterMatch[2] || (lines[i + 1] && !lines[i + 1].startsWith('Điều') ? lines[++i] : '');
       currentChapter = {
-        id: `sec-parsed-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+        id: `sec-parsed-${Date.now()}-${crypto.randomUUID().substring(0, 6)}`,
         section_type: 'Chapter',
         section_number: `Chương ${chapterMatch[1]}`,
         heading: heading || `Chương ${chapterMatch[1]}`,
@@ -333,7 +333,7 @@ function parseVietnameseLegalText(text: string) {
     if (articleMatch) {
       const heading = articleMatch[2] || (lines[i + 1] && !lines[i + 1].match(/^\d+\./) ? lines[++i] : '');
       currentArticle = {
-        id: `sec-parsed-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+        id: `sec-parsed-${Date.now()}-${crypto.randomUUID().substring(0, 6)}`,
         section_type: 'Article',
         section_number: `Điều ${articleMatch[1]}`,
         heading: heading || `Điều ${articleMatch[1]}`,
@@ -353,7 +353,7 @@ function parseVietnameseLegalText(text: string) {
     const clauseMatch = line.match(/^(\d+)\.\s+(.*)$/);
     if (clauseMatch && currentArticle) {
       currentClause = {
-        id: `sec-parsed-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+        id: `sec-parsed-${Date.now()}-${crypto.randomUUID().substring(0, 6)}`,
         section_type: 'Clause',
         section_number: `Khoản ${clauseMatch[1]}`,
         heading: `Khoản ${clauseMatch[1]} Điều ${currentArticle.section_number.replace('Điều ', '')}`,
@@ -368,7 +368,7 @@ function parseVietnameseLegalText(text: string) {
     const pointMatch = line.match(/^([a-zđ])\)\s+(.*)$/i);
     if (pointMatch && (currentClause || currentArticle)) {
       const point = {
-        id: `sec-parsed-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+        id: `sec-parsed-${Date.now()}-${crypto.randomUUID().substring(0, 6)}`,
         section_type: 'Point',
         section_number: `Điểm ${pointMatch[1].toLowerCase()}`,
         heading: `Điểm ${pointMatch[1].toLowerCase()}`,
@@ -484,7 +484,7 @@ legalRouter.post('/documents', requireAuth, (req: AuthRequest, res) => {
 
   // Flatten and persist sections into legal_sections and legal_sections_fts
   function insertSection(s: any, parentId: string | null = null) {
-    const secId = s.id || `sec-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
+    const secId = s.id || `sec-${Date.now()}-${crypto.randomUUID().substring(0, 6)}`;
     const normalizedType = normalizeSectionType(s.section_type);
     run(
       `INSERT INTO legal_sections (id, document_id, section_type, section_number, heading, content, parent_section_id)

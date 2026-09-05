@@ -1,4 +1,5 @@
 import { Router, Response } from 'express';
+import crypto from 'node:crypto';
 import { CommunityRepository } from '../repositories/index.js';
 import { createPostSchema, createCommentSchema } from '@dustguard/shared';
 import { authenticateToken, optionalAuthenticateToken, AuthRequest } from '../middlewares/auth.js';
@@ -47,7 +48,7 @@ router.post('/:id/posts', authenticateToken, (req: AuthRequest, res: Response): 
     return;
   }
 
-  const postId = `post_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+  const postId = `post_${Date.now()}_${crypto.randomUUID().substring(0, 8)}`;
   const post = CommunityRepository.createPost({
     id: postId,
     communityId: req.params.id,
@@ -75,7 +76,7 @@ router.post('/posts/:postId/comments', authenticateToken, (req: AuthRequest, res
     return;
   }
 
-  const commentId = `cmt_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+  const commentId = `cmt_${Date.now()}_${crypto.randomUUID().substring(0, 8)}`;
   const comment = CommunityRepository.createComment({
     id: commentId,
     postId: req.params.postId,

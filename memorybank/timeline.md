@@ -7,7 +7,44 @@
 
 ## 📅 Các Mốc Phát Triển Chính (Milestones)
 
-### 0. [2026-09-05] `evidence-grounded-decision-engine`: Triển Khai Toàn Diện Động Cơ Ra Quyết Định Dựa Trên Chứng Cứ & Dữ Kiện Thật
+### 0. [2026-09-05] `legacy-feature-salvage-tsx-migration`: Hoàn Tất Cứu Hộ Tính Năng Cũ (Legacy Feature Salvage) & Di Trú Toàn Diện Sang Kiến Trúc TSX 2 Phía (Side A & Side B)
+- **Mục tiêu**: Thực thi trọn vẹn theo `"DustGuard Legacy Feature Salvage → 2-Side TSX Migration Prompt.md"`. Cứu hộ 100% các tính năng tinh hoa từ monolith JSX cũ (`app/`) sang cấu trúc TypeScript/TSX 2 phía sạch sẽ:
+  - **Side A**: `apps/web` (Cộng đồng, người dân, tình nguyện viên thanh niên, nhà thầu bên ngoài) + `apps/server` (Port 3001, CSDL `dustguard-community.db`)
+  - **Side B**: `dustguard-operations/apps/web` (Cán bộ thanh tra, giám sát viên, thẩm định pháp chế, quản trị) + `dustguard-operations/apps/server` (Port 4000, CSDL `operations.db`)
+- **Phạm vi hoàn tất 10 Khoảng Trống (GAP-01 -> GAP-10)**:
+  1. **GAP-01: Cổng Tự Phục Vụ Dành Cho Đơn Vị Thi Công (Contractor Portal - Side A)**:
+     - Xây dựng `ContractorPortalPage.tsx` và `ContractorRemediationPage.tsx` tại `apps/web/src/pages/contractor/`.
+     - Backend route `contractor.routes.ts` mounted tại `/api/contractor` cung cấp thông tin công trình, hành động khắc phục, đếm ngược SLA 48h, và form nộp minh chứng Before/After.
+  2. **GAP-02: Thành Phần Trực Quan So Sánh Trước / Sau Khắc Phục (Before/After Comparison UI)**:
+     - Xây dựng `BeforeAfterComparison.tsx` hỗ trợ chế độ Trượt tương tác (Slider) và Chia đôi (Split View), hiển thị dấu niêm phong mật mã SHA-256 trên cả Side A và Side B (`RemediationReviewPage.tsx`).
+  3. **GAP-03: Đồng Bộ 2 Chiều Xuyên Suốt (Bi-directional Cross-Side Sync - Side B -> Side A)**:
+     - Xây dựng webhook endpoint `POST /api/integrations/operations/sync` trên Side A ánh xạ 12 trạng thái nội bộ Side B sang 6 trạng thái thân thiện cộng đồng Side A.
+     - Dịch vụ `syncService.ts` trên Side B tự động bắn webhook cập nhật case, timeline updates và thông báo người dân khi cán bộ ban hành yêu cầu khắc phục, nhà thầu nộp ảnh, hoặc đóng hồ sơ.
+  4. **GAP-04: Tiện Ích Kiểm Định Bán Kính 50m (50m Geofence Buffer) & Băm Mật Mã Web Crypto SHA-256**:
+     - Hoàn thiện `apps/web/src/utils/geofence.ts` tính khoảng cách Haversine chuẩn xác tới từng mét, đánh giá buffer 50m.
+     - Hoàn thiện `apps/web/src/utils/crypto.ts` băm SHA-256 nhị phân thuần từ byte thật, đảm bảo zero mock.
+  5. **GAP-05 & GAP-06: Ví Tín Chỉ Sinh Viên & Giấy Chứng Nhận Tình Nguyện Điện Tử**:
+     - Hoàn thiện công thức tính `creditCalculator.ts`: Định mức 20 giờ tình nguyện = 4.0 tín chỉ rèn luyện (0.2 tín chỉ / giờ, tối đa 4.0).
+     - Giao diện `YouthCreditsPage.tsx` có KPI cards, thanh tiến độ 20h, nhật ký hoạt động có điểm thưởng (+0.5h ảnh, +0.5h công trình, +0.5h geofence 50m, +1.0h đối chứng before/after).
+     - Modal giấy chứng nhận `YouthCertificateModal.tsx` chuẩn in ấn có mã QR và chữ ký điện tử số.
+  6. **GAP-07: Xưởng Văn Bản Hành Chính Chuẩn A4 (Administrative Document Studio - Side B)**:
+     - Tạo `InspectionExportPage.tsx` (Biên bản kiểm tra hiện trường) và `ActionNoticeExportPage.tsx` (Thông báo yêu cầu khắc phục vi phạm môi trường) chuẩn thể thức văn bản hành chính Việt Nam (Nghị định 30/2020/NĐ-CP).
+     - Khổ A4, font Times New Roman, đầy đủ Quốc hiệu, Tiêu ngữ, Căn cứ pháp lý (Luật BVMT 72/2020/QH14, NĐ 45/2022/NĐ-CP, NĐ 16/2022/NĐ-CP), bảng chữ ký 2 bên, cảnh báo an toàn pháp lý cấm render mộc đỏ giả định. Hỗ trợ in ấn / xuất PDF 1-click qua `window.print()`.
+  7. **GAP-08: Hộp Thư Cảnh Báo Vượt Ngưỡng Môi Trường IoT (Threshold Breach Alert Inbox - Side B)**:
+     - Thêm endpoint `GET /api/iot/alerts` trên Side B server phát hiện trạm vượt chuẩn QCVN 05:2023/BTNMT (PM2.5 > 50 µg/m³, PM10 > 100 µg/m³) hoặc Flatline.
+     - Nâng cấp `IotDevicesPage.tsx` với View Selector: Tab Danh sách trạm và Tab Hộp thư cảnh báo vượt ngưỡng có nút 1-click "Thụ Lý Vụ Việc & Lên Kế Hoạch Kiểm Tra" điều hướng thẳng sang lập biên bản.
+  8. **GAP-09: Vòng Phản Hồi Nghiệm Thu Của Người Dân (Citizen Resolution Feedback Loop - Side A)**:
+     - Backend `POST /api/cases/:id/feedback` lưu đánh giá, mức độ hài lòng, và yêu cầu phúc tra vào bảng `case_feedback` và cập nhật timeline vụ việc.
+     - Component `CitizenFeedbackSection.tsx` nhúng vào `CaseDetailPage.tsx` và `ReportDetailPage.tsx` cho phép người dân chấm sao, đánh giá, yêu cầu phúc tra nếu hiện trường chưa dọn sạch bụi.
+  9. **GAP-10: Nâng Cấp Nộp Kết Quả Nhiệm Vụ Cộng Đồng (Enhanced Community Task Submissions - Side A)**:
+     - Nâng cấp form modal trong `TasksPage.tsx`: Hỗ trợ chụp/chọn ảnh hiện trường, tự động tính mã băm SHA-256 Web Crypto, lấy định vị GPS hiện trường, kiểm định Geofence 50m công trình để cộng điểm thưởng giờ tình nguyện.
+- **Xác Thực Kiểm Thử Toàn Diện**:
+  - `node --test tests/youth-credits.test.js tests/contractor-flow.test.js tests/cross-side-sync.test.js tests/community-api.test.js tests/feedback-and-tasks.test.js`: **35/35 tests PASS 100% (1.1s)**.
+  - `npm test --prefix dustguard-operations`: **97/97 tests PASS 100%** + 12-step Real Data Zero-seed E2E PASS.
+  - 100% build pass: `apps/server` (tsc), `apps/web` (vite), `dustguard-operations/apps/server` (tsc), `dustguard-operations/apps/web` (vite), `@dustguard/shared` (tsc).
+  - Không xóa thư mục `app/` cũ theo đúng yêu cầu bảo toàn của Section 30.
+
+### 1. [2026-09-05] `evidence-grounded-decision-engine`: Triển Khai Toàn Diện Động Cơ Ra Quyết Định Dựa Trên Chứng Cứ & Dữ Kiện Thật
 - **Mục tiêu**: Chuyển đổi toàn diện hệ thống thẩm tra và đánh giá rủi ro thành **Evidence-Grounded Decision Support Engine** cấp production theo `"DustGuard Evidence-Grounded Decision Engine — One-shot Build Prompt.md"`.
 - **Phạm vi hoàn tất**:
   - **Kiến trúc Module Phân Tầng Sạch (Clean Domain Separation)**:

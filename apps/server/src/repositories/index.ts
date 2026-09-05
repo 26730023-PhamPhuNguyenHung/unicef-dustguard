@@ -464,7 +464,7 @@ export class CaseRepository {
         INSERT INTO case_updates (id, case_id, update_type, title, content, old_status, new_status, created_by, is_public, created_at)
         VALUES (?, ?, 'status_change', ?, ?, ?, ?, ?, ?, ?)
       `, [
-        `upd_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+        `upd_${Date.now()}_${crypto.randomUUID().substring(0, 8)}`,
         id,
         title,
         content,
@@ -491,7 +491,7 @@ export class CaseRepository {
       INSERT INTO case_updates (id, case_id, update_type, title, content, created_by, is_public, created_at)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `, [
-      `upd_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+      `upd_${Date.now()}_${crypto.randomUUID().substring(0, 8)}`,
       id,
       data.updateType,
       data.title,
@@ -834,13 +834,43 @@ export class TaskRepository {
     return this.findById(taskId);
   }
 
-  static submit(taskId: string, userId: string, result: string, note: string) {
+  static submit(
+    taskId: string,
+    userId: string,
+    result: string,
+    note: string,
+    extra?: {
+      evidenceHash?: string;
+      evidenceUrl?: string;
+      latitude?: number;
+      longitude?: number;
+      isWithin50m?: boolean;
+    }
+  ) {
     const now = new Date().toISOString();
     return sqliteClient.transaction(() => {
+      try { sqliteClient.run(`ALTER TABLE task_submissions ADD COLUMN evidence_hash TEXT`); } catch {}
+      try { sqliteClient.run(`ALTER TABLE task_submissions ADD COLUMN evidence_url TEXT`); } catch {}
+      try { sqliteClient.run(`ALTER TABLE task_submissions ADD COLUMN latitude REAL`); } catch {}
+      try { sqliteClient.run(`ALTER TABLE task_submissions ADD COLUMN longitude REAL`); } catch {}
+      try { sqliteClient.run(`ALTER TABLE task_submissions ADD COLUMN is_within_50m INTEGER`); } catch {}
+
       sqliteClient.run(`
-        INSERT INTO task_submissions (id, task_id, user_id, result, note, submitted_at)
-        VALUES (?, ?, ?, ?, ?, ?)
-      `, [`sub_${taskId}_${Date.now()}`, taskId, userId, result, note, now]);
+        INSERT INTO task_submissions (id, task_id, user_id, result, note, evidence_hash, evidence_url, latitude, longitude, is_within_50m, submitted_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `, [
+        `sub_${taskId}_${Date.now()}`,
+        taskId,
+        userId,
+        result,
+        note,
+        extra?.evidenceHash || null,
+        extra?.evidenceUrl || null,
+        extra?.latitude || null,
+        extra?.longitude || null,
+        extra?.isWithin50m ? 1 : 0,
+        now
+      ]);
 
       sqliteClient.run(`
         UPDATE verification_tasks 
@@ -888,7 +918,7 @@ export class NotificationRepository {
       INSERT INTO notifications (id, user_id, type, title, message, entity_type, entity_id, is_read, created_at)
       VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?)
     `, [
-      `notif_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+      `notif_${Date.now()}_${crypto.randomUUID().substring(0, 8)}`,
       data.userId,
       data.type,
       data.title,
@@ -915,7 +945,7 @@ export class AuditRepository {
       INSERT INTO audit_logs (id, actor_id, action, entity_type, entity_id, metadata_json, ip_address, created_at)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `, [
-      `aud_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+      `aud_${Date.now()}_${crypto.randomUUID().substring(0, 8)}`,
       data.actorId || null,
       data.action,
       data.entityType,
@@ -1025,24 +1055,36 @@ export class DashboardRepository {
       GROUP BY district
     `);
 
+    // Tính toán báo cáo 7 ngày gần nhất từ dữ liệu thực
+    const days = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+    const reports7Days = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const dateStr = d.toISOString().slice(0, 10);
+      const dayLabel = days[d.getDay()];
+      const count = sqliteClient.get('SELECT COUNT(*) as count FROM reports WHERE date(created_at) = ?', [dateStr])?.count || 0;
+      reports7Days.push({ date: dayLabel, count });
+    }
+
+    const possibleDuplicates = sqliteClient.get(
+      `SELECT COUNT(*) as count FROM reports r1
+       WHERE status = 'submitted' AND EXISTS (
+         SELECT 1 FROM reports r2 
+         WHERE r2.id != r1.id AND r2.district = r1.district AND ABS(r2.latitude - r1.latitude) < 0.001 AND ABS(r2.longitude - r1.longitude) < 0.001
+       )`
+    )?.count || 0;
+
     return {
       stats: {
-        reportsToday: Math.max(reportsToday, 3),
+        reportsToday,
         needsReview,
-        possibleDuplicates: 2,
+        possibleDuplicates,
         activeCases,
         resolvedThisWeek
       },
       charts: {
-        reports7Days: [
-          { date: 'T2', count: 4 },
-          { date: 'T3', count: 6 },
-          { date: 'T4', count: 3 },
-          { date: 'T5', count: 8 },
-          { date: 'T6', count: 5 },
-          { date: 'T7', count: 7 },
-          { date: 'CN', count: 4 }
-        ],
+        reports7Days,
         statusDistribution: statusRows.map((s: any) => ({ status: s.status, count: s.count })),
         districtActivity: districtRows
       }
@@ -1054,30 +1096,41 @@ export class DashboardRepository {
     const totalReports = sqliteClient.get('SELECT COUNT(*) as count FROM reports')?.count || 0;
     const activeCases = sqliteClient.get('SELECT COUNT(*) as count FROM cases WHERE status NOT IN (\'closed\', \'archived\')')?.count || 0;
     const resolvedCases = sqliteClient.get('SELECT COUNT(*) as count FROM cases WHERE status = \'resolved\'')?.count || 0;
+    const newUsersThisMonth = sqliteClient.get("SELECT COUNT(*) as count FROM users WHERE created_at >= date('now', 'start of month')")?.count || 0;
+    const moderationBacklogCount = sqliteClient.get("SELECT COUNT(*) as count FROM reports WHERE status IN ('submitted', 'reviewing')")?.count || 0;
+    const mediaSize = sqliteClient.get("SELECT COALESCE(SUM(file_size), 0) as total FROM report_media")?.total || 0;
+
+    // Tính toán tăng trưởng người dùng & hoạt động 4 tháng gần nhất từ CSDL thật
+    const userGrowth = [];
+    const reportActivity = [];
+    for (let i = 3; i >= 0; i--) {
+      const d = new Date();
+      d.setMonth(d.getMonth() - i);
+      const monthStr = `T${d.getMonth() + 1}`;
+      const startOfMonth = new Date(d.getFullYear(), d.getMonth(), 1).toISOString();
+      const endOfMonth = new Date(d.getFullYear(), d.getMonth() + 1, 1).toISOString();
+
+      const uCount = sqliteClient.get("SELECT COUNT(*) as count FROM users WHERE created_at < ?", [endOfMonth])?.count || 0;
+      userGrowth.push({ month: monthStr, users: uCount });
+
+      const rCount = sqliteClient.get("SELECT COUNT(*) as count FROM reports WHERE created_at >= ? AND created_at < ?", [startOfMonth, endOfMonth])?.count || 0;
+      const cCount = sqliteClient.get("SELECT COUNT(*) as count FROM cases WHERE created_at >= ? AND created_at < ?", [startOfMonth, endOfMonth])?.count || 0;
+      reportActivity.push({ month: monthStr, reports: rCount, cases: cCount });
+    }
 
     return {
       stats: {
         totalUsers,
-        newUsersThisMonth: 12,
+        newUsersThisMonth,
         totalReports,
         activeCases,
         resolvedCases,
-        storageUsageBytes: 1024 * 1024 * 14.5,
-        moderationBacklogCount: 4
+        storageUsageBytes: Number(mediaSize),
+        moderationBacklogCount
       },
       charts: {
-        userGrowth: [
-          { month: 'T5', users: 4 },
-          { month: 'T6', users: 8 },
-          { month: 'T7', users: 12 },
-          { month: 'T8', users: 16 }
-        ],
-        reportActivity: [
-          { month: 'T5', reports: 10, cases: 4 },
-          { month: 'T6', reports: 18, cases: 8 },
-          { month: 'T7', reports: 24, cases: 12 },
-          { month: 'T8', reports: 32, cases: 15 }
-        ]
+        userGrowth,
+        reportActivity
       }
     };
   }

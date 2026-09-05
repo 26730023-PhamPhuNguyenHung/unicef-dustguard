@@ -1,4 +1,5 @@
 import { Router, Response } from 'express';
+import crypto from 'node:crypto';
 import { ReportRepository, AuditRepository } from '../repositories/index.js';
 import { createReportSchema } from '@dustguard/shared';
 import { authenticateToken, optionalAuthenticateToken, AuthRequest } from '../middlewares/auth.js';
@@ -83,9 +84,9 @@ router.post('/', authenticateToken, (req: AuthRequest, res: Response): void => {
     }
 
     const year = new Date().getFullYear();
-    const randomCode = Math.floor(1000 + Math.random() * 9000);
+    const randomCode = crypto.randomInt(1000, 10000);
     const reportCode = `DG-C-${year}-${randomCode}`;
-    const reportId = `rep_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+    const reportId = `rep_${Date.now()}_${crypto.randomUUID().substring(0, 8)}`;
 
     const newReport = ReportRepository.create({
       id: reportId,
@@ -111,7 +112,7 @@ router.post('/', authenticateToken, (req: AuthRequest, res: Response): void => {
     if (validated.data.mediaFiles && validated.data.mediaFiles.length > 0) {
       for (const m of validated.data.mediaFiles) {
         ReportRepository.addMedia({
-          id: `med_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+          id: `med_${Date.now()}_${crypto.randomUUID().substring(0, 8)}`,
           reportId,
           uploadedBy: req.user!.id,
           fileName: m.fileName,
@@ -196,7 +197,7 @@ router.post('/:id/media', authenticateToken, uploadMiddleware.single('file'), (r
   const mimeType = req.file ? req.file.mimetype : 'image/jpeg';
   const fileSize = req.file ? req.file.size : 1024;
 
-  const mediaId = `med_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+  const mediaId = `med_${Date.now()}_${crypto.randomUUID().substring(0, 8)}`;
   ReportRepository.addMedia({
     id: mediaId,
     reportId: report.id,

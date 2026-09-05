@@ -55,12 +55,52 @@ iotRouter.get('/devices', requireAuth, (req: Request, res: Response) => {
   res.json({ success: true, data: processed, devices: processed });
 });
 
+// 1c. Alerts & Threshold Breach Inbox (QCVN 05:2023/BTNMT: PM2.5 > 50, PM10 > 100)
+iotRouter.get('/alerts', requireAuth, (_req: Request, res: Response) => {
+  const alerts = query<any>(`
+    SELECT 
+      d.id as device_id,
+      d.device_code,
+      d.name as device_name,
+      d.location_text,
+      d.status as device_status,
+      d.project_id,
+      r.id as reading_id,
+      r.pm25,
+      r.pm10,
+      r.recorded_at,
+      r.integrity_status,
+      CASE
+        WHEN r.pm25 > 100 OR r.pm10 > 200 THEN 'CRITICAL'
+        WHEN r.pm25 > 50 OR r.pm10 > 100 THEN 'HIGH'
+        WHEN d.status = 'FAULTY' THEN 'HIGH'
+        ELSE 'MEDIUM'
+      END as severity,
+      CASE
+        WHEN d.status = 'FAULTY' THEN 'Cảm biến treo số liệu (Flatline)'
+        WHEN r.pm25 > 100 THEN 'Ô nhiễm PM2.5 mức nguy hại (>100 µg/m³)'
+        WHEN r.pm25 > 50 THEN 'Vượt ngưỡng bụi mịn PM2.5 QCVN 05:2023 (>50 µg/m³)'
+        WHEN r.pm10 > 100 THEN 'Vượt ngưỡng bụi thô PM10 QCVN 05:2023 (>100 µg/m³)'
+        ELSE 'Cảnh báo cảm biến'
+      END as alert_title
+    FROM iot_devices d
+    JOIN iot_readings r ON r.device_id = d.id
+    WHERE r.id IN (
+      SELECT id FROM iot_readings WHERE device_id = d.id ORDER BY recorded_at DESC LIMIT 1
+    )
+    AND (r.pm25 > 50 OR r.pm10 > 100 OR d.status = 'FAULTY')
+    ORDER BY r.recorded_at DESC
+  `);
+
+  res.json({ success: true, alerts });
+});
+
 // 1b. Register New IoT Device
 iotRouter.post('/devices', requireAuth, (req: Request, res: Response) => {
   const {
     device_code,
     name,
-    location_text,
+    location_text = req.body.location_name,
     latitude = 10.7769,
     longitude = 106.7009,
     project_id,
@@ -110,8 +150,9 @@ iotRouter.post('/devices', requireAuth, (req: Request, res: Response) => {
   res.status(201).json({
     success: true,
     message: 'Đăng ký trạm quan trắc IoT thành công!',
-    device: created,
+    device: { ...created, hmac_key: secretKey },
     secret_key: secretKey,
+    hmac_key: secretKey,
   });
 });
 
@@ -339,9 +380,15 @@ iotRouter.get('/devices/:id/readings', requireAuth, (req: Request, res: Response
   res.json({ success: true, data: readings, readings });
 });
 
-// 4. Ingest Route (Firmware APM2000 / ESP32 Endpoint)
-iotRouter.post('/ingest', (req: Request, res: Response) => {
-  const { sensorCode, pm10, pm25, timestamp, signature, temperature, humidity } = req.body;
+// 4. Ingest & Telemetry Route (Firmware APM2000 / ESP32 Endpoint)
+const handleTelemetryIngest = (req: Request, res: Response): void => {
+  const sensorCode = req.body.sensorCode || req.body.sensor_code || req.body.device_code || (req.body.device_id ? queryOne<any>('SELECT device_code FROM iot_devices WHERE id = ?', [req.body.device_id])?.device_code : undefined);
+  const pm10 = req.body.pm10;
+  const pm25 = req.body.pm25;
+  const timestamp = req.body.timestamp;
+  const signature = req.body.signature || req.headers['x-device-signature'] || req.headers['x-signature'];
+  const temperature = req.body.temperature;
+  const humidity = req.body.humidity;
 
   if (!sensorCode || pm10 === undefined || pm25 === undefined || !timestamp || !signature) {
     res.status(400).json({
@@ -351,7 +398,7 @@ iotRouter.post('/ingest', (req: Request, res: Response) => {
     return;
   }
 
-  const device = queryOne<any>(`SELECT * FROM iot_devices WHERE device_code = ?`, [sensorCode]);
+  const device = queryOne<any>(`SELECT * FROM iot_devices WHERE device_code = ? OR id = ?`, [sensorCode, req.body.device_id || sensorCode]);
   if (!device) {
     res.status(403).json({
       success: false,
@@ -360,15 +407,23 @@ iotRouter.post('/ingest', (req: Request, res: Response) => {
     return;
   }
 
-  // 1. Verify HMAC-SHA256
-  const canonicalMsg = buildCanonicalMessage(sensorCode, Number(pm10), Number(pm25), timestamp);
-  const expectedSig = crypto
+  // 1. Verify HMAC-SHA256 (Hỗ trợ cả Canonical format ESP32 và JSON payload format)
+  const canonicalMsg = buildCanonicalMessage(device.device_code, Number(pm10), Number(pm25), timestamp);
+  const expectedSigCanonical = crypto
     .createHmac('sha256', device.secret_reference)
     .update(canonicalMsg)
     .digest('hex')
     .toLowerCase();
 
-  const isSigValid = timingSafeEqual(expectedSig, String(signature).trim().toLowerCase());
+  const expectedSigJson = crypto
+    .createHmac('sha256', device.secret_reference)
+    .update(JSON.stringify(req.body))
+    .digest('hex')
+    .toLowerCase();
+
+  const isSigValid = timingSafeEqual(expectedSigCanonical, String(signature).trim().toLowerCase()) ||
+                     timingSafeEqual(expectedSigJson, String(signature).trim().toLowerCase());
+
   if (!isSigValid) {
     res.status(403).json({
       success: false,
@@ -434,7 +489,7 @@ iotRouter.post('/ingest', (req: Request, res: Response) => {
     }
   }
 
-  const readingId = `read-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
+  const readingId = `read-${Date.now()}-${crypto.randomUUID().substring(0, 6)}`;
 
   transaction(() => {
     // Insert reading
@@ -515,4 +570,7 @@ iotRouter.post('/ingest', (req: Request, res: Response) => {
       is_flatline: isFlatline,
     },
   });
-});
+};
+
+iotRouter.post('/ingest', handleTelemetryIngest);
+iotRouter.post('/telemetry', handleTelemetryIngest);

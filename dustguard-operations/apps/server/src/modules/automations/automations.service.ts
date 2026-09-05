@@ -26,7 +26,7 @@ export function dispatchAutomationEvent(
   const runIds: string[] = [];
 
   for (const rule of matchingRules) {
-    const runId = `run-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
+    const runId = `run-${Date.now()}-${crypto.randomUUID().substring(0, 6)}`;
     const startedAt = new Date().toISOString();
 
     try {
@@ -69,7 +69,7 @@ export function dispatchAutomationEvent(
 
       for (const action of actions) {
         if (action.type === 'CREATE_TASK') {
-          const taskId = `task-auto-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
+          const taskId = `task-auto-${Date.now()}-${crypto.randomUUID().substring(0, 6)}`;
           const dueDays = action.due_days || 1;
           const assignedTo = payload.assigned_staff_id || 'usr-staff-1';
           const title = action.title || `Tác vụ tự động cho ${triggerEntityType}`;
@@ -83,7 +83,7 @@ export function dispatchAutomationEvent(
           );
           executedActions.push({ action: 'CREATE_TASK', taskId });
         } else if (action.type === 'CREATE_NOTIFICATION') {
-          const notifId = `notif-auto-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
+          const notifId = `notif-auto-${Date.now()}-${crypto.randomUUID().substring(0, 6)}`;
           const targetUser = payload.assigned_staff_id || 'usr-staff-1';
           const title = action.title || 'Thông báo tự động từ hệ thống';
           const msg = action.message || `Sự kiện ${eventType} đã kích hoạt cho ${triggerEntityType} #${triggerEntityId}`;
@@ -98,7 +98,7 @@ export function dispatchAutomationEvent(
         } else if (action.type === 'NOTIFY_SUPERVISOR') {
           const supervisors = query<any>(`SELECT id FROM users WHERE role = 'supervisor' AND active = 1`);
           for (const sup of supervisors) {
-            const notifId = `notif-sup-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
+            const notifId = `notif-sup-${Date.now()}-${crypto.randomUUID().substring(0, 6)}`;
             run(
               `INSERT INTO notifications (id, user_id, type, title, message, link, read, created_at)
                VALUES (?, ?, 'ESCALATION', 'Cảnh báo giám sát tự động', ?, ?, 0, datetime('now'))`,

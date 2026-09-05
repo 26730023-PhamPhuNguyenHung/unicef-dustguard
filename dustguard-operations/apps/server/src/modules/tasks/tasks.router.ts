@@ -1,4 +1,5 @@
 import { Router, Request, Response } from 'express';
+import crypto from 'node:crypto';
 import { query, queryOne, run } from '../../db/connection.js';
 import { requireAuth } from '../../middleware/auth.js';
 import { requireCapability } from '../../middleware/rbac.js';
@@ -171,7 +172,7 @@ tasksRouter.post('/', requireAuth, requireCapability('task:update'), (req: Reque
     return;
   }
 
-  const id = `task-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
+  const id = `task-${Date.now()}-${crypto.randomUUID().substring(0, 6)}`;
   const finalDueAt = due_at || new Date(Date.now() + 2 * 86400000).toISOString();
   const initialStatus = 'OPEN';
 

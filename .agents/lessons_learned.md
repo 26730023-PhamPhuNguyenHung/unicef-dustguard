@@ -5,9 +5,30 @@
 
 ---
 
-## 📅 Bài học từ Dự án: DustGuard Operations (2026-09-05)
+## 📅 Bài học từ Dự án: DustGuard Operations & Community (2026-09-05)
 
-### 0. Evidence-Grounded Decision Engine: Clean Domain Architecture, Sensor Verification & Declarative Explainability
+### 0. Legacy Feature Salvage & 2-Side TSX Migration: Kiến Trúc Phân Định Ranh Giới Khách Thể, Đồng Bộ Webhook Trạng Thái & Thể Thức Văn Bản Hành Chính A4
+- **Vấn đề**:
+  - **Nhầm Lẫn Quyền Sở Hữu Đối Tượng (Actor Domain Confusion)**: Đơn vị thi công (Contractor) là chủ thể bên ngoài chịu trách nhiệm khắc phục hiện trường, không phải cán bộ công quyền; nếu đặt cổng nộp báo cáo của nhà thầu vào phân hệ nội bộ Side B (`dustguard-operations`) sẽ làm thủng ranh giới bảo mật mạng nội bộ và phá vỡ mô hình phân quyền RBAC.
+  - **Bất Đồng Bộ Trạng Thái Giữa 2 Phân Hệ (Cross-Side Status Drift)**: Khi hồ sơ ở Side B chuyển từ `INSPECTION_PENDING` sang `ACTION_REQUIRED` hoặc `CLOSED`, nếu người dân ở Side A không nhận được cập nhật tức thì, họ sẽ có cảm giác chính quyền "chìm xuồng" phản ánh của mình.
+  - **Thể Thức Văn Bản Hành Chính Sai Quy Chuẩn**: Khi in ấn biên bản vi phạm hoặc thông báo khắc phục từ web app, việc cố render hình ảnh con dấu mộc đỏ giả định tạo ra rủi ro pháp lý nghiêm trọng (giả mạo con dấu nhà nước). Đồng thời, việc in trực tiếp giao diện màn hình web sẽ dính header, sidebar, nút bấm điều hướng.
+  - **Đánh Giá Một Chiều (Lack of Citizen Feedback Loop)**: Vụ việc đóng lại khi cán bộ nghiệm thu trên hệ thống nhưng người dân tại khu vực không được hỏi ý kiến xem "Hiện trường đã thực sự sạch bụi chưa?", dẫn đến khiếu nại vượt cấp nếu nhà thầu chỉ đối phó tạm bợ.
+- **Giải pháp chuẩn hóa**:
+  1. **Tách Biệt Ranh Giới 2 Phía (2-Side Boundary)**:
+     - Side A (`apps/web` + `apps/server`) là không gian công khai phục vụ Người dân, Thanh niên tình nguyện và Đơn vị thi công bên ngoài (truy cập nhanh qua Secure Token).
+     - Side B (`dustguard-operations`) là không gian chuyên môn nội bộ bảo vệ nghiêm ngặt dành cho Cán bộ điều phối, Tổ thanh tra hiện trường, Thẩm định pháp chế và Quản trị viên.
+  2. **Bi-directional Webhook Sync & Trạng Thái Thân Thiện**:
+     - Ánh xạ 12 trạng thái chi tiết của Side B sang 6 trạng thái dễ hiểu của Side A (`submitted` -> `in_review` -> `forwarded` -> `in_progress` -> `resolved` -> `closed`).
+     - Webhook trigger tự động ghi nhận vào bảng `case_updates` và tạo `notifications` đẩy về thiết bị người dân ngay lập tức.
+  3. **Chuẩn Văn Bản Hành Chính Nghị Định 30/2020/NĐ-CP & Zero Fake Seal**:
+     - Thiết lập `@media print` ẩn 100% thanh điều hướng, nút bấm, padding màn hình; định dạng khổ A4 (`20mm 15mm 20mm 25mm`), font Times New Roman, Quốc hiệu, Tiêu ngữ, Căn cứ luật định rõ ràng.
+     - Cam kết pháp lý: Tuyệt đối không render con dấu mộc đỏ đồ họa; văn bản được in ra để các bên ký tên và đóng dấu mộc thực tế.
+  4. **Vòng Phản Hồi Nghiệm Thu & Phúc Tra Hiện Trường (Citizen Feedback Loop)**:
+     - Cho phép người dân chấm điểm mức độ hài lòng, gửi nhận xét và yêu cầu phúc tra lại hiện trường nếu bụi vẫn phát tán. Mọi đánh giá được lưu bền vững vào `case_feedback` và hiển thị minh bạch.
+  5. **Xác Thực Geofence 50m & Băm Mật Mã Web Crypto SHA-256 Cho Nhiệm Vụ Tình Nguyện**:
+     - Định vị GPS so khớp bán kính 50m của công trình bằng công thức Haversine; tính mã băm SHA-256 từ mảng byte nhị phân của ảnh đối chứng để quy đổi minh bạch ra giờ tình nguyện chuẩn hóa: **20 giờ = 4.0 tín chỉ rèn luyện**.
+
+### 1. Evidence-Grounded Decision Engine: Clean Domain Architecture, Sensor Verification & Declarative Explainability
 - **Vấn đề**:
   - **Monolithic Analysis Service**: Việc dồn toàn bộ logic chuẩn hóa dữ kiện, truy vấn FTS5, đánh giá completeness, tính toán rủi ro và sinh khuyến nghị vào một file `analysis.service.ts` dài 500+ dòng khiến code khó bảo trì, khó unit test từng thành phần, và dễ gây lỗi lan truyền (coupling).
   - **Thiếu Kiểm Định Dữ Liệu Cảm Biến (Sensor Spoofing / Faulty Data)**: Cảm biến IoT môi trường ngoài thực tế rất hay bị treo giá trị (Flatline do đứt cáp kết nối) hoặc nhảy vọt đột biến (Extreme Spike do côn trùng/hơi ẩm bám vào buồng đo quang học). Nếu nạp thẳng dữ liệu lỗi vào Rule Engine mà không qua lọc chất lượng sẽ dẫn đến cảnh báo sai lệch (False Positive).

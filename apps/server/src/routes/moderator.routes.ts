@@ -1,4 +1,5 @@
 import { Router, Response } from 'express';
+import crypto from 'node:crypto';
 import { ReportRepository, CaseRepository, AuditRepository, NotificationRepository } from '../repositories/index.js';
 import { sqliteClient } from '../db/sqlite-client.js';
 import { updateCaseStatusSchema, moderatorRejectReportSchema } from '@dustguard/shared';
@@ -69,8 +70,8 @@ router.post('/reports/:id/verify', (req: AuthRequest, res: Response): void => {
   } else if (action === 'create_case' || caseTitle) {
     // Tạo case mới
     const year = new Date().getFullYear();
-    const caseCode = `DG-C-${year}-${Math.floor(1000 + Math.random() * 9000)}`;
-    const caseId = `case_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+    const caseCode = `DG-C-${year}-${crypto.randomInt(1000, 10000)}`;
+    const caseId = `case_${Date.now()}_${crypto.randomUUID().substring(0, 8)}`;
 
     const newCase = CaseRepository.create({
       id: caseId,
@@ -156,8 +157,8 @@ router.post('/cases', (req: AuthRequest, res: Response): void => {
   }
 
   const year = new Date().getFullYear();
-  const caseCode = `DG-C-${year}-${Math.floor(1000 + Math.random() * 9000)}`;
-  const caseId = `case_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+  const caseCode = `DG-C-${year}-${crypto.randomInt(1000, 10000)}`;
+  const caseId = `case_${Date.now()}_${crypto.randomUUID().substring(0, 8)}`;
 
   const newCase = CaseRepository.create({
     id: caseId,
@@ -292,11 +293,15 @@ router.post('/reports/:id/merge', (req: AuthRequest, res: Response): void => {
   res.json({ success: true, data: { message: 'Đã gộp phản ánh thành công.', targetCaseId } });
 });
 
-// 5. Cập nhật trạng thái case (cho Kanban điều phối)
-router.patch('/cases/:id/status', (req: AuthRequest, res: Response): void => {
+// 5. Cập nhật trạng thái case (cho Kanban điều phối) - Hỗ trợ cả PATCH và PUT
+const handleCaseStatusUpdate = (req: AuthRequest, res: Response): void => {
+  const newStatus = req.body.newStatus || req.body.status;
   const rawBody = {
     ...req.body,
-    newStatus: req.body.newStatus || req.body.status
+    newStatus,
+    title: req.body.title || `Cập nhật trạng thái: ${newStatus}`,
+    content: req.body.content || req.body.reason || `Vụ việc được chuyển trạng thái sang ${newStatus}`,
+    isPublic: req.body.isPublic !== undefined ? req.body.isPublic : true
   };
   const validated = updateCaseStatusSchema.safeParse(rawBody);
   if (!validated.success) {
@@ -354,7 +359,10 @@ router.patch('/cases/:id/status', (req: AuthRequest, res: Response): void => {
   }
 
   res.json({ success: true, data: updatedCase });
-});
+};
+
+router.patch('/cases/:id/status', handleCaseStatusUpdate);
+router.put('/cases/:id/status', handleCaseStatusUpdate);
 
 // 6. Hàng đợi kiểm duyệt nội dung bị báo cáo
 router.get('/content', (req, res: Response): void => {

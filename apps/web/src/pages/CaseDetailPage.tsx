@@ -4,6 +4,7 @@ import { apiRequest } from '../api/client.js';
 import { StatusBadge } from '../components/common/StatusBadge.js';
 import { LeafletMap } from '../components/common/LeafletMap.js';
 import { LoadingSkeleton } from '../components/common/LoadingSkeleton.js';
+import { CitizenFeedbackSection } from '../components/common/CitizenFeedbackSection.js';
 import { usePermission } from '../utils/permissions.js';
 import { CATEGORY_LABELS } from '@dustguard/shared';
 import {
@@ -448,6 +449,12 @@ export const CaseDetailPage: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Đánh giá phản hồi nghiệm thu của cộng đồng */}
+      <CitizenFeedbackSection
+        caseId={caseData.id}
+        isClosedOrResolved={['resolved', 'closed', 'RESOLVED', 'CLOSED'].includes(caseData.status)}
+      />
     </div>
   );
 };

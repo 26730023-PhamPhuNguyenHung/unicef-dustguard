@@ -5,6 +5,11 @@ import { authenticateToken, requireRole } from '../middlewares/auth.js';
 const router = Router();
 
 // Dashboard cộng đồng công khai
+router.get('/', (req, res: Response): void => {
+  const data = DashboardRepository.getCommunityDashboard();
+  res.json({ success: true, data });
+});
+
 router.get('/community', (req, res: Response): void => {
   const data = DashboardRepository.getCommunityDashboard();
   res.json({ success: true, data });

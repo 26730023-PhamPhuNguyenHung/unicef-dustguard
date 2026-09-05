@@ -1,18 +1,37 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../api/client';
 import { useToast } from '../context/ToastContext';
-import { Cpu, Activity, AlertCircle, Wifi, WifiOff, ShieldCheck, Clock, MapPin, ChevronRight, Plus, X } from 'lucide-react';
+import {
+  Cpu,
+  Activity,
+  AlertCircle,
+  Wifi,
+  WifiOff,
+  ShieldCheck,
+  Clock,
+  MapPin,
+  ChevronRight,
+  Plus,
+  X,
+  Bell,
+  Flame,
+  FilePlus,
+} from 'lucide-react';
 import { Button } from '../components/common/Button';
 
 export const IotDevicesPage: React.FC = () => {
+  const navigate = useNavigate();
   const { addToast, success, error } = useToast();
   const [devices, setDevices] = useState<any[]>([]);
+  const [alerts, setAlerts] = useState<any[]>([]);
   const [projects, setProjects] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeView, setActiveView] = useState<'devices' | 'alerts'>('devices');
   const [filterStatus, setFilterStatus] = useState<string>('ALL');
   const [modalOpen, setModalOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [creatingCaseId, setCreatingCaseId] = useState<string | null>(null);
 
   // Form State
   const [deviceCode, setDeviceCode] = useState('');
@@ -23,20 +42,45 @@ export const IotDevicesPage: React.FC = () => {
   const [longitude, setLongitude] = useState(105.8542);
 
   useEffect(() => {
-    loadDevices();
+    loadData();
     api.projects.list().then(res => setProjects(res.projects || [])).catch(() => {});
   }, []);
 
-  const loadDevices = async () => {
+  const loadData = async () => {
     try {
       setLoading(true);
-      const res: any = await api.iot.devices();
-      const list = Array.isArray(res) ? res : res.devices || res.data || [];
+      const [devRes, alertRes]: any = await Promise.all([
+        api.iot.devices(),
+        api.iot.alerts().catch(() => ({ alerts: [] })),
+      ]);
+      const list = Array.isArray(devRes) ? devRes : devRes.devices || devRes.data || [];
       setDevices(list);
+      setAlerts(alertRes?.alerts || []);
     } catch (err: any) {
-      addToast(err.detail || 'Không thể tải danh sách trạm quan trắc IoT', 'error');
+      addToast(err.detail || 'Không thể tải dữ liệu mạng lưới quan trắc IoT', 'error');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleCreateCaseFromAlert = async (alert: any) => {
+    try {
+      setCreatingCaseId(alert.device_id);
+      const res: any = await api.iot.createCase(alert.device_id, {
+        title: `Cảnh báo vượt chuẩn QCVN: ${alert.alert_title} tại ${alert.device_name}`,
+        description: `Trạm đo ${alert.device_name} (${alert.device_code}) ghi nhận nồng độ PM2.5 = ${alert.pm25} µg/m³, PM10 = ${alert.pm10} µg/m³ vượt ngưỡng cho phép. Cán bộ thụ lý khẩn trương kiểm tra thực địa.`,
+        priority: alert.severity === 'CRITICAL' ? 'CRITICAL' : 'HIGH',
+      });
+      success('Đã khởi tạo vụ việc', 'Hồ sơ đã được tạo thành công từ cảnh báo vượt ngưỡng. Đang chuyển sang kế hoạch kiểm tra...');
+      if (res?.case?.id) {
+        navigate(`/cases/${res.case.id}/inspection/new`);
+      } else {
+        navigate('/cases');
+      }
+    } catch (err: any) {
+      error('Lỗi tạo vụ việc', err.detail || 'Không thể tạo hồ sơ từ cảnh báo.');
+    } finally {
+      setCreatingCaseId(null);
     }
   };
 
@@ -104,7 +148,7 @@ export const IotDevicesPage: React.FC = () => {
       setDeviceCode('');
       setName('');
       setLocationText('');
-      loadDevices();
+      loadData();
     } catch (err: any) {
       error('Lỗi đăng ký thiết bị', err.detail || 'Không thể tạo thiết bị IoT.');
     } finally {
@@ -141,6 +185,40 @@ export const IotDevicesPage: React.FC = () => {
         </Button>
       </div>
 
+      {/* Top View Selector: Danh sách cảm biến vs Hộp thư cảnh báo vượt ngưỡng */}
+      <div className="flex border-b border-slate-200 gap-6">
+        <button
+          type="button"
+          onClick={() => setActiveView('devices')}
+          className={`pb-3 text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition-colors ${
+            activeView === 'devices'
+              ? 'border-dustguard-teal text-slate-900'
+              : 'border-transparent text-slate-500 hover:text-slate-800'
+          }`}
+        >
+          <Cpu className="w-4 h-4" />
+          <span>Danh Sách Trạm Quan Trắc ({devices.length})</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveView('alerts')}
+          className={`pb-3 text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition-colors ${
+            activeView === 'alerts'
+              ? 'border-dustguard-red text-dustguard-red'
+              : 'border-transparent text-slate-500 hover:text-slate-800'
+          }`}
+        >
+          <Bell className="w-4 h-4 text-dustguard-red" />
+          <span>Hộp Thư Cảnh Báo Vượt Ngưỡng QCVN</span>
+          {alerts.length > 0 && (
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-600 text-white animate-pulse">
+              {alerts.length}
+            </span>
+          )}
+        </button>
+      </div>
+
       {/* Metrics Row */}
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
         <div className="civic-card p-4 flex items-center gap-3">
@@ -168,8 +246,8 @@ export const IotDevicesPage: React.FC = () => {
             <AlertCircle className="w-5 h-5" />
           </div>
           <div>
-            <p className="text-xs text-slate-500 font-medium">Lỗi / Flatline</p>
-            <p className="text-xl font-bold text-rose-700">{countFaulty}</p>
+            <p className="text-xs text-slate-500 font-medium">Cảnh báo vượt ngưỡng / Lỗi</p>
+            <p className="text-xl font-bold text-rose-700">{alerts.length || countFaulty}</p>
           </div>
         </div>
 
@@ -184,28 +262,131 @@ export const IotDevicesPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Filter Tabs */}
-      <div className="civic-card p-4 flex items-center justify-between gap-4">
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-semibold text-slate-700">Lọc trạng thái:</span>
-          <div className="flex rounded-lg border border-slate-200 overflow-hidden text-xs">
-            {['ALL', 'ONLINE', 'FAULTY', 'OFFLINE'].map(st => (
-              <button
-                key={st}
-                onClick={() => setFilterStatus(st)}
-                className={`px-3 py-1.5 font-medium transition-colors ${
-                  filterStatus === st ? 'bg-slate-900 text-white' : 'bg-white text-slate-700 hover:bg-slate-100'
-                }`}
-              >
-                {st === 'ALL' ? 'Tất cả' : st === 'ONLINE' ? 'Trực tuyến' : st === 'FAULTY' ? 'Lỗi' : 'Mất kết nối'}
-              </button>
-            ))}
+      {/* ALERT INBOX VIEW */}
+      {activeView === 'alerts' && (
+        <div className="space-y-4">
+          <div className="p-4 bg-rose-50/60 border border-rose-200 rounded-lg text-xs text-rose-900 flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
+            <div>
+              <strong className="text-sm font-bold text-rose-900 block">
+                Quy chuẩn Kỹ thuật Quốc gia QCVN 05:2023/BTNMT về Chất lượng Không khí
+              </strong>
+              <p className="text-slate-700 mt-1">
+                Giới hạn trung bình 24 giờ cho phép: <strong>Bụi mịn PM2.5 &le; 50 µg/m³</strong>, <strong>Bụi thô PM10 &le; 100 µg/m³</strong>. Khi cảm biến ghi nhận vượt ngưỡng, cán bộ có thể 1-click khởi tạo hồ sơ vụ việc và lập kế hoạch thanh kiểm tra ngay lập tức.
+              </p>
+            </div>
+          </div>
+
+          <div className="civic-card divide-y divide-slate-100 overflow-hidden">
+            {loading ? (
+              <div className="p-8 text-center text-sm text-slate-500">Đang kiểm tra cảnh báo...</div>
+            ) : alerts.length === 0 ? (
+              <div className="p-12 text-center max-w-md mx-auto space-y-3">
+                <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto border border-emerald-200">
+                  <ShieldCheck className="w-6 h-6" />
+                </div>
+                <h3 className="font-bold text-sm text-slate-800">Không có cảnh báo vượt ngưỡng</h3>
+                <p className="text-xs text-slate-500">
+                  Toàn bộ các trạm cảm biến đang hoạt động trong ngưỡng an toàn hoặc chưa phát hiện bất thường Flatline.
+                </p>
+              </div>
+            ) : (
+              alerts.map((alert: any) => (
+                <div key={alert.reading_id || alert.device_id} className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-slate-50 transition-colors">
+                  <div className="space-y-2 min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="font-mono text-xs font-bold bg-slate-100 text-slate-800 px-2 py-0.5 rounded border border-slate-200">
+                        {alert.device_code}
+                      </span>
+                      <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${
+                        alert.severity === 'CRITICAL'
+                          ? 'bg-rose-100 text-rose-900 border-rose-300'
+                          : alert.severity === 'HIGH'
+                          ? 'bg-amber-100 text-amber-900 border-amber-300'
+                          : 'bg-blue-100 text-blue-900 border-blue-300'
+                      }`}>
+                        MỨC ĐỘ: {alert.severity}
+                      </span>
+                      <span className="font-mono text-[10px] text-slate-500 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">
+                        HMAC: {alert.integrity_status || 'VERIFIED'}
+                      </span>
+                    </div>
+
+                    <div>
+                      <h3 className="text-sm font-bold text-slate-900 flex items-center gap-1.5">
+                        <Flame className="w-4 h-4 text-rose-600" />
+                        {alert.alert_title}
+                      </h3>
+                      <p className="text-xs text-slate-600 mt-0.5">
+                        Trạm: <strong>{alert.device_name}</strong> &bull; Vị trí: {alert.location_text || 'Chưa định vị'}
+                      </p>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-4 text-xs">
+                      <span className="text-slate-700">
+                        PM2.5: <strong className={alert.pm25 > 50 ? 'text-rose-600 font-extrabold text-sm' : 'text-slate-800'}>{alert.pm25 ?? 'N/A'}</strong> µg/m³
+                        {alert.pm25 > 50 && <span className="text-rose-600 font-bold ml-1">(&gt;50 QCVN)</span>}
+                      </span>
+                      <span className="text-slate-700">
+                        PM10: <strong className={alert.pm10 > 100 ? 'text-rose-600 font-extrabold text-sm' : 'text-slate-800'}>{alert.pm10 ?? 'N/A'}</strong> µg/m³
+                        {alert.pm10 > 100 && <span className="text-rose-600 font-bold ml-1">(&gt;100 QCVN)</span>}
+                      </span>
+                      <span className="text-slate-400">
+                        Ghi nhận lúc: {new Date(alert.recorded_at).toLocaleString('vi-VN')}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* 1-Click CTA */}
+                  <div className="flex items-center gap-2 shrink-0">
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      icon={<FilePlus className="w-4 h-4" />}
+                      disabled={creatingCaseId === alert.device_id}
+                      onClick={() => handleCreateCaseFromAlert(alert)}
+                    >
+                      {creatingCaseId === alert.device_id ? 'Đang tạo vụ việc...' : 'Thụ Lý Vụ Việc & Lên Kế Hoạch Kiểm Tra'}
+                    </Button>
+
+                    <Link to={`/iot/devices/${alert.device_id}`}>
+                      <Button variant="outline" size="sm" icon={<ChevronRight className="w-4 h-4" />}>
+                        Dữ liệu trạm
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
-        <div className="text-xs text-slate-500">
-          Hiển thị <strong>{filtered.length}</strong> / {devices.length} trạm
-        </div>
-      </div>
+      )}
+
+      {/* DEVICES LIST VIEW */}
+      {activeView === 'devices' && (
+        <>
+          {/* Filter Tabs */}
+          <div className="civic-card p-4 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-semibold text-slate-700">Lọc trạng thái:</span>
+              <div className="flex rounded-lg border border-slate-200 overflow-hidden text-xs">
+                {['ALL', 'ONLINE', 'FAULTY', 'OFFLINE'].map(st => (
+                  <button
+                    key={st}
+                    onClick={() => setFilterStatus(st)}
+                    className={`px-3 py-1.5 font-medium transition-colors ${
+                      filterStatus === st ? 'bg-slate-900 text-white' : 'bg-white text-slate-700 hover:bg-slate-100'
+                    }`}
+                  >
+                    {st === 'ALL' ? 'Tất cả' : st === 'ONLINE' ? 'Trực tuyến' : st === 'FAULTY' ? 'Lỗi' : 'Mất kết nối'}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="text-xs text-slate-500">
+              Hiển thị <strong>{filtered.length}</strong> / {devices.length} trạm
+            </div>
+          </div>
 
       {/* Device Cards Table */}
       <div className="civic-card divide-y divide-slate-100 overflow-hidden">
@@ -283,6 +464,8 @@ export const IotDevicesPage: React.FC = () => {
           ))
         )}
       </div>
+        </>
+      )}
 
       {/* Registration Modal */}
       {modalOpen && (

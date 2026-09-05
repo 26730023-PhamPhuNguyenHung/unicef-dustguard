@@ -4,6 +4,7 @@ import { apiRequest } from '../api/client.js';
 import { StatusBadge } from '../components/common/StatusBadge.js';
 import { LeafletMap } from '../components/common/LeafletMap.js';
 import { LoadingSkeleton } from '../components/common/LoadingSkeleton.js';
+import { CitizenFeedbackSection } from '../components/common/CitizenFeedbackSection.js';
 import { CATEGORY_LABELS, SEVERITY_LABELS } from '@dustguard/shared';
 import {
   FileText,
@@ -205,6 +206,14 @@ export const ReportDetailPage: React.FC = () => {
             <ExternalLink className="w-3.5 h-3.5" />
           </Link>
         </div>
+      )}
+
+      {/* Phản hồi đánh giá nghiệm thu khi có liên kết vụ việc */}
+      {report.case_id && (
+        <CitizenFeedbackSection
+          caseId={report.case_id}
+          isClosedOrResolved={['resolved', 'closed', 'RESOLVED', 'CLOSED', 'accepted'].includes(report.status)}
+        />
       )}
     </div>
   );

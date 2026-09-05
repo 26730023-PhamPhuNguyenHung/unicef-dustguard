@@ -1,4 +1,5 @@
 import { Router, Response } from 'express';
+import crypto from 'node:crypto';
 import { CaseRepository, ConfirmationRepository, SavedCaseRepository, ObservationRepository } from '../repositories/index.js';
 import { createObservationSchema } from '@dustguard/shared';
 import { authenticateToken, optionalAuthenticateToken, AuthRequest } from '../middlewares/auth.js';
@@ -180,7 +181,7 @@ router.post('/:id/observations', authenticateToken, (req: AuthRequest, res: Resp
     return;
   }
 
-  const obsId = `obs_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+  const obsId = `obs_${Date.now()}_${crypto.randomUUID().substring(0, 8)}`;
   ObservationRepository.create({
     id: obsId,
     caseId: c.id,
@@ -195,7 +196,7 @@ router.post('/:id/observations', authenticateToken, (req: AuthRequest, res: Resp
   if (validated.data.mediaFiles && validated.data.mediaFiles.length > 0) {
     for (const m of validated.data.mediaFiles) {
       ObservationRepository.addMedia({
-        id: `obs_med_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+        id: `obs_med_${Date.now()}_${crypto.randomUUID().substring(0, 8)}`,
         observationId: obsId,
         filePath: m.filePath,
         mimeType: m.mimeType,
@@ -209,6 +210,121 @@ router.post('/:id/observations', authenticateToken, (req: AuthRequest, res: Resp
     success: true,
     data: { id: obsId, observationId: obsId, message: 'Đã gửi quan sát thành công.' }
   });
+});
+
+// 7. Gửi đánh giá kết quả giải quyết (Citizen Resolution Feedback Loop)
+router.post('/:id/feedback', authenticateToken, (req: AuthRequest, res: Response): void => {
+  const c = CaseRepository.findById(req.params.id);
+  if (!c) {
+    res.status(404).json({
+      success: false,
+      error: { code: 'CASE_NOT_FOUND', message: 'Không tìm thấy vụ việc.' }
+    });
+    return;
+  }
+
+  // Khởi tạo bảng feedback nếu chưa tồn tại
+  sqliteClient.run(`
+    CREATE TABLE IF NOT EXISTS case_feedback (
+      id TEXT PRIMARY KEY,
+      case_id TEXT NOT NULL,
+      user_id TEXT NOT NULL,
+      rating INTEGER NOT NULL,
+      comment TEXT,
+      is_satisfied INTEGER NOT NULL,
+      request_reinspection INTEGER NOT NULL DEFAULT 0,
+      created_at TEXT NOT NULL
+    );
+  `);
+
+  const { rating = 5, comment = '', isSatisfied = true, requestReinspection = false } = req.body;
+  const feedbackId = `fb_${Date.now()}_${crypto.randomUUID().substring(0, 8)}`;
+
+  sqliteClient.run(`
+    INSERT INTO case_feedback (id, case_id, user_id, rating, comment, is_satisfied, request_reinspection, created_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))
+  `, [
+    feedbackId,
+    c.id,
+    req.user!.id,
+    Number(rating),
+    comment,
+    isSatisfied ? 1 : 0,
+    requestReinspection ? 1 : 0
+  ]);
+
+  // Ghi nhận cập nhật dòng thời gian vụ việc
+  const updateId = `upd_${Date.now()}_${crypto.randomUUID().substring(0, 8)}`;
+  sqliteClient.run(`
+    INSERT INTO case_updates (id, case_id, update_type, title, content, created_by, is_public, created_at)
+    VALUES (?, ?, 'community_update', ?, ?, ?, 1, datetime('now'))
+  `, [
+    updateId,
+    c.id,
+    'Người dân gửi phản hồi đánh giá kết quả khắc phục',
+    `Đánh giá: ${rating}/5 sao (${isSatisfied ? 'Hài lòng' : 'Chưa hài lòng'})${comment ? ` - "${comment}"` : ''}${requestReinspection ? ' (Yêu cầu phúc tra hiện trường)' : ''}`,
+    req.user!.id
+  ]);
+
+  // Đồng bộ sang Operations nếu vụ việc đã chuyển tiếp
+  const operationsUrl = process.env.OPERATIONS_API_URL || 'http://localhost:4000';
+  fetch(`${operationsUrl}/api/integrations/community/feedback`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-service-key': 'dustguard-internal-2026',
+    },
+    body: JSON.stringify({
+      external_case_id: c.id,
+      case_code: c.case_code,
+      rating: Number(rating),
+      comment,
+      is_satisfied: Boolean(isSatisfied),
+      request_reinspection: Boolean(requestReinspection),
+      user_name: req.user?.fullName || 'Người dân cộng đồng',
+    }),
+  }).catch(() => {});
+
+  res.status(201).json({
+    success: true,
+    data: {
+      id: feedbackId,
+      message: 'Cảm ơn bạn đã gửi đánh giá kết quả xử lý môi trường.'
+    }
+  });
+});
+
+// 8. Lấy danh sách đánh giá của vụ việc
+router.get('/:id/feedback', optionalAuthenticateToken, (req: AuthRequest, res: Response): void => {
+  try {
+    sqliteClient.run(`
+      CREATE TABLE IF NOT EXISTS case_feedback (
+        id TEXT PRIMARY KEY,
+        case_id TEXT NOT NULL,
+        user_id TEXT NOT NULL,
+        rating INTEGER NOT NULL,
+        comment TEXT,
+        is_satisfied INTEGER NOT NULL,
+        request_reinspection INTEGER NOT NULL DEFAULT 0,
+        created_at TEXT NOT NULL
+      );
+    `);
+
+    const feedbacks = sqliteClient.all(`
+      SELECT f.*, u.full_name as user_name
+      FROM case_feedback f
+      LEFT JOIN users u ON u.id = f.user_id
+      WHERE f.case_id = ?
+      ORDER BY f.created_at DESC
+    `, [req.params.id]);
+
+    res.json({
+      success: true,
+      data: feedbacks
+    });
+  } catch (err: any) {
+    res.json({ success: true, data: [] });
+  }
 });
 
 export default router;

@@ -28,6 +28,9 @@ user.env
 prisma/*.db-shm
 prisma/*.db-wal
 dustguard-operations/data/test-*.db
+data/test-e2e/
+data/test-*/
+.playwright-cli/
 dustguard-operations/apps/server/uploads/*
 !dustguard-operations/apps/server/uploads/.gitkeep
 uploads/*

@@ -13,7 +13,7 @@ if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });
 }
 
-export const dbPath = path.join(dataDir, 'dustguard-community.db');
+export const dbPath = process.env.DB_PATH || path.join(dataDir, 'dustguard-community.db');
 
 export class SQLiteClient implements DatabaseRepository {
   private db: DatabaseSync;

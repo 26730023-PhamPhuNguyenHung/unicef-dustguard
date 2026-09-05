@@ -22,7 +22,7 @@ router.post('/register', (req, res: Response): void => {
       return;
     }
 
-    const { email, password, fullName, phone, district, ward } = validated.data;
+    const { email, password, fullName, phone, district, ward, role } = validated.data;
     const existing = UserRepository.findByEmail(email);
     if (existing) {
       res.status(400).json({
@@ -43,6 +43,7 @@ router.post('/register', (req, res: Response): void => {
       passwordHash,
       fullName,
       phone,
+      role: role || 'citizen',
       district,
       ward
     });

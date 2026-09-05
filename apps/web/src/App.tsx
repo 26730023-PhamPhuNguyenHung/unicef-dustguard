@@ -19,6 +19,7 @@ import { CommunityDetailPage } from './pages/CommunityDetailPage.js';
 import { TasksPage } from './pages/TasksPage.js';
 import { NotificationsPage } from './pages/NotificationsPage.js';
 import { ContributionsPage } from './pages/ContributionsPage.js';
+import { YouthCreditsPage } from './pages/YouthCreditsPage.js';
 import { ProfilePage } from './pages/ProfilePage.js';
 import { ForbiddenPage } from './pages/ForbiddenPage.js';
 
@@ -38,6 +39,10 @@ import { AdminAuditPage } from './pages/AdminAuditPage.js';
 import { LoginPage } from './pages/LoginPage.js';
 import { RegisterPage } from './pages/RegisterPage.js';
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage.js';
+
+// Contractor (Đơn vị thi công)
+import { ContractorPortalPage } from './pages/contractor/ContractorPortalPage.js';
+import { ContractorRemediationPage } from './pages/contractor/ContractorRemediationPage.js';
 
 export const App: React.FC = () => {
   return (
@@ -128,6 +133,24 @@ export const App: React.FC = () => {
                     element={
                       <ProtectedRoute permission="contribution:view">
                         <ContributionsPage />
+                      </ProtectedRoute>
+                    }
+                  />
+
+                  {/* Tín chỉ sinh viên & Giờ tình nguyện thanh niên */}
+                  <Route
+                    path="/credits"
+                    element={
+                      <ProtectedRoute permission="contribution:view">
+                        <YouthCreditsPage />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/youth/credits"
+                    element={
+                      <ProtectedRoute permission="contribution:view">
+                        <YouthCreditsPage />
                       </ProtectedRoute>
                     }
                   />
@@ -235,7 +258,15 @@ export const App: React.FC = () => {
                   <Route path="/community/*" element={<Navigate to="/communities" replace />} />
 
                   <Route path="/staff/*" element={<Navigate to="/dashboard" replace />} />
-                  <Route path="/contractor/*" element={<Navigate to="/dashboard" replace />} />
+                  
+                  {/* Cổng Đơn vị thi công (Contractor Portal) */}
+                  <Route path="/contractor" element={<ContractorPortalPage />} />
+                  <Route path="/contractor/portal" element={<ContractorPortalPage />} />
+                  <Route path="/contractor/actions" element={<ContractorPortalPage />} />
+                  <Route path="/contractor/actions/:id" element={<ContractorRemediationPage />} />
+                  <Route path="/contractor/remediation/:id" element={<ContractorRemediationPage />} />
+                  <Route path="/contractor/access/:token" element={<ContractorPortalPage />} />
+                  
                   <Route path="/executive/*" element={<Navigate to="/dashboard" replace />} />
 
                   {/* Fallback */}

@@ -14,6 +14,7 @@ import {
   Upload,
   Calendar,
   User,
+  Printer,
 } from 'lucide-react';
 import { CorrectiveAction } from '@dustguard-operations/shared';
 
@@ -201,6 +202,12 @@ export const ActionsListPage: React.FC = () => {
                       Nộp khắc phục
                     </Button>
                   )}
+
+                  <Link to={`/actions/${act.id}/notice`}>
+                    <Button variant="outline" size="sm" icon={<Printer className="w-3.5 h-3.5" />}>
+                      In Thông Báo A4
+                    </Button>
+                  </Link>
 
                   <Link to={`/cases/${act.case_id}`}>
                     <Button variant="outline" size="sm">

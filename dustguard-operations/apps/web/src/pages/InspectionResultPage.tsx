@@ -11,6 +11,8 @@ import {
   FileCheck2,
   MapPin,
   Calendar,
+  Printer,
+  FileText,
 } from 'lucide-react';
 
 export const InspectionResultPage: React.FC = () => {
@@ -36,16 +38,24 @@ export const InspectionResultPage: React.FC = () => {
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
-      <div className="flex items-center gap-3">
-        <Link to={`/cases/${inspection.case_id}`} className="text-slate-500 hover:text-slate-800">
-          <ArrowLeft className="w-5 h-5" />
-        </Link>
-        <div>
-          <span className="font-mono text-xs font-bold text-dustguard-red bg-red-50 px-2 py-0.5 rounded border border-red-200">
-            {inspection.case_code}
-          </span>
-          <h1 className="text-xl font-bold text-slate-900 mt-1">Biên Bản Kết Quả Kiểm Tra Thực Địa</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <Link to={`/cases/${inspection.case_id}`} className="text-slate-500 hover:text-slate-800">
+            <ArrowLeft className="w-5 h-5" />
+          </Link>
+          <div>
+            <span className="font-mono text-xs font-bold text-dustguard-red bg-red-50 px-2 py-0.5 rounded border border-red-200">
+              {inspection.case_code}
+            </span>
+            <h1 className="text-xl font-bold text-slate-900 mt-1">Biên Bản Kết Quả Kiểm Tra Thực Địa</h1>
+          </div>
         </div>
+
+        <Link to={`/inspections/${id}/export`}>
+          <Button variant="primary" size="sm" icon={<Printer className="w-4 h-4" />}>
+            Xuất Biên Bản A4 (NĐ 30/2020)
+          </Button>
+        </Link>
       </div>
 
       {/* Summary Matrix */}
@@ -190,6 +200,11 @@ export const InspectionResultPage: React.FC = () => {
           <Link to={`/cases/${inspection.case_id}`}>
             <Button variant="outline">
               &larr; Về Hồ Sơ Vụ Việc
+            </Button>
+          </Link>
+          <Link to={`/inspections/${id}/export`}>
+            <Button variant="primary" icon={<Printer className="w-4 h-4" />}>
+              In Biên Bản Hiện Trường (A4)
             </Button>
           </Link>
         </div>

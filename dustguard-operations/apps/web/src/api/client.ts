@@ -322,6 +322,7 @@ export const api = {
   },
 
   iot: {
+    alerts: () => request<{ alerts: any[] }>('/api/iot/alerts'),
     devices: () => request<{ devices: any[] }>('/api/iot/devices'),
     device: (id: string) =>
       request<{

@@ -50,7 +50,13 @@ router.post(
       return;
     }
 
-    const updatedTask = TaskRepository.submit(req.params.id, req.user!.id, validated.data.result, validated.data.note);
+    const updatedTask = TaskRepository.submit(
+      req.params.id,
+      req.user!.id,
+      validated.data.result,
+      validated.data.note,
+      validated.data
+    );
     res.json({ success: true, data: updatedTask });
   }
 );

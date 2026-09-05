@@ -11,8 +11,15 @@ import {
   AlertCircle,
   Send,
   X,
-  UserCheck
+  UserCheck,
+  Camera,
+  ShieldCheck,
+  UploadCloud,
+  Navigation,
+  Sparkles,
 } from 'lucide-react';
+import { calculateFileSha256 } from '../utils/crypto.js';
+import { evaluateGeofenceBuffer, GeofenceResult } from '../utils/geofence.js';
 
 export const TasksPage: React.FC = () => {
   const [tasks, setTasks] = useState<any[]>([]);
@@ -23,6 +30,12 @@ export const TasksPage: React.FC = () => {
   const [submittingTask, setSubmittingTask] = useState<any | null>(null);
   const [submissionResult, setSubmissionResult] = useState<'confirmed' | 'not_found' | 'changed' | 'unable'>('confirmed');
   const [submissionNote, setSubmissionNote] = useState('');
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [photoHash, setPhotoHash] = useState<string | null>(null);
+  const [isHashing, setIsHashing] = useState(false);
+  const [userCoords, setUserCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [geofence, setGeofence] = useState<GeofenceResult | null>(null);
+  const [locating, setLocating] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   const fetchTasks = () => {
@@ -47,6 +60,52 @@ export const TasksPage: React.FC = () => {
     }
   };
 
+  const handlePhotoSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setIsHashing(true);
+    try {
+      const hash = await calculateFileSha256(file);
+      setPhotoHash(hash);
+      const reader = new FileReader();
+      reader.onload = () => setPhotoPreview(reader.result as string);
+      reader.readAsDataURL(file);
+    } catch (err) {
+      console.error('Lỗi tính mã băm:', err);
+    } finally {
+      setIsHashing(false);
+    }
+  };
+
+  const handleGetLocation = () => {
+    if (!navigator.geolocation) {
+      alert('Trình duyệt của bạn không hỗ trợ định vị GPS.');
+      return;
+    }
+    setLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const coords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        setUserCoords(coords);
+        if (submittingTask?.latitude && submittingTask?.longitude) {
+          const res = evaluateGeofenceBuffer(
+            coords,
+            { lat: submittingTask.latitude, lng: submittingTask.longitude },
+            50
+          );
+          setGeofence(res);
+        }
+        setLocating(false);
+      },
+      (err) => {
+        console.warn('GPS error:', err);
+        setLocating(false);
+        alert('Không thể lấy tọa độ GPS. Vui lòng cho phép quyền vị trí trên trình duyệt.');
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  };
+
   const handleSubmitTaskResult = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!submittingTask || !submissionNote.trim()) return;
@@ -57,12 +116,21 @@ export const TasksPage: React.FC = () => {
         method: 'POST',
         body: JSON.stringify({
           result: submissionResult,
-          note: submissionNote
+          note: submissionNote,
+          evidenceHash: photoHash || undefined,
+          evidenceUrl: photoPreview || undefined,
+          latitude: userCoords?.lat,
+          longitude: userCoords?.lng,
+          isWithin50m: geofence?.within50m ?? false,
         })
       });
-      alert('Đã gửi kết quả xác minh hiện trường thành công!');
+      alert('Đã gửi kết quả xác minh hiện trường thành công! Giờ tình nguyện đã được ghi nhận.');
       setSubmittingTask(null);
       setSubmissionNote('');
+      setPhotoPreview(null);
+      setPhotoHash(null);
+      setUserCoords(null);
+      setGeofence(null);
       fetchTasks();
     } catch (err: any) {
       alert(err.message || 'Lỗi khi nộp kết quả nhiệm vụ.');
@@ -264,6 +332,83 @@ export const TasksPage: React.FC = () => {
                   placeholder="Mô tả cụ thể những gì bạn ghi nhận được..."
                   className="w-full px-3.5 py-2 rounded-xl border border-border-subtle text-xs sm:text-sm bg-white focus:border-primary focus:outline-none"
                 />
+              </div>
+
+              {/* Tải ảnh minh chứng hiện trường & Mã băm SHA-256 */}
+              <div className="p-3.5 bg-surface-secondary/40 rounded-xl border border-border-subtle space-y-2.5">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-bold text-content-main flex items-center gap-1.5">
+                    <Camera className="w-4 h-4 text-primary" />
+                    Ảnh minh chứng hiện trường (+0.5h tình nguyện)
+                  </span>
+                  {photoHash && (
+                    <span className="text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded font-bold border border-emerald-200 flex items-center gap-1">
+                      <ShieldCheck className="w-3 h-3" /> Đã niêm phong SHA-256
+                    </span>
+                  )}
+                </div>
+
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handlePhotoSelect}
+                  className="block w-full text-xs text-content-sub file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-hover cursor-pointer"
+                />
+
+                {isHashing && (
+                  <p className="text-[11px] text-primary animate-pulse">Đang tính toán mã băm Web Crypto SHA-256...</p>
+                )}
+
+                {photoPreview && (
+                  <div className="flex items-center gap-3 pt-1">
+                    <img src={photoPreview} alt="Preview" className="w-16 h-16 object-cover rounded-lg border border-border-subtle" />
+                    <div className="space-y-0.5 text-[10px] text-content-muted font-mono truncate max-w-[300px]">
+                      <div>Mã băm toàn vẹn:</div>
+                      <div className="text-content-main font-bold truncate">{photoHash}</div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Định vị GPS & Geofence 50m */}
+              <div className="p-3.5 bg-surface-secondary/40 rounded-xl border border-border-subtle space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-content-main flex items-center gap-1.5">
+                    <Navigation className="w-4 h-4 text-primary" />
+                    Xác thực vị trí hiện trường (+0.5h tình nguyện)
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleGetLocation}
+                    disabled={locating}
+                    className="px-2.5 py-1 text-[11px] font-bold rounded bg-primary text-white hover:bg-primary-hover transition shadow-2xs"
+                  >
+                    {locating ? 'Đang lấy GPS...' : userCoords ? 'Cập nhật GPS' : 'Lấy vị trí GPS'}
+                  </button>
+                </div>
+
+                {userCoords ? (
+                  <div className="space-y-1 text-xs">
+                    <p className="text-content-sub text-[11px]">
+                      Tọa độ của bạn: <strong className="text-content-main">{userCoords.lat.toFixed(4)}, {userCoords.lng.toFixed(4)}</strong>
+                    </p>
+                    {geofence ? (
+                      <div className={`p-2 rounded-lg text-[11px] font-semibold border ${
+                        geofence.within50m
+                          ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                          : 'bg-amber-50 text-amber-800 border-amber-200'
+                      }`}>
+                        {geofence.message}
+                      </div>
+                    ) : (
+                      <p className="text-[11px] text-content-muted">Đã ghi nhận tọa độ phục vụ đối chiếu hiện trường.</p>
+                    )}
+                  </div>
+                ) : (
+                  <p className="text-[11px] text-content-muted">
+                    Bấm "Lấy vị trí GPS" để chứng minh bạn đang có mặt tại hiện trường công trình trong bán kính 50m.
+                  </p>
+                )}
               </div>
 
               <div className="pt-3 flex items-center justify-end gap-2 border-t border-border-subtle">

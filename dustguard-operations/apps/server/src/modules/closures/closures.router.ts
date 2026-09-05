@@ -4,6 +4,7 @@ import { get, query, run, transaction } from '../../db/connection.js';
 import { AuthRequest, requireAuth } from '../../middleware/auth.js';
 import { requirePermission } from '../../middleware/rbac.js';
 import { CaseClosureSchema, CaseReopenSchema } from '../../shared.js';
+import { syncCaseToCommunity } from '../integrations/syncService.js';
 
 export const closuresRouter = Router();
 
@@ -131,6 +132,11 @@ closuresRouter.post('/:id/close', requirePermission('case:close'), (req: AuthReq
 
     const closure = get(`SELECT * FROM case_closures WHERE id = ?`, [closureId]);
     const updatedCase = get(`SELECT * FROM cases WHERE id = ?`, [id]);
+    syncCaseToCommunity(id, {
+      status_label: 'Vụ việc đã được xử lý và đóng hồ sơ chính thức',
+      closure_note: closure_summary,
+      description: closure_reason,
+    });
     res.json({ success: true, closure, case: updatedCase, message: 'Đã đóng hồ sơ vụ việc thành công.' });
   } catch (err) {
     next(err);
@@ -190,6 +196,10 @@ closuresRouter.post('/:id/reopen', requirePermission('case:reopen'), (req: AuthR
     });
 
     const updatedCase = get(`SELECT * FROM cases WHERE id = ?`, [id]);
+    syncCaseToCommunity(id, {
+      status_label: 'Hồ sơ vụ việc được mở lại để tái thẩm tra',
+      description: reopen_reason,
+    });
     res.json({ success: true, case: updatedCase, message: 'Hồ sơ vụ việc đã được mở lại thành công.' });
   } catch (err) {
     next(err);

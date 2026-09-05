@@ -14,6 +14,8 @@ import meRoutes from './routes/me.routes.js';
 import moderatorRoutes from './routes/moderator.routes.js';
 import adminRoutes from './routes/admin.routes.js';
 import dashboardRoutes from './routes/dashboard.routes.js';
+import integrationsRoutes from './routes/integrations.routes.js';
+import contractorRoutes from './routes/contractor.routes.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -45,6 +47,8 @@ app.use('/api/me', meRoutes);
 app.use('/api/moderator', moderatorRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/integrations', integrationsRoutes);
+app.use('/api/contractor', contractorRoutes);
 
 // Root health check
 app.get('/api/health', (req, res) => {

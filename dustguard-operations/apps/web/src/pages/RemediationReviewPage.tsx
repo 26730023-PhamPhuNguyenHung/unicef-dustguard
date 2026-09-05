@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { ArrowLeft, CheckCircle2, XCircle, AlertCircle, Calendar, User } from 'lucide-react';
 import { Button } from '../components/common/Button';
+import { BeforeAfterComparison } from '../components/common/BeforeAfterComparison';
 
 export const RemediationReviewPage: React.FC = () => {
   const { id } = useParams<{ id: string }>(); // remediation submission id
@@ -13,6 +14,9 @@ export const RemediationReviewPage: React.FC = () => {
   const navigate = useNavigate();
 
   const [submission, setSubmission] = useState<any>(null);
+  const [beforeAsset, setBeforeAsset] = useState<any>(null);
+  const [afterAsset, setAfterAsset] = useState<any>(null);
+  const [caseLocation, setCaseLocation] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [reviewStatus, setReviewStatus] = useState<'APPROVED' | 'REJECTED' | 'MORE_EVIDENCE_REQUESTED'>('APPROVED');
   const [reviewNote, setReviewNote] = useState('Đã nghiệm thu hiện trường đạt yêu cầu cam kết bảo vệ môi trường.');
@@ -20,11 +24,33 @@ export const RemediationReviewPage: React.FC = () => {
 
   useEffect(() => {
     // We can fetch via actions list or detail
-    api.actions.list().then(res => {
+    api.actions.list().then(async res => {
       for (const act of res.actions) {
         const sub = act.submissions?.find((s: any) => s.id === id);
         if (sub) {
           setSubmission({ ...sub, action_title: act.title, case_id: act.case_id });
+
+          // Tải danh mục bằng chứng của hồ sơ để đối chiếu Trước / Sau
+          try {
+            const caseRes = await api.cases.get(act.case_id);
+            setCaseLocation(caseRes.case?.location_text || '');
+            const evidenceList = caseRes.evidence || [];
+
+            // Tìm ảnh vi phạm ban đầu (Before)
+            const findingEvidence = evidenceList.find(
+              (e: any) => e.source_type === 'FINDING' || e.source_type === 'INSPECTION' || e.source_type === 'CASE'
+            );
+            if (findingEvidence) setBeforeAsset(findingEvidence);
+
+            // Tìm ảnh khắc phục (After)
+            const remEvidence = evidenceList.find(
+              (e: any) => e.source_type === 'REMEDIATION' || (sub.evidence_asset_ids && sub.evidence_asset_ids.includes(e.id))
+            );
+            if (remEvidence) setAfterAsset(remEvidence);
+          } catch (cErr) {
+            console.warn('Không thể tải chi tiết bằng chứng vụ việc:', cErr);
+          }
+
           break;
         }
       }
@@ -86,6 +112,21 @@ export const RemediationReviewPage: React.FC = () => {
           <p className="text-sm font-medium text-slate-900 leading-relaxed">
             {submission.description}
           </p>
+        </div>
+
+        {/* Đối chứng Trước / Sau khắc phục trực quan */}
+        <div className="pt-2">
+          <BeforeAfterComparison
+            beforeUrl={beforeAsset?.file_path || null}
+            afterUrl={afterAsset?.file_path || null}
+            beforeLabel="Hiện trường vi phạm ban đầu"
+            afterLabel="Hiện trường sau khi nhà thầu khắc phục"
+            beforeSha256={beforeAsset?.sha256 || null}
+            afterSha256={afterAsset?.sha256 || null}
+            beforeTimestamp={beforeAsset?.captured_at || beforeAsset?.created_at || null}
+            afterTimestamp={afterAsset?.captured_at || submission.submitted_at || null}
+            siteLocationText={caseLocation}
+          />
         </div>
 
         <form onSubmit={handleReview} className="space-y-4 text-xs sm:text-sm">

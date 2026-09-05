@@ -96,6 +96,13 @@ export const NAVIGATION_CONFIG: NavSectionConfig[] = [
         permission: 'contribution:view'
       },
       {
+        id: 'credits',
+        label: 'Tín chỉ thanh niên',
+        path: '/credits',
+        icon: Award,
+        permission: 'contribution:view'
+      },
+      {
         id: 'profile',
         label: 'Hồ sơ',
         path: '/profile',

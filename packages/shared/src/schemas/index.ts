@@ -11,7 +11,8 @@ export const registerSchema = z.object({
   fullName: z.string().min(2, 'Vui lòng nhập họ và tên'),
   phone: z.string().optional(),
   district: z.string().optional(),
-  ward: z.string().optional()
+  ward: z.string().optional(),
+  role: z.enum(['citizen', 'community_member', 'moderator']).optional().default('citizen')
 });
 
 export const createReportSchema = z.object({
@@ -54,7 +55,12 @@ export const createObservationSchema = z.object({
 
 export const submitTaskSchema = z.object({
   result: z.enum(['confirmed', 'not_found', 'changed', 'unable']),
-  note: z.string().min(5, 'Vui lòng ghi chú kết quả kiểm tra')
+  note: z.string().min(5, 'Vui lòng ghi chú kết quả kiểm tra'),
+  evidenceHash: z.string().optional(),
+  evidenceUrl: z.string().optional(),
+  latitude: z.number().optional(),
+  longitude: z.number().optional(),
+  isWithin50m: z.boolean().optional(),
 });
 
 export const moderatorVerifyReportSchema = z.object({

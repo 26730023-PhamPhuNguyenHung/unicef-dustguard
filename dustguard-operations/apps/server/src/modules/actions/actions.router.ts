@@ -10,6 +10,7 @@ import {
   CorrectiveAction,
   RemediationSubmission,
 } from '../../shared.js';
+import { syncCaseToCommunity } from '../integrations/syncService.js';
 
 export const actionsRouter = Router();
 
@@ -124,6 +125,12 @@ actionsRouter.post('/:id/actions', requirePermission('action:create'), (req: Aut
     });
 
     const created = get(`SELECT * FROM corrective_actions WHERE id = ?`, [actionId]);
+    syncCaseToCommunity(id, {
+      status_label: `Đã ban hành yêu cầu khắc phục cho đơn vị thi công (${data.responsible_party})`,
+      findings_summary: data.title,
+      contractor_name: data.responsible_party,
+      description: data.description,
+    });
     res.status(201).json({ action: created });
   } catch (err) {
     next(err);
@@ -161,11 +168,15 @@ actionsRouter.patch('/:id', requirePermission('action:update'), (req: AuthReques
   }
 });
 
-// POST /api/actions/:id/remediation - Submit remediation report
-actionsRouter.post('/:id/remediation', requireAuth, (req: AuthRequest, res, next) => {
+// POST /api/actions/:id/remediation - Submit remediation report (Supports Staff and Contractor)
+actionsRouter.post('/:id/remediation', (req: AuthRequest, res, next) => {
   try {
     const { id } = req.params;
-    const { description, evidence_asset_ids } = RemediationSubmitSchema.parse(req.body);
+    const { description, evidence_asset_ids, submitted_by } = req.body;
+    if (!description || typeof description !== 'string') {
+      res.status(400).json({ error: 'Mô tả biện pháp khắc phục là bắt buộc' });
+      return;
+    }
 
     const action = get<any>(`SELECT * FROM corrective_actions WHERE id = ?`, [id]);
     if (!action) {
@@ -174,6 +185,9 @@ actionsRouter.post('/:id/remediation', requireAuth, (req: AuthRequest, res, next
     }
 
     const subId = `rem-${crypto.randomUUID().substring(0, 8)}`;
+    const actorName = submitted_by || req.user?.full_name || action.responsible_party || 'Đại diện Đơn vị thi công';
+    const actorRole = req.user?.role || 'contractor';
+    const actorId = req.user?.id || null;
 
     transaction(() => {
       run(
@@ -183,7 +197,7 @@ actionsRouter.post('/:id/remediation', requireAuth, (req: AuthRequest, res, next
           subId,
           id,
           action.case_id,
-          req.user!.full_name,
+          actorName,
           description,
           typeof evidence_asset_ids === 'string' ? evidence_asset_ids : JSON.stringify(evidence_asset_ids || []),
         ]
@@ -202,10 +216,10 @@ actionsRouter.post('/:id/remediation', requireAuth, (req: AuthRequest, res, next
         [
           `tml-${crypto.randomUUID()}`,
           action.case_id,
-          req.user!.id,
-          req.user!.full_name,
-          req.user!.role,
-          `Đã nộp báo cáo khắc phục cho yêu cầu "${action.title}". Nội dung: ${description}`,
+          actorId,
+          actorName,
+          actorRole,
+          `Đã nộp báo cáo khắc phục cho yêu cầu "${action.title}". Người nộp: ${actorName}. Nội dung: ${description}`,
           JSON.stringify({ action_id: id, submission_id: subId }),
         ]
       );
@@ -216,15 +230,20 @@ actionsRouter.post('/:id/remediation', requireAuth, (req: AuthRequest, res, next
          VALUES (?, ?, 'REMEDIATION_SUBMITTED', 'REMEDIATION', ?, ?, ?, datetime('now'))`,
         [
           `aud-${crypto.randomUUID()}`,
-          req.user!.id,
+          actorId,
           subId,
-          JSON.stringify({ action_id: id, case_id: action.case_id }),
+          JSON.stringify({ action_id: id, case_id: action.case_id, actorName }),
           req.ip || '127.0.0.1',
         ]
       );
     });
 
     const created = get(`SELECT * FROM remediation_submissions WHERE id = ?`, [subId]);
+    syncCaseToCommunity(action.case_id, {
+      status_label: 'Đơn vị thi công đã nộp báo cáo khắc phục, đang chờ cán bộ nghiệm thu',
+      remediation_status: 'SUBMITTED',
+      description,
+    });
     res.status(201).json({ submission: created, remediation: created });
   } catch (err) {
     next(err);
@@ -306,6 +325,14 @@ actionsRouter.post('/:id/review', requirePermission('remediation:review'), (req:
     });
 
     const updated = get(`SELECT * FROM remediation_submissions WHERE id = ?`, [id]);
+    syncCaseToCommunity(submission.case_id, {
+      status_label:
+        review_status === 'APPROVED'
+          ? 'Nghiệm thu hiện trường đạt yêu cầu cam kết'
+          : 'Cán bộ yêu cầu bổ sung thêm minh chứng khắc phục',
+      remediation_status: review_status,
+      description: review_note,
+    });
     res.json({ success: true, submission: updated });
   } catch (err) {
     next(err);

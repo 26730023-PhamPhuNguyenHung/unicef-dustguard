@@ -131,3 +131,52 @@ integrationsRouter.post('/community/cases', (req, res, next) => {
     next(err);
   }
 });
+
+// POST /api/integrations/community/feedback - Receive citizen feedback from Community
+integrationsRouter.post('/community/feedback', (req, res, next) => {
+  try {
+    const { external_case_id, case_code, rating, comment, is_satisfied, request_reinspection, user_name } = req.body;
+
+    // Tìm vụ việc trên Operations
+    let targetCase = external_case_id
+      ? get<any>(`SELECT * FROM cases WHERE source_reference = ?`, [external_case_id])
+      : null;
+
+    if (!targetCase && case_code) {
+      targetCase = get<any>(`SELECT * FROM cases WHERE case_code = ?`, [case_code]);
+    }
+
+    if (!targetCase) {
+      res.status(200).json({ success: true, message: 'Vụ việc chưa liên kết trên Operations, bỏ qua.' });
+      return;
+    }
+
+    transaction(() => {
+      const feedbackNote = `Đánh giá từ người dân: ${rating}/5 sao (${is_satisfied ? 'Hài lòng' : 'Chưa hài lòng'})${comment ? ` - "${comment}"` : ''}${request_reinspection ? ' [YÊU CẦU PHÚC TRA]' : ''}`;
+
+      run(
+        `INSERT INTO case_timeline (id, case_id, event_type, actor_name, actor_role, stage, description, metadata_json, created_at)
+         VALUES (?, ?, 'CITIZEN_FEEDBACK', ?, 'citizen', 'CLOSURE', ?, ?, datetime('now'))`,
+        [
+          `tml-${crypto.randomUUID()}`,
+          targetCase.id,
+          user_name || 'Người dân cộng đồng',
+          feedbackNote,
+          JSON.stringify({ rating, comment, is_satisfied, request_reinspection }),
+        ]
+      );
+
+      // Nếu có yêu cầu phúc tra và vụ việc đã đóng hoặc đang đóng -> chuyển sang REOPENED
+      if (request_reinspection) {
+        run(
+          `UPDATE cases SET status = 'REOPENED', updated_at = datetime('now') WHERE id = ?`,
+          [targetCase.id]
+        );
+      }
+    });
+
+    res.status(200).json({ success: true, message: 'Đã nhận và lưu phản hồi của người dân vào hồ sơ Operations.' });
+  } catch (err) {
+    next(err);
+  }
+});

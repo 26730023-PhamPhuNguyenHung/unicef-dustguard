@@ -1,4 +1,5 @@
 import { Router, Request, Response } from 'express';
+import crypto from 'node:crypto';
 import { query, queryOne, run, transaction } from '../../db/connection.js';
 import { requireAuth, AuthRequest } from '../../middleware/auth.js';
 import { requireCapability } from '../../middleware/rbac.js';
@@ -342,7 +343,7 @@ signalsRouter.post('/:id/create-case', requireAuth, (req: AuthRequest, res: Resp
   const countRow = queryOne<{ c: number }>(`SELECT count(*) as c FROM cases`);
   const nextNum = (countRow?.c || 0) + 1;
   const case_code = `DG-2026-OP-${String(nextNum).padStart(3, '0')}`;
-  const caseId = `case-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
+  const caseId = `case-${Date.now()}-${crypto.randomUUID().substring(0, 6)}`;
 
   let district = 'TP.HCM';
   if (signal.location_text.includes('Quận') || signal.location_text.includes('Huyện') || signal.location_text.includes('Thủ Đức')) {
