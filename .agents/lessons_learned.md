@@ -7,7 +7,20 @@
 
 ## 📅 Bài học từ Dự án: DustGuard Operations (2026-09-05)
 
-### 0. Final Production Hardening: Khép Vòng Chu Trình 2-Side & Thiết Lập Chốt Chặn Nghiệp Vụ Thực Tế
+### 0. UI/UX Production Hardening: Công Thái Học Laptop 1366x768, Dropdown Thay Dàn Hàng Nút Bấm & Đếm Ngược SLA Thực Địa
+- **Vấn đề**:
+  - Dàn ngang 6-7 nút bấm hành động nghiệp vụ trên cùng một dòng (như `Phân công`, `Tạo nhiệm vụ`, `Thẩm tra pháp lý`, `Lên lịch kiểm tra`, `Thêm bằng chứng`, `Đóng vụ việc`) khiến giao diện bị vỡ dòng lộn xộn, đẩy các phần tử quan trọng xuống dưới khi xem trên laptop phổ thông 1366x768 (với tỉ lệ Windows scaling 125%).
+  - Lỗi Node `execSync` bị treo vĩnh viễn trên Windows khi gọi các CLI chạy ngầm giữ stdout/stderr (như browser daemon) do Node đợi toàn bộ file descriptor đóng; trong khi chạy trực tiếp qua PowerShell script thì thoát đúng kỳ vọng.
+  - Hiển thị chuỗi băm SHA-256 dài 64 ký tự chiếm hết diện tích thẻ trên di động và khó đọc nếu không có cơ chế rút gọn kèm nút copy 1-click.
+- **Giải pháp chuẩn hóa**:
+  1. **Quy tắc Gom nhóm Hành động (Action Bar Simplification)**:
+     - 1 Dominant CTA (dựa trên Next Action Engine) + 1-2 Quick Actions phổ biến (`Phân công`, `Xuất hồ sơ`) + 1 Dropdown Menu "Thao tác khác" cho các hành động thứ cấp và nguy hiểm (`Đóng/Mở lại vụ việc`).
+  2. **Rút gọn Băm Mật mã & Sao chép 1 chạm**:
+     - Định dạng `fbfb081a2b...37f6d7cd` kèm nút copy 1 chạm có trạng thái phản hồi `copied` tức thì; khối đối soát băm trong modal hiển thị rõ ràng và hỗ trợ re-verify trực tiếp với file nhị phân trên đĩa.
+  3. **Đếm ngược SLA 48h Chân thực**:
+     - Tính toán chênh lệch thời gian từ `created_at` vụ việc so với ngưỡng 48h luật định; đổi màu badge sang xanh lá nếu còn hạn hoặc đỏ cảnh báo nếu quá hạn, mang lại giá trị vận hành thực tế cho cán bộ điều phối.
+
+### 1. Final Production Hardening: Khép Vòng Chu Trình 2-Side & Thiết Lập Chốt Chặn Nghiệp Vụ Thực Tế
 - **Vấn đề**:
   - Khi bóc tách API response, sự không thống nhất giữa việc trả về mảng trực tiếp `res.data = [...]` và việc frontend kỳ vọng đối tượng bọc `res.cases = [...]` dễ dẫn đến việc màn hình hiển thị rỗng (0 items) dù cơ sở dữ liệu có đầy đủ dữ liệu (Bug Kanban rỗng tại `CaseCoordinationPage.tsx`).
   - Sử dụng chuỗi giả lập `Math.random()` để fallback khi tính toán mã băm SHA-256 (tại `crypto.ts`) gây tổn hại nghiêm trọng đến tính liêm chính của bằng chứng số (evidence integrity).
@@ -382,4 +395,44 @@
   - 87/87 API & domain tests **PASS 100%**.
   - 75/75 responsive matrix combinations **PASS 100%**.
   - 0 console error, 0 horizontal scroll, giao diện sáng màu high-contrast, zero-glassmorphism.
+
+---
+
+### 17. Forensic Codebase Audit: Zero-Glassmorphism Invariant Enforcement, Route Inventory Aliasing, Null-Safety on Analysis Facts & Button Wrap Hardening
+- **Bối cảnh & Vấn đề**:
+  1. Trong quy trình kiểm thử `node scripts/harness.js release-check` và audit tổng thể, phát hiện 5 tệp JSX còn sót `backdrop-blur-xs` làm fail test gate `runtime-ux-qa-visual-regression.test.js`.
+  2. Bảng route inventory kiểm tra thiếu các tuyến đường bí danh cộng đồng (`/community/discover`, `/community/observations`, `/community/cases`), gây fail `full-system-reliability-e2e.test.js`.
+  3. `route-inventory-matrix.test.js` kiểm tra cứng các tên component Landing cũ (`HeroSection`, `ProblemSection`) sau khi trang Landing đã được nâng cấp lên giao diện biên tập hiện đại (`Hero`, `ProblemStory`).
+  4. Bộ phân tích pháp lý `CaseAnalysisService` và trích xuất dữ kiện `CaseFactService` có rủi ro crash khi vụ việc thiếu mô tả hoặc mã băm tệp rỗng (`TypeError: Cannot read properties of null`).
+  5. Nút bấm trên viewports di động hẹp thiếu `whitespace-nowrap shrink-0` làm rớt từ đơn lẻ.
+- **Giải pháp chuẩn hóa**:
+  1. **Triệt tiêu 100% Glassmorphism**: Thay thế `backdrop-blur-xs` bằng solid background (`bg-white` hoặc `bg-[#1C1917]/60` cho modal).
+  2. **Backward-compatible Route Aliases**: Bổ sung các `<Route path="..." element={<Navigate ... replace />} />` bảo đảm 100% liên kết được xử lý an toàn không 404.
+  3. **Đồng bộ hóa Test Assertions**: Kiểm tra hỗ trợ cả component canonical lẫn layout biên tập mới.
+  4. **Phòng vệ Dữ liệu Thực tế**: Bổ sung `(f.value || '').toLowerCase()`, `(o.value || '').includes(...)`, `(ev.sha256 || '').substring(0, 16)` và chuỗi fallback an toàn.
+  5. **Nâng cấp Nút bấm**: Thêm `whitespace-nowrap shrink-0` cho các nút bấm và thanh chuyển đổi vai trò.
+- **Kết quả Kiểm chứng**:
+  - `node scripts/harness.js release-check`: **76/76 test files PASS 100% (596/596 tests)**.
+  - `npm --prefix dustguard-operations run test`: **87/87 tests PASS 100%** + 12-step Real Data E2E PASS.
+  - Toàn bộ 4 gói ứng dụng (`apps/server`, `apps/web`, `dustguard-operations`, `app`) biên dịch production build thành công 0 lỗi.
+
+---
+
+### 18. Cloudflare Production Runtime Audit & Zero-Seed 25-Step Journey Hardening
+- **Bối cảnh & Vấn đề**:
+  1. **Non-deterministic Math.random() trong Edge Workers**: Quét phát hiện các route sinh ID và token bằng `Math.random()` có thể gây lỗi hoặc xung đột trên Cloudflare Edge v8 isolates.
+  2. **Kiểm tra băm SHA-256 đối chứng tệp R2**: Cloudflare R2 `bucket.get()` trả về `R2ObjectBody` có phương thức `.arrayBuffer()`, trong khi môi trường dev/mock có thể là `.body` dạng Buffer, dẫn đến `TypeError: obj.arrayBuffer is not a function`.
+  3. **Role validation trong API tạo User**: API `POST /api/admin/users` yêu cầu trường `role` (ví dụ: `'staff'`, `'supervisor'`, `'legal_reviewer'`), việc gửi nhầm `role_id` làm token tạo ra bị null và 401 trên các API tiếp theo.
+  4. **Database Composite Indexes cho D1**: Bảng `cases` và `projects` thiếu các composite index phục vụ lọc theo mã vụ việc, ngày tạo, công trình và nhà thầu, tiềm ẩn rủi ro full table scan khi dữ liệu tăng trưởng.
+- **Giải pháp chuẩn hóa**:
+  1. **Web Crypto Native**: Thay thế 100% các lời gọi ngẫu nhiên bằng `crypto.randomUUID()` và Web Crypto chuẩn W3C.
+  2. **Unwrap linh hoạt thân tệp R2**: Xử lý `typeof obj.arrayBuffer === 'function' ? await obj.arrayBuffer() : obj.body` để tương thích cả workerd và dev mock.
+  3. **Tự động hóa 25 bước E2E từ Clean DB**: Xây dựng script `scripts/verify-cloudflare-runtime-e2e.js` chạy từ DB rỗng hoàn toàn, kiểm tra 25 bước nghiệp vụ từ tiếp nhận đến đóng vụ việc (4 điều kiện khép kín).
+  4. **Bổ sung chỉ mục hiệu năng cao**: Thêm `idx_cases_code`, `idx_cases_created_at`, `idx_cases_project`, `idx_cases_contractor`, `idx_projects_contractor` vào `schema.sql`.
+- **Kết quả Kiểm chứng**:
+  - `scripts/verify-cloudflare-runtime-e2e.js`: **25/25 bước PASS 100%**, ghi nhận vào `artifacts/cloudflare-runtime-e2e.json`.
+  - `tests/production-runtime-invariants.test.js`: **5/5 tests PASS** (0 token dev, 0 localhost trong bundle `dist/`).
+  - Báo cáo kiểm định `docs/audit/FINAL_CLOUDFLARE_PRODUCTION_READINESS.md` chính thức xác nhận **READY (13/13 Gates PASS)**.
+
+
 

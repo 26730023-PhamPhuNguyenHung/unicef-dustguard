@@ -21,6 +21,8 @@ import {
   Hash,
   Upload,
   Plus,
+  Copy,
+  Check,
 } from 'lucide-react';
 import { Button } from '../components/common/Button';
 
@@ -33,6 +35,14 @@ export const EvidencePage: React.FC = () => {
   const [selectedAsset, setSelectedAsset] = useState<any | null>(null);
   const [verifyingId, setVerifyingId] = useState<string | null>(null);
   const [verificationResult, setVerificationResult] = useState<any | null>(null);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  const handleCopyHash = (id: string, hash: string) => {
+    navigator.clipboard.writeText(hash);
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 2000);
+    addToast('Đã sao chép toàn bộ mã băm SHA-256 vào clipboard', 'info');
+  };
 
   // Upload modal state
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
@@ -332,8 +342,24 @@ export const EvidencePage: React.FC = () => {
                       </span>
                       <span className="text-slate-400">{formatFileSize(asset.file_size)}</span>
                     </div>
-                    <div className="truncate text-slate-800 font-semibold" title={asset.sha256}>
-                      {asset.sha256 ? `${asset.sha256.slice(0, 16)}...${asset.sha256.slice(-8)}` : 'Chưa có băm'}
+                    <div className="flex items-center justify-between gap-1 pt-0.5">
+                      <div className="truncate text-slate-800 font-semibold flex-1" title={asset.sha256}>
+                        {asset.sha256 ? `${asset.sha256.slice(0, 10)}...${asset.sha256.slice(-8)}` : 'Chưa có băm'}
+                      </div>
+                      {asset.sha256 && (
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); handleCopyHash(asset.id, asset.sha256); }}
+                          className="p-1 hover:bg-slate-200 rounded text-slate-500 hover:text-slate-800 transition-colors shrink-0"
+                          title="Sao chép toàn bộ mã SHA-256"
+                        >
+                          {copiedId === asset.id ? (
+                            <Check className="w-3.5 h-3.5 text-emerald-600" />
+                          ) : (
+                            <Copy className="w-3.5 h-3.5" />
+                          )}
+                        </button>
+                      )}
                     </div>
                   </div>
 
@@ -446,7 +472,17 @@ export const EvidencePage: React.FC = () => {
                 </div>
 
                 <div className="space-y-1">
-                  <div className="text-[11px] text-slate-500 font-semibold">Mã băm lưu trữ SSOT:</div>
+                  <div className="flex items-center justify-between text-[11px] text-slate-500 font-semibold">
+                    <span>Mã băm lưu trữ SSOT:</span>
+                    <button
+                      type="button"
+                      onClick={() => handleCopyHash(selectedAsset.id, selectedAsset.sha256)}
+                      className="text-xs text-dustguard-teal hover:underline flex items-center gap-1 font-sans"
+                    >
+                      {copiedId === selectedAsset.id ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                      <span>{copiedId === selectedAsset.id ? 'Đã sao chép' : 'Sao chép mã băm'}</span>
+                    </button>
+                  </div>
                   <div className="font-mono text-xs bg-white p-2.5 rounded border border-slate-300 break-all text-slate-800 select-all">
                     {selectedAsset.sha256}
                   </div>

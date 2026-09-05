@@ -2,6 +2,7 @@ import { DatabaseSync } from 'node:sqlite';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
+import { DatabaseRepository, QueryResultInfo } from '@dustguard/shared';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -14,7 +15,7 @@ if (!fs.existsSync(dataDir)) {
 
 export const dbPath = path.join(dataDir, 'dustguard-community.db');
 
-export class SQLiteClient {
+export class SQLiteClient implements DatabaseRepository {
   private db: DatabaseSync;
 
   constructor(filePath: string = dbPath) {
@@ -37,12 +38,16 @@ export class SQLiteClient {
     return stmt.all(...params) as T[];
   }
 
+  query<T = any>(sql: string, params: any[] = []): T[] {
+    return this.all<T>(sql, params);
+  }
+
   get<T = any>(sql: string, params: any[] = []): T | undefined {
     const stmt = this.db.prepare(sql);
     return stmt.get(...params) as T | undefined;
   }
 
-  run(sql: string, params: any[] = []): { changes: number | bigint; lastInsertRowid: number | bigint } {
+  run(sql: string, params: any[] = []): QueryResultInfo {
     const stmt = this.db.prepare(sql);
     return stmt.run(...params);
   }
@@ -65,3 +70,4 @@ export class SQLiteClient {
 }
 
 export const sqliteClient = new SQLiteClient();
+export const dbRepository: DatabaseRepository = sqliteClient;

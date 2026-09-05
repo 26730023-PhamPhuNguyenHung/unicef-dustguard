@@ -530,5 +530,10 @@ CREATE INDEX IF NOT EXISTS idx_iot_events_device ON iot_events(device_id, create
 CREATE INDEX IF NOT EXISTS idx_automation_runs_rule ON automation_runs(rule_id, started_at);
 CREATE INDEX IF NOT EXISTS idx_analysis_runs_case ON analysis_runs(case_id, created_at);
 CREATE INDEX IF NOT EXISTS idx_human_decisions_case ON human_decisions(case_id, created_at);
+CREATE INDEX IF NOT EXISTS idx_cases_code ON cases(case_code);
+CREATE INDEX IF NOT EXISTS idx_cases_created_at ON cases(created_at);
+CREATE INDEX IF NOT EXISTS idx_cases_project ON cases(project_id);
+CREATE INDEX IF NOT EXISTS idx_cases_contractor ON cases(contractor_id);
+CREATE INDEX IF NOT EXISTS idx_projects_contractor ON projects(contractor_id);
 
 

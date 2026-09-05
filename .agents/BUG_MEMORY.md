@@ -804,3 +804,24 @@
 ### 🚨 Trap 17.4: Chống lưu trữ dữ liệu nghiệp vụ qua `localStorage` (SSOT F5 Reload Invariant)
 - **Nguyên nhân**: Frontend lưu trạng thái phản ánh hoặc vụ việc vào `localStorage` dẫn đến dữ liệu ảo không đồng bộ giữa các tab trình duyệt và không có giá trị truy xuất khi người dùng chuyển sang thiết bị khác hoặc xóa cache.
 - **Giải pháp**: SQLite (`data/dustguard-community.db`) là chân lý duy nhất (SSOT). Mọi chỉ số dashboard, danh sách phản ánh, danh sách vụ việc, thông báo, và hồ sơ đều được nạp trực tiếp qua REST API backend. `localStorage` chỉ được phép dùng cho UI preferences (như `token`, `user`, `role`, `sidebar_collapsed`).
+
+---
+
+## 🛠️ 18. Codebase Audit, Zero-Glassmorphism Invariants & Fact Null-Safety Hardening
+
+### 🚨 Trap 18.1: Lọt class `backdrop-blur-xs` vi phạm Invariant Zero-Glassmorphism trong Civic Tech UI
+- **Nguyên nhân**: Trong một số trang (`AdminDispatchPage`, `ReportConfirmPage`, `CommunityMapPage`, `FieldChecklistPage`, `FieldEvidencePage`), lập trình viên vô tình sử dụng `backdrop-blur-xs` trên modal overlay, sticky bar hoặc photo badges. Điều này vi phạm nguyên tắc "TUYỆT ĐỐI KHÔNG XÀI GLASSMORPHISM (nền sáng thì chữ đậm, nền đậm thì chữ sáng)" và bị chặn bởi test gate `runtime-ux-qa-visual-regression.test.js`.
+- **Giải pháp**: Loại bỏ hoàn toàn mọi class `backdrop-blur*`. Sử dụng màu nền đặc rõ ràng (`bg-white`, `bg-[#FDFBF7]`, hoặc `bg-[#1C1917]/60` cho modal overlay) để bảo đảm độ tương phản tối đa dưới ánh sáng mặt trời ngoài hiện trường.
+
+### 🚨 Trap 18.2: `TypeError: Cannot read properties of null (reading 'toLowerCase' / 'substring')` trong Case Analysis Pipeline
+- **Nguyên nhân**: Trong `CaseAnalysisService` và `CaseFactService`, khi vụ việc có mô tả rỗng (`targetCase.description = null`) hoặc tệp bằng chứng chưa hoàn tất băm (`ev.sha256 = null`), việc gọi trực tiếp `f.value.toLowerCase()` hoặc `ev.sha256.substring(0, 16)` làm sập pipeline phân tích pháp lý với mã lỗi 500.
+- **Giải pháp**: Áp dụng triệt để null-safety: `(f.value || '').toLowerCase()`, `(o.value || '').includes('FAIL')`, `(ev.sha256 || '').substring(0, 16)`, và chuỗi dự phòng thân thiện `targetCase.description || 'Không có mô tả chi tiết'`.
+
+### 🚨 Trap 18.3: Gãy dòng chữ đơn lẻ và co cụm nút bấm trên Viewport nhỏ (Button Responsive Wraps)
+- **Nguyên nhân**: Nút bấm thiếu `whitespace-nowrap shrink-0` bị ép chiều rộng bởi container cha trên các màn hình mobile (`360x800`, `390x844`), khiến nhãn nút bị rớt từ xuống dòng mới (ví dụ "Đăng ký\nPilot", "Thanh niên CLB\n(Member)") làm vỡ bố cục và vi phạm audit buttons responsive.
+- **Giải pháp**: Thêm `whitespace-nowrap shrink-0` và đảm bảo `min-h-[44px]` (hoặc `min-h-[40px]`) cho tất cả các nút bấm và action triggers.
+
+### 🚨 Trap 18.4: Tuyến đường cũ thiếu Alias Redirect dẫn tới 404 hoặc Test Matrix Failure
+- **Nguyên nhân**: Khi tái cấu trúc các phân hệ cộng đồng, các URL cũ được lưu trong tài liệu hoặc liên kết ngoài như `/community/discover`, `/community/observations`, `/community/cases` bị thiếu trong bảng route, gây lỗi rớt route khi người dùng truy cập trực tiếp.
+- **Giải pháp**: Thiết lập các alias redirects chuẩn trong `routes.jsx` (`<Route path="discover" element={<Navigate to="/community" replace />} />`, etc.) để bảo đảm tính tương thích ngược 100%.
+

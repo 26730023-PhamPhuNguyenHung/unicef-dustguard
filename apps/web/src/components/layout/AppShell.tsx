@@ -274,7 +274,7 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
             type="button"
             disabled={switchLoading}
             onClick={() => handleDevSwitchRole('citizen')}
-            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all ${
+            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold whitespace-nowrap shrink-0 cursor-pointer transition-all ${
               user?.role === 'citizen'
                 ? 'bg-primary text-white shadow-xs'
                 : 'bg-surface-secondary text-content-main hover:bg-gray-200'
@@ -286,7 +286,7 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
             type="button"
             disabled={switchLoading}
             onClick={() => handleDevSwitchRole('community_member')}
-            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all ${
+            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold whitespace-nowrap shrink-0 cursor-pointer transition-all ${
               user?.role === 'community_member' || (user?.role as string) === 'member'
                 ? 'bg-primary text-white shadow-xs'
                 : 'bg-surface-secondary text-content-main hover:bg-gray-200'
@@ -298,7 +298,7 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
             type="button"
             disabled={switchLoading}
             onClick={() => handleDevSwitchRole('moderator')}
-            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all ${
+            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold whitespace-nowrap shrink-0 cursor-pointer transition-all ${
               user?.role === 'moderator'
                 ? 'bg-primary text-white shadow-xs'
                 : 'bg-surface-secondary text-content-main hover:bg-gray-200'
@@ -310,7 +310,7 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
             type="button"
             disabled={switchLoading}
             onClick={() => handleDevSwitchRole('admin')}
-            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all ${
+            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold whitespace-nowrap shrink-0 cursor-pointer transition-all ${
               user?.role === 'admin'
                 ? 'bg-primary text-white shadow-xs'
                 : 'bg-surface-secondary text-content-main hover:bg-gray-200'

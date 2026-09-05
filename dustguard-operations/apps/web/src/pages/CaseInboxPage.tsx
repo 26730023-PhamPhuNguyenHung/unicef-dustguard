@@ -235,7 +235,7 @@ export const CaseInboxPage: React.FC = () => {
                 : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
             }`}
           >
-            Thiếu evidence
+            Thiếu bằng chứng
           </button>
 
           <button
@@ -259,7 +259,7 @@ export const CaseInboxPage: React.FC = () => {
                 : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
             }`}
           >
-            Có Action chưa hoàn tất
+            Có yêu cầu đang xử lý
           </button>
         </div>
       </div>

@@ -77,7 +77,7 @@ export const PilotCTA: React.FC<PilotCTAProps> = ({ lang }) => {
               <button
                 type="button"
                 onClick={() => setModalOpen(true)}
-                className="h-12 px-7 rounded-xl bg-[#B42318] hover:bg-[#91180D] text-white font-bold text-[15px] shadow-sm flex items-center justify-center gap-2 transition-all active:scale-[0.99]"
+                className="h-12 px-7 rounded-xl bg-[#B42318] hover:bg-[#91180D] text-white font-bold text-[15px] shadow-sm flex items-center justify-center gap-2 transition-all active:scale-[0.99] whitespace-nowrap shrink-0 cursor-pointer"
               >
                 <Send className="w-4 h-4" />
                 <span>{lang === 'vi' ? 'Đăng ký Pilot' : 'Apply for Pilot'}</span>
@@ -85,7 +85,7 @@ export const PilotCTA: React.FC<PilotCTAProps> = ({ lang }) => {
 
               <a
                 href="#process"
-                className="h-12 px-5 rounded-xl bg-transparent hover:bg-[#FAF7F2] text-[#0F172A] font-semibold text-[15px] flex items-center justify-center gap-1.5 transition-colors border border-[#E2DCD5]"
+                className="h-12 px-5 rounded-xl bg-transparent hover:bg-[#FAF7F2] text-[#0F172A] font-semibold text-[15px] flex items-center justify-center gap-1.5 transition-colors border border-[#E2DCD5] whitespace-nowrap shrink-0"
               >
                 <span>{lang === 'vi' ? 'Xem phạm vi thử nghiệm' : 'View pilot scope'}</span>
                 <ArrowRight className="w-4 h-4 text-[#B42318]" />

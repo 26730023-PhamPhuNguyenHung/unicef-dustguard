@@ -70,3 +70,19 @@ export function transaction<T>(fn: () => T): T {
     throw err;
   }
 }
+
+export interface DatabaseRepository {
+  query<T = any>(sql: string, params?: any[]): Promise<T[]> | T[];
+  get<T = any>(sql: string, params?: any[]): Promise<T | undefined> | (T | undefined);
+  run(sql: string, params?: any[]): Promise<{ changes: number | bigint; lastInsertRowid: number | bigint }> | { changes: number | bigint; lastInsertRowid: number | bigint };
+  exec(sql: string): Promise<void> | void;
+  transaction<T>(fn: () => T | Promise<T>): Promise<T> | T;
+}
+
+export const dbRepository: DatabaseRepository = {
+  query,
+  get,
+  run,
+  exec,
+  transaction
+};

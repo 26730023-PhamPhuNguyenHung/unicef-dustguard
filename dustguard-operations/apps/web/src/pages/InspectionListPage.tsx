@@ -98,7 +98,7 @@ export const InspectionListPage: React.FC = () => {
               <div className="flex items-center gap-2 flex-shrink-0">
                 <Link to={`/inspections/${insp.id}`}>
                   <Button variant="primary" size="sm">
-                    {insp.status === 'COMPLETED' ? 'Biên bản kết quả' : 'Mở Field Checklist'} &rarr;
+                    {insp.status === 'COMPLETED' ? 'Biên bản kết quả' : 'Mở phiếu kiểm tra'} &rarr;
                   </Button>
                 </Link>
               </div>

@@ -33,6 +33,8 @@ dustguard-operations/apps/server/uploads/*
 uploads/*
 artifacts/*
 !artifacts/ui-anomalies.json
+!artifacts/ui-audit/
+!artifacts/ui-audit/**
 dustguard-operations/artifacts/*
 !dustguard-operations/artifacts/ui-anomalies.json
 

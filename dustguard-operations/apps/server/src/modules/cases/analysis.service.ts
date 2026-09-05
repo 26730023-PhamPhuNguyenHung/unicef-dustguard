@@ -112,8 +112,8 @@ export class CaseAnalysisService {
     }
 
     // Kiểm tra thiếu ảnh chụp trạm rửa xe
-    const mentionsWash = facts.some(f => f.value.toLowerCase().includes('rửa xe') || f.title.toLowerCase().includes('rửa xe'));
-    const hasWashEvidence = verifiedEvidence.some(e => e.title.toLowerCase().includes('wash') || e.title.toLowerCase().includes('rửa xe'));
+    const mentionsWash = facts.some(f => (f.value || '').toLowerCase().includes('rửa xe') || (f.title || '').toLowerCase().includes('rửa xe'));
+    const hasWashEvidence = verifiedEvidence.some(e => (e.title || '').toLowerCase().includes('wash') || (e.title || '').toLowerCase().includes('rửa xe'));
     if (mentionsWash && !hasWashEvidence) {
       missingFacts.push({
         fact: 'Ảnh chụp xác thực hoạt động của cầu/trạm rửa xe tự động áp lực cao tại cổng ra vào',
@@ -123,7 +123,7 @@ export class CaseAnalysisService {
     }
 
     // Kiểm tra thiếu ảnh chụp che chắn lưới
-    const hasMeshEvidence = verifiedEvidence.some(e => e.title.toLowerCase().includes('mesh') || e.title.toLowerCase().includes('lưới') || e.title.toLowerCase().includes('che chắn'));
+    const hasMeshEvidence = verifiedEvidence.some(e => (e.title || '').toLowerCase().includes('mesh') || (e.title || '').toLowerCase().includes('lưới') || (e.title || '').toLowerCase().includes('che chắn'));
     if (!hasMeshEvidence) {
       missingFacts.push({
         fact: 'Ảnh chụp kiểm tra độ phủ và tình trạng lưới chống bụi toàn bộ chu vi công trình',
@@ -144,11 +144,11 @@ export class CaseAnalysisService {
     // 2. Xây dựng Findings có Grounding trực tiếp từ Facts
     // FINDING 1: Từ Quan sát hiện trường hoặc Phản ánh cộng đồng
     const failedItems = observations.filter(
-      o => o.value.includes('FAIL') || o.fact_type === 'INSPECTION_OBSERVATION'
+      o => (o.value || '').includes('FAIL') || o.fact_type === 'INSPECTION_OBSERVATION'
     );
 
     const hasHumanViolationConfirm = humanDecisions.some(
-      h => h.value.includes('CONFIRM_VIOLATION') || h.title.includes('CONFIRM_VIOLATION')
+      h => (h.value || '').includes('CONFIRM_VIOLATION') || (h.title || '').includes('CONFIRM_VIOLATION')
     );
 
     if (failedItems.length > 0) {
@@ -468,7 +468,7 @@ export class CaseAnalysisService {
     }
 
     for (const f of findings) {
-      const lower = f.statement.toLowerCase();
+      const lower = (f.statement || '').toLowerCase();
       if (
         (lower.includes('chắc chắn vi phạm') ||
           lower.includes('đã vi phạm hoàn toàn') ||

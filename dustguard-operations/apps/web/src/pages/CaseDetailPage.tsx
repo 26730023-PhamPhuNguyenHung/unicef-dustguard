@@ -35,6 +35,9 @@ import {
   FolderCheck,
   Printer,
   CheckSquare,
+  ChevronDown,
+  Check,
+  MoreHorizontal,
 } from 'lucide-react';
 import { Case, CaseStatus, StaffAssignment } from '@dustguard-operations/shared';
 
@@ -95,7 +98,7 @@ export const CaseDetailPage: React.FC = () => {
   const [taskNotes, setTaskNotes] = useState('');
   const [taskAssigneeId, setTaskAssigneeId] = useState('');
   const [submittingTask, setSubmittingTask] = useState(false);
-
+  const [moreActionsOpen, setMoreActionsOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -350,6 +353,47 @@ export const CaseDetailPage: React.FC = () => {
 
   const { case: currentCase, timeline, assignments, evidence, legalReviews, inspections, actions, closure } = caseData;
 
+  const createdAtMs = new Date(currentCase.created_at).getTime();
+  const slaDeadlineMs = createdAtMs + 48 * 3600 * 1000;
+  const slaDiffHours = Math.round((slaDeadlineMs - Date.now()) / (3600 * 1000));
+  const isSlaBreached = slaDiffHours < 0;
+
+  const caseHealthChecklist = [
+    {
+      label: 'Bằng chứng số xác thực (SHA-256)',
+      done: Boolean(evidence && evidence.length > 0),
+      desc: evidence && evidence.length > 0 ? `${evidence.length} tệp đã niêm phong` : 'Chưa có tệp minh chứng',
+    },
+    {
+      label: 'Căn cứ pháp lý (Nghị định 45/2022)',
+      done: Boolean(legalReviews && legalReviews.length > 0),
+      desc: legalReviews && legalReviews.length > 0 ? 'Đã rà soát khung xử lý' : 'Chờ chuyên viên thẩm tra',
+    },
+    {
+      label: 'Kiểm tra thực địa hiện trường',
+      done: Boolean(inspections && inspections.length > 0),
+      desc: inspections && inspections.length > 0 ? `${inspections.length} đợt kiểm tra ghi nhận` : 'Chưa lập lịch kiểm tra',
+    },
+    {
+      label: 'Biện pháp khắc phục nhà thầu',
+      done: Boolean(actions && actions.length > 0 && actions.every((a: any) => a.status === 'VERIFIED')),
+      desc: !actions || actions.length === 0
+        ? 'Chưa yêu cầu biện pháp'
+        : actions.every((a: any) => a.status === 'VERIFIED')
+        ? 'Đã nghiệm thu đạt chuẩn'
+        : `${actions.filter((a: any) => a.status !== 'VERIFIED').length} yêu cầu đang xử lý`,
+    },
+    {
+      label: 'Điều kiện kết thúc vụ việc',
+      done: currentCase.status === 'READY_TO_CLOSE' || currentCase.status === 'CLOSED',
+      desc: currentCase.status === 'CLOSED'
+        ? 'Hồ sơ đã lưu trữ'
+        : currentCase.status === 'READY_TO_CLOSE'
+        ? 'Đủ điều kiện đóng hồ sơ'
+        : 'Cần hoàn tất các bước trên',
+    },
+  ];
+
   const RECORD_TABS = [
     { id: 'overview', label: 'Tổng quan', icon: <FileText className="w-4 h-4" /> },
     { id: 'dossier', label: 'Hồ sơ', icon: <FolderCheck className="w-4 h-4" /> },
@@ -406,12 +450,17 @@ export const CaseDetailPage: React.FC = () => {
         }
       />
 
-      {/* Secondary Operations Action Bar */}
-      <div className="civic-card p-3 bg-white border border-slate-200 flex flex-wrap items-center justify-between gap-2 shadow-xs">
-        <span className="text-xs font-bold text-ink-500 uppercase tracking-wider">
-          Thao tác trực tiếp:
-        </span>
-        <div className="flex flex-wrap items-center gap-2">
+      {/* Streamlined Operations Action Bar */}
+      <div className="civic-card p-3 bg-white border border-slate-200 flex flex-wrap items-center justify-between gap-3 shadow-xs">
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-bold text-ink-500 uppercase tracking-wider">
+            Điều phối vụ việc:
+          </span>
+          <span className="text-xs font-medium text-ink-700 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+            {currentCase.status}
+          </span>
+        </div>
+        <div className="flex items-center gap-2 relative">
           <Button
             variant="secondary"
             size="sm"
@@ -423,54 +472,83 @@ export const CaseDetailPage: React.FC = () => {
           <Button
             variant="secondary"
             size="sm"
-            icon={<CheckSquare className="w-3.5 h-3.5" />}
-            onClick={handleOpenTaskModal}
+            icon={<FileText className="w-3.5 h-3.5" />}
+            onClick={() => {
+              const token = localStorage.getItem('dustguard_token');
+              const url = `/api/cases/${currentCase.id}/decision-pack${token ? `?token=${encodeURIComponent(token)}` : ''}`;
+              window.open(url, '_blank');
+            }}
           >
-            Tạo nhiệm vụ
+            Xuất hồ sơ
           </Button>
-          <Button
-            variant="secondary"
-            size="sm"
-            icon={<Shield className="w-3.5 h-3.5" />}
-            onClick={() => navigate(`/cases/${currentCase.id}/legal`)}
-          >
-            Thẩm tra pháp lý
-          </Button>
-          <Button
-            variant="secondary"
-            size="sm"
-            icon={<Calendar className="w-3.5 h-3.5" />}
-            onClick={() => navigate(`/cases/${currentCase.id}/inspection/new`)}
-          >
-            Lên lịch kiểm tra
-          </Button>
-          <Button
-            variant="secondary"
-            size="sm"
-            icon={<Upload className="w-3.5 h-3.5" />}
-            onClick={() => setUploadModalOpen(true)}
-          >
-            Thêm bằng chứng
-          </Button>
-          {currentCase.status !== 'CLOSED' ? (
-            <Button
-              variant="danger"
-              size="sm"
-              icon={<CheckCircle2 className="w-3.5 h-3.5" />}
-              onClick={() => setCloseModalOpen(true)}
-            >
-              Đóng vụ việc
-            </Button>
-          ) : (
+
+          {/* More Actions Dropdown */}
+          <div className="relative">
             <Button
               variant="secondary"
               size="sm"
-              icon={<RotateCcw className="w-3.5 h-3.5" />}
-              onClick={() => setReopenModalOpen(true)}
+              icon={<ChevronDown className="w-3.5 h-3.5" />}
+              onClick={() => setMoreActionsOpen(!moreActionsOpen)}
             >
-              Mở lại vụ việc
+              Thao tác khác
             </Button>
-          )}
+            {moreActionsOpen && (
+              <div 
+                className="absolute right-0 top-full mt-1.5 w-56 bg-white border border-slate-200 rounded-lg shadow-lg py-1.5 z-40 text-xs font-medium divide-y divide-slate-100"
+                onMouseLeave={() => setMoreActionsOpen(false)}
+              >
+                <div className="py-1">
+                  <button
+                    onClick={() => { setMoreActionsOpen(false); handleOpenTaskModal(); }}
+                    className="w-full px-3 py-2 text-left hover:bg-slate-50 flex items-center gap-2 text-slate-700"
+                  >
+                    <CheckSquare className="w-4 h-4 text-slate-500" />
+                    Tạo nhiệm vụ hiện trường
+                  </button>
+                  <button
+                    onClick={() => { setMoreActionsOpen(false); navigate(`/cases/${currentCase.id}/legal`); }}
+                    className="w-full px-3 py-2 text-left hover:bg-slate-50 flex items-center gap-2 text-slate-700"
+                  >
+                    <Shield className="w-4 h-4 text-slate-500" />
+                    Thẩm tra pháp lý (NĐ 45)
+                  </button>
+                  <button
+                    onClick={() => { setMoreActionsOpen(false); navigate(`/cases/${currentCase.id}/inspection/new`); }}
+                    className="w-full px-3 py-2 text-left hover:bg-slate-50 flex items-center gap-2 text-slate-700"
+                  >
+                    <Calendar className="w-4 h-4 text-slate-500" />
+                    Lên lịch kiểm tra thực địa
+                  </button>
+                  <button
+                    onClick={() => { setMoreActionsOpen(false); setUploadModalOpen(true); }}
+                    className="w-full px-3 py-2 text-left hover:bg-slate-50 flex items-center gap-2 text-slate-700"
+                  >
+                    <Upload className="w-4 h-4 text-slate-500" />
+                    Thêm tài liệu / Bằng chứng
+                  </button>
+                </div>
+                <div className="py-1">
+                  {currentCase.status !== 'CLOSED' ? (
+                    <button
+                      onClick={() => { setMoreActionsOpen(false); setCloseModalOpen(true); }}
+                      className="w-full px-3 py-2 text-left hover:bg-rose-50 flex items-center gap-2 text-rose-700 font-semibold"
+                    >
+                      <CheckCircle2 className="w-4 h-4 text-rose-600" />
+                      Đóng vụ việc
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => { setMoreActionsOpen(false); setReopenModalOpen(true); }}
+                      className="w-full px-3 py-2 text-left hover:bg-amber-50 flex items-center gap-2 text-amber-700 font-semibold"
+                    >
+                      <RotateCcw className="w-4 h-4 text-amber-600" />
+                      Mở lại vụ việc
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -619,13 +697,28 @@ export const CaseDetailPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Right Col: Current Stage, Assignee, Next Action */}
+          {/* Right Col: Current Stage, Assignee, Case Health Checklist, Evidence */}
           <div className="space-y-6">
             {/* Next Recommended Operational Action */}
             <div className="civic-card p-5 border-l-4 border-dustguard-red space-y-3 bg-red-50/20">
-              <span className="text-xs font-bold uppercase text-dustguard-red tracking-wider">
-                Hành động khuyến nghị tiếp theo
-              </span>
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-xs font-bold uppercase text-dustguard-red tracking-wider">
+                  Hành động khuyến nghị
+                </span>
+                <span className={`text-[11px] font-bold px-2 py-0.5 rounded border ${
+                  currentCase.status === 'CLOSED'
+                    ? 'bg-slate-100 text-slate-700 border-slate-200'
+                    : isSlaBreached
+                    ? 'bg-rose-100 text-rose-800 border-rose-200'
+                    : 'bg-emerald-100 text-emerald-800 border-emerald-200'
+                }`}>
+                  {currentCase.status === 'CLOSED'
+                    ? 'Đã kết thúc'
+                    : isSlaBreached
+                    ? `Trễ hạn ${Math.abs(slaDiffHours)}h (SLA 48h)`
+                    : `Còn ${slaDiffHours}h (SLA 48h)`}
+                </span>
+              </div>
               <p className="text-sm font-bold text-slate-900 leading-snug">
                 {currentCase.status === 'NEW' && 'Cán bộ cần tiếp nhận hồ sơ, kiểm tra sơ bộ thông tin và chuyển sang TRIAGED.'}
                 {currentCase.status === 'TRIAGED' && 'Lãnh đạo điều phối phân công cán bộ thụ lý chính cho vụ việc.'}
@@ -647,6 +740,39 @@ export const CaseDetailPage: React.FC = () => {
               >
                 Thực hiện hành động này
               </Button>
+            </div>
+
+            {/* Case Health Checklist */}
+            <div className="civic-card p-5 space-y-3 bg-white">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                  Tình trạng hồ sơ vụ việc
+                </span>
+                <span className="text-[11px] font-semibold text-slate-500 font-mono">
+                  {caseHealthChecklist.filter(item => item.done).length}/{caseHealthChecklist.length} tiêu chuẩn
+                </span>
+              </div>
+              <div className="space-y-2.5 pt-1">
+                {caseHealthChecklist.map((item, idx) => (
+                  <div key={idx} className="flex items-start gap-2.5">
+                    <div className="mt-0.5 shrink-0">
+                      {item.done ? (
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                      ) : (
+                        <div className="w-4 h-4 rounded-full border-2 border-slate-300 flex items-center justify-center" />
+                      )}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className={`text-xs font-semibold leading-tight ${item.done ? 'text-slate-800' : 'text-slate-500'}`}>
+                        {item.label}
+                      </p>
+                      <p className="text-[11px] text-slate-400 mt-0.5 leading-none">
+                        {item.desc}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
             {/* Assignee Card */}
@@ -686,15 +812,23 @@ export const CaseDetailPage: React.FC = () => {
                 </button>
               </div>
               {evidence.length > 0 ? (
-                <div className="rounded-lg overflow-hidden border border-slate-200 bg-slate-100 aspect-video flex items-center justify-center">
-                  <img
-                    src={evidence[0].file_path}
-                    alt={evidence[0].file_name}
-                    className="w-full h-full object-cover"
-                    onError={(e: any) => {
-                      e.target.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="80"><rect width="100" height="80" fill="%23f1f5f9"/><text x="50" y="45" font-size="12" fill="%2394a3b8" text-anchor="middle">Ảnh minh chứng</text></svg>';
-                    }}
-                  />
+                <div className="space-y-2">
+                  <div className="rounded-lg overflow-hidden border border-slate-200 bg-slate-100 aspect-video flex items-center justify-center">
+                    <img
+                      src={evidence[0].file_path}
+                      alt={evidence[0].file_name}
+                      className="w-full h-full object-cover"
+                      onError={(e: any) => {
+                        e.target.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="80"><rect width="100" height="80" fill="%23f1f5f9"/><text x="50" y="45" font-size="12" fill="%2394a3b8" text-anchor="middle">Ảnh minh chứng</text></svg>';
+                      }}
+                    />
+                  </div>
+                  {evidence[0].sha256_hash && (
+                    <div className="flex items-center justify-between text-[11px] font-mono text-slate-500 bg-slate-50 px-2 py-1 rounded border border-slate-200">
+                      <span>SHA-256: {evidence[0].sha256_hash.slice(0, 8)}...{evidence[0].sha256_hash.slice(-6)}</span>
+                      <span className="text-emerald-700 font-sans font-semibold text-[10px]">ĐÃ XÁC THỰC</span>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="text-center py-6 text-xs text-slate-400 bg-slate-50 rounded border border-slate-200">

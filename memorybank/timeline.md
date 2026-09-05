@@ -7,7 +7,37 @@
 
 ## 📅 Các Mốc Phát Triển Chính (Milestones)
 
-### 0. [2026-09-05] `final-production-readiness-hardening`: Vòng Thẩm Định & Gia Cố Cuối Cùng Toàn Diện (Final Production Readiness Audit)
+### 0. [2026-09-05] `ui-ux-production-hardening`: Tinh Chỉnh & Nghiệm Thu Giao Diện Sáng Màu, Không Glassmorphism, 15 Minh Chứng Đa Màn Hình
+- **Mục tiêu**: Gia cố toàn diện chất lượng hiển thị và trải nghiệm người dùng trên DustGuard VN; đạt chuẩn Pitch-Ready trước Hội đồng Đánh giá; bảo đảm Zero Mock, Zero Fake Numbers, Zero Dead CTAs, High-Contrast Light Mode, Zero Glassmorphism, 1366x768 & 390x844 responsive pass.
+- **Phạm vi hoàn tất**:
+  - **Kiểm kê 42 Tuyến Đường (Phase 1)**: Ban hành `docs/audit/UI_ROUTE_INVENTORY.md` phân loại 20 route Side A và 22 route Side B.
+  - **Command Center Dashboard (Phase 6 & 7)**: Bố cục 70/30 (Priority Queue & Live Pulse), 4 thẻ KPI lớn, API thời gian thực không fake số liệu.
+  - **Case Detail Workspace (Phase 8)**: Gom nhóm 7 nút bấm phân tán thành 1 Dominant CTA + 2 Quick Actions + Dropdown Menu "Thao tác khác" chuẩn công thái học; Cột phải tích hợp đếm ngược SLA 48h và Checklist 5 tiêu chuẩn hồ sơ.
+  - **Evidence Workspace (Phase 11)**: Rút gọn hash SHA-256 kèm nút copy 1-click có phản hồi trực quan; Modal kiểm định toàn vẹn băm nhị phân trên đĩa.
+  - **Legal Workspace (Phase 10)**: Tách bạch rõ 3 tầng thông tin (System Facts -> FTS5 Statutory Citations -> Human Officer Decision) với banner quy chế đối soát FTS5 minh bạch.
+  - **Field Inspection Workspace**: Phiếu kiểm tra thực địa QCVN 18, GPS tự động, 4 nút chọn kích thước lớn $\ge 44$px.
+  - **15 Minh Chứng Runtime Thật (Phase 17 & 18)**: Chụp tự động và xác thực 15 ảnh chụp độ phân giải cao tại `artifacts/ui-audit/` (1366x768 laptop và 390x844 mobile portrait). 100% không tràn ngang (`scrollWidth <= innerWidth`).
+  - **Báo cáo Nghiệm thu Master (Phase 24 & 25)**: Ban hành `docs/audit/FINAL_UI_UX_PRODUCTION_READINESS.md` đánh giá 12 Cổng Chất Lượng UI (Gates UI-A đến UI-L) đạt PASS 100%.
+
+### 1. [2026-09-05] `forensic-codebase-audit-hardening`: Toàn Diện Rà Soát Lỗi Codebase, Triệt Tiêu Glassmorphism & Gia Cố Null-Safety
+- **Mục tiêu**: Rà soát toàn bộ codebase (Typecheck, Lint, Test Suites, UI Invariants, Null-Safety, Button Responsive), phát hiện và triệt tiêu 100% lỗi tiềm ẩn, bảo đảm toàn bộ hệ thống sẵn sàng vận hành thực tế.
+- **Phạm vi hoàn tất**:
+  - **Triệt tiêu 100% Glassmorphism**: Loại bỏ `backdrop-blur-xs` còn sót tại 5 tệp JSX (`AdminDispatchPage`, `ReportConfirmPage`, `CommunityMapPage`, `FieldChecklistPage`, `FieldEvidencePage`). Chuyển về solid background bảo đảm tương phản tối đa dưới nắng thực địa. Test gate `runtime-ux-qa-visual-regression.test.js` PASS 100%.
+  - **Bổ sung Tuyến đường Bí danh (Route Aliasing)**: Thêm chuyển hướng an toàn cho `/community/discover`, `/community/observations`, `/community/cases`, `/community/actions`, `/community/follow-ups` trong `community/routes.jsx`. `full-system-reliability-e2e.test.js` PASS 100%.
+  - **Đồng bộ Kiểm thử Trang Landing**: Cập nhật `route-inventory-matrix.test.js` hỗ trợ đồng bộ bố cục biên tập mới (`Hero`, `ProblemStory`, `ProcessJourney`, `RoleStories`, `TrustSection`, `PilotCTA`, `LandingHeader`).
+  - **Gia cố Phòng vệ Null-Safety trong Phân Tích Pháp Lý**: Cập nhật `CaseAnalysisService` và `CaseFactService` kiểm tra an toàn `(f.value || '').toLowerCase()`, `(o.value || '').includes(...)`, `(ev.sha256 || '').substring(0, 16)` và chuỗi fallback cho mô tả vụ việc, loại bỏ hoàn toàn nguy cơ sập runtime `TypeError`.
+  - **Khắc phục Co Cụm Nút Bấm Mobile**: Bổ sung `whitespace-nowrap shrink-0` cho các nút bấm tại `PilotCTA.jsx`, `PilotCTA.tsx` và dev role switcher trong `AppShell.tsx`.
+  - **Kết quả Kiểm chứng Hoàn hảo**:
+    - `node scripts/harness.js release-check`: **76/76 test files PASS 100% (596/596 tests)**.
+    - `npm --prefix dustguard-operations run test`: **87/87 tests PASS 100%** + 12-step Real Data E2E PASS.
+    - `npm --prefix apps/server run build` (`tsc`): 0 lỗi.
+    - `npm --prefix apps/web run build` (`tsc && vite build`): 0 lỗi.
+    - `npm --prefix dustguard-operations run build`: 0 lỗi.
+    - `npm --prefix app run build`: 0 lỗi.
+
+---
+
+### 1. [2026-09-05] `final-production-readiness-hardening`: Vòng Thẩm Định & Gia Cố Cuối Cùng Toàn Diện (Final Production Readiness Audit)
 - **Mục tiêu**: Gia cố toàn diện hệ thống DustGuard VN đạt chuẩn sẵn sàng vận hành thực tế; loại bỏ 100% fake mock/placeholder/random data; thiết lập các chốt chặn nghiệp vụ (Business Domain Invariants); bảo đảm chu trình khép kín End-to-End thật từ Cộng đồng (Side A) sang Chuyên trách (Side B).
 - **Phạm vi hoàn tất**:
   - **Kiểm kê & Phân loại Tính năng Toàn diện**: Ban hành `docs/audit/FINAL_PRODUCTION_READINESS.md` kiểm kê 27 tính năng cốt lõi. Ban hành `docs/audit/MOCK_AND_PLACEHOLDER_AUDIT.md` và `docs/DEVELOPMENT_ONLY_FEATURES.md`.
@@ -281,6 +311,20 @@
   - Kiểm thử đa màn hình tự động (`scripts/verify-responsive.js`): Đạt **75/75 lượt kiểm tra PASS 100%** trên cả 5 độ phân giải: Mobile 390x844, Large Mobile 430x932, Tablet 768x1024, Laptop 1366x768, Desktop 1440x900.
   - Kiểm thử tích hợp tự động: **32/32 tests PASS 100%** (`npm test` ~1.3s).
   - Nghiệm thu quy trình nghiệp vụ thực tế qua `agent-browser`: 0 console error, 0 dead buttons, F5 reload bảo toàn 100% dữ liệu.
+
+---
+
+### 0. [2026-09-05] `cloudflare-production-audit`: Final Cloudflare Runtime Audit & Production Hardening
+- **Mục tiêu**: Hoàn tất 16 giai đoạn kiểm định runtime và 13 cổng phát hành (Gates A đến M) theo Master Audit Contract.
+- **Phạm vi hoàn tất**:
+  - **Forensics & Remediation (Phase 1)**: Quét 1679 tệp mã nguồn. Thay thế toàn bộ 3 vị trí `Math.random()` bằng Web Crypto `crypto.randomUUID()`. Đưa số blocker Cloudflare về **0**.
+  - **Storage Reality & DatabaseRepository (Phase 2)**: Xây dựng interface `DatabaseRepository` (`LocalSQLiteRepository`, `CloudflareD1Repository`) tại `packages/shared/src/db/database-repository.ts`.
+  - **Bằng chứng R2 & Toàn vẹn băm SHA-256 (Phase 3)**: Xây dựng `POST /api/evidence/:id/verify-hash` đọc trực tiếp nhị phân từ Cloudflare R2 bucket (`bucket.get()`) và tính băm SHA-256 qua Web Crypto Subtle API. 12/12 edge routes tests PASS.
+  - **Invariants & Bí mật Production (Phase 4 & 10)**: Kiểm tra mã biên dịch `dist/`, đảm bảo 0 dev token, 0 fake secret, 0 URL localhost. `tests/production-runtime-invariants.test.js` PASS 5/5.
+  - **25 Bước Primary Presentation Journey (Phase 7)**: Xây dựng và thực thi thành công `scripts/verify-cloudflare-runtime-e2e.js` từ cơ sở dữ liệu rỗng (0 users, 0 cases). Toàn bộ 25 mutations thành công và xuất minh chứng tại `artifacts/cloudflare-runtime-e2e.json`.
+  - **Composite Indexes cho D1/SQLite (Phase 11)**: Bổ sung 5 chỉ mục tối ưu trên `cases(case_code, created_at, project_id, contractor_id)` và `projects(contractor_id)`.
+  - **Kiểm định Responsive Viewports (Phase 13)**: Xác minh 15 routes chính trên các độ phân giải 1366x768, 1440x900, 390x844 không bị tràn ngang (`scrollWidth <= innerWidth`).
+  - **Báo cáo chuẩn Master**: Xuất bản `docs/audit/FINAL_CLOUDFLARE_PRODUCTION_READINESS.md` với phán quyết **READY** (13/13 Gates PASS).
 
 ---
 

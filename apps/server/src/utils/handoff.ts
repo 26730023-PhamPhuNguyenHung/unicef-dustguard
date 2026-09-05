@@ -17,8 +17,13 @@ interface CommunityCasePayload {
   confirmationCount?: number;
 }
 
-export async function forwardCaseToOperations(caseData: CommunityCasePayload): Promise<{ success: boolean; data?: any; error?: string }> {
+export async function forwardCaseToOperations(
+  caseData: CommunityCasePayload,
+  options: { maxRetries?: number; timeoutMs?: number } = {}
+): Promise<{ success: boolean; data?: any; error?: string; retries?: number }> {
   const operationsUrl = process.env.OPERATIONS_API_URL || 'http://localhost:4000/api/integrations/community/cases';
+  const maxRetries = options.maxRetries ?? 2;
+  const timeoutMs = options.timeoutMs ?? 3000;
 
   const payload = {
     external_case_id: caseData.id,
@@ -33,33 +38,45 @@ export async function forwardCaseToOperations(caseData: CommunityCasePayload): P
     confirmation_count: caseData.confirmationCount || 0
   };
 
-  try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 3000); // 3s timeout
+  let lastError = '';
 
-    const res = await fetch(operationsUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload),
-      signal: controller.signal
-    });
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
-    clearTimeout(timeout);
+      const res = await fetch(operationsUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Idempotency-Key': `handoff-${payload.external_case_id}`
+        },
+        body: JSON.stringify(payload),
+        signal: controller.signal
+      });
 
-    if (res.ok) {
-      const data = await res.json();
-      console.log(`[Handoff Success] Đã bàn giao vụ việc ${payload.case_code} sang Operations:`, data);
-      return { success: true, data };
-    } else {
-      const errText = await res.text().catch(() => 'Unknown error');
-      console.warn(`[Handoff Warning] Operations trả mã lỗi ${res.status}:`, errText);
-      return { success: false, error: errText };
+      clearTimeout(timeout);
+
+      if (res.ok) {
+        const data = await res.json();
+        console.log(`[Handoff Success] (Lần ${attempt}) Đã bàn giao vụ việc ${payload.case_code} sang Operations:`, data);
+        return { success: true, data, retries: attempt - 1 };
+      } else {
+        const errText = await res.text().catch(() => 'Unknown error');
+        lastError = `Operations HTTP ${res.status}: ${errText}`;
+        console.warn(`[Handoff Warning] (Lần ${attempt}) Operations trả mã lỗi:`, lastError);
+      }
+    } catch (err: any) {
+      lastError = err.message || 'Network error';
+      console.info(`[Handoff Info] (Lần ${attempt}/${maxRetries}) Lỗi kết nối tới Operations (${operationsUrl}): ${lastError}`);
+      if (attempt < maxRetries) {
+        // Đợi 500ms trước khi thử lại
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
     }
-  } catch (err: any) {
-    // Graceful logging: Operations server có thể chưa bật ở môi trường dev cục bộ
-    console.info(`[Handoff Info] Không thể kết nối tới Operations Service (${operationsUrl}): ${err.message}. Hồ sơ đã được lưu cục bộ an toàn.`);
-    return { success: false, error: err.message };
   }
+
+  // Graceful fallback nếu không kết nối được sau các lần thử
+  console.info(`[Handoff Summary] Hồ sơ ${payload.case_code} đã được lưu cục bộ an toàn, sẵn sàng bàn giao lại khi Operations trực tuyến.`);
+  return { success: false, error: lastError, retries: maxRetries };
 }
