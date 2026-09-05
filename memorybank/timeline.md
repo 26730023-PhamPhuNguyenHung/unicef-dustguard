@@ -7,7 +7,29 @@
 
 ## 📅 Các Mốc Phát Triển Chính (Milestones)
 
-### 1. [2026-09-05] `operations-v2.0`: Complete Zero-Seed Real-Data Operations & Production Evidence Grounding
+### 1. [2026-09-05] `landing-v1.0`: Modern TypeScript Civic-First Landing Page & Full Architectural Realignment
+- **Mục tiêu**: Tái cấu trúc và hiện đại hóa toàn diện Landing Page của DustGuard VN từ bản gốc `.jsx` cũ sang chuẩn TypeScript (`.tsx`) tích hợp thẳng vào phân hệ chính `apps/web` tại route `/`, tối ưu hóa hiệu năng, loại bỏ hoàn toàn các file CSS cồng kềnh và thiết lập giao diện Civic High-Contrast mượt mà.
+- **Phạm vi hoàn tất**:
+  - **Kiến trúc lại Component Modularity**:
+    - Phân tách Landing Page thành 9 components TypeScript chuyên biệt: `LandingNav.tsx`, `HeroSection.tsx`, `ProblemSection.tsx`, `SolutionSection.tsx`, `WorkflowSection.tsx`, `RoleMatrixSection.tsx`, `CivicTechSection.tsx`, `PilotSection.tsx`, `LandingFooter.tsx`.
+    - Quản lý trạng thái đa ngôn ngữ (Việt / Anh) tức thời qua localStorage và Scroll-Spy tự động bám theo vị trí cuộn trang.
+  - **Tối ưu hóa Hiệu năng & Dung lượng**:
+    - Loại bỏ vĩnh viễn `landing.css` (28KB) và `SvgSprite` cồng kềnh; chuyển sang 100% Tailwind CSS utility classes kết hợp `lucide-react`.
+    - Giảm thiểu DOM depth, chống co giật khung hình với `scrollbar-gutter: stable`, chống rớt chữ với `text-wrap: pretty`.
+  - **Trải nghiệm Tiếp cận Civic High-Contrast**:
+    - Màu sắc tương phản cao ngoài trời nắng: nền `#FDFBF7` cream, chữ `#0F172A` đậm, điểm nhấn `#9F241F` seal red & `#0D6F64` teal.
+    - Touch targets đảm bảo $\ge 44$px trên di động.
+    - Thẻ đối chứng tương tác Trước / Sau 48h (Initial Observation $\leftrightarrow$ 48h Reinspection Proof).
+  - **Tích hợp Luồng Tác nghiệp Thật (Actionable CTAs)**:
+    - Nút `[Gửi phản ánh]` liên kết trực tiếp tới `/reports/new` tiếp nhận hiện trường.
+    - Nút `[Xem bản đồ]` mở bản đồ vệ tinh thời gian thực `/map`.
+    - Nút `[Cổng Cán bộ]` điều hướng mượt mà sang `DustGuard Operations` (`http://localhost:3002`).
+  - **Nghiệm Thu Khép Kín**:
+    - `npm --prefix apps/web run build`: **PASS 100%** (1635 modules transformed, 0 lỗi TypeScript).
+    - Kiểm thử tự động qua `agent-browser`: 0 horizontal overflow trên cả Desktop 1366px và Mobile 390px.
+    - Tương tác chuyển đổi tab đối chứng, chuyển đổi ngôn ngữ EN/VI hoạt động trơn tru.
+
+### 2. [2026-09-05] `operations-v2.0`: Complete Zero-Seed Real-Data Operations & Production Evidence Grounding
 - **Mục tiêu**: Loại bỏ hoàn toàn 100% sự phụ thuộc vào dữ liệu mẫu (seed/fake data), vận hành hệ thống trơn tru từ Zero-Data (Database rỗng là first-class state), niêm phong chứng cứ số SHA-256 thực địa và đảm bảo tính bền vững (Persistence) tuyệt đối của dữ liệu thực tế.
 - **Phạm vi hoàn tất**:
   - **Loại Bỏ Hoàn Toàn Hardcode Dữ Liệu Demo**:
