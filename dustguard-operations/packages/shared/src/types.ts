@@ -448,10 +448,42 @@ export type SemanticType = 'CLAIM' | 'OBSERVATION' | 'TELEMETRY' | 'DOCUMENT' | 
 export type VerificationState = 'UNVERIFIED' | 'PENDING' | 'VERIFIED' | 'REJECTED';
 export type IntegrityState = 'UNVERIFIED' | 'VERIFIED' | 'TAMPERED' | 'FILE_MISSING' | 'INVALID';
 
+export type CognitiveState = 'FACT' | 'AI_SUGGESTION' | 'VERIFIED';
+
+export interface AutomatedCheck {
+  valid_time: boolean;
+  time_note?: string;
+  near_site: boolean;
+  distance_note?: string;
+  field_verified: boolean;
+  inspector_note?: string;
+}
+
+export interface AccompanyingData {
+  report_count?: number;
+  photos_count?: number;
+  location_text?: string;
+  location_coords?: string;
+  readings_count?: number;
+  device_code?: string;
+  file_size_kb?: number;
+}
+
+export interface AIExtraction {
+  topic?: string;
+  target?: string;
+  timeframe?: string;
+  potential_relevance?: string;
+  confidence_label?: 'THẤP' | 'TRUNG BÌNH' | 'CAO';
+  disclaimer?: string;
+}
+
 export interface CaseFact {
   id: string;
   fact_type: FactType;
   semantic_type: SemanticType;
+  cognitive_state?: CognitiveState;
+  friendly_code?: string;
   title: string;
   value: string;
   source_type: 'COMMUNITY' | 'STAFF' | 'INSPECTOR' | 'IOT' | 'EVIDENCE' | 'SUPERVISOR' | 'SYSTEM';
@@ -461,6 +493,11 @@ export interface CaseFact {
   verification_state: VerificationState;
   integrity_state: IntegrityState;
   metadata?: any;
+  automated_checks?: AutomatedCheck;
+  accompanying_data?: AccompanyingData;
+  ai_extraction?: AIExtraction;
+  related_finding_id?: string;
+  related_legal_section?: string;
 }
 
 export type ConclusionLevel =
@@ -513,6 +550,38 @@ export interface EvidenceMatrixRow {
   requires_human_review: boolean;
 }
 
+export interface ContradictionItem {
+  id: string;
+  title: string;
+  description: string;
+  recommendation: string;
+  source_ids: string[];
+}
+
+export interface CompletenessGroup {
+  key: string;
+  label: string;
+  met: boolean;
+  count?: number;
+  detail?: string;
+}
+
+export interface NextPriorityAction {
+  priority: number;
+  action_type: 'VERIFY_WASH_STATION' | 'CHECK_EVIDENCE_PHOTO' | 'COMPARE_LEGAL_SECTION' | 'SCHEDULE_INSPECTION';
+  title: string;
+  description: string;
+  button_label: string;
+  target_id?: string;
+  action_kind: 'TASK' | 'EVIDENCE' | 'LEGAL';
+}
+
+export interface AIAssessment {
+  confidence_level: 'LOW' | 'MEDIUM' | 'HIGH';
+  confidence_label: string;
+  explanation: string;
+}
+
 export interface AnalysisOutput {
   conclusion_level: ConclusionLevel;
   findings: AnalysisFinding[];
@@ -520,6 +589,15 @@ export interface AnalysisOutput {
   recommended_actions: AnalysisRecommendedAction[];
   evidence_matrix?: EvidenceMatrixRow[];
   disclaimer: string;
+  completeness_score?: number; // 0 - 100
+  completeness_fraction?: string; // e.g. "2 / 6 nhóm dữ kiện đã có"
+  completeness_groups?: CompletenessGroup[];
+  contradictions?: ContradictionItem[];
+  next_priorities?: NextPriorityAction[];
+  ai_assessment?: AIAssessment;
+  sources_checked_count?: number;
+  verified_facts_count?: number;
+  unverified_facts_count?: number;
 }
 
 export type HumanDecisionType =

@@ -152,7 +152,7 @@ legalRouter.post('/:id/legal/analyze', requireAuth, (req: AuthRequest, res, next
       reason: `Căn cứ dữ liệu thực tế từ ${f.source_ids.length} nguồn chứng cứ đối chứng. Độ tin cậy tính toán: ${Math.round(f.confidence * 100)}%.`,
     }));
 
-    const formattedOutput: LegalAIOutput = {
+    const formattedOutput: LegalAIOutput & any = {
       summary: `Kết quả thẩm tra căn cứ dữ liệu thực tế (SSOT Provenance): Phân loại kết luận "${result.output.conclusion_level}". Ghi nhận ${result.output.findings.length} nhận định có đối chứng nguồn và ${result.output.missing_facts.length} dữ kiện còn thiếu cần xác minh thêm.`,
       potentialIssues: potentialIssues.length > 0 ? potentialIssues : [
         {
@@ -169,6 +169,15 @@ legalRouter.post('/:id/legal/analyze', requireAuth, (req: AuthRequest, res, next
       findings: result.output.findings,
       missing_facts: result.output.missing_facts,
       recommended_actions: result.output.recommended_actions,
+      completeness_score: result.output.completeness_score,
+      completeness_fraction: result.output.completeness_fraction,
+      completeness_groups: result.output.completeness_groups,
+      contradictions: result.output.contradictions,
+      next_priorities: result.output.next_priorities,
+      ai_assessment: result.output.ai_assessment,
+      sources_checked_count: result.output.sources_checked_count,
+      verified_facts_count: result.output.verified_facts_count,
+      unverified_facts_count: result.output.unverified_facts_count,
     };
 
     // Save backward compatibility to legal_analyses table

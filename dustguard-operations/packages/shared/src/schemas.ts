@@ -37,7 +37,7 @@ export const AnalysisOutputSchema = z.object({
   missing_facts: z.array(MissingFactSchema),
   recommended_actions: z.array(AnalysisRecommendedActionSchema),
   disclaimer: z.string().min(1, 'Khuyến cáo pháp lý bắt buộc'),
-});
+}).passthrough();
 
 export type StrictAnalysisOutput = z.infer<typeof AnalysisOutputSchema>;
 

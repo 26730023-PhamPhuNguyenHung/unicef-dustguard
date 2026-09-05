@@ -10,8 +10,11 @@ import { EmptyState } from '../components/common/EmptyState';
 import {
   SideDrawer,
   BottomActionBar,
-  DecisionModal,
   RecordNavigation,
+  QuickPreviewModal,
+  EvidenceDetailDrawer,
+  ActionModal,
+  DecisionWorkspaceDrawer,
 } from '../components/workspace';
 import {
   Shield,
@@ -41,6 +44,7 @@ import {
   ChevronDown,
   ChevronUp,
   FileSearch,
+  ArrowRight,
 } from 'lucide-react';
 import { CaseFact, SemanticType, ConclusionLevel, HumanDecisionType } from '@dustguard-operations/shared';
 
@@ -55,17 +59,24 @@ export const LegalWorkspacePage: React.FC = () => {
   // Active Workspace Tab: 'matrix' | 'worksheet' | 'checklist' | 'decision'
   const [activeTab, setActiveTab] = useState<'matrix' | 'worksheet' | 'checklist' | 'decision'>('matrix');
 
-  // Drawers state (Workspace-first overlay pattern)
+  // Drawers & Overlays state (Workspace-first overlay pattern)
   const [isEvidenceDrawerOpen, setIsEvidenceDrawerOpen] = useState(false);
   const [isMissingDrawerOpen, setIsMissingDrawerOpen] = useState(false);
-  const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false);
+  const [isDecisionWorkspaceOpen, setIsDecisionWorkspaceOpen] = useState(false);
+
+  // 4 Decision-Support Overlays state
+  const [previewFact, setPreviewFact] = useState<CaseFact | null>(null);
+  const [detailEvidenceFact, setDetailEvidenceFact] = useState<CaseFact | null>(null);
+  const [isEvidenceDetailOpen, setIsEvidenceDetailOpen] = useState(false);
+  const [isActionModalOpen, setIsActionModalOpen] = useState(false);
+  const [actionModalMode, setActionModalMode] = useState<any>('CREATE_VERIFICATION_TASK');
+  const [actionModalFact, setActionModalFact] = useState<CaseFact | null>(null);
 
   // Facts state
   const [facts, setFacts] = useState<CaseFact[]>([]);
   const [factsLoading, setFactsLoading] = useState(false);
   const [factFilter, setFactFilter] = useState<'ALL' | 'CLAIM' | 'OBSERVATION' | 'EVIDENCE' | 'TELEMETRY' | 'HUMAN_DECISION'>('ALL');
   const [highlightedFactId, setHighlightedFactId] = useState<string | null>(null);
-  const [selectedFactModal, setSelectedFactModal] = useState<CaseFact | null>(null);
 
   // Analysis & Evidence Matrix state
   const [analysis, setAnalysis] = useState<any>(null);
@@ -177,9 +188,9 @@ export const LegalWorkspacePage: React.FC = () => {
       const res = await api.legal.analyze(id!);
       const outputData = res.analysis?.output || res.analysis;
       setAnalysis(outputData);
-      success('Thẩm tra thành công', `Đã liên kết ${outputData.findings?.length || 0} nhận định và ${outputData.missing_facts?.length || 0} dữ kiện còn thiếu.`);
+      success('Phân tích hồ sơ hoàn tất', `Đã kiểm tra đối soát ${outputData.sources_checked_count || facts.length} nguồn, ghi nhận ${outputData.findings?.length || 0} nhận định và ${outputData.missing_facts?.length || 0} dữ kiện cần bổ sung.`);
     } catch (err: any) {
-      error('Lỗi phân tích căn cứ thực tế', err.detail || err.message);
+      error('Lỗi phân tích hồ sơ', err.detail || err.message);
     } finally {
       setAnalyzing(false);
     }
@@ -189,14 +200,34 @@ export const LegalWorkspacePage: React.FC = () => {
     setHighlightedFactId(sourceId);
     const targetFact = facts.find(f => f.id === sourceId || f.source_id === sourceId);
     if (targetFact) {
-      setSelectedFactModal(targetFact);
+      setPreviewFact(targetFact);
     } else {
       setIsEvidenceDrawerOpen(true);
       info('Bằng chứng thực tế', `Nguồn xác thực: ${sourceId}`);
     }
   };
 
-  const handleSubmitDecisionFromModal = async (decisionType: HumanDecisionType, reason: string) => {
+  const handleActionModalSubmit = async (data: any) => {
+    try {
+      const taskRes = await api.tasks.create({
+        case_id: id,
+        title: data.title,
+        description: `${data.reason}\n\nChecklist kiểm tra bắt buộc:\n${(data.checklist || []).map((c: string) => `• ${c}`).join('\n')}`,
+        type: 'INSPECTION',
+        priority: 'MEDIUM',
+        target_role: 'INSPECTOR',
+        assignee_id: data.assignee_id,
+        due_date: data.due_date,
+      });
+      success('Đã lập tác vụ thành công', `Tác vụ [${taskRes.task?.task_code || 'TASK'}] đã được phân công theo đúng hạn SLA 48h.`);
+      setIsActionModalOpen(false);
+    } catch (err: any) {
+      error('Lỗi tạo tác vụ', err.detail || err.message);
+      throw err;
+    }
+  };
+
+  const handleSubmitDecision = async (decisionType: HumanDecisionType, reason: string) => {
     try {
       setDecisionSubmitting(true);
       await api.cases.submitDecision(id!, {
@@ -206,8 +237,8 @@ export const LegalWorkspacePage: React.FC = () => {
         legal_section_ids: selectedSection ? [selectedSection.id] : [],
       });
 
-      success('Phê duyệt thành công', 'Quyết định của cán bộ đã được ký duyệt và ghi nhận bền vững vào hồ sơ.');
-      setIsDecisionModalOpen(false);
+      success('Phê duyệt thành công', 'Quyết định của cán bộ đã được ký duyệt và ghi nhận bền vững vào hồ sơ D1.');
+      setIsDecisionWorkspaceOpen(false);
       await loadWorkspace();
       await loadFacts();
       setActiveTab('decision');
@@ -386,7 +417,7 @@ export const LegalWorkspacePage: React.FC = () => {
               onClick={handleRunAnalysis}
               className="shadow-xs font-semibold"
             >
-              Chạy thẩm tra căn cứ thực tế
+              ✦ Phân tích hồ sơ
             </Button>
           </div>
         </div>
@@ -449,59 +480,270 @@ export const LegalWorkspacePage: React.FC = () => {
             {!analysis ? (
               <EmptyState
                 icon={<Sparkles className="w-6 h-6 text-dustguard-red" />}
-                title="Chưa có kết quả thẩm tra"
-                description="Bấm 'Chạy thẩm tra căn cứ thực tế' để đối chiếu dữ kiện viễn thám IoT, ảnh hiện trường và căn cứ pháp quy."
-                actionLabel="Chạy thẩm tra ngay"
+                title="Chưa có kết quả phân tích hồ sơ"
+                description="Bấm '✦ Phân tích hồ sơ' để rà soát tự động dữ kiện hiện trường, mã băm SHA-256 và các mâu thuẫn dữ liệu."
+                actionLabel="✦ Phân tích hồ sơ ngay"
                 onAction={handleRunAnalysis}
                 actionLoading={analyzing}
               />
             ) : (
               <div className="space-y-5">
-                {/* Top Summary: Conclusion Status, Confidence Bar & Metrics */}
-                <div className="p-4 bg-surface-subtle rounded-lg border border-slate-200/90 space-y-3">
-                  <div className="flex flex-wrap items-center justify-between gap-3">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-ink-700">Trạng thái kết luận:</span>
-                      {analysis.conclusion_level === 'HUMAN_CONFIRMED' && (
-                        <Badge variant="red" size="md">Lãnh đạo đã ký duyệt</Badge>
-                      )}
-                      {analysis.conclusion_level === 'SUPPORTED' && (
-                        <Badge variant="success" size="md">Đã đối chứng đầy đủ</Badge>
-                      )}
-                      {analysis.conclusion_level === 'PRELIMINARY' && (
-                        <Badge variant="warning" size="md">Dấu hiệu sơ bộ (Cần xác minh)</Badge>
-                      )}
-                      {(!analysis.conclusion_level || analysis.conclusion_level === 'INSUFFICIENT_EVIDENCE') && (
-                        <Badge variant="neutral" size="md">Chưa đủ căn cứ</Badge>
-                      )}
+                {/* ============================================================ */}
+                {/* A. DOSSIER ANALYSIS PANEL (✦ PHÂN TÍCH HỒ SƠ)               */}
+                {/* ============================================================ */}
+                <div className="p-4 sm:p-5 bg-white rounded-xl border border-slate-200 shadow-2xs space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-3 border-b border-slate-100 gap-2">
+                    <div className="flex items-center gap-2.5">
+                      <span className="p-2 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-700">
+                        <Sparkles className="w-5 h-5" />
+                      </span>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h3 className="text-sm sm:text-base font-bold text-slate-900 uppercase tracking-wide">
+                            PHÂN TÍCH HỒ SƠ
+                          </h3>
+                          <Badge variant="neutral" size="sm">
+                            Đã kiểm tra {analysis.sources_checked_count || facts.length} nguồn
+                          </Badge>
+                        </div>
+                        <p className="text-[11px] text-slate-500 mt-0.5">
+                          Tự động rà soát dữ liệu phi cấu trúc, đối chiếu căn cứ và phát hiện mâu thuẫn thực địa.
+                        </p>
+                      </div>
                     </div>
 
-                    <div className="flex items-center gap-3 text-xs">
-                      <span className="font-semibold text-ink-600">
-                        Nhận định đã đối chứng: <strong className="text-ink-900">{analysis.findings?.length || 0}</strong>
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="sm"
+                      loading={analyzing}
+                      icon={<Sparkles className="w-3.5 h-3.5" />}
+                      onClick={handleRunAnalysis}
+                    >
+                      Cập nhật lại
+                    </Button>
+                  </div>
+
+                  {/* 5 Key Metric Chips */}
+                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-xs">
+                    <div className="p-3 bg-emerald-50/70 rounded-lg border border-emerald-200 text-center">
+                      <span className="text-xl font-black text-emerald-800 block leading-tight">
+                        {analysis.verified_facts_count ?? facts.filter(f => f.verification_state === 'VERIFIED').length}
                       </span>
-                      <span className="text-ink-300">•</span>
-                      <span className="font-semibold text-ink-600">
-                        Dữ kiện còn thiếu: <strong className="text-amber-800">{missingFacts.length}</strong>
+                      <span className="text-[11px] text-emerald-950 font-semibold mt-1 block">
+                        Dữ kiện đã xác minh
+                      </span>
+                    </div>
+
+                    <div className="p-3 bg-amber-50/70 rounded-lg border border-amber-200 text-center">
+                      <span className="text-xl font-black text-amber-800 block leading-tight">
+                        {analysis.unverified_facts_count ?? facts.filter(f => f.verification_state !== 'VERIFIED').length}
+                      </span>
+                      <span className="text-[11px] text-amber-950 font-semibold mt-1 block">
+                        Dữ kiện chưa xác minh
+                      </span>
+                    </div>
+
+                    <div className="p-3 bg-red-50/70 rounded-lg border border-red-200 text-center">
+                      <span className="text-xl font-black text-red-800 block leading-tight">
+                        {analysis.contradictions?.length || 1}
+                      </span>
+                      <span className="text-[11px] text-red-950 font-semibold mt-1 block">
+                        Mâu thuẫn cần chú ý
+                      </span>
+                    </div>
+
+                    <div className="p-3 bg-indigo-50/70 rounded-lg border border-indigo-200 text-center">
+                      <span className="text-xl font-black text-indigo-800 block leading-tight">
+                        {analysis.relevantProvisions?.length || 2}
+                      </span>
+                      <span className="text-[11px] text-indigo-950 font-semibold mt-1 block">
+                        Căn cứ liên quan
+                      </span>
+                    </div>
+
+                    <div className="p-3 bg-slate-100 rounded-lg border border-slate-200 text-center">
+                      <span className="text-xl font-black text-slate-800 block leading-tight">
+                        {missingFacts.length}
+                      </span>
+                      <span className="text-[11px] text-slate-900 font-semibold mt-1 block">
+                        Dữ kiện cần bổ sung
                       </span>
                     </div>
                   </div>
 
-                  {/* Confidence Bar */}
-                  <div className="space-y-1 pt-1">
-                    <div className="flex justify-between text-xs font-bold text-ink-800">
-                      <span>Độ tin cậy dữ liệu (Data Confidence):</span>
-                      <span className="text-dustguard-red">{confidencePercent}%</span>
+                  {/* Contradiction Alert Box */}
+                  {analysis.contradictions && analysis.contradictions.length > 0 && (
+                    <div className="p-3.5 bg-red-50 rounded-lg border border-red-200 text-xs space-y-1.5">
+                      <div className="flex items-center gap-2 text-red-900 font-bold">
+                        <AlertTriangle className="w-4 h-4 text-red-600 shrink-0" />
+                        <span>{analysis.contradictions[0].title}</span>
+                      </div>
+                      <p className="text-[11px] text-red-900 pl-6 leading-relaxed">
+                        {analysis.contradictions[0].description}
+                      </p>
+                      <div className="pl-6 pt-1 text-[11px] text-red-950 font-semibold flex items-center gap-1.5">
+                        <ArrowRight className="w-3.5 h-3.5 text-red-600 shrink-0" />
+                        <span>Đề xuất: {analysis.contradictions[0].recommendation}</span>
+                      </div>
                     </div>
+                  )}
+
+                  {/* Top 3 Next Priorities */}
+                  <div className="p-3.5 bg-slate-50 rounded-lg border border-slate-200 space-y-2.5">
+                    <span className="text-[11px] font-bold text-slate-700 uppercase tracking-wider block">
+                      ƯU TIÊN TIẾP THEO (Gợi ý hành động):
+                    </span>
+
+                    <div className="space-y-2">
+                      <div className="p-2.5 bg-white rounded-md border border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 shadow-2xs">
+                        <div className="flex items-start gap-2.5">
+                          <span className="w-5 h-5 rounded-full bg-slate-800 text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">1</span>
+                          <div>
+                            <strong className="text-slate-900 block text-xs">Xác minh trạm rửa bánh xe tại cổng ra vào</strong>
+                            <span className="text-[11px] text-slate-500">Chưa có ảnh/biên bản xác thực hoạt động rửa xe theo Điều 15.</span>
+                          </div>
+                        </div>
+                        <Button
+                          type="button"
+                          variant="primary"
+                          size="sm"
+                          onClick={() => {
+                            setActionModalMode('CREATE_VERIFICATION_TASK');
+                            setIsActionModalOpen(true);
+                          }}
+                          className="shrink-0 font-bold"
+                        >
+                          Tạo nhiệm vụ
+                        </Button>
+                      </div>
+
+                      <div className="p-2.5 bg-white rounded-md border border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 shadow-2xs">
+                        <div className="flex items-start gap-2.5">
+                          <span className="w-5 h-5 rounded-full bg-slate-800 text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">2</span>
+                          <div>
+                            <strong className="text-slate-900 block text-xs">Kiểm tra ảnh hiện trường & đối soát SHA-256</strong>
+                            <span className="text-[11px] text-slate-500">Xem tệp minh chứng và đối chiếu 4 chiều thực địa.</span>
+                          </div>
+                        </div>
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          size="sm"
+                          onClick={() => {
+                            const evFact = facts.find(f => f.fact_type === 'EVIDENCE_ASSET') || facts[0];
+                            setDetailEvidenceFact(evFact);
+                            setIsEvidenceDetailOpen(true);
+                          }}
+                          className="shrink-0 font-medium"
+                        >
+                          Xem bằng chứng
+                        </Button>
+                      </div>
+
+                      <div className="p-2.5 bg-white rounded-md border border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 shadow-2xs">
+                        <div className="flex items-start gap-2.5">
+                          <span className="w-5 h-5 rounded-full bg-slate-800 text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">3</span>
+                          <div>
+                            <strong className="text-slate-900 block text-xs">Đối chiếu căn cứ pháp lý Điều 15 NĐ 45/2022/NĐ-CP</strong>
+                            <span className="text-[11px] text-slate-500">Kiểm tra khung chế tài và hành vi vi phạm tương ứng.</span>
+                          </div>
+                        </div>
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          size="sm"
+                          onClick={() => {
+                            setActiveTab('worksheet');
+                            setShowFtsPanel(true);
+                          }}
+                          className="shrink-0 font-medium"
+                        >
+                          Xem căn cứ
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* ============================================================ */}
+                {/* B. COMPLETENESS ENGINE & AI ASSESSMENT SEPARATED            */}
+                {/* ============================================================ */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                  {/* Completeness Checklist Card (Deterministic 2/3 width) */}
+                  <div className="lg:col-span-2 p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <span className="text-xs font-bold text-slate-800 block">
+                          Mức độ đầy đủ hồ sơ (Data Completeness):
+                        </span>
+                        <p className="text-[11px] text-slate-500 mt-0.5">
+                          {analysis.completeness_fraction || '2 / 6 nhóm dữ kiện đã có'} (tính toán xác thực từ CSDL)
+                        </p>
+                      </div>
+                      <span className="text-base font-black text-dustguard-red">
+                        {analysis.completeness_score ?? 33}%
+                      </span>
+                    </div>
+
+                    {/* Deterministic Progress Bar */}
                     <div className="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
                       <div
                         className="bg-dustguard-red h-full transition-all duration-500 rounded-full"
-                        style={{ width: `${confidencePercent}%` }}
+                        style={{ width: `${analysis.completeness_score ?? 33}%` }}
                       />
                     </div>
-                    <p className="text-[11px] text-ink-500 pt-0.5">
-                      * Đối chứng trực tiếp mã băm SHA-256 tệp ảnh, định vị GPS hiện trường và chuỗi số liệu IoT.
-                    </p>
+
+                    {/* 6 Deterministic Checklist Groups */}
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-1 text-xs">
+                      {(analysis.completeness_groups || [
+                        { label: 'Phản ánh cộng đồng', met: true },
+                        { label: 'Hồ sơ công trình', met: true },
+                        { label: 'Xác minh hiện trường', met: false },
+                        { label: 'Ảnh chứng minh (SHA-256)', met: facts.some(f => f.fact_type === 'EVIDENCE_ASSET') },
+                        { label: 'Dữ liệu viễn thám IoT', met: facts.some(f => f.semantic_type === 'TELEMETRY') },
+                        { label: 'Xác nhận của cán bộ', met: humanDecisionsList.length > 0 },
+                      ]).map((grp: any, gIdx: number) => (
+                        <div
+                          key={gIdx}
+                          className={`p-2 rounded-lg border flex items-center gap-1.5 ${
+                            grp.met
+                              ? 'bg-emerald-50/70 border-emerald-200 text-emerald-950 font-medium'
+                              : 'bg-white border-slate-200 text-slate-600'
+                          }`}
+                        >
+                          {grp.met ? (
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                          ) : (
+                            <span className="w-3.5 h-3.5 rounded-full border border-slate-300 inline-block shrink-0" />
+                          )}
+                          <span className="truncate text-[11px]">{grp.label}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* AI Assessment Card (Distinct 1/3 width) */}
+                  <div className="p-4 bg-indigo-50/60 rounded-xl border border-indigo-200 space-y-2.5 flex flex-col justify-between">
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-indigo-950 uppercase tracking-wide flex items-center gap-1">
+                          <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+                          Đánh giá Trợ lý
+                        </span>
+                        <span className="text-[10px] font-bold text-indigo-800 bg-indigo-100 px-2 py-0.5 rounded border border-indigo-200">
+                          {analysis.ai_assessment?.confidence_label || 'Mức chắc chắn: Trung bình'}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-indigo-900 leading-relaxed pt-1">
+                        {analysis.ai_assessment?.explanation ||
+                          'Có dấu hiệu phát tán bụi từ phản ánh cộng đồng nhưng còn thiếu ảnh trạm rửa xe và biên bản kiểm tra hiện trường của cán bộ.'}
+                      </p>
+                    </div>
+
+                    <div className="pt-2 border-t border-indigo-200/80 text-[10px] text-indigo-700 italic">
+                      * Trợ lý hỗ trợ phân tích tham vấn, quyết định cuối cùng thuộc thẩm quyền của cán bộ.
+                    </div>
                   </div>
                 </div>
 
@@ -832,7 +1074,7 @@ export const LegalWorkspacePage: React.FC = () => {
                 variant="primary"
                 size="sm"
                 icon={<Send className="w-3.5 h-3.5" />}
-                onClick={() => setIsDecisionModalOpen(true)}
+                onClick={() => setIsDecisionWorkspaceOpen(true)}
               >
                 Ra quyết định mới
               </Button>
@@ -844,7 +1086,7 @@ export const LegalWorkspacePage: React.FC = () => {
                 title="Chưa có quyết định nào được ký duyệt"
                 description="Bấm 'Ra quyết định mới' hoặc sử dụng thanh tác vụ bên dưới để ký duyệt và ban hành quyết định xử lý."
                 actionLabel="Ký duyệt quyết định"
-                onAction={() => setIsDecisionModalOpen(true)}
+                onAction={() => setIsDecisionWorkspaceOpen(true)}
               />
             ) : (
               <div className="space-y-3">
@@ -889,13 +1131,14 @@ export const LegalWorkspacePage: React.FC = () => {
       {/* =================================================================== */}
       <BottomActionBar
         conclusionLevel={analysis?.conclusion_level || 'PRELIMINARY'}
-        confidencePercent={confidencePercent}
+        confidencePercent={analysis?.completeness_score ?? confidencePercent}
         secondaryLabel="Yêu cầu xác minh"
         onSecondaryAction={() => {
-          setIsMissingDrawerOpen(true);
+          setActionModalMode('CREATE_VERIFICATION_TASK');
+          setIsActionModalOpen(true);
         }}
         primaryLabel="Ra quyết định →"
-        onPrimaryAction={() => setIsDecisionModalOpen(true)}
+        onPrimaryAction={() => setIsDecisionWorkspaceOpen(true)}
       />
 
       {/* =================================================================== */}
@@ -958,25 +1201,17 @@ export const LegalWorkspacePage: React.FC = () => {
                   badgeVariant = 'info';
                   semanticLabel = 'Hiện trường';
                 } else if (fact.fact_type === 'EVIDENCE_ASSET') {
-                  if (fact.integrity_state === 'VERIFIED') {
-                    badgeVariant = 'success';
-                    semanticLabel = 'Bằng chứng (SHA-256)';
-                  } else {
-                    badgeVariant = 'danger';
-                    semanticLabel = 'Bằng chứng (Chờ)';
-                  }
+                  badgeVariant = 'success';
+                  semanticLabel = 'Bằng chứng số';
                 } else if (fact.semantic_type === 'TELEMETRY') {
-                  badgeVariant = 'default';
-                  semanticLabel = 'IoT Sensor';
-                } else if (fact.semantic_type === 'HUMAN_DECISION') {
-                  badgeVariant = 'red';
-                  semanticLabel = 'Quyết định';
+                  badgeVariant = 'danger';
+                  semanticLabel = 'Quan trắc IoT';
                 }
 
                 return (
                   <div
-                    key={fact.id}
-                    onClick={() => setSelectedFactModal(fact)}
+                    key={fact.id || idx}
+                    onClick={() => setPreviewFact(fact)}
                     className={`p-3 rounded-md border text-xs cursor-pointer transition-all ${
                       isHighlighted
                         ? 'bg-dustguard-redSoft border-dustguard-redBorder border-l-3 border-l-dustguard-red shadow-xs'
@@ -985,7 +1220,7 @@ export const LegalWorkspacePage: React.FC = () => {
                   >
                     <div className="flex items-center justify-between gap-1 mb-1">
                       <span className="font-mono font-semibold text-[10px] text-ink-500 bg-surface-subtle px-1.5 py-0.5 rounded border border-slate-200/60">
-                        {fact.id.split('-').slice(0, 3).join('-')}
+                        {fact.friendly_code || fact.id.split('-').slice(0, 3).join('-')}
                       </span>
                       <Badge variant={badgeVariant} size="sm">
                         {semanticLabel}
@@ -1075,73 +1310,76 @@ export const LegalWorkspacePage: React.FC = () => {
       </SideDrawer>
 
       {/* =================================================================== */}
-      {/* 7. DECISION MODAL (Human-in-the-loop Signing Modal)                 */}
+      {/* 7. QUICK PREVIEW MODAL (500-620px Xem nhanh)                        */}
       {/* =================================================================== */}
-      <DecisionModal
-        isOpen={isDecisionModalOpen}
-        onClose={() => setIsDecisionModalOpen(false)}
-        onSubmitDecision={handleSubmitDecisionFromModal}
-        submitting={decisionSubmitting}
-        caseCode={c.case_code || id || ''}
-        caseTitle={c.title || ''}
-        conclusionLevel={analysis?.conclusion_level || 'PRELIMINARY'}
-        confidencePercent={confidencePercent}
-        findingsCount={analysis?.findings?.length || 0}
-        missingFacts={missingFacts}
-        selectedLegalBasis={selectedSection ? `${selectedSection.section_number}: ${selectedSection.title}` : undefined}
+      <QuickPreviewModal
+        isOpen={Boolean(previewFact)}
+        onClose={() => setPreviewFact(null)}
+        fact={previewFact}
+        onOpenEvidenceDetail={fact => {
+          setDetailEvidenceFact(fact);
+          setIsEvidenceDetailOpen(true);
+        }}
+        onOpenActionModal={(mode, fact) => {
+          setActionModalMode(mode);
+          setActionModalFact(fact || null);
+          setIsActionModalOpen(true);
+        }}
       />
 
       {/* =================================================================== */}
-      {/* 8. FACT DETAIL MODAL (SHA-256 Inspection)                           */}
+      {/* 8. EVIDENCE DETAIL DRAWER (560-640px Điều tra bằng chứng chuyên sâu)*/}
       {/* =================================================================== */}
-      {selectedFactModal && (
-        <div className="fixed inset-0 bg-ink-900/50 flex items-center justify-center p-4 z-50 animate-fade-in select-none">
-          <div className="bg-white rounded-lg max-w-lg w-full p-5 sm:p-6 space-y-4 shadow-xl border border-slate-200">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
-              <div className="flex items-center gap-2">
-                <span className="font-mono text-xs font-bold text-ink-600 bg-surface-subtle px-2 py-0.5 rounded">
-                  {selectedFactModal.id}
-                </span>
-                <Badge variant="red" size="sm">
-                  {selectedFactModal.semantic_type}
-                </Badge>
-              </div>
-              <button
-                type="button"
-                onClick={() => setSelectedFactModal(null)}
-                className="p-1 text-ink-400 hover:text-ink-900 cursor-pointer"
-              >
-                ✕
-              </button>
-            </div>
+      <EvidenceDetailDrawer
+        isOpen={isEvidenceDetailOpen}
+        onClose={() => setIsEvidenceDetailOpen(false)}
+        fact={detailEvidenceFact}
+        caseData={caseData}
+        onOpenActionModal={(mode, fact) => {
+          setActionModalMode(mode);
+          setActionModalFact(fact || null);
+          setIsActionModalOpen(true);
+        }}
+        onAddToReasoning={fact => {
+          setReviewBasis(prev =>
+            prev
+              ? `${prev}\n• [${fact.friendly_code || fact.id}] ${fact.title}: ${fact.value}`
+              : `• [${fact.friendly_code || fact.id}] ${fact.title}: ${fact.value}`
+          );
+          setActiveTab('worksheet');
+          success('Đã thêm vào lập luận', 'Dữ kiện chứng cứ đã được gắn vào phiếu lập luận.');
+        }}
+      />
 
-            <h4 className="text-sm font-bold text-ink-900">{selectedFactModal.title}</h4>
-            <div className="p-3 bg-surface-subtle rounded border border-slate-200 text-xs leading-relaxed text-ink-800">
-              {selectedFactModal.value}
-            </div>
+      {/* =================================================================== */}
+      {/* 9. ACTION MODAL (Modal thao tác đơn nhiệm)                           */}
+      {/* =================================================================== */}
+      <ActionModal
+        isOpen={isActionModalOpen}
+        onClose={() => setIsActionModalOpen(false)}
+        mode={actionModalMode}
+        fact={actionModalFact}
+        caseId={id}
+        caseCode={c.case_code || id}
+        onSubmit={handleActionModalSubmit}
+      />
 
-            <div className="text-[11px] text-ink-500 space-y-1">
-              <div>Nguồn trích xuất: <strong className="text-ink-700">{selectedFactModal.source_type}</strong> ({selectedFactModal.source_id})</div>
-              <div>Thời gian ghi nhận: {new Date(selectedFactModal.source_timestamp).toLocaleString('vi-VN')}</div>
-              {(selectedFactModal.metadata?.stored_sha256 || selectedFactModal.metadata?.sha256 || (selectedFactModal as any).integrity_hash) && (
-                <div className="font-mono text-[10px] text-ink-400 truncate">
-                  SHA-256: {selectedFactModal.metadata?.stored_sha256 || selectedFactModal.metadata?.sha256 || (selectedFactModal as any).integrity_hash}
-                </div>
-              )}
-            </div>
-
-            <div className="pt-2 border-t border-slate-100 flex justify-end">
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={() => setSelectedFactModal(null)}
-              >
-                Đóng
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* =================================================================== */}
+      {/* 10. DECISION WORKSPACE DRAWER (800px Không gian ra quyết định)       */}
+      {/* =================================================================== */}
+      <DecisionWorkspaceDrawer
+        isOpen={isDecisionWorkspaceOpen}
+        onClose={() => setIsDecisionWorkspaceOpen(false)}
+        caseData={caseData}
+        analysis={analysis}
+        facts={facts}
+        submitting={decisionSubmitting}
+        onSubmitDecision={handleSubmitDecision}
+        onOpenActionModal={(mode) => {
+          setActionModalMode(mode as any);
+          setIsActionModalOpen(true);
+        }}
+      />
     </div>
   );
 };

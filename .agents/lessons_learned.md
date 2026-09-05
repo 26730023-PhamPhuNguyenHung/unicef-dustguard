@@ -7,7 +7,23 @@
 
 ## 📅 Bài học từ Dự án: DustGuard Operations (2026-09-05)
 
-### 1. Kiến Trúc Express Router Sub-mount & Tránh Lỗi Lặp Đường Dẫn (Route Doubling Bug)
+### 1. Phân Tách 4 Lớp Giao Diện Hỗ Trợ Quyết Định & Tách Bạch Rule Engine Khỏi AI Assistant (2026-09-05)
+- **Vấn đề**:
+  - Popup cũ `FACT-CLAIM-case-013` chỉ thuần túy hiển thị record trong DB (ID kỹ thuật, loại CLAIM, timestamp, nút Đóng), không trả lời được các câu hỏi then chốt của cán bộ: *Ai nói? Nói điều gì? Có đáng tin không? Hệ thống đã kiểm tra tự động gì? Liên quan gì đến kết luận? Cán bộ cần làm gì tiếp?*
+  - Nguy cơ "gắn chữ AI vào rule engine": Các phép kiểm tra có ảnh hay chưa, GPS < 50m, hash SHA-256 có khớp không, IoT có dữ liệu không, deadline quá hạn... thực chất là **deterministic SQL/rule engine**, việc gắn nhãn "AI" làm hệ thống kém đáng tin và tốn kém vô ích.
+- **Giải pháp chuẩn hóa**:
+  1. **Khóa 4 lớp giao diện chuyên biệt**:
+     - *A. Quick Preview Modal (500–620px)*: Xem nhanh, trả lời 5 câu hỏi của cán bộ, đẩy raw ID xuống footer, có dominant CTAs `[Xem đầy đủ]` và `[Tạo xác minh →]`.
+     - *B. Evidence Detail Drawer (560–640px)*: Điều tra chuyên sâu bằng chứng số với ảnh lớn, mã băm SHA-256 đối soát đĩa cứng, bảng đối chiếu 4 chiều thực địa (Thời điểm, Vị trí, Người gửi, Hiện trường) và liên kết đồ thị vụ việc (FND/REQ/TASK).
+     - *C. Action Modal (~520px)*: Đơn nhiệm cho 1 hành động (giao việc xác minh, SLA 48h tự động, phân công cán bộ, checklist 3 tiêu chí).
+     - *D. Decision Workspace Drawer (750–850px)*: Bàn làm việc ra quyết định với 5 bước nhận thức có cấu trúc (*Nhận định → Căn cứ pháp lý → Chứng cứ → Dữ kiện còn thiếu → Đề xuất hệ thống kèm "Tại sao? [Xem lập luận]"*) và ký duyệt lưu vết D1.
+  2. **Tách bạch hoàn toàn Rule Engine và AI Intelligence**:
+     - Đổi nút hành động thành `✦ Phân tích hồ sơ`.
+     - Thay thế điểm đơn độc `Data Confidence: 16%` thành: **Mức độ đầy đủ hồ sơ (Data Completeness)** tính toán xác thực từ CSDL (`2 / 6 nhóm dữ kiện đã có (33%)`) + **Đánh giá Trợ lý (AI Assessment)** riêng biệt (`Mức chắc chắn: Trung bình`).
+     - Bổ sung phát hiện mâu thuẫn dữ kiện (*AI Contradiction Detection*) và 3 Ưu tiên hành động tiếp theo.
+     - 3 màu trạng thái nhận thức: `● FACT` (slate), `● AI SUGGESTION` (indigo), `● VERIFIED` (emerald).
+
+### 2. Kiến Trúc Express Router Sub-mount & Tránh Lỗi Lặp Đường Dẫn (Route Doubling Bug)
 - **Vấn đề**: Khi mount một router vào một path tiền tố trong file server chính:
   ```typescript
   // index.ts

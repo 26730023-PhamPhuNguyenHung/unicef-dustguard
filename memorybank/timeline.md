@@ -7,7 +7,25 @@
 
 ## 📅 Các Mốc Phát Triển Chính (Milestones)
 
-### 1. [2026-09-05] `operations-v1.8`: Workspace-First Architecture Refactor (14-inch Windows Scale 125% Usable Canvas & Standard Primitives)
+### 1. [2026-09-05] `operations-v1.9`: Specialized Decision-Support Modal Suite & Civic Intelligence Realignment
+- **Mục tiêu**: Thay thế toàn bộ popup dạng "xem DB record" bằng 4 lớp giao diện hỗ trợ cán bộ ra quyết định; loại bỏ việc "gắn chữ AI vào rule engine", tách bạch rõ ràng giữa tính toán xác thực (deterministic) và trợ lý tham vấn (AI Assistant).
+- **Phạm vi hoàn tất**:
+  - **Phân tách 4 Loại Giao Diện Tác Nghiệp**:
+    - `QuickPreviewModal` (500–620px): Trả lời 5 câu hỏi cán bộ cần: *Ai nói? Nói gì? Có đáng tin không? Hệ thống đã kiểm tra tự động gì? Liên quan gì đến nhận định & pháp luật? Tôi phải làm gì tiếp?* Raw ID hệ thống được đẩy xuống chân; dominant CTA: `[Xem đầy đủ]` và `[Tạo xác minh →]`.
+    - `EvidenceDetailDrawer` (560–640px): Điều tra bằng chứng chuyên sâu với preview tài liệu lớn, mã băm SHA-256 Web Crypto đối soát đĩa cứng kèm nút sao chép, bảng đối chiếu 4 chiều thực địa (Thời điểm, Vị trí, Người gửi, Hiện trường) và liên kết đồ thị vụ việc (FND-01, REQ-03, TASK-018).
+    - `ActionModal` (~520px): Giao diện đơn nhiệm cho 1 hành động tạo tác vụ xác minh, tự động tính hạn SLA 48h, giao cán bộ hiện trường và checklist 3 tiêu chí thực địa.
+    - `DecisionWorkspaceDrawer` (750–850px): Thay thế modal nhỏ bằng không gian ra quyết định toàn diện với 5 bước có cấu trúc: *1. Nhận định nghiệp vụ → 2. Căn cứ pháp lý → 3. Chứng cứ đã đối chiếu → 4. Dữ kiện còn thiếu → 5. Đề xuất hệ thống ("Tại sao? [Xem lập luận]")* + Bút phê và ký duyệt lưu vết bất biến vào CSDL D1.
+  - **Tái Định Vị & Làm Rõ Vai Trò Của AI**:
+    - Đổi nút hành động chính từ *"Chạy thẩm tra căn cứ thực tế"* thành `✦ Phân tích hồ sơ`.
+    - Thay thế điểm đơn độc *"Data Confidence 16%"* bằng 2 chỉ số độc lập: **Mức độ đầy đủ hồ sơ (Data Completeness)** tính toán theo 6 nhóm dữ kiện thực tế từ CSDL (33% = 2/6 nhóm) + **Đánh giá Trợ lý (AI Assessment)** riêng biệt với nhãn mức chắc chắn và giải thích lý do.
+    - Tích hợp tính năng phát hiện mâu thuẫn dữ kiện (*AI Contradiction Detection*) và Gợi ý Top 3 Ưu tiên hành động tiếp theo.
+    - Chuẩn hóa 3 màu trạng thái nhận thức: `● FACT` (slate - ghi nhận từ hệ thống), `● AI SUGGESTION` (indigo - máy gợi ý), `● VERIFIED` (emerald - cán bộ xác nhận).
+  - **Nghiệm Thu Khép Kín**:
+    - `npm test`: **87/87 tests PASS 100%**.
+    - Frontend Vite build: **PASS 100%** (0 syntax/type error).
+    - Trực tiếp kiểm thử end-to-end qua `agent-browser`: Xác minh đầy đủ 4 loại modal/drawer, tương tác tạo quyết định và xác nhận dữ liệu lưu trữ bền vững (F5 persistence).
+
+### 2. [2026-09-05] `operations-v1.8`: Workspace-First Architecture Refactor (14-inch Windows Scale 125% Usable Canvas & Standard Primitives)
 - **Mục tiêu**: Tái cấu trúc toàn diện DustGuard Operations theo nguyên tắc **WORKSPACE-FIRST**, tối ưu hóa tuyệt đối cho máy tính xách tay 14 inch ở mức scale Windows 125% (viewport ~1280–1366px), chuẩn hóa Application Shell và hệ thống primitives tác nghiệp.
 - **Phạm vi hoàn tất**:
   - **Global Application Shell**:

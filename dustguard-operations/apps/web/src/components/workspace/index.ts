@@ -10,3 +10,7 @@ export * from './DashboardGrid';
 export * from './SideDrawer';
 export * from './BottomActionBar';
 export * from './DecisionModal';
+export * from './QuickPreviewModal';
+export * from './EvidenceDetailDrawer';
+export * from './ActionModal';
+export * from './DecisionWorkspaceDrawer';
