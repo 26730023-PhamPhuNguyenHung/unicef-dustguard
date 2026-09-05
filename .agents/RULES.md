@@ -44,3 +44,21 @@
 - Chạy lệnh một dòng trực tiếp bằng PowerShell CLI trên Windows.
 - Không dùng cú pháp Unix sai (`&&` không tương thích, dùng `;` hoặc PowerShell chaining).
 - Tự động chạy micro-commit ngay khi pass `verify:quick` 100%.
+
+---
+
+## 6. QUY TRÌNH UI QUALITY WATCH (NON-BLOCKING AUTOMATION)
+- **Non-blocking**: Khi implement và browser test, không dừng hoặc làm lệch task chính chỉ vì lỗi UI phụ.
+- **Record-First**: Ghi nhận bất thường vào `artifacts/ui-anomalies.json` trước. Chỉ thực hiện UI Cleanup Pass sau khi task chính và domain logic PASS 100%.
+- **5 Tiêu chuẩn kiểm tra**:
+  1. *Text clipping / rớt chữ*: mất chữ, đè dòng, ellipsis sai, tràn thẻ, xuống dòng cụt chữ đơn lẻ.
+  2. *Button / interactive*: mất nút, vỡ dòng trong nút, icon đè chữ, touch target di động $< 44\text{px}$, overlap.
+  3. *Layout*: CẤM horizontal overflow (`scrollWidth <= innerWidth`), component cắt ngang, fixed/sticky che nội dung.
+  4. *Responsive Matrix tối thiểu*: `390x844`, `430x932`, `768x1024`, `1366x768`, `1440x900`.
+  5. *Visual consistency*: cỡ chữ, bo góc, spacing, empty/loading state vỡ; cấm glassmorphism.
+- **Quy trình Fix**:
+  - Sửa theo thứ tự: `critical` $\rightarrow$ `high` $\rightarrow$ `medium` $\rightarrow$ `low`.
+  - Sửa Root Cause bằng responsive CSS (clamp, flex, min-h), cấm hardcoded pixel patch từng viewport.
+  - Không thay đổi business logic. Chỉ đánh dấu `"fixed"` khi tái kiểm thử thực tế bằng browser pass 100%.
+- **Báo cáo bắt buộc**: `main task`, `UI anomalies detected`, `fixed`, `remaining`, `routes checked`, `viewport matrix checked`.
+
