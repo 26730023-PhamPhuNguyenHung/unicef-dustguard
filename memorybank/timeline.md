@@ -7,7 +7,25 @@
 
 ## 📅 Các Mốc Phát Triển Chính (Milestones)
 
-### 1. [2026-09-05] `landing-v1.0`: Modern TypeScript Civic-First Landing Page & Full Architectural Realignment
+### 1. [2026-09-05] `landing-v2.0`: Redesign Landing Page — Visual Quality First & Civic Editorial Storytelling
+- **Mục tiêu**: Redesign toàn diện Landing Page theo tinh thần *"Civic-tech product + Human-centered storytelling + Modern editorial landing page"*. Chuyển dịch triệt để khỏi giao diện dạng Dashboard/Admin sang giao diện truyền thông đẳng cấp đi thi đấu/pitching.
+- **Phạm vi hoàn tất**:
+  - **Kiến trúc Editorial & Visual Hierarchy**:
+    - Phân tách thành 8 components độc lập: `LandingHeader`, `Hero`, `CaseStory`, `ProblemStory`, `ProcessJourney`, `RoleStories`, `TrustSection`, `PilotCTA`, `LandingFooter` trên cả `app` (React/JSX) và `apps/web` (React/TSX).
+    - **Header tinh gọn**: Max-width 1280px, cao 72–76px, chỉ 4 navigation links giữa (Vấn đề, Cách hoạt động, Dành cho ai, Pilot), toggle EN/VI, Secondary `Cổng cán bộ` và Primary CTA `Gửi phản ánh`. Nền đặc `#FBF9F5`, tuyệt đối không glassmorphism.
+    - **Hero Layout 58/42**: First viewport 1366x768 hoàn hảo. H1 lớn nổi bật với cụm highlight màu đỏ đô `#B42318` *"Theo dõi đến khi"*. Trust row siêu nhẹ `48h tái kiểm · Bằng chứng lưu vết · Theo dõi công khai`. Loại bỏ 100% 4 KPI cards vụn.
+    - **Case Story Card độc bản**: Visual focal point bên phải với timeline đối chứng Before / After (`DG-2026-OP-014`). Loại bỏ toàn bộ icon cảnh báo trống rỗng; thay thế số liệu cứng nhắc bằng ngữ cảnh thực địa an toàn (Dữ liệu minh họa).
+    - **Section 2 — Thực trạng**: Editorial layout tương phản giữa quy trình đứt gãy truyền thống (*Ảnh → Tin nhắn → Excel → ?*) và quy trình khép kín của DustGuard. 3 phát biểu đánh số `01`, `02`, `03`.
+    - **Section 3 — Hành trình 5 bước**: Horizontal journey lớn trên Desktop, vertical trên Mobile (*Phát hiện → Tạo hồ sơ → Phân công → Xử lý → Tái kiểm*).
+    - **Section 4 — Phân vai**: 4 portrait-style use-case blocks có compact mock UI tinh gọn cho từng đối tượng (Dân, Cán bộ, Nhà thầu, Lãnh đạo).
+    - **Section 5 — Nguyên tắc tin cậy**: 3 nguyên tắc lưu vết minh bạch, đưa SHA-256 về chi tiết đối soát tệp, không khoe khoang thuật ngữ kỹ thuật.
+    - **Section 6 — Pilot CTA**: Banner hợp tác tinh gọn kèm compact modal đăng ký, loại bỏ hoàn toàn form dài gây ngán ngẩm trên trang chính.
+    - **Chống rớt chữ & Chống ngắt dòng**: Tối ưu mobile 390px/375px với `whitespace-nowrap shrink-0` cho mã case, full-width CTA buttons dễ bấm bằng 1 ngón tay cái.
+  - **Nghiệm Thu Khép Kín**:
+    - `npm --prefix apps/web run build`: **PASS 100%** (1635 modules transformed, 0 lỗi).
+    - `npm --prefix app run test:critical`: **PASS 100%** (93/93 tests trong 21 suites).
+    - Browser Inspection (`agent-browser`): 0 horizontal overflow trên Desktop 1366, 1440, 1536, Laptop 1280 và Mobile 390, 375.
+    - Đối chứng ảnh trực quan 2 vòng tại first viewport đạt chuẩn Visual Quality First.
 - **Mục tiêu**: Tái cấu trúc và hiện đại hóa toàn diện Landing Page của DustGuard VN từ bản gốc `.jsx` cũ sang chuẩn TypeScript (`.tsx`) tích hợp thẳng vào phân hệ chính `apps/web` tại route `/`, tối ưu hóa hiệu năng, loại bỏ hoàn toàn các file CSS cồng kềnh và thiết lập giao diện Civic High-Contrast mượt mà.
 - **Phạm vi hoàn tất**:
   - **Kiến trúc lại Component Modularity**:

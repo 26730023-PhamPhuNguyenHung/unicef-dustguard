@@ -7,7 +7,28 @@
 
 ## 📅 Bài học từ Dự án: DustGuard Operations (2026-09-05)
 
-### 1. Loại Bỏ Phụ Thuộc Seed & Thiết Kế Database Rỗng Như Một First-Class State (2026-09-05)
+### 1. Thiết Kế Landing Page Civic-Tech Đẳng Cấp Đi Thi (Visual Quality First & Editorial Storytelling)
+- **Vấn đề**:
+  - Landing page ban đầu bị ảnh hưởng bởi tư duy Dashboard/Admin Panel: nhồi nhét quá nhiều border, thẻ card nhỏ, badge, KPI cards vụn (4 thẻ SLA / Bằng chứng / Tín chỉ / Kết quả) làm nghẹt thở first viewport.
+  - Header quá dài với nhiều menu ngang cồng kềnh và border pill bao quanh.
+  - Evidence card bên phải lạm dụng icon tam giác cảnh báo khổng lồ trong ô trống, không tạo được cảm giác hiện trường thực tế.
+  - Các số liệu chưa có nguồn tin cậy bị biến thành fact cứng nhắc ("vượt 3.6 lần", "100% bảo chứng") gây rủi ro cam kết sai (Overclaiming).
+- **Giải pháp chuẩn hóa**:
+  1. **Quy luật 58% Content / 42% Visual cho Hero Desktop**:
+     - Cột trái: H1 lớn clamp(56px, 5vw, 72px) làm Focal Point thị giác số 1, highlight có chủ đích cụm *"Theo dõi đến khi"*, copy 2 dòng súc tích, CTAs rõ ràng và Trust Row siêu nhẹ dạng text icon (loại bỏ 100% 4 KPI cards).
+     - Cột phải: Thẻ *Case Story Card* độc bản (`DG-2026-OP-014`) làm Focal Point số 2, mô phỏng sinh động hiện trường Before (xe ben phát tán bụi) $\rightarrow$ sau 48h khắc phục After (trạm rửa xe, tưới ẩm, biên bản thanh tra).
+  2. **Editorial Layout Thay Vì Cards Rời Rạc**:
+     - *Thực trạng (Problem)*: 3 phát biểu đánh số `01`, `02`, `03` tương phản trực tiếp với sơ đồ đứt gãy truyền thống (*Ảnh → Tin nhắn → Excel → ?*) so với quy trình khép kín của DustGuard.
+     - *Hành trình (Process)*: Timeline 5 chặng ngang lớn trên Desktop, dọc trên Mobile, điểm nhấn màu đỏ ở bước Tái kiểm.
+     - *Phân vai (Roles)*: 4 portrait blocks với compact mock UI cho từng vai trò, không dùng ma trận tab phức tạp.
+     - *Nguyên tắc tin cậy (Trust)*: 3 tuyên ngôn minh bạch, ẩn chi tiết kỹ thuật (SHA-256) vào chú thích đối soát, không khoe khoang thuật ngữ kỹ thuật.
+     - *Pilot CTA*: Thiết kế dạng banner tinh gọn kèm compact modal popup, loại bỏ form dài gây ngán ngẩm trên trang chính.
+  3. **Tối Ưu Hóa Mobile First & Chống Rớt Chữ**:
+     - Thêm `whitespace-nowrap shrink-0` cho mã định danh vụ việc và status badge để mã không bao giờ bị cắt đôi giữa chừng.
+     - Đặt `w-full sm:w-auto` và min-height 48px cho các CTA buttons để thao tác ngón cái đạt chuẩn tiếp cận civic tech.
+     - Giữ nguyên tắc sống còn: nền ấm `#FBF9F5`, chữ đậm `#0F172A`, điểm nhấn đỏ `#B42318`, tuyệt đối cấm glassmorphism.
+
+### 2. Loại Bỏ Phụ Thuộc Seed & Thiết Kế Database Rỗng Như Một First-Class State (2026-09-05)
 - **Vấn đề**:
   - Nhiều hệ thống web hoạt động trơn tru trong quá trình phát triển nhờ dữ liệu seed mẫu sẵn có (`case-013`, `case-001`, `TASK-018`, `FND-01`, `user_tran`), nhưng lập tức sụp đổ hoặc vỡ giao diện khi khởi tạo trên môi trường sản xuất thực tế với cơ sở dữ liệu rỗng.
   - Các modal, drawer hoặc rule engine fallback về mã cứng (`case-013`, `FND-01`), tạo ra cảm giác "giả mạo thành công" (fake success), gây sai lệch dữ liệu thanh tra thực tế.
