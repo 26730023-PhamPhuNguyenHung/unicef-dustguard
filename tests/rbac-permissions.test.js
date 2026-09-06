@@ -323,4 +323,51 @@ test('DUSTGUARD COMMUNITY — RBAC & PERMISSION SUITE', async (t) => {
     const rep3Check = checkRejectData.data.report || checkRejectData.data;
     assert.equal(rep3Check.status, 'rejected');
   });
+
+  // 5. Chống Leo thang đặc quyền khi đăng ký (Anti Privilege Escalation / Zero Trust)
+  await t.test('5. Chống Leo thang đặc quyền khi Đăng ký (Anti Privilege Escalation)', async () => {
+    // 5.1. Kẻ tấn công cố tình gửi role: 'admin'
+    const attackerAdminRes = await fetch(`${baseUrl}/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: `hacker_admin_${Date.now()}@badactor.io`,
+        password: 'Password123!',
+        fullName: 'Attacker Admin',
+        role: 'admin'
+      })
+    });
+    // Schema chặn ngay với 400 Bad Request
+    assert.equal(attackerAdminRes.status, 400, 'Phải chặn đứng việc gửi role: admin với HTTP 400');
+
+    // 5.2. Kẻ tấn công cố tình gửi role: 'moderator'
+    const attackerModRes = await fetch(`${baseUrl}/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: `hacker_mod_${Date.now()}@badactor.io`,
+        password: 'Password123!',
+        fullName: 'Attacker Moderator',
+        role: 'moderator'
+      })
+    });
+    // Schema chặn ngay với 400 Bad Request
+    assert.equal(attackerModRes.status, 400, 'Phải chặn đứng việc gửi role: moderator với HTTP 400');
+
+    // 5.3. Người dân đăng ký bình thường thành công với role: 'citizen'
+    const normalCitizenRes = await fetch(`${baseUrl}/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: `valid_citizen_${Date.now()}@community.vn`,
+        password: 'Password123!',
+        fullName: 'Người Dân Hợp Lệ'
+      })
+    });
+    const normalData = await normalCitizenRes.json();
+    assert.equal(normalCitizenRes.status, 201, 'Đăng ký công dân hợp lệ phải trả về HTTP 201 Created');
+    assert.equal(normalData.success, true);
+    assert.equal(normalData.data.user.role, 'citizen', 'Role được cấp bắt buộc phải là citizen');
+  });
 });
+

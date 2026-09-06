@@ -26,6 +26,16 @@
   - Luôn đảm bảo `stats` trả về đủ `totalReports`, `newReports`, `verifyingCases`, `inProgressCases`, `resolvedCases`, `communityMembers`, `activeCases`, `updatedToday`.
   - Frontend `useEffect` lắng nghe `[user?.id]` kết hợp listener `auth:role_changed` để đảm bảo dữ liệu luôn đồng bộ tức thì khi đăng nhập hay gửi phản ánh mới.
 
+### 📌 Invariant -1.35: Anti-Privilege Escalation on User Registration (Zero Mass-Assignment)
+- **Bẫy lỗi**:
+  1. Cho phép client tự do gửi trường `role` trong payload `POST /api/auth/register` (ví dụ `{"role": "admin"}` hoặc `{"role": "moderator"}`), và server backend ghi nhận trực tiếp vào cơ sở dữ liệu.
+  2. Mặc dù giao diện form `RegisterPage.tsx` chỉ gửi `role: 'citizen'`, nhưng nếu chỉ bảo vệ ở phía client (Client-side Only Enforcement), bất kỳ ai sử dụng Postman/curl hoặc viết script đều có thể tạo tài khoản Quản trị viên tối cao ngoài Internet.
+  3. Khi đánh giá bảo mật (OWASP API Security Top 10 - API3:2023 Mass Assignment / CWE-269), đây là lỗi nghiêm trọng (Critical Vulnerability) bị đánh trượt ngay lập tức.
+- **Quy tắc chuẩn**:
+  - Mọi endpoint đăng ký công khai ngoài Internet bắt buộc phải **ép cứng `role = 'citizen'`** tại server (cả Node Express và Cloudflare Worker). Tuyệt đối không đọc `role` từ request body của người dùng vãng lai.
+  - Thăng cấp vai trò (`citizen` -> `moderator` / `admin`) bắt buộc phải thông qua API quản trị nội bộ `PATCH /api/admin/users/:id/role` được bảo vệ bằng middleware `requireRole('admin')`.
+  - Phục vụ việc dùng thử / đánh giá cho Ban Giám khảo và Người dùng: Luôn sử dụng khối **"Tài khoản trải nghiệm" (1-Click Demo Accounts)** trên màn hình Đăng nhập `/login`. Không bắt người dùng phải đăng ký tài khoản mới vì sẽ gặp tình trạng Cold Start (thiếu dữ liệu mẫu).
+
 ### 📌 Invariant -1.33: DustGuard Operations (Side B) API Contract & Multi-Viewport Resilience
 - **Bẫy lỗi**:
   1. Router server truy vấn cột không tồn tại (`SELECT * FROM signals WHERE status != 'ARCHIVED'`) gây ra lỗi 500 `no such column: status` làm sập toàn bộ API `GET /api/iot/devices/:id`.

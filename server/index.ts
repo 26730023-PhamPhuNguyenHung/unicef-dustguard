@@ -145,13 +145,19 @@ export default {
           return env.ASSETS.fetch(request);
         }
 
-        // SPA subroute của Side B (/operations/dashboard, /operations/cases...):
-        // Thử fetch asset trước (nếu là /operations/ thì trả về operations/index.html)
-        let res = await env.ASSETS.fetch(request);
-        if (res.status === 404 || !res.ok) {
-          res = await env.ASSETS.fetch(new Request(new URL('/operations/index.html', request.url), request));
-        }
-        return res;
+        // SPA subroute của Side B (/operations/dashboard, /operations/cases, /operations/projects...):
+        // Luôn fetch '/operations/' từ ASSETS để lấy nội dung index.html và trả về HTTP 200 trực tiếp (tránh 307 redirect)
+        const opsHtmlRes = await env.ASSETS.fetch(new Request(new URL('/operations/', request.url), {
+          method: 'GET',
+          headers: request.headers,
+        }));
+        return new Response(opsHtmlRes.body, {
+          status: 200,
+          headers: {
+            'content-type': 'text/html; charset=utf-8',
+            'cache-control': 'no-cache',
+          },
+        });
       }
 
       // Nhánh Side A (Root / Community / Landing / Public)
@@ -160,12 +166,18 @@ export default {
         return env.ASSETS.fetch(request);
       }
 
-      let assetRes = await env.ASSETS.fetch(request);
-      if (assetRes.status === 404 || !assetRes.ok) {
-        // Fallback SPA cho các route như /reports, /dashboard, /map...
-        assetRes = await env.ASSETS.fetch(new Request(new URL('/', request.url), request));
-      }
-      return assetRes;
+      // Fallback SPA cho Side A (/reports, /dashboard, /map...):
+      const rootHtmlRes = await env.ASSETS.fetch(new Request(new URL('/', request.url), {
+        method: 'GET',
+        headers: request.headers,
+      }));
+      return new Response(rootHtmlRes.body, {
+        status: 200,
+        headers: {
+          'content-type': 'text/html; charset=utf-8',
+          'cache-control': 'no-cache',
+        },
+      });
     }
 
     return app.fetch(request, env, ctx);

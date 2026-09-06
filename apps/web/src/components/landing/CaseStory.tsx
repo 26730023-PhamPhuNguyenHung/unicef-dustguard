@@ -263,12 +263,12 @@ export const CaseStory: React.FC<CaseStoryProps> = ({ lang }) => {
   ];
 
   return (
-    <div ref={containerRef} className="relative w-full max-w-[510px] mx-auto py-2">
+    <div ref={containerRef} className="relative w-full max-w-[510px] mx-auto py-2 overflow-hidden">
       {/* 1. SUBTLE MAP / CIVIC DATA BACKGROUND (3-6% Opacity Drift) */}
       <div
         ref={ambientGridRef}
         aria-hidden="true"
-        className="pointer-events-none absolute -inset-8 opacity-5 overflow-hidden select-none"
+        className="pointer-events-none absolute inset-0 opacity-5 overflow-hidden select-none"
       >
         <svg className="w-full h-full text-[#0F172A]" xmlns="http://www.w3.org/2000/svg">
           <defs>

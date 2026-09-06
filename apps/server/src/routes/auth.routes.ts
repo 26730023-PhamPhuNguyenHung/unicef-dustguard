@@ -43,7 +43,7 @@ router.post('/register', (req, res: Response): void => {
       passwordHash,
       fullName,
       phone,
-      role: role || 'citizen',
+      role: 'citizen',
       district,
       ward
     });

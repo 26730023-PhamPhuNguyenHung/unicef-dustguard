@@ -18,11 +18,11 @@ export const PilotCTA: React.FC<PilotCTAProps> = ({ lang }) => {
     },
     {
       icon: <MapPin className="w-4 h-4 text-[#B42318] shrink-0" />,
-      text: lang === 'vi' ? 'Quy mô giới hạn: 1 phường hoặc tuyến đường trọng điểm' : 'Scope: 1 ward or major corridor',
+      text: lang === 'vi' ? 'Quy mô: 1 phường hoặc tuyến đường trọng điểm' : 'Scope: 1 ward or major corridor',
     },
     {
       icon: <BarChart3 className="w-4 h-4 text-[#B42318] shrink-0" />,
-      text: lang === 'vi' ? 'Mục tiêu: Đo lường quy trình trước, mở rộng sau' : 'Goal: Validate workflow before scaling',
+      text: lang === 'vi' ? 'Mục tiêu: Hoàn thiện quy trình trước khi nhân rộng' : 'Goal: Refine workflow before scaling',
     },
   ];
 
@@ -48,13 +48,13 @@ export const PilotCTA: React.FC<PilotCTAProps> = ({ lang }) => {
             >
               {lang === 'vi' ? (
                 <>
-                  Đưa DustGuard vào <br />
-                  <span className="text-[#B42318]">một khu vực thật.</span>
+                  Cùng DustGuard chung tay <br />
+                  <span className="text-[#B42318]">vì môi trường xanh sạch đẹp.</span>
                 </>
               ) : (
                 <>
-                  Deploy DustGuard into <br />
-                  <span className="text-[#B42318]">a real-world district.</span>
+                  Join hands with DustGuard <br />
+                  <span className="text-[#B42318]">for a greener community.</span>
                 </>
               )}
             </h2>
@@ -65,8 +65,8 @@ export const PilotCTA: React.FC<PilotCTAProps> = ({ lang }) => {
               style={{ textWrap: 'pretty' }}
             >
               {lang === 'vi'
-                ? 'Chúng tôi đang tìm đối tác địa phương để thử nghiệm quy trình: phản ánh → xử lý → tái kiểm trong phạm vi nhỏ trước khi mở rộng diện rộng.'
-                : 'We are seeking local district partners to validate the civic loop: report → remediate → reinspect in a targeted pilot.'}
+                ? 'Hợp tác cùng chính quyền địa phương và khu dân cư thử nghiệm quy trình: phản ánh bụi → xử lý dứt điểm → kiểm tra lại, cùng nhau giữ gìn từng tuyến phố sạch đẹp.'
+                : 'Partnering with local communities and authorities to report, clean up, and verify dust hotspots — making every street cleaner together.'}
             </p>
 
             {/* 3 Bullets nhỏ */}

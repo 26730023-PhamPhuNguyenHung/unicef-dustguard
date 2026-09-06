@@ -7,6 +7,73 @@
 
 ## 📅 Các Mốc Phát Triển Chính (Milestones)
 
+### 13. [2026-09-06] `rbac-registration-security-hardening-and-demo-consolidation`: Khóa Chặt Đăng Ký Tài Khoản Công Khai (Anti Privilege Escalation) & Chuẩn Hóa Trải Nghiệm Dùng Thử 1-Click Demo Accounts
+- **Bối cảnh & Đánh giá Rủi ro**:
+  - Audit chuyên sâu phát hiện lỗ hổng leo thang đặc quyền (Privilege Escalation / OWASP Mass Assignment API3:2023): Backend Node (`apps/server/src/routes/auth.routes.ts`), Worker (`server/community.ts`) và `registerSchema` trước đây đọc trường `body.role` và cho phép gán quyền quản trị (`admin`, `moderator`) trực tiếp qua API đăng ký công khai ngoài Internet.
+  - Mặc dù UI client `RegisterPage.tsx` chỉ gửi `role: 'citizen'`, nhưng kẻ tấn công có thể dùng Postman/curl tự phong quyền Admin tối cao để thao túng dữ liệu môi trường.
+  - Về mặt trải nghiệm dùng thử: Việc bắt người dùng / Ban Giám khảo phải điền form đăng ký mới để "dùng thử" vai trò gây ma sát cao và rơi vào tình trạng **Cold Start** (màn hình rỗng, không có lịch sử vụ việc, không có tín chỉ).
+- **Phạm vi hoàn tất**:
+  1. `packages/shared/src/schemas/index.ts`: Khóa chặt `registerSchema`, chỉ chấp nhận duy nhất `role: z.enum(['citizen']).optional().default('citizen')`.
+  2. `apps/server/src/routes/auth.routes.ts`: Bất kể client gửi gì, luôn luôn gán cứng `role: 'citizen'`.
+  3. `server/community.ts`: Loại bỏ đọc `body.role` trên Cloudflare Edge Worker, ép cứng `userRole = 'citizen'` cho toàn bộ tài khoản tạo mới.
+  4. Chuẩn hóa trải nghiệm dùng thử: Hướng dẫn người dùng và Ban Giám khảo sử dụng khối **"Tài khoản trải nghiệm" (1-Click Demo Accounts)** sẵn có trên `/login` để trải nghiệm tức thì cả 4 vai trò Side A (`citizen`, `member`, `moderator`, `admin`) và 4 vai trò Side B (`staff`, `supervisor`, `legal`, `admin`) với dữ liệu thực địa sinh động mà không mất công tạo tài khoản mới.
+  5. Thêm test case 5 vào `tests/rbac-permissions.test.js`: Xác nhận chặn đứng 100% request đăng ký cố tình gán role `admin`/`moderator` với HTTP 400 Bad Request.
+- **Kiểm chứng Chất lượng**:
+  - `node --test tests/rbac-permissions.test.js`: PASS 6/6 tests.
+  - `node --test tests/community-api.test.js`: PASS 14/14 tests.
+  - Deploy Cloudflare Worker: Version `180e60e5-6710-405b-b7aa-9bf3c3176d81` thành công 100%.
+
+### 12. [2026-09-06] `cloudflare-production-recovery-and-mobile-audit`: Phục Hồi 100% DustGuard VN Trên Cloudflare Production Edge Worker, Xử Lý Dứt Điểm Trắng Trang Side B & Triệt Tiêu Tràn Ngang Đa Màn Hình
+- **Bối cảnh & Vấn đề gốc (Root Causes)**:
+  - Trên live domain `https://dustguard.phamphunguyenhung.com`, truy cập `/operations/dashboard` bị trắng trang hoàn toàn (`<div id="root"></div>`), một số route bị Cloudflare fallback nhầm về Landing Page của Side A.
+  - **3 Nguyên nhân cốt lõi**:
+    1. *Routing / 307 Redirect*: `wrangler.jsonc` thiếu `run_worker_first: true`. Cloudflare Assets tự động chuyển hướng 307 Redirect khi fetch `/operations/index.html` sang `/operations/`, khiến các subroutes `/operations/cases`, `/operations/projects` bị redirect về `/operations/` rồi rơi vào index redirect `/dashboard`.
+    2. *Runtime Exception ném ra trên Side B Dashboard*: `DashboardPage.tsx` truy cập `metrics.open_cases` nhưng API trả về `overview/pipeline`. Do `metrics` undefined, JavaScript ném lỗi `TypeError: Cannot read properties of undefined (reading 'open_cases')`. Do thiếu React ErrorBoundary, toàn bộ cây DOM bị unmount để lại màn hình trắng.
+    3. *Thiếu hụt Endpoints API*: Route `/api/operations/notifications` báo lỗi 404 do Edge Worker thiếu module notifications và các controller liên quan.
+    4. *Tràn lề ngang Landing Page trên mobile hẹp < 380px*: `CaseStory.tsx` sử dụng background SVG `-inset-8` tràn 1px sang phải (`scrollWidth = 377px > 360px`).
+- **Phạm vi xử lý kỹ thuật & Kiến trúc hoàn thiện**:
+  1. `wrangler.jsonc`: Bổ sung `run_worker_first: true`, cấu hình `not_found_handling: "none"` để trao toàn quyền định tuyến SPA namespace cho Worker.
+  2. `server/index.ts`: Viết lại bộ điều phối Static Assets. Mọi request `/operations/*` được phục vụ trực tiếp bằng HTML body của `dist/operations/index.html` với HTTP status 200 (triệt tiêu 100% 307 redirect). Request `/api/*` không tồn tại trả về đúng chuẩn RFC 7807 Problem Details JSON (không bao giờ trả HTML).
+  3. `server/operations.ts`: Viết lại toàn bộ 21 modules API chuyên trách (`/dashboard` với cấu trúc chuẩn `{ metrics, priorityQueue, myQueue, recentActivities, supervisor }`, `/notifications`, `/cases`, `/projects`, `/contractors`, `/legal`, `/inspections`, `/actions`, `/evidence`, `/iot`, `/automations`, `/admin`, `/auth`).
+  4. `dustguard-operations/apps/web/src/pages/DashboardPage.tsx`: Bổ sung null-safe fallback `(metrics?.open_cases ?? 0) === 0`.
+  5. `ErrorBoundary.tsx`: Tạo mới và tích hợp React ErrorBoundary Civic Tech trên cả Side A (`apps/web/src/App.tsx`) và Side B (`dustguard-operations/apps/web/src/App.tsx`).
+  6. `CaseStory.tsx` & `LandingPage.tsx`: Thay `-inset-8` thành `inset-0`, thêm `overflow-x-hidden w-full`, xử lý gọn logo trên header di động.
+- **Kiểm chứng Chất lượng Thực tế Trên Production (`scripts/verify-full-production-matrix.mjs`)**:
+  - **9/9 Viewports chuẩn đạt PASS 100% (0 lỗi layout, 0 lỗi JavaScript, 0 tràn ngang)**:
+    + Mobile Small (360x800): PASS (`scrollWidth: 345px <= 360px`).
+    + Mobile Standard (375x812): PASS (`scrollWidth: 360px <= 375px`).
+    + Mobile iPhone (390x844): PASS (`scrollWidth: 375px <= 390px`).
+    + Mobile Android (412x915): PASS (`scrollWidth: 397px <= 412px`).
+    + Mobile Large (430x932): PASS (`scrollWidth: 415px <= 430px`).
+    + Tablet iPad (768x1024): PASS (`scrollWidth: 753px <= 768px`).
+    + Tablet Air (820x1180): PASS (`scrollWidth: 805px <= 820px`).
+    + Desktop HD (1366x768): PASS (`scrollWidth: 1351px <= 1366px`).
+    + Desktop Full (1440x900): PASS (`scrollWidth: 1425px <= 1440px`).
+  - **Toàn bộ User Journeys & Direct Navigation đạt PASS 100%**:
+    + Click Citizen CTA in Hero $\rightarrow$ điều hướng đúng `https://dustguard.phamphunguyenhung.com/reports/new`.
+    + Direct Refresh (F5) trên `/operations/dashboard` $\rightarrow$ giữ nguyên URL và render tức thì Dashboard Side B.
+    + Direct Navigation `/operations/cases` $\rightarrow$ render đúng Case Inbox với 17 hồ sơ thật từ D1 production.
+    + Direct Navigation `/operations/projects` $\rightarrow$ render đúng Trang Công trình & Dự án.
+    + Direct Navigation `/operations/legal` $\rightarrow$ render đúng Thư viện Pháp luật Môi trường.
+  - **API Contract Smoke Test**:
+    + `GET /api/health` $\rightarrow$ HTTP 200 JSON `{ ok: true, status: "healthy", service: "dustguard-unified-runtime" }`.
+    + `GET /api/non_existent_route_test` $\rightarrow$ HTTP 404 JSON Problem Details RFC 7807.
+  - **Touch Targets Audit**: Tất cả buttons/CTAs chính đạt $\ge 44$px.
+  - **Minh chứng trực quan**: `artifacts/mobile-operations-final-proof.png`.
+
+### 11. [2026-09-06] `pilot-cta-messaging-simplification`: Đơn Giản Hóa Thông Điệp Pilot CTA — "Cùng DustGuard Chung Tay Vì Môi Trường Xanh Sạch Đẹp"
+- **Bối cảnh & Yêu cầu người dùng**:
+  - Tinh chỉnh thông điệp Banner Hợp tác Pilot trên Landing Page (`PilotCTA.tsx` và `PilotCTA.jsx`).
+  - Thay thế tiêu đề kỹ thuật, khô cứng trước đó: *"Đưa DustGuard vào một khu vực thật"* $\rightarrow$ *"Cùng DustGuard chung tay vì môi trường xanh sạch đẹp"*.
+  - Thay thế nội dung mô tả hàn lâm *"thử nghiệm quy trình: phản ánh → xử lý → tái kiểm trong phạm vi nhỏ"* $\rightarrow$ *"Hợp tác cùng chính quyền địa phương và khu dân cư thử nghiệm quy trình: phản ánh bụi → xử lý dứt điểm → kiểm tra lại, cùng nhau giữ gìn từng tuyến phố sạch đẹp"*.
+  - Làm mịn các bullets: *"Quy mô: 1 phường hoặc tuyến đường trọng điểm"*, *"Mục tiêu: Hoàn thiện quy trình trước khi nhân rộng"*.
+- **Phạm vi hoàn tất & Đồng bộ**:
+  - Đồng bộ trên cả 2 phân hệ: `apps/web/src/components/landing/PilotCTA.tsx` và `app/src/components/landing/PilotCTA.jsx`.
+  - Giữ vững 100% chuẩn Civic High-Contrast, Zero Glassmorphism, Responsive Touch Target $\ge 44$px.
+- **Kiểm chứng**:
+  - `npm --prefix apps/web run build`: **PASS 100%** (1654 modules transformed, 0 lỗi TypeScript/Vite).
+  - `npm --prefix app run verify:quick`: **PASS 100%** (248/248 domain tests + 43/43 UI smoke tests).
+
 ### 10. [2026-09-06] `master-ui-ux-system-recovery-and-playwright-210-checks`: Hợp Nhất 10 Subagents, Triệt Tiêu 100% Tràn Ngang & Xác Minh Tự Động 210/210 Checks Playwright Đạt PASS 100% Trên Production
 - **Bối cảnh & Mục tiêu**:
   - Triển khai chiến dịch tổng lực Master Prompt UI/UX System Recovery với 10 subagents chuyên trách song song: Router Mapping, Landing UX, Side A UI, Side A Flows, Side B UI, Side B Workflows, Mobile UX 360-430px, Table/Form/Modal, Design System SSOT, và Agent Browser QA.

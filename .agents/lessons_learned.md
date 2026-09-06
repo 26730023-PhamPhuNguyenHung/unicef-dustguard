@@ -3,7 +3,36 @@
 > **Kho lưu trữ kinh nghiệm, bài học kiến trúc và phòng chống lỗi kỹ thuật (Anti-Regression)**  
 > *Cập nhật sau mỗi chu trình phát triển tính năng mới thành công.*
 
----
+### 10. Cloudflare Workers Static Assets SPA Routing, Runtime Exception Handling & Tránh Tràn Lề Vi Mô (Micro-Overflow) Trên Màn Hình Cực Nhỏ
+- **Vấn đề thực tế phát hiện trên Production (`dustguard.phamphunguyenhung.com`)**:
+  - **Lỗi 1: Cloudflare Assets 307 Redirect Trap**: Khi gọi `env.ASSETS.fetch(new Request('/operations/index.html'))`, Cloudflare Assets tự động chuẩn hóa đường dẫn và trả về mã `307 Temporary Redirect` tới `/operations/`. Nếu Worker trả thẳng response này cho client browser, browser sẽ nhảy về `/operations/` và rơi vào router index redirect `/dashboard`. Mọi đường dẫn con trực tiếp (như `/operations/cases`, `/operations/projects`) đều bị chuyển hướng sai về dashboard!
+  - **Lỗi 2: Crash trắng trang không có ErrorBoundary (`TypeError: Cannot read properties of undefined`)**: `DashboardPage.tsx` truy cập `data.metrics.open_cases` trong khi API backend trả về cấu trúc `{ overview, pipeline }`. Khi trường `metrics` bị `undefined`, React ném ngoại lệ không bắt được, làm unmount toàn bộ cây DOM và để lại màn hình trắng xóa (`<div id="root"></div>`).
+  - **Lỗi 3: Missing API Endpoints trả về HTML thay vì RFC 7807 JSON**: Khi chưa cấu hình router riêng biệt cho API 404, các endpoint thiếu như `/api/operations/notifications` bị Cloudflare fallback trả về HTML trang Landing, khiến `res.json()` của frontend ném lỗi cú pháp JSON.
+  - **Lỗi 4: Tràn lề vi mô 1px trên màn hình 360px**: Component `CaseStory.tsx` sử dụng thẻ SVG decor với class `-inset-8` (vươn ra ngoài -32px mỗi cạnh). Khi màn hình co về 360px, mép phải vươn tới 361px, làm nới rộng `scrollWidth` của toàn bộ tài liệu thành 377px.
+- **Giải pháp chuẩn hóa triệt để**:
+  1. **SSOT Cho Workers Static Assets SPA Fallback Không Bao Giờ Trả 307**:
+     - Để lấy nội dung HTML của thư mục con SPA (Side B `/operations/`), luôn fetch URL có trailing slash `/operations/` từ `env.ASSETS`, sau đó bọc lại trong `new Response(opsHtmlRes.body, { status: 200, headers: { 'content-type': 'text/html; charset=utf-8' } })`.
+     - Tuyệt đối không fetch `/operations/index.html` và tuyệt đối không `return res` trực tiếp từ Assets nếu res chứa 307/308 redirect!
+  2. **Bắt Buộc ErrorBoundary Cho Toàn Bộ Ứng Dụng React**:
+     - Mọi SPA (cả Side A và Side B) bắt buộc phải bọc `<Routes>` bên trong component `<ErrorBoundary>` chuẩn Civic Tech: hiển thị thông báo lỗi bằng tiếng Việt rõ ràng, mã lỗi và nút *"Tải lại trang"* hoặc *"Quay về trang chủ"*, loại bỏ 100% rủi ro màn hình trắng khi phát sinh ngoại lệ không mong muốn.
+     - Trên mọi trang dashboard/inbox: Luôn áp dụng null-safe fallback: `(metrics?.open_cases ?? 0) === 0` thay vì giả định API luôn trả về đủ trường.
+  3. **Quy Chuẩn RFC 7807 Problem Details Cho API 404**:
+     - Mọi route bắt đầu bằng `/api/*` nếu không tìm thấy handler bắt buộc phải trả về JSON status 404 với `Content-Type: application/problem+json` hoặc `application/json`.
+     - Tuyệt đối cấm fallback HTML landing page cho bất kỳ request nào thuộc `/api/*`.
+  4. **Triệt Tiêu Tràn Lề Vi Mô (Micro-Overflow)**:
+     - Mọi container chứa hình vẽ trang trí hoặc hiệu ứng decor vươn ngoài thẻ cha bắt buộc phải có `overflow-hidden` hoặc `overflow-x-clip`.
+     - Thay thế `-inset-*` bằng `inset-0` kết hợp `opacity-*` nhẹ nhàng.
+     - Thêm `overflow-x-hidden w-full` vào root container của trang.
+
+### 09. Zero-Jargon & Human-Centric Copywriting: Chuyển Dịch Văn Phong Từ Kỹ Thuật/Kỹ Trị Sang Ngôn Từ Cộng Đồng Đời Thường
+- **Vấn đề thực tế**:
+  - Tiêu đề gốc: *"Đưa DustGuard vào một khu vực thật"* mang tư duy của kỹ sư phần mềm / quản lý dự án nội bộ (testing in a real environment/sandbox vs production).
+  - Đối với người dân, thanh niên tình nguyện và cán bộ cơ sở, câu chữ này mang cảm giác xa cách, khó hiểu về mặt mục đích: "vào khu vực thật để làm gì?".
+- **Giải pháp chuẩn hóa**:
+  - **Mục tiêu tối thượng (Value-First)**: Đưa giá trị thực tế của giải pháp lên hàng đầu: *"Cùng DustGuard chung tay vì môi trường xanh sạch đẹp"*.
+  - **Làm mềm quy trình hành động**: Thay vì thuật ngữ khô cứng *"thử nghiệm quy trình: phản ánh → xử lý → tái kiểm"*, diễn giải thành ngôn từ đời thường: *"phản ánh bụi → xử lý dứt điểm → kiểm tra lại, cùng nhau giữ gìn từng tuyến phố sạch đẹp"*.
+  - **Bỏ các từ tiêu cực/giới hạn**: Chuyển *"Quy mô giới hạn"* $\rightarrow$ *"Quy mô: 1 phường hoặc tuyến đường trọng điểm"*; *"Đo lường quy trình trước, mở rộng sau"* $\rightarrow$ *"Hoàn thiện quy trình trước khi nhân rộng"*.
+  - **Quy tắc vàng**: Mỗi màn hình hoặc khối kêu gọi hành động (CTA) phải trả lời được câu hỏi của người dân: *"Cái này mang lại lợi ích gì trực tiếp cho khu phố và sức khỏe của tôi?"*.
 
 ### 08. Chuẩn Hóa Visual System & Application Shell Side B (Port 3002): Chống Co Cụm Mobile Drawer, Chống Đè Chữ Horizontal Scroll Tabs & Đảm Bảo Zero Glassmorphism Benchmark
 - **Vấn đề thực tế phát hiện**:

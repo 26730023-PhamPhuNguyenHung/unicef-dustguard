@@ -14,7 +14,7 @@ export const registerSchema = z.object({
   communeWard: z.string().optional().default('Láng Thượng'),
   ward: z.string().optional().default('Láng Thượng'),
   district: z.string().optional().default('Láng Thượng'), // Legacy compatibility field
-  role: z.enum(['citizen', 'community_member', 'moderator']).optional().default('citizen')
+  role: z.enum(['citizen']).optional().default('citizen')
 });
 
 export const createReportSchema = z.object({

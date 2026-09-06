@@ -29,7 +29,14 @@ export function createCommunityRouter() {
   function sanitizeUser(user: any): any {
     if (!user) return null;
     const { password_hash, ...safe } = user;
-    return safe;
+    const fullName = safe.full_name || safe.fullName || (safe.email ? safe.email.split('@')[0] : 'Người dùng');
+    return {
+      ...safe,
+      fullName,
+      full_name: fullName,
+      avatarUrl: safe.avatar_url || safe.avatarUrl || null,
+      createdAt: safe.created_at || safe.createdAt || null
+    };
   }
 
   // ============================================================================
@@ -55,11 +62,8 @@ export function createCommunityRouter() {
       const passwordHash = await bcrypt.hash(password, 10);
       const now = new Date().toISOString();
 
-      const validRoles = ['citizen', 'community_member', 'moderator', 'admin'];
-      let userRole = (body.role || 'citizen').toLowerCase();
-      if (!validRoles.includes(userRole)) {
-        userRole = 'citizen';
-      }
+      // Bảo vệ chống Mass Assignment & Privilege Escalation: Đăng ký tự do công khai luôn là 'citizen'
+      const userRole = 'citizen';
 
       await run(c.env.DB, `
         INSERT INTO users (id, email, phone, password_hash, full_name, role, status, district, ward, created_at, updated_at)

@@ -27,7 +27,8 @@ async function runMatrixAudit() {
     viewportsTested: [],
     anomalies: [],
     interactions: [],
-    apiSmoke: []
+    apiSmoke: [],
+    touchTargets: []
   };
 
   // 1. API RFC 7807 & Health Check
@@ -39,7 +40,7 @@ async function runMatrixAudit() {
   const healthRes = await apiPage.goto(`${BASE_URL}/api/health`);
   const healthJson = await healthRes.json().catch(() => null);
   const healthPass = healthRes.status() === 200 && healthJson && healthJson.status === 'ok';
-  console.log(`[API /api/health] Status: ${healthRes.status()}, Content-Type: ${healthRes.headers()['content-type']}, Body: ${JSON.stringify(healthJson)}`);
+  console.log(`[API /api/health] Status: ${healthRes.status()}, Content-Type: ${healthRes.headers()['content-type']}`);
   report.apiSmoke.push({ endpoint: '/api/health', status: healthRes.status(), pass: healthPass });
 
   // Test non-existent /api/abc -> MUST return JSON 404, NOT Landing HTML
@@ -48,7 +49,7 @@ async function runMatrixAudit() {
   const notFoundText = await notFoundRes.text();
   const isProblemJson = notFoundRes.status() === 404 && notFoundType.includes('json');
   console.log(`[API /api/non_existent_route_test] Status: ${notFoundRes.status()}, Content-Type: ${notFoundType}`);
-  console.log(`Body: ${notFoundText.slice(0, 200)}`);
+  console.log(`Body: ${notFoundText.slice(0, 150)}...`);
   report.apiSmoke.push({ endpoint: '/api/non_existent_route_test', status: notFoundRes.status(), isProblemJson });
 
   await apiContext.close();
@@ -87,9 +88,6 @@ async function runMatrixAudit() {
     const vpPass = !landingOverflow.hasHorizontalOverflow && !opsOverflow.hasHorizontalOverflow && !hasErrors;
 
     console.log(`Viewport ${vp.name.padEnd(28)} | Landing Overflow: ${landingOverflow.hasHorizontalOverflow ? 'FAIL ❌' : 'OK ✅'} | Ops Overflow: ${opsOverflow.hasHorizontalOverflow ? 'FAIL ❌' : 'OK ✅'} | Errors: ${pageErrors.length}`);
-    if (pageErrors.length > 0) {
-      console.log(`   Page errors:`, pageErrors);
-    }
 
     report.viewportsTested.push({
       viewport: vp.name,
@@ -109,22 +107,21 @@ async function runMatrixAudit() {
   {
     const context = await browser.newContext({ viewport: { width: 390, height: 844 } }); // Mobile iPhone
     const page = await context.newPage();
+    page.on('pageerror', err => console.log('   🚨 Page Error:', err.message));
 
     // Journey A: Landing Page CTA
     console.log('Action A1: Navigating to Landing Page...');
     await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle' });
 
-    console.log('Action A2: Finding and clicking Citizen Report CTA ("Gửi phản ánh")...');
-    const citizenCta = await page.$('a[href*="/report"], button:has-text("Gửi phản ánh"), a:has-text("Gửi phản ánh")');
-    if (citizenCta) {
-      await citizenCta.click();
-      await page.waitForTimeout(2000);
+    console.log('Action A2: Finding and clicking Citizen Report CTA in Hero ("Gửi phản ánh")...');
+    const heroCitizenCta = page.locator('section a[href*="/reports/new"]').first();
+    const isVisible = await heroCitizenCta.isVisible();
+    console.log(`   Hero CTA Visible: ${isVisible}`);
+    if (isVisible) {
+      await heroCitizenCta.click();
+      await page.waitForLoadState('networkidle');
       console.log(`   Navigated to: ${page.url()}`);
-      report.interactions.push({ action: 'Click Citizen CTA', finalUrl: page.url(), success: true });
-    } else {
-      console.log('   Citizen CTA not found by text, checking hero CTA buttons...');
-      const heroButtons = await page.$$eval('a, button', els => els.map(e => ({ text: e.innerText.trim(), href: e.href || e.getAttribute('href') })).filter(e => e.text));
-      console.log('   Available buttons:', heroButtons.slice(0, 10));
+      report.interactions.push({ action: 'Click Citizen CTA in Hero', finalUrl: page.url(), success: page.url().includes('/reports/new') });
     }
 
     // Journey B: Operations Navigation & Case Detail
@@ -142,26 +139,46 @@ async function runMatrixAudit() {
     console.log('\nAction B3: Navigate to Cases List (/operations/cases)...');
     await page.goto(`${BASE_URL}/operations/cases`, { waitUntil: 'networkidle' });
     const casesUrl = page.url();
-    const casesContent = await page.evaluate(() => document.body.innerText.slice(0, 300));
-    console.log(`   URL: ${casesUrl}`);
-    console.log(`   Content preview: ${casesContent.replace(/\n+/g, ' ')}`);
+    const casesContent = await page.evaluate(() => document.body.innerText.slice(0, 200));
+    console.log(`   URL: ${casesUrl} | Preview: ${casesContent.replace(/\n+/g, ' ')}`);
     report.interactions.push({ action: 'Navigate to /operations/cases', pass: casesUrl.includes('/operations/cases') });
 
     console.log('\nAction B4: Navigate to Projects (/operations/projects)...');
     await page.goto(`${BASE_URL}/operations/projects`, { waitUntil: 'networkidle' });
     const projUrl = page.url();
-    const projContent = await page.evaluate(() => document.body.innerText.slice(0, 300));
-    console.log(`   URL: ${projUrl}`);
-    console.log(`   Content preview: ${projContent.replace(/\n+/g, ' ')}`);
+    const projContent = await page.evaluate(() => document.body.innerText.slice(0, 200));
+    console.log(`   URL: ${projUrl} | Preview: ${projContent.replace(/\n+/g, ' ')}`);
     report.interactions.push({ action: 'Navigate to /operations/projects', pass: projUrl.includes('/operations/projects') });
 
     console.log('\nAction B5: Navigate to Legal (/operations/legal)...');
     await page.goto(`${BASE_URL}/operations/legal`, { waitUntil: 'networkidle' });
     const legalUrl = page.url();
-    const legalContent = await page.evaluate(() => document.body.innerText.slice(0, 300));
-    console.log(`   URL: ${legalUrl}`);
-    console.log(`   Content preview: ${legalContent.replace(/\n+/g, ' ')}`);
+    const legalContent = await page.evaluate(() => document.body.innerText.slice(0, 200));
+    console.log(`   URL: ${legalUrl} | Preview: ${legalContent.replace(/\n+/g, ' ')}`);
     report.interactions.push({ action: 'Navigate to /operations/legal', pass: legalUrl.includes('/operations/legal') });
+
+    // Touch targets check on Mobile Operations
+    console.log('\nAction B6: Audit touch targets >= 44px on Operations header & actions...');
+    const touchAudit = await page.evaluate(() => {
+      const interactives = Array.from(document.querySelectorAll('button, a, input, select'));
+      const smallElements = [];
+      interactives.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.width > 0 && rect.height > 0) {
+          if (rect.width < 40 || rect.height < 40) {
+            smallElements.push({
+              tag: el.tagName,
+              text: el.innerText ? el.innerText.trim().slice(0, 25) : el.getAttribute('aria-label') || '',
+              width: Math.round(rect.width),
+              height: Math.round(rect.height)
+            });
+          }
+        }
+      });
+      return { total: interactives.length, sub40px: smallElements.slice(0, 5) };
+    });
+    console.log(`   Touch targets audited: ${touchAudit.total} elements, Sub-40px: ${touchAudit.sub40px.length}`);
+    report.touchTargets.push(touchAudit);
 
     await context.close();
   }
