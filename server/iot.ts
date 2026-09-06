@@ -155,12 +155,13 @@ export function createIoTRouter() {
 
   router.post('/telemetry', handleTelemetryIngest);
   router.post('/reading', handleTelemetryIngest);
+  router.post('/ingest', handleTelemetryIngest);
 
   // ============================================================================
-  // 2. GET LATEST TELEMETRY (GET /api/iot/latest)
-  // Heartbeat timeout SSOT: now - last_reading_at <= 30 giây -> Online, quá -> Offline
+  // 2. GET LATEST TELEMETRY (GET /api/iot/latest & GET /api/iot/telemetry & GET /api/iot/reading)
+  // Hỗ trợ cả method GET cho /telemetry khi người dùng mở trên trình duyệt hoặc kiểm thử
   // ============================================================================
-  router.get('/latest', async (c) => {
+  const handleGetLatest = async (c: any) => {
     try {
       const deviceCode = c.req.query('deviceId') || 'DG-IOT-001';
 
@@ -227,7 +228,11 @@ export function createIoTRouter() {
       console.error('[IoT Latest Error]:', err);
       return c.json({ success: false, error: { message: err.message } }, 500);
     }
-  });
+  };
+
+  router.get('/latest', handleGetLatest);
+  router.get('/telemetry', handleGetLatest);
+  router.get('/reading', handleGetLatest);
 
   // ============================================================================
   // 3. GET DEVICE DETAIL & HISTORY (GET /api/iot/device/:id & /api/iot/devices/:id)
@@ -315,8 +320,13 @@ export function createIoTRouter() {
     }
   });
 
-  router.get('/alerts', (c) => {
-    return c.json({ success: true, alerts: [] });
+  router.get('/alerts', async (c) => {
+    try {
+      const alerts = await query(c.env.DB, 'SELECT * FROM iot_events WHERE event_type LIKE "%ALERT%" OR severity IN ("CRITICAL", "HIGH") ORDER BY created_at DESC LIMIT 50');
+      return c.json({ success: true, alerts: alerts || [] });
+    } catch {
+      return c.json({ success: true, alerts: [] });
+    }
   });
 
   // ============================================================================

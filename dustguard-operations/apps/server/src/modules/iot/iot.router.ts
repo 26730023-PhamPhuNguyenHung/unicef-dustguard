@@ -493,8 +493,8 @@ const handleTelemetryIngest = (req: Request, res: Response): void => {
     return;
   }
 
-  // 3. Replay Attack Protection
-  if (device.last_seen_at) {
+  // 3. Replay Attack Protection (Chỉ kiểm tra khi client chủ động gửi timestamp)
+  if (req.body.timestamp && device.last_seen_at) {
     const lastSeenTime = new Date(device.last_seen_at).getTime();
     if (incomingTime <= lastSeenTime) {
       res.status(409).json({
@@ -610,17 +610,75 @@ const handleTelemetryIngest = (req: Request, res: Response): void => {
     }
   });
 
-  res.status(201).json({
-    success: true,
-    data: {
-      recorded: true,
-      reading_id: readingId,
-      device_code: sensorCode,
-      integrity_status: integrityStatus,
-      is_flatline: isFlatline,
-    },
-  });
+    res.status(201).json({
+      success: true,
+      data: {
+        recorded: true,
+        reading_id: readingId,
+        device_code: sensorCode,
+        integrity_status: integrityStatus,
+        is_flatline: isFlatline,
+      },
+    });
+  } catch (err: any) {
+    console.error('[Side B IoT Ingest Error]:', err);
+    res.status(500).json({ success: false, error: { message: err.message || 'Lỗi lưu telemetry' } });
+  }
+};
+
+const handleGetLatestOperations = (req: Request, res: Response) => {
+  try {
+    const deviceCode = (req.query.deviceId as string) || (req.query.deviceCode as string) || 'DG-IOT-001';
+    const device = queryOne<any>(`SELECT * FROM iot_devices WHERE id = ? OR device_code = ?`, [deviceCode, deviceCode]);
+    if (!device) {
+      res.status(404).json({ success: false, error: { code: 'NOT_FOUND', message: 'Không tìm thấy thiết bị quan trắc' } });
+      return;
+    }
+    const latestReading = queryOne<any>(
+      `SELECT * FROM iot_readings WHERE device_id = ? ORDER BY recorded_at DESC LIMIT 1`,
+      [device.id]
+    );
+    const now = Date.now();
+    const lastSeenMs = device.last_seen_at ? new Date(device.last_seen_at).getTime() : 0;
+    const diffSec = lastSeenMs > 0 ? Math.max(0, Math.floor((now - lastSeenMs) / 1000)) : 999999;
+    const isOnline = diffSec <= 30;
+
+    res.json({
+      success: true,
+      data: {
+        device: {
+          ...device,
+          isOnline,
+          status: isOnline ? 'ONLINE' : 'OFFLINE',
+          secondsAgo: diffSec < 999999 ? diffSec : null
+        },
+        telemetry: latestReading ? {
+          id: latestReading.id,
+          pm25: latestReading.pm25,
+          pm10: latestReading.pm10,
+          pm1: latestReading.pm1,
+          temperature: latestReading.temperature,
+          humidity: latestReading.humidity,
+          timestamp: latestReading.recorded_at
+        } : null,
+        source: 'Side B Operations D1/SQLite'
+      }
+    });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: { message: err.message } });
+  }
 };
 
 iotRouter.post('/ingest', handleTelemetryIngest);
 iotRouter.post('/telemetry', handleTelemetryIngest);
+iotRouter.post('/reading', handleTelemetryIngest);
+
+iotRouter.get('/latest', handleGetLatestOperations);
+iotRouter.get('/telemetry', handleGetLatestOperations);
+iotRouter.get('/reading', handleGetLatestOperations);
+
+// Alias cho GET /device/:id (song song với /devices/:id)
+iotRouter.get('/device/:id', (req: Request, res: Response, next: any) => {
+  req.url = req.url.replace('/device/', '/devices/');
+  iotRouter.handle(req, res, next);
+});

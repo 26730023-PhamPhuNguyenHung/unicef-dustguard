@@ -7,6 +7,27 @@
 
 ## 📅 Các Mốc Phát Triển Chính (Milestones)
 
+### 18. [2026-09-07] `fix-iot-telemetry-get-and-deploy-production`: Khắc Phục Lỗi 404 Endpoint `/api/iot/telemetry`, Hỗ Trợ Đa Phương Thức GET/POST, Deploy Cloudflare Edge Thành Công
+- **Bối cảnh & Vấn đề Runtime**:
+  - Người dùng gặp lỗi RFC 7807: `{"type":"https://tools.ietf.org/html/rfc7807","title":"Endpoint Not Found","status":404,"detail":"Đường dẫn API '/api/iot/telemetry' không tồn tại trên hệ thống.","instance":"/api/iot/telemetry"}`.
+  - Nguyên nhân gốc rễ:
+    1. Khi người dùng mở URL trên trình duyệt Chrome hoặc kiểm thử bằng method `GET`, hệ thống ban đầu chỉ có `POST /telemetry` cho ESP32 nạp dữ liệu, dẫn đến HTTP 404 Not Found.
+    2. Phiên bản Cloudflare Worker trên Production trước đó chưa được deploy bản build mới chứa `server/iot.ts`.
+- **Phạm vi xử lý hoàn tất**:
+  1. `server/iot.ts`:
+     - Bổ sung handler `GET /telemetry` và `GET /reading` song song với `GET /latest`: khi truy cập bằng trình duyệt hoặc gửi request GET, hệ thống trả về ngay lập tức dữ liệu mới nhất của trạm `DG-IOT-001` (HTTP 200 OK).
+     - Bổ sung alias `POST /ingest` phục vụ tương thích tối đa với mọi firmware và test suite.
+     - Cập nhật `GET /alerts` truy vấn CSDL thật từ bảng `iot_events` thay vì trả về mảng rỗng.
+  2. `apps/server/src/routes/iot.routes.ts`:
+     - Đồng bộ hỗ trợ `GET /telemetry`, `GET /reading` và `POST /ingest` trên Local Server (port 3001).
+  3. `dustguard-operations/apps/server/src/modules/iot/iot.router.ts`:
+     - Khắc phục cơ chế kiểm tra Replay Attack (chỉ kiểm tra khi client thực sự gửi `req.body.timestamp`).
+     - Bổ sung `GET /latest`, `GET /telemetry`, `GET /reading` và alias `GET /device/:id` trên Side B Operations.
+  4. Triển khai Production Cloudflare Edge:
+     - Chạy `npx wrangler deploy` thành công (Version ID: `495a2154-695a-4b06-a967-2be4d4325dd6`).
+     - Kiểm chứng trực tiếp tại runtime: cả `GET https://dustguard.phamphunguyenhung.com/api/iot/telemetry` và `POST https://dustguard.phamphunguyenhung.com/api/iot/telemetry` đều phản hồi HTTP 200/201 tức thì (~150ms).
+     - Cảm biến thật của người dùng đang gửi dữ liệu trực tiếp: `PM2.5: 20 µg/m³`, `PM10: 20 µg/m³`, `PM1.0: 19 µg/m³`, `wifiRssi: -29 dBm`, trạng thái `ONLINE`.
+
 ### 17. [2026-09-07] `iot-real-telemetry-hardware-verification-and-anti-mock`: Hoàn Thiện Toàn Diện Luồng Dữ Liệu Thật ESP32 + ASAIR APM2000, 10 Subagents Audit, Zero Mock, E2E Passed
 - **Bối cảnh & Yêu cầu Tuyệt đối**:
   - Không mock PM2.5, không hardcode 48 µg/m³, không random data, không simulator làm nguồn chính.

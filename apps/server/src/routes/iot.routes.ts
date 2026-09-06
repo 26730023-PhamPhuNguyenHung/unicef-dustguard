@@ -158,11 +158,13 @@ const handleTelemetryIngest = (req: Request, res: Response): void => {
 
 iotRouter.post('/telemetry', handleTelemetryIngest);
 iotRouter.post('/reading', handleTelemetryIngest);
+iotRouter.post('/ingest', handleTelemetryIngest);
 
 // ============================================================================
-// 2. GET LATEST TELEMETRY (GET /api/iot/latest)
+// 2. GET LATEST TELEMETRY (GET /api/iot/latest & GET /api/iot/telemetry & GET /api/iot/reading)
+// Hỗ trợ cả method GET cho /telemetry khi người dùng mở trên trình duyệt hoặc kiểm thử
 // ============================================================================
-iotRouter.get('/latest', (req: Request, res: Response): void => {
+const handleGetLatest = (req: Request, res: Response): void => {
   try {
     const deviceCode = (req.query.deviceId as string) || 'DG-IOT-001';
 
@@ -227,7 +229,11 @@ iotRouter.get('/latest', (req: Request, res: Response): void => {
   } catch (err: any) {
     res.status(500).json({ success: false, error: { message: err.message } });
   }
-});
+};
+
+iotRouter.get('/latest', handleGetLatest);
+iotRouter.get('/telemetry', handleGetLatest);
+iotRouter.get('/reading', handleGetLatest);
 
 // ============================================================================
 // 3. GET DEVICE DETAIL & HISTORY (GET /api/iot/device/:id)

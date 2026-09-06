@@ -3,6 +3,24 @@
 > **Kho lưu trữ kinh nghiệm, bài học kiến trúc và phòng chống lỗi kỹ thuật (Anti-Regression)**  
 > *Cập nhật sau mỗi chu trình phát triển tính năng mới thành công.*
 
+### 14. Thiết Kế Endpoint Duality (GET/POST) Cho URL Telemetry & Quy Trình Đồng Bộ Deploy Cloudflare Edge
+- **Vấn đề thực tế phát sinh**:
+  - Khi thiết kế endpoint nạp dữ liệu IoT (`/api/iot/telemetry`), hệ thống ban đầu chỉ đăng ký method `POST`.
+  - Trong quá trình vận hành và kiểm thử thực tế, người dùng hoặc kỹ thuật viên thường mở trực tiếp URL trên trình duyệt Chrome/Edge hoặc click vào link kiểm tra trong DevTools để xác minh xem API có phản hồi hay không.
+  - Trình duyệt web luôn gửi yêu cầu bằng phương thức `GET`. Khi router chỉ có `POST`, Hono router sẽ rơi vào handler 404 và trả về:
+    `{"type":"https://tools.ietf.org/html/rfc7807","title":"Endpoint Not Found","status":404,"detail":"Đường dẫn API '/api/iot/telemetry' không tồn tại trên hệ thống."}`
+  - Điều này gây hiểu nhầm nghiêm trọng rằng endpoint hoàn toàn không tồn tại, dù ESP32 POST dữ liệu vẫn có thể thành công.
+- **Giải pháp chuẩn hóa triệt để**:
+  1. **Nguyên tắc Endpoint Duality**:
+     - Với mọi endpoint nhận dữ liệu phần cứng (`/telemetry`, `/reading`), luôn cung cấp cả hai phương thức:
+       - `POST /telemetry`: Tiếp nhận gói tin từ vi điều khiển và lưu vào CSDL (trả về 201 Created).
+       - `GET /telemetry`: Tự động phục vụ như một endpoint xem nhanh số đo mới nhất của trạm đo (tương đương `GET /latest`, trả về 200 OK kèm thông tin thiết bị và telemetry).
+     - Người dùng mở URL trên trình duyệt sẽ thấy ngay số liệu cảm biến thật đang chạy trực tiếp thay vì màn hình báo lỗi 404.
+  2. **Bổ sung alias endpoints linh hoạt**:
+     - Khai báo song song: `POST /telemetry`, `POST /reading`, `POST /ingest` để mọi loại firmware hay kịch bản test không bao giờ bị 404 do lệch tên gọi.
+  3. **Kỷ luật đồng bộ Deploy sau khi sửa Worker Router**:
+     - Sau khi chỉnh sửa code trong thư mục `server/` (Cloudflare Worker runtime), bắt buộc phải thực thi `npx wrangler deploy` để cập nhật code lên Production Edge. Nếu chỉ commit git mà không deploy, Edge vẫn chạy commit cũ dẫn đến 404.
+
 ### 13. Khắc Phục Lệch Múi Giờ UTC Giữa SQLite datetime('now') và Node.js, Bù Đắp Schema Constraint Trong Luồng IoT Telemetry Thời Gian Thực
 - **Vấn đề thực tế phát hiện trong quá trình kiểm thử phần cứng thật**:
   - **1. Lỗi Lệch 7 Tiếng Khi Tính Toán Online/Offline (Timezone Drift Bug)**:
