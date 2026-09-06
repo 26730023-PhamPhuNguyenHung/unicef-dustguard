@@ -7,7 +7,41 @@
 
 ## 📅 Các Mốc Phát Triển Chính (Milestones)
 
-### 00. [2026-09-06] `brand-logo-and-header-aesthetic-refinement`: Tích Hợp Logo Chính Thức DustGuard Shield & Nâng Cấp Header Tinh Tế, Đẳng Cấp CivicTech
+### 00. [2026-09-06] `route-graph-audit-and-canonical-auth-consolidation`: Kiểm Toán 100% Route Toàn Repo, Hợp Nhất Cổng Đăng Nhập /login (Một Nền Tảng · Hai Phía), Redirect /operations/login và Dọn Dẹp Nhãn Sai Lệch Kiến Trúc
+- **Mục tiêu**: Thực thi kiểm toán 100% routes toàn hệ thống bằng code scanner; hợp nhất 2 màn hình login trùng lặp (`/login` và `/operations/login`) thành một cổng canonical duy nhất `/login` với tab chuyển đổi 2 phía (Phía Cộng đồng & Phía Đơn vị Xử lý); cấu hình chuyển hướng HTTP 302 Edge Worker bảo toàn deep-link cho `/operations/login`; xóa bỏ hoàn toàn dòng text sai lệch kiến trúc ("SSOT SQLite cục bộ") và ẩn danh sách tài khoản mật khẩu công khai trừ khi bật `?demo=1`.
+- **Phạm vi hoàn tất**:
+  - **Quét Toàn Diện Route Graph Bằng Code Scanner**:
+    - `audit-output/route-inventory.json`: 96 frontend routes hoạt động (53 Side A + 43 Side B), 130 legacy routes (cô lập trong `app/`), 81 Cloudflare Worker API routes, 57 dev Express routes (Tổng 138 API endpoints).
+    - `audit-output/route-matrix.json`: 226 mục route phân loại Keep, Merge, Redirect, Retire; 0 broken link trong tổng số 33 navigation targets.
+  - **Hợp Nhất Cổng Đăng Nhập Duy Nhất `/login`**:
+    - `apps/web/src/pages/LoginPage.tsx`: Hỗ trợ đăng nhập trực tiếp cho cả 2 phía. Tab "Phía Cộng đồng" xác thực qua `/api/auth/login` (bảng `users`), tab "Đơn vị Xử lý" xác thực qua `/api/operations/auth/login` (bảng `ops_users`).
+    - Tự động kích hoạt tab dựa vào query `?side=operations` hoặc deep-link.
+    - Điều hướng chuẩn tắc theo vai trò (`getDefaultRoute` trong `apps/web/src/config/routes.ts`).
+    - Demo Mode an toàn: Ẩn hoàn toàn tài khoản demo và mật khẩu mẫu trên production; chỉ hiển thị khi có tham số `?demo=1` hoặc toggle chủ động.
+  - **Chuyển Hướng Chuẩn Tắc `/operations/login`**:
+    - Cấu hình HTTP 302 Redirect cấp Edge Worker (`server/index.ts`) từ `/operations/login` sang `/login?side=operations` (bảo toàn `returnTo`).
+    - Thay thế `dustguard-operations/apps/web/src/pages/LoginPage.tsx` bằng client-side redirect component, triệt tiêu 100% trùng lặp UI và nguy cơ lỗi 404.
+    - Khắc phục cơ chế phân phối SPA Cloudflare Worker (`server/index.ts`): Trực tiếp phục vụ `/operations/index.html` cho các subroute không có đuôi file của Side B thay vì bị root SPA override.
+  - **Xóa Sạch Thông Tin Sai Lệch Kiến Trúc**:
+    - Xóa bỏ triệt để `"Hệ thống lưu trữ dữ liệu chân thực SSOT SQLite cục bộ."` trên màn hình login cũ.
+    - Cập nhật nhãn `"Dữ liệu Thực tế SQLite SSOT"` thành `"Dữ liệu Thời gian thực SSOT"` trên trang Reports.
+    - Chuẩn hóa các nhãn tra cứu FTS5 và chứng chỉ số SSOT.
+  - **Kiểm Chứng Runtime Sống Trên Production (`dustguard.phamphunguyenhung.com`)**:
+    - `verify-live-auth-consolidation.mjs`: 16/16 test PASS (Commit `dc1649a`, D1/R2 OK, 302 redirect OK, Auth A & B OK).
+    - `test-production-e2e.js`: 31/31 test PASS 100%.
+    - Browser test xác thực: `/login`, `/login?side=operations&demo=1`, chuyển hướng `/operations/login` và đăng nhập thực tế vào `/operations/dashboard`.
+
+### 00. [2026-09-06] `header-navbar-redesign-refinement`: Tinh Giản Header Đạt Chuẩn Civic-Tech SaaS, 2 Nút Tối Giản & Sửa Triệt Để Lỗi Truncate Nút Bấm
+- **Mục tiêu**: Redesign toàn diện Navbar/Header của Landing Page theo tiêu chuẩn civic-tech product cao cấp: gọn gàng, tôn ti trật tự visual hierarchy, đồng bộ container 1280px với hero section, tối giản vùng hành động còn đúng 2 nút chính (Đăng nhập có viền và Gửi phản ánh đỏ DustGuard), triệt tiêu hoàn toàn lỗi truncate/dính mép chữ trên các màn hình tỉ lệ cao (laptop 14" scale 125%).
+- **Phạm vi hoàn tất**:
+  - **Khối Brand / Logo**: Thu gọn kích thước khoảng ~15%, đưa badge `CivicTech` về dạng micro badge tinh tế (`text-[9px]`), đổi màu tagline sang xám xanh muted (`#64748B`) có tracking nhẹ, không tranh spotlight với tiêu đề chính.
+  - **Khối Điều hướng (Nav)**: Tích hợp IntersectionObserver phát hiện active section (`#problem`, `#process`, `#roles`, `#pilot`), hiệu ứng hover nền nhẹ `#F3EFEA` và chỉ báo active đỏ vi tế.
+  - **Khối Hành động (Actions - Tối giản 2 nút)**:
+    - Nút 1 `Đăng nhập`: Secondary Outlined Button viền sắc sảo `border-[#D5CDC3]`, nền trắng, text `#1E293B` font-semibold, bo góc `rounded-xl`, padding chuẩn `px-5`.
+    - Nút 2 `Gửi phản ánh`: Dominant CTA màu đỏ DustGuard `#B42318`, bo góc `rounded-xl`, chiều cao 40px, padding chuẩn `px-5`, icon máy bay giấy nhỏ gọn, hiệu ứng nhấn mượt mà.
+    - Khắc phục triệt để lỗi non-standard Tailwind `px-4.5` (gây padding: 0) bằng `px-5` kèm `whitespace-nowrap shrink-0` chống co giật và rớt chữ.
+  - **Mobile Drawer**: Hỗ trợ mở menu trượt êm ái, khóa cuộn trang khi mở, tự đóng khi ấn phím ESC hoặc chuyển trang.
+  - **Build & Verification**: `tsc && vite build` thành công 100% trong 8.29s, 0 lỗi runtime.
 - **Mục tiêu**: Thay thế toàn diện icon SVG/emoji tạm bợ bằng Logo hình chiếc khiên chính thức của DustGuard VN (`dustguard-shield-logo.webp`), nâng cấp thanh Header trên toàn bộ hệ thống (Side A Landing/Community và Side B Operations) đạt chuẩn giao diện sáng màu, không glassmorphism, tương phản cao, chuyên nghiệp và chỉn chu.
 - **Phạm vi hoàn tất**:
   - **Tổ chức Thư viện Static Assets Chuẩn**:

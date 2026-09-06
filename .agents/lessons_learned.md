@@ -7,6 +7,26 @@
 
 ## 📅 Bài học từ Dự án: DustGuard Operations & Community (2026-09-06)
 
+### 00. Hợp Nhất Route Graph Toàn Hệ Thống, Loại Bỏ Trùng Lặp Auth Entry & Xử Lý Định Tuyến SPA Đa Phân Hệ Trên Cloudflare Workers Assets
+- **Vấn đề**:
+  - **Trùng Lặp 2 Màn Hình Login Độc Lập**: `/login` (thuộc Side A) và `/operations/login` (thuộc Side B) tồn tại song song với hai phong cách thiết kế, hai cơ chế form và hai nhóm tài khoản mẫu khác nhau. Trên `/operations/login` còn hiển thị công khai mật khẩu `password123` và dòng chữ sai lệch kiến trúc `"Hệ thống lưu trữ dữ liệu chân thực SSOT SQLite cục bộ."`.
+  - **Lỗi Ghi Đè SPA Root Của Cloudflare Workers Assets (`not_found_handling: "single-page-application"`)**: Khi cấu hình Worker Assets phục vụ monorepo 2 SPA (Side A tại `/` và Side B tại `/operations`), Cloudflare Assets tự động fallback mọi request không có đuôi file về `/index.html` của root (Side A) với mã HTTP 200 OK. Do đó, logic kiểm tra `if (assetRes.status === 404)` trong Worker không bao giờ kích hoạt khi người dùng truy cập các subroute như `/operations/inspections` hay `/operations/cases`. Kết quả là người dùng bị trả về HTML của Side A và bị redirect sang `/dashboard`.
+  - **Mã Băm Bcrypt Bị Nuốt Trong Chuỗi PowerShell Command**: Khi chạy `wrangler d1 execute` chứa câu lệnh SQL bọc trong chuỗi `"..."` trên PowerShell, chuỗi hash bcrypt `$2b$10$...` bị PowerShell hiểu nhầm là biến `$2b` và mở rộng thành rỗng, làm hỏng giá trị hash trong cơ sở dữ liệu.
+- **Giải pháp chuẩn hóa**:
+  1. **Hợp Nhất Một Cổng Canonical Duy Nhất `/login` ("Một Nền Tảng · Hai Phía")**:
+     - Thiết kế tab chuyển đổi 2 phía: "Phía Cộng đồng" (gọi `/api/auth/login`) và "Đơn vị Xử lý" (gọi `/api/operations/auth/login`).
+     - Tự động kích hoạt tab dựa theo `?side=operations` hoặc deep-link `returnTo`.
+     - Ẩn hoàn toàn tài khoản và mật khẩu mẫu trên production; chỉ kích hoạt panel "Tài khoản trình diễn" khi có cờ `?demo=1` hoặc toggle chủ động.
+  2. **Chuyển Hướng Chuẩn Tắc 302 Cho Cổng Cũ**:
+     - Thiết lập Edge Worker HTTP 302 Redirect từ `/operations/login` sang `/login?side=operations` (bảo toàn tham số `returnTo`).
+     - Thay thế `dustguard-operations/apps/web/src/pages/LoginPage.tsx` bằng component chuyển hướng tức thì, triệt tiêu 100% duplicate code và nguy cơ 404.
+  3. **Phân Phối Chính Xác File SPA Cho Subroute Trong Cloudflare Worker**:
+     - Phân định rõ ràng: Nếu `url.pathname.startsWith('/operations')` và **không có đuôi file** (`!/\.[a-zA-Z0-9]+$/.test(url.pathname)`), luôn chủ động phục vụ `/operations/index.html`.
+     - Nếu có đuôi file (CSS, JS, WebP), phân phối qua asset binding và chỉ fallback khi 404.
+  4. **Thực Thi Lệnh SQL Chứa Ký Tự Đặc Biệt Bằng File Tạm**:
+     - Tuyệt đối không truyền chuỗi SQL chứa dấu `$` trực tiếp qua tham số dòng lệnh PowerShell `--command="..."`.
+     - Luôn ghi ra file `.sql` tạm và thực thi qua `--file=...`, sau đó dọn dẹp file tạm trong khối `finally`.
+
 ### 00. Đồng Bộ Hóa Thư Viện Static Assets Trong Cấu Trúc Monorepo Đa Phân Hệ & Thiết Kế Header Civic Sáng Màu, Không Glassmorphism
 - **Vấn đề**:
   - **Tệp Asset Thương Hiệu Thiếu Đồng Bộ Trong Monorepo**: Logo thương hiệu chính thức `dustguard-shield-logo.webp` tồn tại ở thư mục gốc `app/public`, nhưng trong monorepo hai ứng dụng độc lập `apps/web` (Side A) và `dustguard-operations/apps/web` (Side B) lại chưa có thư mục `public/`. Các nhà phát triển trước đó phải dùng giải pháp tình thế là chèn component `<Shield />` SVG của thư viện Lucide hoặc hộp màu chứa chữ `DG`, làm giảm tính trang trọng, thiếu nhất quán thương hiệu của một dự án CivicTech bảo trợ bởi các cơ quan quản lý.
