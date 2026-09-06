@@ -16,6 +16,7 @@ import adminRoutes from './routes/admin.routes.js';
 import dashboardRoutes from './routes/dashboard.routes.js';
 import integrationsRoutes from './routes/integrations.routes.js';
 import contractorRoutes from './routes/contractor.routes.js';
+import iotRoutes from './routes/iot.routes.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -49,6 +50,8 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/integrations', integrationsRoutes);
 app.use('/api/contractor', contractorRoutes);
+app.use('/api/iot', iotRoutes);
+app.use('/api/sensors', iotRoutes);
 
 // Root health check
 app.get('/api/health', (req, res) => {

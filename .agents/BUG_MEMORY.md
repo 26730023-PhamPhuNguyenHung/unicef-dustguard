@@ -6,6 +6,27 @@
 
 ## 🏛️ -1. Architecture & Refactoring Guardrails (Modular Monolith SSOT)
 
+### 📌 Invariant -1.37: Mobile Topbar CTA Button Text Wrapping & Defensive Responsive CSS (Chống Rớt Chữ Nút Bấm)
+- **Bẫy lỗi**:
+  Nút CTA trên thanh Header Mobile (ví dụ: `[+ Gửi phản ánh]`) không được gắn thuộc tính `whitespace-nowrap` và `shrink-0`.
+  Khi hiển thị trên mobile có viewport hẹp (360px - 390px), flex container bị bóp chiều ngang bởi các phần tử xung quanh (Hamburger Menu ~40px, Logo DustGuard ~100px, Bell icon ~40px). CSS mặc định `white-space: normal` tự động bẻ dòng tại khoảng trắng, khiến chữ "Gửi phản ánh" bị rớt dòng thành 2 hàng: "Gửi phản" ở trên và "ánh" trơ trọi ở dưới, làm méo mó nút bấm và độ cao header.
+- **Quy tắc chuẩn**:
+  1. Mọi nút bấm (Button), thẻ hành động (Link CTA), badge và navigation tab trên Header / Topbar / Action Bar bắt buộc phải có `whitespace-nowrap` và `shrink-0`.
+  2. Tối ưu padding responsive: trên mobile dùng `px-2.5 sm:px-3.5 py-1.5 sm:py-2` để tiết kiệm ~8px chiều ngang quý giá.
+  3. Header container trên mobile dùng `px-3 sm:px-6` thay vì `px-4 sm:px-6` để không lãng phí lề màn hình.
+  4. Cụm icon và text trong nút dùng `inline-flex items-center gap-1.5`, icon có `shrink-0`, chữ nằm trong `<span className="whitespace-nowrap">` bảo vệ 2 lớp.
+
+### 📌 Invariant -1.36: Auth User Normalization, Sticky Sidebar Preservation & Form Stepper Layout (Zero "()")
+- **Bẫy lỗi**:
+  1. *Lỗi danh tính `Đang gửi với tư cách: ()`*: Endpoint `/auth/me` trả về `{ user: { full_name, role, ... } }`. Frontend `AuthContext` nhận `data.data` và gán thẳng `setUser(userData)`, khiến `user` trong React state bị lồng thành `{ user: { ... } }`. Kết hợp với việc SQLite lưu snake_case `full_name` trong khi UI gọi camelCase `user.fullName`, làm cả họ tên lẫn vai trò đều `undefined`, dẫn đến chuỗi rỗng `Đang gửi với tư cách: ()` và avatar 'U' trơ trọi không tên.
+  2. *Lỗi cuộn trôi Sidebar & Header (Mất Logo và CTA)*: Đặt `overflow-x: hidden` trên cả thẻ `html` và `body` trong CSS. Theo chuẩn CSS hiện đại, bất kỳ giá trị `overflow` nào khác `visible` trên thẻ tổ tiên đều tạo ra scroll context và vô hiệu hóa hoàn toàn `position: sticky` của con trên Chromium/WebKit. Hậu quả là khi cuộn trang, toàn bộ Logo DustGuard, nút Gửi phản ánh và Header trên cùng bị trôi tuột lên trên mất hút.
+  3. *Lỗi vỡ layout "badgeín hiệu" và "Bước 2/4"*: Đặt text bản nháp `Đã lưu bản nháp lúc...` chung hàng `flex items-center` với dòng mô tả dài, trong khi nút `Xóa nháp` lại tách sang cạnh `Bước 2/4`. Khi màn hình hẹp lại, dòng mô tả đẩy badge bản nháp dạt sang phải đè vào nút xóa và chỉ số bước, gây vỡ layout và dính chữ.
+- **Quy tắc chuẩn**:
+  - `AuthContext` bắt buộc phải có hàm `normalizeUser(raw)` để unwrap an toàn `{ user: ... }` và luôn bảo đảm tồn tại cả `fullName` lẫn `full_name`, `role`, `avatarUrl`, `createdAt`.
+  - Trên giao diện: luôn dùng fallback chuỗi thông minh: `user?.fullName || user?.full_name || user?.email?.split('@')[0] || 'Người dùng'` và nhãn vai trò tiếng Việt đời thường (`Công dân`, `Thành viên CLB`, `Điều phối viên`, `Quản trị viên`). Tuyệt đối không để xảy ra `()`.
+  - Sidebar layout: `<aside>` cố định với `h-screen sticky top-0`, header brand + nút CTA + user footer card có `shrink-0`, chỉ duy nhất `<nav>` ở giữa có `flex-1 overflow-y-auto`. Thẻ `html` và `body` sử dụng `overflow-x: clip` để bảo toàn 100% cơ chế `position: sticky`.
+  - Header Form Wizard: Badge bước (`Bước {step} / 4`) đứng độc lập, nổi bật bên phải; cụm nháp (`Đã lưu nháp ...` + link `Xóa nháp`) đi liền nhau thành một khối pill nhỏ gọn gàng, không gộp chung hàng với mô tả.
+
 ### 📌 Invariant -1.1: Single Cloudflare Worker != Single God File
 - **Nguyên nhân**: Dồn toàn bộ ~7.700 dòng code gồm routing, auth, SQL queries, D1 binding, R2 upload, IoT state machine và cron vào 1 file `worker.js` duy nhất vì nghĩ rằng deploy 1 Worker thì chỉ được viết 1 file.
 - **Quy tắc chuẩn**: Cloudflare Worker deploy 1 worker bundle duy nhất qua bundler, nhưng source code bắt buộc phải là **Modular Monolith**:

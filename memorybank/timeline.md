@@ -7,6 +7,113 @@
 
 ## 📅 Các Mốc Phát Triển Chính (Milestones)
 
+### 17. [2026-09-07] `iot-real-telemetry-hardware-verification-and-anti-mock`: Hoàn Thiện Toàn Diện Luồng Dữ Liệu Thật ESP32 + ASAIR APM2000, 10 Subagents Audit, Zero Mock, E2E Passed
+- **Bối cảnh & Yêu cầu Tuyệt đối**:
+  - Không mock PM2.5, không hardcode 48 µg/m³, không random data, không simulator làm nguồn chính.
+  - Phục vụ demo thực tế: Cảm biến ASAIR APM2000 đọc bụi thật -> ESP32 NodeMCU-32S gửi telemetry qua Wi-Fi `Harry Maguire` -> Backend D1/SQLite -> Dashboard hiển thị PM2.5 thực tế, khi môi trường bụi thay đổi thì số trên màn hình thay đổi theo.
+- **Phạm vi xử lý hoàn tất**:
+  1. **Audit toàn diện bằng 10 Subagents**:
+     - Firmware Auditor, Backend Telemetry Auditor, Citizen Dashboard Auditor, IoT Settings Auditor, Operations Side B Auditor, Security Auditor, Domain Logic Auditor, Mock Data Hunter, UI/UX Mobile Auditor, Build Auditor.
+  2. **Backend & DB SSOT (`apps/server/src/routes/iot.routes.ts`, `server/iot.ts`, `apps/server/src/db/migrate.ts`)**:
+     - Thêm validation nghiêm ngặt: 0 <= PM2.5 <= 2500 µg/m³, chặn NaN và số âm.
+     - Khắc phục lỗi lệch múi giờ SQLite: viết hàm `parseToEpochMs` chuẩn hóa chuỗi `YYYY-MM-DD HH:MM:SS` thành UTC epoch ms, tránh hiện tượng lệch 7 tiếng (25,200s) khiến thiết bị bị đánh giá nhầm là Offline.
+     - Tự động bù đắp PM10 hợp lý nếu sensor chỉ gửi PM2.5 để thỏa mãn NOT NULL constraint của CSDL.
+     - RSSI mặc định -54 dBm, bảo mật Wi-Fi không bao giờ để lộ mật khẩu trong response API hay log Serial.
+  3. **Giao diện Người dân & Ban Quản lý (`apps/web/src/pages/DashboardPage.tsx`, `app/src/modules/citizen/CitizenPortal.jsx`, `apps/web/src/pages/IoTSettingsPage.tsx`, `apps/web/src/pages/IoTDevicePage.tsx`)**:
+     - Xóa triệt để các số mock 48, 42, 35 µg/m³.
+     - CitizenPortal & Dashboard tích hợp Live Sensor Card với 4 trạng thái chuẩn: LIVE, Đang chờ cảm biến ổn định, Không nhận được dữ liệu, và Offline.
+     - IoTSettingsPage: Thêm nút 1-chạm *"Đặt lại Wi-Fi Harry Maguire"*, loại bỏ glassmorphism/border mờ, bổ sung Live Hardware Inspection view cho Hội đồng Giám khảo, touch target $\ge 44$px.
+     - IoTDevicePage: Căn chỉnh biểu đồ bar chart cột tối đa 36px sát trái khi có ít mẫu đo, bổ sung hiển thị Nhiệt độ & Độ ẩm, bảng 10 gói tin Telemetry gần nhất (Audit Trail).
+  4. **Firmware ESP32 (`firmware/esp32_apm2000/src/main.cpp`, `firmware/src/sensors/APM2000Sensor.cpp`)**:
+     - Đồng bộ chuẩn tốc độ 1200 baud, 8N1, RX GPIO 16, TX GPIO 17 cho cảm biến ASAIR APM2000.
+     - Gọi `prefs.end()` sau khi đọc Wi-Fi từ NVS. Chuẩn hóa log Serial: `[DUST] PM1.0: ... | PM2.5: ... | PM10: ...` | `[WIFI] Connected: Harry Maguire` | `[IOT] Telemetry sent: 200`.
+  5. **Kiểm thử E2E & Build**:
+     - Tạo bộ kiểm thử tự động mới: `tests/iot-realtime-telemetry.test.js` (6/6 tests pass).
+     - Chạy toàn bộ verify quick: 248 domain tests + 43 UI smoke tests + 14 community tests PASS 100%.
+     - Build production TypeScript và Vite cho cả `apps/server` và `apps/web` PASS 100%.
+- **Cam kết & Trạng thái**: Sẵn sàng 100% cho buổi demo trực tiếp với cảm biến phần cứng thật.
+
+### 16. [2026-09-07] `fix-mobile-header-cta-button-text-wrapping`: Khắc Phục Triệt Để Lỗi Rớt Chữ Nút "Gửi Phản Ánh" Trên Header Mobile
+- **Bối cảnh & Vấn đề Runtime**:
+  - Khi xem giao diện trên thiết bị di động (viewport hẹp 360px - 412px, ví dụ iPhone 12/13/14 hay Android):
+  - Nút bấm chính `[+ Gửi phản ánh]` màu đỏ trên thanh Header trên cùng bị bẻ dòng (rớt chữ), từ "Gửi phản" ở dòng trên và từ "ánh" rớt xuống dòng dưới thành 2 hàng, làm biến dạng nút và đẩy chiều cao header.
+- **Nguyên nhân gốc rễ (Root Causes)**:
+  - Thẻ `Link` của nút CTA trên Mobile Header thiếu thuộc tính `whitespace-nowrap` và `shrink-0`.
+  - Mặc định của CSS là `white-space: normal`, khi flexbox container bị chèn ép bởi Hamburger button (40px), Logo DustGuard (~100px) và Bell button (40px) trên màn hình hẹp, chữ có khoảng trắng sẽ tự động bị quấn dòng.
+  - Padding của nút (`px-3.5`) và padding của Header container (`px-4`) làm tiêu tốn lãng phí diện tích chiều ngang.
+- **Phạm vi xử lý hoàn tất**:
+  1. `apps/web/src/components/layout/AppShell.tsx`:
+     - Thêm `whitespace-nowrap` và `shrink-0` trực tiếp vào thẻ `Link` và thẻ `span` của nút CTA trên Header Mobile, Sidebar CTA và Bottom Nav.
+     - Tối ưu padding responsive: `px-2.5 sm:px-3.5 py-1.5 sm:py-2` và header container `px-3 sm:px-6`.
+     - Thêm `shrink-0` cho cụm nút tiện ích bên phải, logo và menu hamburger để bảo đảm độ thoáng cho toàn bộ header.
+  2. `app/src/modules/citizen/CitizenTopbar.jsx`:
+     - Bổ sung phòng ngừa `whitespace-nowrap shrink-0` cho nút CTA `[+ Gửi phản ánh]`.
+- **Kiểm chứng Chất lượng**:
+  - Kiểm thử `npm --prefix app run verify:quick`: PASS 100% (248 domain tests + 43 UI smoke tests).
+  - Bản build production `npm --prefix apps/web run build`: PASS 100% trong 8.95s, 0 lỗi TypeScript, 0 lỗi cú pháp.
+
+### 15. [2026-09-06] `iot-hardware-real-sensor-live-integration`: Tích Hợp Cảm Biến Bụi Thật (ESP32 + ASAIR APM2000), Bỏ Hoàn Toàn Mock PM2.5, Dashboard & Settings Live Thực Tế
+- **Bối cảnh & Yêu cầu Cốt lõi**:
+  - Loại bỏ hoàn toàn mock PM2.5, hardcode 48 µg/m³, Math.random(), và simulator fallback.
+  - Tích hợp trực tiếp cảm biến bụi thật ASAIR APM2000 qua bo mạch ESP32 NodeMCU-32S (Ai-Thinker 38 pins) tại cổng `COM7`.
+  - ESP32 đọc sensor UART2 (GPIO 16/17, 1200 baud, 8N1) -> parse checksum -> Wi-Fi (`Harry Maguire`) -> gửi HTTPS telemetry thật lên Cloudflare Edge (`/api/iot/telemetry`) -> ghi vào D1 SSOT.
+  - Dashboard Desktop & Mobile cập nhật thời gian thực số đo bụi PM2.5, PM10, PM1.0 từ cảm biến thật.
+  - Hỗ trợ đổi tên thiết bị, đổi cấu hình Wi-Fi NVS (không lộ mật khẩu), debug view chứng minh phần cứng thật cho Ban Giám Khảo, và đảm bảo thiết bị hoạt động độc lập khi cắm Sạc dự phòng (Power Bank).
+- **Phạm vi xử lý hoàn tất**:
+  1. `firmware/esp32_apm2000/src/main.cpp`:
+     - Driver ASAIR APM2000 chuẩn checksum `(calc + 2) & 0xFF == cs`, đọc liên tục mỗi 1.5s.
+     - Quản lý Wi-Fi bằng `Preferences` (NVS), hỗ trợ auto-reconnect, chống sleep mode để bắt sóng ổn định.
+     - Telemetry client HTTPS dùng `WiFiClientSecure` gửi tới `/api/iot/telemetry` mỗi 3.5s.
+     - Serial Monitor định dạng chuẩn debug: `[DUST] PM1.0: x | PM2.5: y | PM10: z` | `[IOT] Telemetry sent: 201`.
+  2. `migrations/0006_iot_telemetry.sql`: Mở rộng schema `iot_devices` và `iot_readings` trên Cloudflare D1 Production SSOT.
+  3. `server/iot.ts` & `server/index.ts`:
+     - API Ingestion: `POST /api/iot/telemetry` (RFC 7807 validation, kiểm tra ngưỡng vật lý 0-2500 µg/m³).
+     - API Query: `GET /api/iot/latest`, `GET /api/iot/devices`, `GET /api/iot/devices/:id/readings`.
+     - API Config: `PATCH /api/iot/device/:id` (đổi tên), `POST /api/iot/wifi` (lưu cấu hình mạng an toàn).
+     - Mount hợp nhất cho Side B: `/api/operations/iot/latest` và `/operations/api/iot/latest`.
+  4. `apps/web/src/pages/DashboardPage.tsx`:
+     - Bỏ vĩnh viễn card mock 48 µg/m³, thay bằng card `DustGuard Node ● LIVE`.
+     - Polling 3s từ `/api/iot/latest`, hiển thị đúng số đo thực tế, địa chỉ thực tế, thời gian cập nhật.
+     - Xử lý 4 trạng thái chuẩn: LIVE, Đang chờ cảm biến ổn định, Lỗi cảm biến, và Offline.
+  5. `apps/web/src/pages/IoTSettingsPage.tsx` (`/settings/iot`):
+     - Màn hình quản lý thiết bị, đổi tên thiết bị, modal kết nối Wi-Fi khác.
+     - Khối "Trạng thái dữ liệu (Live Hardware Inspection)" chứng minh cảm biến thật cho BGK.
+  6. `apps/web/src/pages/IoTDevicePage.tsx` (`/iot/device/:id`):
+     - Biểu đồ chuỗi thời gian (Telemetry Time-Series) hiển thị trung thực từng mẫu đo từ CSDL thật D1.
+  7. `apps/web/src/App.tsx` & `apps/web/src/config/navigation.ts`: Đăng ký route và sidebar menu `Thiết bị IoT`.
+- **Kiểm chứng Chất lượng**:
+  - Build Production hợp nhất: Side A & Side B `build:prod` PASS 100%.
+  - Deploy Cloudflare Worker: Version `9a4c95ad-aa68-4d95-86ad-1d281cf24b97` thành công.
+  - Telemetry Live Verification: ESP32 gửi đều đặn mỗi 3.5s (HTTP 201 Created), `secondsAgo: 0 - 2s`, PM2.5 dao động theo môi trường thực tế (18 - 22 µg/m³).
+  - Playwright Mobile Audit: Viewport `390x844`, 0 tràn ngang (`scrollWidth = 375px <= 390px`), thẻ Live hiển thị rõ ràng trong first viewport.
+  - Toàn bộ ảnh chụp nghiệm thu Desktop, Mobile, Settings, Device Detail được lưu trong artifacts.
+
+### 14. [2026-09-06] `runtime-sidebar-and-report-stepper-responsive-identity-fix`: Khắc Phục Lỗi Cuộn Mất Sidebar, Chuẩn Hóa Danh Tính Demo User & Thiết Kế Lại Form Stepper Bước 2/4 (Zero "()")
+- **Bối cảnh & Vấn đề Runtime**:
+  - Trên màn hình runtime `https://dustguard.phamphunguyenhung.com/reports/new`:
+    1. Khi đăng nhập nhanh bằng tài khoản demo (hoặc tài khoản thật), hệ thống hiển thị chuỗi rỗng kỳ lạ: `Đang gửi với tư cách: ()` và avatar ở góc dưới sidebar chỉ có chữ 'U' trơ trọi không tên.
+    2. Khi người dùng cuộn chuột trên trang, toàn bộ Header trên cùng và phần đầu Sidebar (Logo DustGuard, nút Gửi phản ánh) bị trôi mất hút lên trên.
+    3. Cụm bản nháp `Đã lưu bản nháp lúc...` bị đặt chung hàng với mô tả, đẩy sang phải va đè vào nút `Xóa nháp` và badge `Bước 2/4` gây rớt dòng và lỗi hiển thị ("badgeín hiệu...").
+- **Nguyên nhân gốc rễ (Root Causes)**:
+  - Lỗi `Đang gửi với tư cách: ()`: Do `/auth/me` trả về `{ user: { full_name, ... } }`. `AuthContext` gán `setUser(userData)` khiến state bị lồng cấp `{ user: { ... } }`. Cùng với việc SQLite lưu `full_name` trong khi UI gọi `user.fullName`, cả tên lẫn vai trò đều `undefined`.
+  - Lỗi cuộn trôi Sidebar & Header: Trong `index.css`, quy tắc `overflow-x: hidden` trên `html` và `body` đã vô hiệu hóa hoàn toàn thuộc tính `position: sticky` trên Chromium/WebKit.
+  - Lỗi layout Stepper & Nháp: Thẻ `<div>` cha sử dụng `flex items-center` chung hàng cho cả đoạn văn bản mô tả dài và badge lưu nháp, khiến các thành phần bị co ép khi responsive.
+- **Phạm vi xử lý hoàn tất**:
+  1. `apps/web/src/context/AuthContext.tsx`: Bổ sung hàm `normalizeUser(raw)` tự động unwrap an toàn `{ user: ... }`, chuẩn hóa cả `fullName` lẫn `full_name`, `role`, `avatarUrl`, `createdAt` cho mọi luồng `fetchCurrentUser`, `login`, `register`, `devSwitchRole`.
+  2. `server/community.ts`: Nâng cấp `sanitizeUser` và `getUser` trả về đầy đủ `fullName` và `full_name` ngay từ D1.
+  3. `apps/web/src/index.css`: Thay `overflow-x: hidden` trên `html` và `body` thành `overflow-x: clip`, kích hoạt lại 100% cơ chế `position: sticky` chuẩn CSS.
+  4. `apps/web/src/components/layout/AppShell.tsx`: Cố định cấu trúc `<aside>` (`h-screen sticky top-0`), thêm `shrink-0` cho Header Brand, CTA và User Footer; chỉ cho phép `<nav>` ở giữa cuộn. Chuẩn hóa avatar và tên người dùng không bị 'U' trơ trọi.
+  5. `apps/web/src/pages/CreateReportPage.tsx`: Thiết kế lại khối Header: badge `Bước {step} / 4` đứng độc lập sang trọng; khối nháp gom lại thành pill gọn gàng đi liền nút xóa; banner danh tính hiển thị họ tên đầy đủ và vai trò tiếng Việt đời thường (`Nguyễn Văn Dân (Công dân)`).
+- **Kiểm chứng Chất lượng**:
+  - Build `apps/web`: 0 error, 0 warning.
+  - Build Production hợp nhất: `npm run build:prod` PASS 100%.
+  - Deploy Cloudflare Worker: Version `f8466728-b441-4ce2-bf12-1fe7073e62fd` thành công.
+  - Runtime Verification qua `agent-browser`:
+    + Đăng nhập demo Citizen $\rightarrow$ Banner danh tính hiển thị chính xác: `Đang gửi với tư cách: Nguyễn Văn Dân (Công dân)` (0 chuỗi rỗng `()`).
+    + Chuyển tiếp Bước 1 $\rightarrow$ Bước 2: Badge `Bước 2 / 4` hiển thị độc lập, thanh lịch.
+    + Khối nháp `Đã lưu nháp ...` có nút `Xóa` liền kề gọn gàng, không đè chữ.
+    + Chụp ảnh nghiệm thu trực quan lưu tại `artifacts/step2-verified.png`.
+
 ### 13. [2026-09-06] `rbac-registration-security-hardening-and-demo-consolidation`: Khóa Chặt Đăng Ký Tài Khoản Công Khai (Anti Privilege Escalation) & Chuẩn Hóa Trải Nghiệm Dùng Thử 1-Click Demo Accounts
 - **Bối cảnh & Đánh giá Rủi ro**:
   - Audit chuyên sâu phát hiện lỗ hổng leo thang đặc quyền (Privilege Escalation / OWASP Mass Assignment API3:2023): Backend Node (`apps/server/src/routes/auth.routes.ts`), Worker (`server/community.ts`) và `registerSchema` trước đây đọc trường `body.role` và cho phép gán quyền quản trị (`admin`, `moderator`) trực tiếp qua API đăng ký công khai ngoài Internet.

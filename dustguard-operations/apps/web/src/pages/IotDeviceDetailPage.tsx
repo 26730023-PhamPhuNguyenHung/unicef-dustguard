@@ -289,12 +289,23 @@ export const IotDeviceDetailPage: React.FC = () => {
                     <td className="px-4 py-2.5 font-bold text-slate-900">{r.pm25}</td>
                     <td className="px-4 py-2.5 font-medium text-slate-800">{r.pm10}</td>
                     <td className="px-4 py-2.5 text-slate-600">{r.temperature !== null ? `${r.temperature}°C` : '--'}</td>
-                    <td className="px-4 py-2.5 text-slate-600">{r.humidity !== null ? `${r.humidity}%` : '--'}</td>
                     <td className="px-4 py-2.5">
-                      <span className="inline-flex items-center gap-1 font-bold text-[10px] text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                        <ShieldCheck className="w-3 h-3 text-emerald-600" />
-                        HMAC-SHA256 HỢP LỆ
-                      </span>
+                      {r.integrity_status === 'FLATLINE' ? (
+                        <span className="inline-flex items-center gap-1 font-bold text-[10px] text-rose-800 bg-rose-50 px-2 py-0.5 rounded border border-rose-200">
+                          <AlertCircle className="w-3 h-3 text-rose-600" />
+                          CẢNH BÁO FLATLINE
+                        </span>
+                      ) : r.integrity_status === 'CORRUPTED' ? (
+                        <span className="inline-flex items-center gap-1 font-bold text-[10px] text-rose-800 bg-rose-50 px-2 py-0.5 rounded border border-rose-200">
+                          <AlertCircle className="w-3 h-3 text-rose-600" />
+                          SAI LỆCH VẬT LÝ
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 font-bold text-[10px] text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                          <ShieldCheck className="w-3 h-3 text-emerald-600" />
+                          {r.integrity_status === 'VALID' ? 'HMAC-SHA256 HỢP LỆ' : 'HỢP LỆ (PILOT)'}
+                        </span>
+                      )}
                     </td>
                   </tr>
                 ))}

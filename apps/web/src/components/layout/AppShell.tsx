@@ -159,9 +159,9 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
   return (
     <div className="min-h-screen bg-surface-bg flex flex-col lg:flex-row text-content-main antialiased">
       {/* 1. Sidebar Desktop (240px) */}
-      <aside className="hidden lg:flex flex-col w-60 bg-surface-card border-r border-border-subtle shrink-0 h-screen sticky top-0 overflow-y-auto z-20">
+      <aside className="hidden lg:flex flex-col w-60 bg-surface-card border-r border-border-subtle shrink-0 h-screen sticky top-0 z-20">
         {/* Brand Header */}
-        <div className="p-4 border-b border-border-subtle">
+        <div className="p-4 border-b border-border-subtle shrink-0">
           <Link to="/dashboard" className="flex items-center gap-2.5 select-none group">
             <img
               src="/images/logo/dustguard-shield-logo.webp"
@@ -182,13 +182,13 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
         </div>
 
         {/* Dominant Primary Action CTA */}
-        <div className="p-3.5 pb-2">
+        <div className="p-3.5 pb-2 shrink-0">
           <Link
             to="/reports/new"
-            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-civic bg-primary text-white font-bold text-xs hover:bg-primary-hover transition-all shadow-xs active:scale-98 cursor-pointer"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-civic bg-primary text-white font-bold text-xs hover:bg-primary-hover transition-all shadow-xs active:scale-98 cursor-pointer whitespace-nowrap shrink-0"
           >
-            <PlusCircle className="w-4 h-4" />
-            <span>Gửi phản ánh</span>
+            <PlusCircle className="w-4 h-4 shrink-0" />
+            <span className="whitespace-nowrap">Gửi phản ánh</span>
           </Link>
         </div>
 
@@ -198,7 +198,7 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
         </nav>
 
         {/* User Footer Card & Integrated Dev Mode Role Switcher */}
-        <div className="p-3 border-t border-border-subtle bg-surface-subtle/80 space-y-2">
+        <div className="p-3 border-t border-border-subtle bg-surface-subtle/80 space-y-2 shrink-0">
           {/* Dev-Only Role Switcher Dropdown (Never renders in Production) */}
           {import.meta.env.DEV === true && (
             <div className="p-1.5 rounded-civic bg-surface-secondary/70 border border-border-subtle flex items-center justify-between text-[11px]">
@@ -224,12 +224,14 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
             <div className="flex items-center justify-between gap-2">
               <Link to="/profile" className="flex items-center gap-2.5 overflow-hidden hover:opacity-85 transition-opacity flex-1 min-w-0">
                 <div className="w-8 h-8 rounded-full bg-primary-light text-primary font-bold flex items-center justify-center text-xs shrink-0 border border-primary/20">
-                  {user.fullName?.charAt(0) || 'U'}
+                  {(user.fullName || (user as any).full_name || user.email || 'U').charAt(0).toUpperCase()}
                 </div>
                 <div className="truncate">
-                  <div className="text-xs font-bold text-content-main truncate">{user.fullName}</div>
+                  <div className="text-xs font-bold text-content-main truncate">
+                    {user.fullName || (user as any).full_name || (user.email ? user.email.split('@')[0] : 'Người dùng')}
+                  </div>
                   <div className="text-[10px] text-content-sub font-semibold">
-                    {ROLE_LABELS[user.role] || user.role}
+                    {ROLE_LABELS[user.role] || user.role || 'Thành viên'}
                   </div>
                 </div>
               </Link>
@@ -258,18 +260,18 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
 
       {/* 2. Top Header Shell (Desktop & Mobile) */}
       <div className="flex-1 flex flex-col min-w-0">
-        <header className="h-14 bg-surface-card border-b border-border-subtle sticky top-0 z-30 shadow-xs flex items-center justify-between px-4 sm:px-6">
+        <header className="h-14 bg-surface-card border-b border-border-subtle sticky top-0 z-30 shadow-xs flex items-center justify-between px-3 sm:px-6 shrink-0">
           {/* Mobile brand & toggle */}
-          <div className="flex items-center gap-2.5 lg:hidden">
+          <div className="flex items-center gap-1.5 sm:gap-2.5 lg:hidden shrink-0">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-1.5 rounded-md text-content-sub hover:bg-surface-secondary touch-target"
+              className="p-1.5 rounded-md text-content-sub hover:bg-surface-secondary touch-target min-w-[40px] min-h-[40px] flex items-center justify-center shrink-0"
               aria-label="Mở menu điều hướng"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
 
-            <Link to="/dashboard" className="flex items-center gap-2 select-none">
+            <Link to="/dashboard" className="flex items-center gap-1.5 sm:gap-2 select-none shrink-0">
               <img
                 src="/images/logo/dustguard-shield-logo.webp"
                 alt="DustGuard Shield"
@@ -277,7 +279,7 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
                 width={24}
                 height={28}
               />
-              <span className="font-extrabold text-sm tracking-tight text-content-main">
+              <span className="font-extrabold text-sm tracking-tight text-content-main whitespace-nowrap">
                 DustGuard
               </span>
             </Link>
@@ -291,23 +293,23 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
           </div>
 
           {/* Right Utilities: Notifications, Portal Link & Profile */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
             {/* Quick Link to Operations Side B (Transparent Civic Coordination) */}
             <a
               href={OPERATIONS_APP_URL}
               target="_blank"
               rel="noreferrer"
-              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-md text-xs font-semibold bg-surface-secondary hover:bg-gray-200 text-content-sub border border-border-subtle transition-colors min-h-[40px]"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-md text-xs font-semibold bg-surface-secondary hover:bg-gray-200 text-content-sub border border-border-subtle transition-colors min-h-[40px] whitespace-nowrap"
               title="Mở Cổng Điều hành Chuyên trách (Side B)"
             >
-              <ShieldCheck className="w-4 h-4 text-[#0D6F64]" />
+              <ShieldCheck className="w-4 h-4 text-[#0D6F64] shrink-0" />
               <span>Cổng Điều hành (Side B)</span>
             </a>
 
             {/* Notifications with Real Badge */}
             <Link
               to="/notifications"
-              className="relative p-2 rounded-md text-content-sub hover:bg-surface-secondary hover:text-content-main touch-target min-w-[44px] min-h-[44px]"
+              className="relative p-1.5 sm:p-2 rounded-md text-content-sub hover:bg-surface-secondary hover:text-content-main touch-target min-w-[40px] min-h-[40px] sm:min-w-[44px] sm:min-h-[44px] flex items-center justify-center shrink-0"
               aria-label="Thông báo"
             >
               <Bell className="w-5 h-5" />
@@ -319,13 +321,13 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
             </Link>
 
             {/* Mobile Header CTA */}
-            <div className="lg:hidden">
+            <div className="lg:hidden shrink-0">
               <Link
                 to="/reports/new"
-                className="px-3.5 py-2 rounded-civic bg-primary text-white text-xs font-bold flex items-center gap-1.5 shadow-xs active:scale-95 min-h-[38px]"
+                className="px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-civic bg-primary text-white text-xs font-bold inline-flex items-center gap-1.5 shadow-xs active:scale-95 min-h-[38px] whitespace-nowrap shrink-0"
               >
-                <PlusCircle className="w-4 h-4" />
-                <span>Gửi phản ánh</span>
+                <PlusCircle className="w-4 h-4 shrink-0" />
+                <span className="whitespace-nowrap">Gửi phản ánh</span>
               </Link>
             </div>
           </div>
@@ -436,12 +438,14 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
                       className="flex items-center gap-2.5 overflow-hidden hover:opacity-85 transition-opacity flex-1 min-w-0 min-h-[44px]"
                     >
                       <div className="w-8 h-8 rounded-full bg-primary-light text-primary font-bold flex items-center justify-center text-xs shrink-0 border border-primary/20">
-                        {user.fullName?.charAt(0) || 'U'}
+                        {(user.fullName || (user as any).full_name || user.email || 'U').charAt(0).toUpperCase()}
                       </div>
                       <div className="truncate">
-                        <div className="text-xs font-bold text-content-main truncate">{user.fullName}</div>
+                        <div className="text-xs font-bold text-content-main truncate">
+                          {user.fullName || (user as any).full_name || (user.email ? user.email.split('@')[0] : 'Người dùng')}
+                        </div>
                         <div className="text-[10px] text-content-sub font-semibold">
-                          {ROLE_LABELS[user.role] || user.role}
+                          {ROLE_LABELS[user.role] || user.role || 'Thành viên'}
                         </div>
                       </div>
                     </Link>
@@ -484,49 +488,49 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
       <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-surface-card border-t border-border-subtle flex items-center justify-around z-30 shadow-lg pb-safe pt-1 px-1">
         <Link
           to="/dashboard"
-          className={`flex flex-col items-center justify-center gap-0.5 text-[10px] font-medium touch-target min-h-[44px] min-w-[44px] ${
+          className={`flex flex-col items-center justify-center gap-0.5 text-[10px] font-medium touch-target min-h-[44px] min-w-[44px] shrink-0 ${
             isActive('/dashboard') ? 'text-primary font-bold' : 'text-content-sub'
           }`}
         >
-          <LayoutDashboard className="w-4 h-4" />
-          <span>Trang chủ</span>
+          <LayoutDashboard className="w-4 h-4 shrink-0" />
+          <span className="whitespace-nowrap">Trang chủ</span>
         </Link>
         <Link
           to="/map"
-          className={`flex flex-col items-center justify-center gap-0.5 text-[10px] font-medium touch-target min-h-[44px] min-w-[44px] ${
+          className={`flex flex-col items-center justify-center gap-0.5 text-[10px] font-medium touch-target min-h-[44px] min-w-[44px] shrink-0 ${
             isActive('/map') ? 'text-primary font-bold' : 'text-content-sub'
           }`}
         >
-          <Map className="w-4 h-4" />
-          <span>Bản đồ</span>
+          <Map className="w-4 h-4 shrink-0" />
+          <span className="whitespace-nowrap">Bản đồ</span>
         </Link>
         <Link
           to="/reports/new"
-          className="flex flex-col items-center justify-center gap-0.5 text-[10px] font-bold text-primary touch-target min-h-[44px] min-w-[44px]"
+          className="flex flex-col items-center justify-center gap-0.5 text-[10px] font-bold text-primary touch-target min-h-[44px] min-w-[44px] shrink-0"
           aria-label="Gửi phản ánh mới"
         >
-          <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center -mt-5 shadow-md border-2 border-white active:scale-95 transition-transform">
+          <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center -mt-5 shadow-md border-2 border-white active:scale-95 transition-transform shrink-0">
             <PlusCircle className="w-5 h-5" />
           </div>
-          <span>Gửi phản ánh</span>
+          <span className="whitespace-nowrap">Gửi phản ánh</span>
         </Link>
         <Link
           to="/following"
-          className={`flex flex-col items-center justify-center gap-0.5 text-[10px] font-medium touch-target min-h-[44px] min-w-[44px] ${
+          className={`flex flex-col items-center justify-center gap-0.5 text-[10px] font-medium touch-target min-h-[44px] min-w-[44px] shrink-0 ${
             isActive('/following') ? 'text-primary font-bold' : 'text-content-sub'
           }`}
         >
-          <Bookmark className="w-4 h-4" />
-          <span>Theo dõi</span>
+          <Bookmark className="w-4 h-4 shrink-0" />
+          <span className="whitespace-nowrap">Theo dõi</span>
         </Link>
         <Link
           to="/profile"
-          className={`flex flex-col items-center justify-center gap-0.5 text-[10px] font-medium touch-target min-h-[44px] min-w-[44px] ${
+          className={`flex flex-col items-center justify-center gap-0.5 text-[10px] font-medium touch-target min-h-[44px] min-w-[44px] shrink-0 ${
             isActive('/profile') ? 'text-primary font-bold' : 'text-content-sub'
           }`}
         >
-          <User className="w-4 h-4" />
-          <span>Hồ sơ</span>
+          <User className="w-4 h-4 shrink-0" />
+          <span className="whitespace-nowrap">Hồ sơ</span>
         </Link>
       </nav>
     </div>

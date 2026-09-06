@@ -19,10 +19,10 @@ APM2000Sensor::APM2000Sensor()
 }
 
 bool APM2000Sensor::begin() {
-    Serial.println("[SENSOR] Dang khoi tao ASAIR APM2000 tren UART2 (RX=16, TX=17, 9600 Baud)...");
+    Serial.println("[SENSOR] Dang khoi tao ASAIR APM2000 tren UART2 (RX=16, TX=17, 1200 Baud)...");
     
-    // Khởi tạo UART2: 9600 baud, 8 data bits, no parity, 1 stop bit
-    _serial.begin(9600, SERIAL_8N1, PIN_APM2000_RX, PIN_APM2000_TX);
+    // Khởi tạo UART2: 1200 baud, 8 data bits, no parity, 1 stop bit (chuẩn ASAIR APM2000)
+    _serial.begin(1200, SERIAL_8N1, PIN_APM2000_RX, PIN_APM2000_TX);
     
     // Làm sạch bộ đệm
     while (_serial.available() > 0) {

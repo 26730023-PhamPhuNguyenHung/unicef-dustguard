@@ -24,6 +24,8 @@ import { ContributionsPage } from './pages/ContributionsPage.js';
 import { YouthCreditsPage } from './pages/YouthCreditsPage.js';
 import { ProfilePage } from './pages/ProfilePage.js';
 import { ForbiddenPage } from './pages/ForbiddenPage.js';
+import { IoTSettingsPage } from './pages/IoTSettingsPage.js';
+import { IoTDevicePage } from './pages/IoTDevicePage.js';
 
 // Moderator
 import { VerificationInboxPage } from './pages/VerificationInboxPage.js';
@@ -156,6 +158,10 @@ export const App: React.FC = () => {
                           </ProtectedRoute>
                         }
                       />
+
+                      {/* Quản lý thiết bị IoT & Chi tiết cảm biến phần cứng thật */}
+                      <Route path="/settings/iot" element={<IoTSettingsPage />} />
+                      <Route path="/iot/device/:id" element={<IoTDevicePage />} />
 
                       {/* Trang thông báo không đủ quyền hạn (403 Forbidden) */}
                       <Route path="/forbidden" element={<ForbiddenPage />} />

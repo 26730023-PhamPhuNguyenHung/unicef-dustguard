@@ -113,6 +113,13 @@ export const NAVIGATION_CONFIG: NavSectionConfig[] = [
         path: '/profile',
         icon: User,
         permission: 'profile:manage'
+      },
+      {
+        id: 'iot_settings',
+        label: 'Thiết bị IoT',
+        path: '/settings/iot',
+        icon: Sliders,
+        permission: 'case:view'
       }
     ]
   },

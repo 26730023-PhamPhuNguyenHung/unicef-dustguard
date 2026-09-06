@@ -8,6 +8,8 @@ dist/
 
 # Firmware PlatformIO & secrets
 firmware/.pio/
+firmware/**/.pio/
+.pio/
 firmware/.vscode/
 firmware/include/secrets.h
 

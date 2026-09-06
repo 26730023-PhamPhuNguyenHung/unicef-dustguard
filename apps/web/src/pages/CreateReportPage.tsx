@@ -337,48 +337,49 @@ export const CreateReportPage: React.FC = () => {
       {/* Wizard Header */}
       {step <= 4 && (
         <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-xl sm:text-2xl font-extrabold text-content-main">
-                Gửi phản ánh môi trường
-              </h1>
-              <div className="flex items-center gap-3 mt-1">
-                <p className="text-xs sm:text-sm text-content-sub">
+          {/* Header */}
+          <div className="mb-6 space-y-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h1 className="text-xl sm:text-2xl font-black text-content-main tracking-tight">
+                  Gửi phản ánh môi trường
+                </h1>
+                <p className="text-xs sm:text-sm text-content-sub mt-1">
                   Tín hiệu của bạn giúp cộng đồng cùng xác minh và thúc đẩy đơn vị xử lý.
                 </p>
-                {draftSavedAt && (
-                  <span className="inline-flex items-center gap-1 text-xs text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                    <ShieldCheck className="w-3 h-3 text-emerald-600" />
-                    Đã lưu bản nháp lúc {draftSavedAt}
-                  </span>
-                )}
               </div>
-            </div>
-            <div className="flex items-center gap-2">
-              {draftSavedAt && (
-                <button
-                  type="button"
-                  onClick={handleClearDraft}
-                  className="text-xs text-stone-500 hover:text-red-600 underline font-medium"
-                  title="Xóa bản nháp trên thiết bị này"
-                >
-                  Xóa nháp
-                </button>
-              )}
-              <span className="text-xs font-bold text-primary px-3 py-1 bg-primary-light rounded-full">
-                Bước {step}/4
-              </span>
+
+              {/* Status and Step Indicator */}
+              <div className="flex items-center gap-2.5 self-start sm:self-center shrink-0">
+                {draftSavedAt && (
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-xs font-medium text-emerald-800 shadow-2xs">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span>Đã lưu nháp {draftSavedAt}</span>
+                    <button
+                      type="button"
+                      onClick={handleClearDraft}
+                      className="ml-1 text-[11px] text-stone-500 hover:text-red-600 font-semibold underline cursor-pointer"
+                      title="Xóa bản nháp trên thiết bị này"
+                    >
+                      Xóa
+                    </button>
+                  </div>
+                )}
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#FFF1F2] text-[#B91C1C] border border-[#FDA4AF] rounded-full text-xs font-black shadow-2xs">
+                  <span>Bước {step} / 4</span>
+                </div>
+              </div>
             </div>
           </div>
 
           {/* Banner tình trạng danh tính */}
           {!isAuthenticated ? (
-            <div className="mb-4 p-3.5 rounded-xl bg-amber-50/90 border border-amber-200 text-xs sm:text-sm text-stone-800 flex items-start gap-3 shadow-xs">
-              <div className="p-1.5 rounded-lg bg-amber-200/60 text-amber-900 shrink-0 mt-0.5">
+            <div className="mb-5 p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-xs sm:text-sm text-stone-800 flex items-start gap-3 shadow-2xs">
+              <div className="p-1.5 rounded-lg bg-amber-200/70 text-amber-900 shrink-0 mt-0.5">
                 <FileText className="w-4 h-4" />
               </div>
               <div className="flex-1 text-xs sm:text-sm leading-relaxed">
-                <span className="font-bold text-stone-900">Gửi phản ánh nhanh không cần đăng nhập:</span> Bạn đang gửi tín hiệu cộng đồng ẩn danh. 
+                <span className="font-bold text-stone-900">Gửi phản ánh nhanh không cần đăng nhập:</span> Bạn đang gửi tín hiệu cộng đồng ẩn danh.{' '}
                 Nếu bạn muốn ghi nhận hoạt động vào hồ sơ đóng góp của mình,{' '}
                 <Link to="/login?redirect=/reports/new" className="font-bold text-primary underline hover:text-primary-dark">
                   Đăng nhập tại đây
@@ -386,14 +387,30 @@ export const CreateReportPage: React.FC = () => {
               </div>
             </div>
           ) : (
-            <div className="mb-4 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs sm:text-sm text-emerald-950 flex items-center justify-between shadow-xs">
+            <div className="mb-5 p-3 sm:p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-xs sm:text-sm text-emerald-950 flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-2xs">
               <div className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
                 <span>
-                  Đang gửi với tư cách: <strong className="font-bold">{user?.fullName || user?.email}</strong> ({user?.role === 'citizen' ? 'Công dân' : user?.role})
+                  Đang gửi với tư cách:{' '}
+                  <strong className="font-bold text-emerald-950">
+                    {user?.fullName || (user as any)?.full_name || (user?.email ? user.email.split('@')[0] : 'Người dùng')}
+                  </strong>{' '}
+                  <span className="text-emerald-800 font-medium">
+                    ({
+                      user?.role === 'citizen'
+                        ? 'Công dân'
+                        : (user?.role as string) === 'community_member' || (user?.role as string) === 'member'
+                        ? 'Thành viên CLB'
+                        : user?.role === 'moderator'
+                        ? 'Điều phối viên'
+                        : user?.role === 'admin'
+                        ? 'Quản trị viên'
+                        : user?.role || 'Thành viên'
+                    })
+                  </span>
                 </span>
               </div>
-              <span className="text-[11px] font-bold text-emerald-800 bg-emerald-100/80 px-2.5 py-0.5 rounded-full">
+              <span className="self-start sm:self-auto text-[11px] font-bold text-emerald-800 bg-emerald-100/90 border border-emerald-300/60 px-2.5 py-0.5 rounded-full">
                 Ghi nhận đóng góp
               </span>
             </div>

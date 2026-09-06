@@ -16,6 +16,21 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+function normalizeUser(raw: any): UserDto | null {
+  if (!raw) return null;
+  const u = raw.user || raw;
+  if (!u || typeof u !== 'object') return null;
+  const fullName = u.fullName || u.full_name || (u.email ? u.email.split('@')[0] : 'Người dùng');
+  return {
+    ...u,
+    fullName,
+    full_name: fullName,
+    role: u.role || 'citizen',
+    avatarUrl: u.avatarUrl || u.avatar_url || null,
+    createdAt: u.createdAt || u.created_at || new Date().toISOString()
+  };
+}
+
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<UserDto | null>(null);
   const [token, setToken] = useState<string | null>(() => localStorage.getItem('dustguard_token'));
@@ -28,8 +43,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setIsLoading(false);
         return;
       }
-      const userData = await apiRequest<UserDto>('/auth/me');
-      setUser(userData);
+      const userData = await apiRequest<any>('/auth/me');
+      setUser(normalizeUser(userData));
     } catch (err) {
       console.warn('Lỗi lấy thông tin người dùng, xóa phiên cũ:', err);
       localStorage.removeItem('dustguard_token');
@@ -49,10 +64,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       method: 'POST',
       body: JSON.stringify({ email, password })
     });
+    const parsedUser = normalizeUser(res.user || res) || res.user;
     localStorage.setItem('dustguard_token', res.token);
     setToken(res.token);
-    setUser(res.user);
-    return res.user;
+    setUser(parsedUser);
+    return parsedUser;
   };
 
   const register = async (data: any) => {
@@ -60,9 +76,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       method: 'POST',
       body: JSON.stringify(data)
     });
+    const parsedUser = normalizeUser(res.user || res) || res.user;
     localStorage.setItem('dustguard_token', res.token);
     setToken(res.token);
-    setUser(res.user);
+    setUser(parsedUser);
   };
 
   const logout = () => {
@@ -78,19 +95,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
     localStorage.setItem('dustguard_token', res.token);
     setToken(res.token);
-    setUser(res.user);
+    const parsedUser = normalizeUser(res.user || res);
+    setUser(parsedUser);
 
     // Fetch lại /auth/me đầy đủ và phát tín hiệu revalidation
     try {
-      const fullUser = await apiRequest<UserDto>('/auth/me', {
+      const fullUser = await apiRequest<any>('/auth/me', {
         headers: { Authorization: `Bearer ${res.token}` }
       });
-      setUser(fullUser);
+      const normalized = normalizeUser(fullUser);
+      if (normalized) setUser(normalized);
     } catch (e) {
       // Giữ user từ dev-switch-role nếu me lỗi nhẹ
     }
 
-    window.dispatchEvent(new CustomEvent('auth:role_changed', { detail: res.user }));
+    window.dispatchEvent(new CustomEvent('auth:role_changed', { detail: parsedUser }));
   };
 
   return (

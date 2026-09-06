@@ -365,9 +365,54 @@ export function runMigrations(): void {
     CREATE INDEX IF NOT EXISTS content_reports_reporter_idx ON content_reports(reporter_id);
     CREATE INDEX IF NOT EXISTS content_reports_reviewed_by_idx ON content_reports(reviewed_by);
     CREATE INDEX IF NOT EXISTS case_feedback_user_idx ON case_feedback(user_id);
+
+    -- 23. IoT Devices
+    CREATE TABLE IF NOT EXISTS iot_devices (
+      id TEXT PRIMARY KEY,
+      device_code TEXT UNIQUE NOT NULL,
+      name TEXT NOT NULL,
+      location_text TEXT NOT NULL,
+      latitude REAL NOT NULL,
+      longitude REAL NOT NULL,
+      status TEXT NOT NULL DEFAULT 'OFFLINE' CHECK (status IN ('ONLINE', 'OFFLINE', 'MAINTENANCE', 'WARNING')),
+      last_reading_at TEXT,
+      project_id TEXT,
+      sensor_model TEXT DEFAULT 'ASAIR APM2000',
+      wifi_ssid TEXT DEFAULT 'Harry Maguire',
+      wifi_rssi INTEGER DEFAULT -54,
+      firmware_version TEXT DEFAULT '1.2.0-esp32',
+      created_at TEXT NOT NULL,
+      updated_at TEXT
+    );
+    CREATE INDEX IF NOT EXISTS iot_devices_code_idx ON iot_devices(device_code);
+
+    -- 24. IoT Readings
+    CREATE TABLE IF NOT EXISTS iot_readings (
+      id TEXT PRIMARY KEY,
+      device_id TEXT NOT NULL REFERENCES iot_devices(id) ON DELETE CASCADE,
+      timestamp TEXT NOT NULL,
+      pm25 REAL NOT NULL,
+      pm10 REAL NOT NULL,
+      pm1 REAL,
+      temperature REAL,
+      humidity REAL,
+      wifi_rssi INTEGER,
+      created_at TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS iot_readings_device_time_idx ON iot_readings(device_id, created_at DESC);
+
+    -- Seed thực thể DG-IOT-001
+    INSERT OR IGNORE INTO iot_devices (
+      id, device_code, name, location_text, latitude, longitude, status,
+      sensor_model, wifi_ssid, wifi_rssi, firmware_version, created_at, updated_at
+    ) VALUES (
+      'dev-apm2000-001', 'DG-IOT-001', 'DustGuard Demo Node',
+      '62 Nguyễn Chí Thanh, Phường Láng Thượng, Hà Nội', 21.0205, 105.8078, 'OFFLINE',
+      'ASAIR APM2000', 'Harry Maguire', -54, '1.2.0-esp32', datetime('now'), datetime('now')
+    );
   `);
 
-  console.log('✅ Khởi tạo thành công toàn bộ 22 bảng và chỉ mục SQLite!');
+  console.log('✅ Khởi tạo thành công toàn bộ bảng và chỉ mục SQLite (bao gồm IoT SSOT)!');
 }
 
 // Cho phép chạy trực tiếp từ CLI

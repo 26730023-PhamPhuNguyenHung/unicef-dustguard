@@ -4,6 +4,7 @@ import { BUILD_METADATA } from './version.js';
 import { getObject } from './r2.js';
 import { createCommunityRouter } from './community.js';
 import { createOperationsRouter } from './operations.js';
+import { createIoTRouter } from './iot.js';
 
 export function createUnifiedApp() {
   const app = new Hono<{ Bindings: { DB: any; STORAGE: any; EVIDENCE_BUCKET: any; ASSETS: any; INTEGRATION_SERVICE_KEY?: string } }>();
@@ -88,6 +89,13 @@ export function createUnifiedApp() {
   // ============================================================================
   const communityRouter = createCommunityRouter();
   const operationsRouter = createOperationsRouter();
+  const iotRouter = createIoTRouter();
+
+  // IoT Hardware & Telemetry Router (Side A & Side B Unified)
+  app.route('/api/iot', iotRouter);
+  app.route('/api/sensors', iotRouter);
+  app.route('/api/operations/iot', iotRouter);
+  app.route('/operations/api/iot', iotRouter);
 
   // Side B (Operations) mounted on /api/operations AND /operations/api
   app.route('/api/operations', operationsRouter);

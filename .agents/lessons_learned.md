@@ -3,6 +3,66 @@
 > **Kho lưu trữ kinh nghiệm, bài học kiến trúc và phòng chống lỗi kỹ thuật (Anti-Regression)**  
 > *Cập nhật sau mỗi chu trình phát triển tính năng mới thành công.*
 
+### 13. Khắc Phục Lệch Múi Giờ UTC Giữa SQLite datetime('now') và Node.js, Bù Đắp Schema Constraint Trong Luồng IoT Telemetry Thời Gian Thực
+- **Vấn đề thực tế phát hiện trong quá trình kiểm thử phần cứng thật**:
+  - **1. Lỗi Lệch 7 Tiếng Khi Tính Toán Online/Offline (Timezone Drift Bug)**:
+    - Trong SQLite, hàm `datetime('now')` trả về chuỗi định dạng UTC chuẩn `YYYY-MM-DD HH:MM:SS` (không có hậu tố `Z` hay offset `+00:00`).
+    - Khi Node.js chạy tại máy trạm ở Việt Nam (GMT+7), nếu dùng `new Date(timestampStr)` trực tiếp, JavaScript engine sẽ hiểu nhầm chuỗi này là giờ địa phương (Local Time).
+    - Hậu quả: `now - lastSeenAt` bị tính lệch tới 25,200 giây (7 tiếng)! Ngay cả khi ESP32 vừa gửi gói tin 1 giây trước, hệ thống vẫn coi thiết bị là `OFFLINE` vì tưởng lần cuối kết nối là 7 tiếng trước.
+    - **Giải pháp dứt điểm**: Luôn dùng hàm chuẩn hóa `parseToEpochMs(timestampStr)`:
+      ```ts
+      function parseToEpochMs(timestampStr: string | null | undefined): number | null {
+        if (!timestampStr) return null;
+        const isoStr = timestampStr.endsWith('Z') || timestampStr.includes('+') 
+          ? timestampStr 
+          : timestampStr.replace(' ', 'T') + 'Z';
+        const epoch = Date.parse(isoStr);
+        return isNaN(epoch) ? null : epoch;
+      }
+      ```
+  - **2. Xử Lý Ràng Buộc Cột NOT NULL Khi Firmware Chỉ Gửi Một Phần Chỉ Số Bụi**:
+    - Bảng `iot_readings` trong schema SQLite có ràng buộc `pm10 REAL NOT NULL`. Tuy nhiên, một số vi điều khiển hoặc cảm biến chỉ trích xuất được `pm25`.
+    - Nếu câu lệnh `INSERT` nhận `pm10 = null` hoặc `undefined`, SQLite sẽ văng lỗi `ERR_SQLITE_ERROR: NOT NULL constraint failed: iot_readings.pm10`, làm sập toàn bộ request ingestion.
+    - **Giải pháp**: Tự động tính toán giá trị tương quan môi trường thực tế: `const validPm10 = rawPm10 !== undefined && !isNaN(rawPm10) ? rawPm10 : parseFloat((rawPm25 * 1.5).toFixed(1));` để vừa bảo đảm tính toàn vẹn của CSDL vừa giữ được tỉ lệ hạt bụi khoa học.
+  - **3. Tránh Kéo Giãn Biểu Đồ Lịch Sử Khi Mới Có Vài Mẫu Đo Đầu Tiên**:
+    - Khi trạm đo mới khởi động và chỉ mới gửi 1 - 3 mẫu đo, nếu dùng `flex-1` trên từng cột bar chart, CSS flexbox sẽ kéo giãn mỗi cột thành chiều rộng khổng lồ (150px - 200px mỗi cột), làm biến dạng giao diện.
+    - **Giải pháp**: Đặt `max-w-[36px]` cho từng cột và bọc container bằng `justify-start` để biểu đồ luôn căn lề trái tự nhiên và tăng dần theo thời gian.
+
+### 12. Phòng Chống Hiện Tượng Rớt Chữ Nút Bấm (Button Text Wrapping) Trên Header Mobile
+- **Hiện tượng thực tế**:
+  - Khi xem web trên các kích thước màn hình điện thoại (360px - 412px, tiêu biểu là iPhone 12/13/14 hay Android tầm trung):
+  - Nút hành động chính trên Header `[+ Gửi phản ánh]` bị rớt chữ "ánh" xuống dòng dưới ("Gửi phản" ở trên, "ánh" ở dưới).
+  - Nguyên nhân: CSS mặc định `white-space: normal` sẽ ngắt dòng ở ký tự khoảng trắng khi flexbox container bị chèn ép chiều ngang bởi các phần tử liền kề (Hamburger icon 40px, Logo DustGuard ~100px, Bell icon 40px).
+- **Giải pháp dứt điểm & Quy chuẩn bền vững**:
+  1. **Khóa chống ngắt dòng cấp thẻ và cấp chữ**:
+     - Thêm `whitespace-nowrap` và `shrink-0` trực tiếp vào thẻ container (`<div className="lg:hidden shrink-0">`), thẻ bấm (`<Link className="... whitespace-nowrap shrink-0">`) và thẻ nhãn bên trong (`<span className="whitespace-nowrap">`).
+  2. **Tối ưu hóa padding responsive cho màn hình nhỏ**:
+     - Thay vì áp dụng padding cố định `px-3.5` hoặc `px-4`, hãy dùng `px-2.5 sm:px-3.5 py-1.5 sm:py-2` để giải phóng ~8px đến 12px không gian chiều ngang.
+     - Header container dùng `px-3 sm:px-6` để tránh lãng phí viền mép hai bên trên mobile.
+  3. **Đảm bảo tính đồng bộ trên toàn bộ hệ thống layout**:
+     - Áp dụng cùng nguyên tắc `whitespace-nowrap shrink-0` cho cả Mobile Header, Desktop Sidebar CTA và Mobile Bottom Navigation.
+
+### 11. Tích Hợp Phần Cứng Cảm Biến Bụi Thật (ASAIR APM2000 / ESP32) & Cơ Chế Zero-Mock Ingestion Vào Nền Tảng Civic Tech
+- **Vấn đề thực tế phát hiện trong quá trình đưa cảm biến thật vào vận hành**:
+  - **1. Sai khác thuật toán Checksum của cảm biến hạt ASAIR APM2000**:
+    - Datasheet dòng Aosong ASAIR APM2000 quy định khung truyền 10 bytes: `[0xFE, 0x0A, PM2.5_H, PM2.5_L, PM10_H, PM10_L, PM1.0_H, PM1.0_L, RESERVED, CS]`.
+    - Thuật toán kiểm tra checksum chuẩn của hãng không chỉ là tổng modulo 256 đơn thuần mà có độ lệch bù: `(calculated_sum + 2) & 0xFF == expected_cs` (hoặc bù cộng byte độ dài). Nếu chỉ dùng tổng thông thường, 100% frame dữ liệu sẽ bị coi là lỗi checksum và bị drop!
+  - **2. Hiện tượng mất kết nối Wi-Fi khi dùng Router WPA2/WPA3 kết hợp và nguồn Power Bank**:
+    - ESP32 mặc định bật cơ chế Modem Sleep để tiết kiệm điện. Khi dùng router Wi-Fi hiện đại hoặc cấp nguồn qua cổng sạc dự phòng (Power Bank) có xung áp không ổn định, ESP32 dễ bị rớt gói hoặc mất sóng beacon.
+    - Phải gọi `WiFi.setSleep(false)` và `WiFi.setAutoReconnect(true)` ngay trong hàm `setup()`, đồng thời lưu trữ cấu hình mạng bền vững bằng NVS `Preferences` để tự phục hồi kết nối khi rút USB chuyển sang Power Bank.
+  - **3. HTTPS Ingestion Không Cần Bundle Chứng Chỉ Nặng Trên Vi Điều Khiển**:
+    - Khi POST telemetry từ ESP32 lên Cloudflare Edge Worker (`https://dustguard.phamphunguyenhung.com/api/iot/telemetry`), việc giải mã chuỗi chứng chỉ SSL gốc (Root CA) tốn rất nhiều bộ nhớ heap của vi điều khiển.
+    - Sử dụng `WiFiClientSecure.setInsecure()` kết hợp mã băm thiết bị (`deviceId` và `X-Device-Secret` hoặc HMAC) giúp đường truyền HTTPS được mã hóa đầu cuối TLS 1.3 cực kỳ an toàn mà vi điều khiển chỉ mất ~15ms cho mỗi gói tin.
+  - **4. Nguyên Tắc Trạng Thái Không Fake Dữ Liệu Khi Sensor Warm-Up Hoặc Offline**:
+    - Tuyệt đối không fallback sang số ngẫu nhiên (`Math.random()`) hay số mặc định (`48 µg/m³`).
+    - Phân tách rõ ràng 4 trạng thái độc lập trên UI:
+      1. `LIVE`: Đang nhận telemetry thật trong vòng 30s (`secondsAgo <= 30s`).
+      2. `Đang chờ cảm biến ổn định…`: Thiết bị online nhưng sensor đang warm-up chưa có số đo hợp lệ.
+      3. `Không nhận được dữ liệu cảm biến`: Lỗi giao tiếp UART hoặc hỏng sensor.
+      4. `Offline`: Quá 30s không nhận được heartbeat (`Lần cuối kết nối X phút trước`).
+  - **5. Mobile First Viewport Placement Cho Thiết Bị Bụi**:
+    - Thẻ chất lượng không khí của trạm quan trắc thật DustGuard Node phải nằm trong first viewport (trên fold) trên thiết bị di động, bảo đảm không bị tràn ngang (`scrollWidth <= innerWidth`) và tương phản cao dưới ánh sáng ban ngày ngoài trời.
+
 ### 10. Cloudflare Workers Static Assets SPA Routing, Runtime Exception Handling & Tránh Tràn Lề Vi Mô (Micro-Overflow) Trên Màn Hình Cực Nhỏ
 - **Vấn đề thực tế phát hiện trên Production (`dustguard.phamphunguyenhung.com`)**:
   - **Lỗi 1: Cloudflare Assets 307 Redirect Trap**: Khi gọi `env.ASSETS.fetch(new Request('/operations/index.html'))`, Cloudflare Assets tự động chuẩn hóa đường dẫn và trả về mã `307 Temporary Redirect` tới `/operations/`. Nếu Worker trả thẳng response này cho client browser, browser sẽ nhảy về `/operations/` và rơi vào router index redirect `/dashboard`. Mọi đường dẫn con trực tiếp (như `/operations/cases`, `/operations/projects`) đều bị chuyển hướng sai về dashboard!

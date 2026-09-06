@@ -21,7 +21,8 @@ import {
   ShieldCheck,
   CheckCircle,
   Zap,
-  PlusCircle
+  PlusCircle,
+  RefreshCw
 } from 'lucide-react';
 
 interface DashboardResponse {
@@ -46,6 +47,14 @@ export const DashboardPage: React.FC = () => {
   const [data, setData] = useState<DashboardResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // State trạm quan trắc IoT phần cứng thật
+  const [iotData, setIotData] = useState<{
+    device?: any;
+    telemetry?: any;
+    isOnline: boolean;
+    source?: string;
+  } | null>(null);
+
   useEffect(() => {
     let active = true;
     setLoading(true);
@@ -69,9 +78,33 @@ export const DashboardPage: React.FC = () => {
     };
     window.addEventListener('auth:role_changed', handleRoleChanged);
 
+    // Polling số liệu cảm biến thật mỗi 3 giây (Zero Reload)
+    const fetchIoT = async () => {
+      try {
+        const res = await fetch('/api/iot/latest?deviceId=DG-IOT-001');
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && json.data && active) {
+            setIotData({
+              device: json.data.device,
+              telemetry: json.data.telemetry,
+              isOnline: Boolean(json.data.device?.isOnline),
+              source: json.data.source
+            });
+          }
+        }
+      } catch (err) {
+        // Giữ trạng thái gần nhất
+      }
+    };
+
+    fetchIoT();
+    const iotInterval = setInterval(fetchIoT, 3000);
+
     return () => {
       active = false;
       window.removeEventListener('auth:role_changed', handleRoleChanged);
+      clearInterval(iotInterval);
     };
   }, [user?.id]);
 
@@ -118,7 +151,7 @@ export const DashboardPage: React.FC = () => {
           Widget: PM2.5 / Khoảng cách trạm gần nhất / Cập nhật tức thời
           CTAs: 1. Gửi phản ánh (Primary) · 2. Xem bản đồ · 3. Theo dõi
           ========================================================================= */}
-      <section className="p-6 sm:p-8 rounded-3xl bg-white border border-stone-200 shadow-xs">
+      <section className="p-4 sm:p-6 lg:p-8 rounded-2xl sm:rounded-3xl bg-white border border-stone-200 shadow-xs">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           
           {/* Left: Tiêu đề, giải thích & 3 hành động chính */}
@@ -132,7 +165,7 @@ export const DashboardPage: React.FC = () => {
               Không khí quanh bạn <span className="text-primary">hôm nay thế nào?</span>
             </h1>
 
-            <div className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 bg-stone-100 px-3 py-1 rounded-lg border border-stone-200">
+            <div className="inline-flex flex-wrap sm:flex-nowrap items-center gap-1.5 text-xs font-bold text-slate-800 bg-stone-100 px-3 py-1.5 rounded-lg border border-stone-200 max-w-full break-words">
               <MapPin className="w-3.5 h-3.5 text-[#B51F24] shrink-0" />
               <span>62 Nguyễn Chí Thanh, Hà Nội · Tín hiệu môi trường trong bán kính gần bạn</span>
             </div>
@@ -153,7 +186,7 @@ export const DashboardPage: React.FC = () => {
 
               <Link
                 to="/map"
-                className="inline-flex items-center justify-center gap-2 bg-surface-secondary hover:bg-stone-200/70 text-content-main font-bold text-xs sm:text-sm px-4 py-3 min-h-[46px] rounded-civic border border-border-subtle shadow-xs transition-colors whitespace-nowrap"
+                className="inline-flex items-center justify-center gap-2 bg-surface-secondary hover:bg-stone-200 text-content-main font-bold text-xs sm:text-sm px-4 py-3 min-h-[46px] rounded-civic border border-border-subtle shadow-xs transition-colors whitespace-nowrap"
               >
                 <Map className="w-4 h-4 text-[#0D6F64] shrink-0" />
                 <span className="whitespace-nowrap">Xem bản đồ</span>
@@ -169,17 +202,17 @@ export const DashboardPage: React.FC = () => {
             </div>
 
             {/* 3 Steps Guide in 5 Seconds */}
-            <div className="pt-2 flex flex-wrap items-center gap-y-1 gap-x-4 text-[11px] font-semibold text-slate-500">
+            <div className="pt-2 flex flex-wrap items-center gap-y-1 gap-x-4 text-[11px] font-semibold text-slate-600">
               <span className="flex items-center gap-1.5">
                 <span className="w-4 h-4 rounded-full bg-teal-100 text-[#0D6F64] font-black flex items-center justify-center text-[10px]">1</span>
                 Chụp ảnh
               </span>
-              <span className="text-slate-300">→</span>
+              <span className="text-slate-400 font-bold">→</span>
               <span className="flex items-center gap-1.5">
                 <span className="w-4 h-4 rounded-full bg-teal-100 text-[#0D6F64] font-black flex items-center justify-center text-[10px]">2</span>
                 Ghim vị trí
               </span>
-              <span className="text-slate-300">→</span>
+              <span className="text-slate-400 font-bold">→</span>
               <span className="flex items-center gap-1.5">
                 <span className="w-4 h-4 rounded-full bg-teal-100 text-[#0D6F64] font-black flex items-center justify-center text-[10px]">3</span>
                 Theo dõi xử lý
@@ -187,32 +220,89 @@ export const DashboardPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Right: AQI / PM2.5 Widget Card */}
-          <div className="shrink-0 p-5 rounded-2xl bg-stone-50/80 border border-stone-200 space-y-3 min-w-[280px]">
+          {/* Right: DustGuard Node Live Sensor Card (SSOT Hardware) */}
+          <div className="w-full lg:w-auto shrink-0 p-4 sm:p-5 rounded-2xl bg-stone-50 border border-stone-200 space-y-3 lg:min-w-[320px]">
             <div className="flex items-center justify-between text-xs pb-2 border-b border-stone-200">
-              <span className="font-bold text-slate-600">
-                Trạm gần nhất · {formatDistance(calculateDistanceMeters(DEMO_LOCATION, { latitude: 21.0210, longitude: 105.8090 }))}
+              <span className="font-bold text-slate-700 flex items-center gap-1.5">
+                <Radio className="w-3.5 h-3.5 text-[#0D6F64]" />
+                <span>DustGuard Node</span>
               </span>
-              <span className="inline-flex items-center gap-1 font-bold text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded-md text-[11px] border border-amber-200">
-                <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" /> Cần chú ý
-              </span>
+              {iotData?.isOnline ? (
+                <span className="inline-flex items-center gap-1 font-black text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-md text-[11px] border border-emerald-200">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> LIVE
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1 font-bold text-slate-600 bg-stone-100 px-2.5 py-0.5 rounded-md text-[11px] border border-stone-200">
+                  <span className="w-2 h-2 rounded-full bg-slate-400" /> Offline
+                </span>
+              )}
             </div>
 
-            <div className="flex items-baseline gap-2">
-              <span className="text-3xl sm:text-4xl font-black text-slate-900">48</span>
-              <span className="text-xs font-bold text-slate-500">µg/m³ (PM2.5)</span>
-            </div>
+            {iotData?.isOnline && iotData?.telemetry ? (
+              <>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-3xl sm:text-4xl font-black text-slate-900">
+                    {Math.round(iotData.telemetry.pm25)}
+                  </span>
+                  <span className="text-xs font-bold text-slate-600">µg/m³</span>
+                </div>
 
-            <div className="space-y-1.5 text-xs text-slate-600">
-              <div className="flex items-center gap-1.5">
-                <MapPin className="w-3.5 h-3.5 text-[#B51F24] shrink-0" />
-                <span className="font-medium truncate">Trạm đo Nguyễn Chí Thanh · Phường Láng Thượng</span>
+                <div className="space-y-1 text-xs text-slate-600">
+                  <div className="flex items-center gap-1.5 font-bold text-slate-900">
+                    <MapPin className="w-3.5 h-3.5 text-[#B51F24] shrink-0" />
+                    <span className="truncate">{iotData.device?.name || 'DustGuard Demo Node'}</span>
+                  </div>
+                  <div className="text-[11px] text-slate-500 truncate pl-5">
+                    {iotData.device?.locationText || '62 Nguyễn Chí Thanh, Hà Nội'}
+                  </div>
+                  <div className="flex items-center gap-1.5 text-slate-600 font-medium text-[11px] pt-1 border-t border-stone-200">
+                    <Clock className="w-3 h-3 shrink-0" />
+                    <span>
+                      {iotData.device?.secondsAgo != null
+                        ? `Cập nhật ${iotData.device.secondsAgo} giây trước`
+                        : 'Vừa xong'}{' '}
+                      {iotData.telemetry.pm10 ? `· PM10: ${Math.round(iotData.telemetry.pm10)}` : ''}{' '}
+                      {iotData.telemetry.pm1 ? `· PM1.0: ${Math.round(iotData.telemetry.pm1)}` : ''}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="pt-2 border-t border-stone-200 flex items-center justify-between text-[11px]">
+                  <span className="text-slate-600 font-medium">
+                    Dữ liệu trực tiếp từ cảm biến DustGuard
+                  </span>
+                  <Link
+                    to="/settings/iot"
+                    className="font-bold text-[#0D6F64] hover:underline min-h-[44px] inline-flex items-center py-1.5 px-2 -mr-2"
+                  >
+                    Xem thiết bị →
+                  </Link>
+                </div>
+              </>
+            ) : iotData?.isOnline && !iotData?.telemetry ? (
+              <div className="py-4 text-center space-y-2">
+                <div className="text-xs font-bold text-slate-800">DustGuard Demo Node</div>
+                <div className="text-xs text-teal-700 flex items-center justify-center gap-1.5">
+                  <RefreshCw className="w-3.5 h-3.5 animate-spin text-teal-700" />
+                  <span>Đang chờ cảm biến ổn định</span>
+                </div>
               </div>
-              <div className="flex items-center gap-1.5 text-slate-400 text-[11px]">
-                <Clock className="w-3 h-3 shrink-0" />
-                <span>Cập nhật trực tiếp · Cảm biến DustGuard</span>
+            ) : (
+              <div className="py-4 text-center space-y-2">
+                <div className="text-xs font-bold text-slate-800">
+                  {iotData?.device?.name || 'DustGuard Demo Node'} - Offline - Lần cuối kết nối {iotData?.device?.secondsAgo != null ? Math.floor(iotData.device.secondsAgo / 60) : 0} phút trước
+                </div>
+                <div className="text-xs text-slate-500">
+                  Đang chờ dữ liệu cảm biến
+                </div>
+                <Link
+                  to="/settings/iot"
+                  className="inline-flex items-center min-h-[44px] py-1.5 px-2 text-[11px] font-bold text-teal-700 hover:underline pt-1"
+                >
+                  Kiểm tra thiết bị IoT →
+                </Link>
               </div>
-            </div>
+            )}
           </div>
 
         </div>
@@ -329,26 +419,36 @@ export const DashboardPage: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
           <div className="p-4 rounded-2xl bg-stone-50 border border-stone-200 space-y-1.5">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-extrabold text-slate-900">Trục Láng Hạ - Huỳnh Thúc Kháng</span>
-              <span className="text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">42 µg/m³</span>
+              <span className="text-xs font-extrabold text-slate-900">{iotData?.device?.name || 'DustGuard Demo Node'}</span>
+              {iotData?.isOnline && iotData?.telemetry ? (
+                <span className="text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                  {Math.round(iotData.telemetry.pm25)} µg/m³
+                </span>
+              ) : (
+                <span className="text-[11px] font-bold text-slate-600 bg-stone-100 px-2 py-0.5 rounded-md border border-stone-200">
+                  Ngoại tuyến
+                </span>
+              )}
             </div>
-            <p className="text-[11px] text-slate-500 font-medium">Phường Láng Hạ, Hà Nội · Cách ~650 m</p>
+            <p className="text-[11px] text-slate-500 font-medium">
+              {iotData?.device?.locationText || '62 Nguyễn Chí Thanh, Hà Nội'} · Cảm biến thật
+            </p>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-stone-50 border border-stone-200 space-y-1.5">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-extrabold text-slate-900">Trục Láng Hạ - Huỳnh Thúc Kháng</span>
+              <span className="text-[11px] font-bold text-teal-800 bg-teal-50 px-2 py-0.5 rounded-md border border-teal-200">Giám sát</span>
+            </div>
+            <p className="text-[11px] text-slate-500 font-medium">Phường Láng Hạ, Hà Nội · Khu vực kiểm soát bụi giao thông</p>
           </div>
 
           <div className="p-4 rounded-2xl bg-stone-50 border border-stone-200 space-y-1.5">
             <div className="flex items-center justify-between">
               <span className="text-xs font-extrabold text-slate-900">Khu vực Chùa Láng</span>
-              <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">28 µg/m³</span>
+              <span className="text-[11px] font-bold text-teal-800 bg-teal-50 px-2 py-0.5 rounded-md border border-teal-200">Giám sát</span>
             </div>
-            <p className="text-[11px] text-slate-500 font-medium">Phường Láng Thượng, Hà Nội · Phun sương dập bụi tốt</p>
-          </div>
-
-          <div className="p-4 rounded-2xl bg-stone-50 border border-stone-200 space-y-1.5">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-extrabold text-slate-900">Công trình Huỳnh Thúc Kháng</span>
-              <span className="text-[11px] font-bold text-red-700 bg-red-50 px-2 py-0.5 rounded-md border border-red-200">58 µg/m³</span>
-            </div>
-            <p className="text-[11px] text-slate-500 font-medium">Phường Láng Hạ, Hà Nội · Cách ~380 m · Đang kiểm tra</p>
+            <p className="text-[11px] text-slate-500 font-medium">Phường Láng Thượng, Hà Nội · Công trình tuân thủ che chắn</p>
           </div>
         </div>
       </section>

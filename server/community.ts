@@ -19,8 +19,7 @@ export function createCommunityRouter() {
       if (!payload?.id) return null;
       const user = await get(c.env.DB, 'SELECT * FROM users WHERE id = ? AND status != "deleted"', [payload.id]);
       if (!user) return null;
-      const { password_hash, ...safe } = user;
-      return safe;
+      return sanitizeUser(user);
     } catch {
       return null;
     }
@@ -1091,6 +1090,43 @@ export function createCommunityRouter() {
       time: r.created_at
     }));
 
+    // Truy vấn thông tin trạm cảm biến thực tế (SSOT Hardware)
+    let iotNode: any = null;
+    try {
+      const dev = await get(c.env.DB, "SELECT * FROM iot_devices WHERE device_code = 'DG-IOT-001' OR id = 'dev-apm2000-001' LIMIT 1");
+      if (dev) {
+        const latestReading = await get(c.env.DB, "SELECT * FROM iot_readings WHERE device_id = ? ORDER BY created_at DESC LIMIT 1", [dev.id]);
+        const now = Date.now();
+        const lastSeenMs = dev.last_reading_at ? new Date(dev.last_reading_at).getTime() : 0;
+        const diffSec = lastSeenMs > 0 ? Math.floor((now - lastSeenMs) / 1000) : 999999;
+        const isOnline = diffSec <= 30;
+
+        iotNode = {
+          deviceCode: dev.device_code,
+          name: dev.name,
+          locationText: dev.location_text,
+          sensorModel: dev.sensor_model || 'ASAIR APM2000',
+          wifiSsid: dev.wifi_ssid,
+          wifiRssi: dev.wifi_rssi,
+          isOnline,
+          status: isOnline ? 'ONLINE' : 'OFFLINE',
+          secondsAgo: diffSec < 999999 ? diffSec : null,
+          lastSeenAt: dev.last_reading_at,
+          telemetry: latestReading ? {
+            pm25: latestReading.pm25,
+            pm10: latestReading.pm10,
+            pm1: latestReading.pm1,
+            temperature: latestReading.temperature,
+            humidity: latestReading.humidity,
+            wifiRssi: latestReading.wifi_rssi,
+            timestamp: latestReading.timestamp
+          } : null
+        };
+      }
+    } catch (e) {
+      console.warn('[Dashboard IoT Node Fetch Warning]:', e);
+    }
+
     return c.json({
       success: true,
       data: {
@@ -1108,7 +1144,8 @@ export function createCommunityRouter() {
         priorityCases,
         myReports,
         recentActivity,
-        hotspots: []
+        hotspots: [],
+        iotNode
       }
     });
   };
