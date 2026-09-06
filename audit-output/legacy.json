@@ -1,0 +1,82 @@
+[
+  {
+    "path": "app/",
+    "category": "LEGACY_APP",
+    "usedBy": [],
+    "stillReachable": false,
+    "action": "KEEP",
+    "reason": "VERIFIED TRUE: root package.json workspaces=[\"packages/*\",\"apps/*\"] does not include \"app\". Root build/dev scripts never touch app/ except explicit legacy-only scripts (dev:core, verify, sensor:simulate) that a developer must invoke by hand. No .github/ CI workflows exist anywhere in the repo. app/ has its own isolated wrangler.jsonc, not referenced by any root config. Whole-repo grep found zero imports from apps/** or dustguard-operations/** reaching into app/, and zero load-bearing references out of app/ into apps/** or dustguard-operations/** (only coincidental substring hits inside .vite build cache map files). The doc's '100% isolated from production build/deploy path' claim is TRUE and reverified this session."
+  },
+  {
+    "path": "app/src/apps/citizen/**",
+    "category": "LEGACY_ROUTE",
+    "usedBy": [],
+    "stillReachable": true,
+    "action": "DEPRECATE",
+    "reason": "MERGE claim verified TRUE (apps/web/src/pages has equivalent /reports, /reports/new, /map, /profile pages) AND the REDIRECT claim is also TRUE and live-code-backed: apps/web/src/App.tsx lines 242-248 implement real React Router Navigate redirects for /citizen/reports, /citizen/report/new, /citizen/report, /citizen/track, /citizen/map, /citizen/profile and a /citizen/* catch-all -> /dashboard. This is NOT just a documentation claim; verified in source."
+  },
+  {
+    "path": "app/src/apps/community/**",
+    "category": "LEGACY_ROUTE",
+    "usedBy": [],
+    "stillReachable": true,
+    "action": "DEPRECATE",
+    "reason": "MERGE + REDIRECT claim verified TRUE: apps/web/src/App.tsx lines 250-253 implement real redirects /community/tasks -> /tasks, /community/contributions -> /contributions, /community/clubs -> /communities, and /community/* catch-all -> /communities."
+  },
+  {
+    "path": "app/src/apps/staff/pages/cases/**",
+    "category": "LEGACY_ROUTE",
+    "usedBy": [],
+    "stillReachable": false,
+    "action": "DEPRECATE",
+    "reason": "FALSE CLAIM CORRECTED: 06-LEGACY-DISPOSITION-PLAN.md explicitly claims '/staff/cases' redirects to the Operations gate (dustguard-operations, port 3002/4000). Verified this is NOT implemented and is not even technically possible via React Router's client-side <Navigate>, which cannot redirect across origins/ports. Actual code (apps/web/src/App.tsx line 255) is '<Route path=\"/staff/*\" element={<Navigate to=\"/dashboard\" replace />} />' -- it redirects within Side A only, to Side A's own /dashboard, never to Operations. Not fixed: building a real cross-origin redirect (hardcoded window.location to a different host/port) would be fragile, environment-specific infrastructure the task explicitly says not to build speculatively; the existing same-origin fallback already prevents a dead 404, so the gap is reported rather than built."
+  },
+  {
+    "path": "app/src/apps/executive/**",
+    "category": "LEGACY_ROUTE",
+    "usedBy": [],
+    "stillReachable": false,
+    "action": "DEPRECATE",
+    "reason": "Same pattern as /staff/*: apps/web/src/App.tsx line 265 redirects /executive/* -> /dashboard (Side A only), not to any Operations executive dashboard. Doc's implied cross-side redirect is unbuilt; reporting only, per task's non-speculative-infra guidance."
+  },
+  {
+    "path": "apps/web/src/components/landing/{CivicTechSection,HeroSection,LandingNav,PilotSection,ProblemSection,RoleMatrixSection,SolutionSection,WorkflowSection}.tsx",
+    "category": "LEGACY_COMPONENT",
+    "usedBy": [],
+    "stillReachable": false,
+    "action": "DELETE",
+    "reason": "Not mentioned in prior audit docs at all -- a newly-found, genuinely dead first-generation landing page (created ~09:30-09:38, superseded ~09:38-11:52 same day by Hero.tsx/LandingHeader.tsx/ProblemStory.tsx/etc. which LandingPage.tsx actually imports). Verified zero importers via import-graph script, zero references anywhere in apps/web/src, apps/server/src, tests/, scripts/ except unrelated legacy-app documentation generators. tsc --noEmit passes clean after deletion. DELETED this session (1409 LOC removed)."
+  },
+  {
+    "path": "dustguard-operations/apps/web/src/components/common/DevRoleSwitcher.tsx",
+    "category": "LEGACY_COMPONENT",
+    "usedBy": [],
+    "stillReachable": false,
+    "action": "DELETE",
+    "reason": "Dev-only role-switcher component never mounted anywhere (not referenced by App.tsx/AppShell or any page). Verified zero importers repo-wide. DELETED this session (52 LOC removed)."
+  },
+  {
+    "path": "dustguard-operations/apps/web/src/hooks/usePermission.ts",
+    "category": "LEGACY_COMPONENT",
+    "usedBy": [],
+    "stillReachable": false,
+    "action": "DELETE",
+    "reason": "Unused hook/wrapper around useAuth().can(); all call sites use useAuth() directly instead. Verified zero importers repo-wide. DELETED this session (20 LOC removed)."
+  },
+  {
+    "path": "apps/server/src/db/reset.ts",
+    "category": "LEGACY_API",
+    "usedBy": ["npm script db:reset"],
+    "stillReachable": true,
+    "action": "KEEP",
+    "reason": "False positive from static import-graph analysis: it is a CLI entry point invoked via 'tsx src/db/reset.ts' (package.json db:reset script), not expected to be imported by other source files."
+  },
+  {
+    "path": "dustguard-operations/apps/server/src/db/seed.ts",
+    "category": "LEGACY_API",
+    "usedBy": ["npm script db:seed"],
+    "stillReachable": true,
+    "action": "KEEP",
+    "reason": "Same as apps/server/src/db/reset.ts -- legitimate CLI entry point, not dead code."
+  }
+]

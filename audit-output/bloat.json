@@ -1,0 +1,66 @@
+{
+  "measurementNote": "Side A and Side B web/server trees are being actively, concurrently edited by two other audit agents throughout this session, so whole-repo snapshot LOC/file counts before vs after include some churn not caused by this session's cleanup. The authoritative, isolated measurement of THIS session's own deletions is the git diff --stat total below (1481 lines / 10 files), which is unaffected by concurrent edits.",
+  "thisSessionDeletionDiffStat": { "filesDeleted": 10, "linesRemoved": 1481 },
+  "sideA": {
+    "beforeLOC": 18740,
+    "afterLOC": 17396,
+    "beforeFiles": 93,
+    "afterFiles": 87,
+    "note": "apps/web/src + apps/server/src combined, measured via git ls-files | wc -l before this session's deletions and via find after. apps/server/src untouched (23 files both times); apps/web/src went 70 -> 64 tracked/present files after deleting the 8 dead landing components (1409 LOC)."
+  },
+  "sideB": {
+    "beforeLOC": 29651,
+    "afterLOC": 28464,
+    "beforeFiles": 115,
+    "afterFiles": 114,
+    "note": "dustguard-operations/apps/web/src + apps/server/src combined. File-count delta looks smaller than the 2 files this session deleted (DevRoleSwitcher.tsx, usePermission.ts, 72 LOC) because the other Side-B audit agent was concurrently adding/removing files in the same window (e.g. dustguard-operations/apps/web/src/utils/draftStorage.ts appeared mid-session). The reliable number for this session's own Side B deletion is the git diff --stat figure: 2 files, 72 lines."
+  },
+  "tableCounts": {
+    "sideA_dustguard_community_db": { "docClaimed": 21, "measuredThisSession": 22, "note": "Off by one vs docs/audit/CODEBASE_BLOAT_REPORT.md; measured live via node:sqlite against data/dustguard-community.db sqlite_master. Not a fabrication, likely stale count or one table added since the doc was written." },
+    "sideB_dustguard_operations_db": { "docClaimed": 41, "measuredThisSession": 42, "note": "Off by one vs the doc; measured live via node:sqlite against dustguard-operations/data/dustguard-operations.db sqlite_master." }
+  },
+  "pageCounts": {
+    "sideA_web_pages_tsx": { "docClaimed": 28, "measuredThisSession": 30 },
+    "sideB_web_pages_tsx": { "docClaimed": 31, "measuredThisSession": 31, "note": "Exact match." }
+  },
+  "duplicatesFound": [
+    {
+      "pair": ["apps/web/src/components/common/BeforeAfterComparison.tsx", "dustguard-operations/apps/web/src/components/common/BeforeAfterComparison.tsx"],
+      "docWhitelisted": true,
+      "verifiedAccurate": "PARTIALLY -- both files are real and exist as claimed, both 275 lines, but the diff shows the two are functionally identical (same component logic/props/behavior) differing ONLY in Tailwind color-token classes, not in 'independent business logic serving two different sides' as the doc frames it. The stated reason for not merging (avoid styling cross-coupling) is legitimate given the two SPAs have no shared package."
+    },
+    {
+      "pair": ["apps/web/src/utils/crypto.ts", "dustguard-operations/apps/web/src/utils/crypto.ts"],
+      "docWhitelisted": true,
+      "verifiedAccurate": "FALSE -- dustguard-operations/apps/web/src/utils/crypto.ts does not exist. Side B performs SHA-256 verification via a server API call (see dustguard-operations/apps/web/src/api/client.ts calculated_sha256/stored_sha256), not a client-side crypto.ts util. The whitelist entry describes a file that was never real."
+    },
+    {
+      "pair": ["apps/server/src/utils/riskScorer.ts", "dustguard-operations/apps/server/src/modules/decision-support/risk/riskScorer.ts"],
+      "docWhitelisted": true,
+      "verifiedAccurate": "FALSE -- apps/server/src/utils/riskScorer.ts does not exist anywhere in the repo. Side A server has no risk-scoring/priority-calculation logic at all (confirmed via repo-wide grep for riskScore/calculateRisk/priority-scoring patterns). Only dustguard-operations/apps/server/src/modules/decision-support/risk/riskScorer.ts is real."
+    },
+    {
+      "pair": ["apps/web/src/context/ToastContext.tsx", "dustguard-operations/apps/web/src/context/ToastContext.tsx"],
+      "docWhitelisted": false,
+      "verifiedAccurate": "NEW FINDING, not in the prior doc. Functionally identical (same toast queue/timeout logic), diverges only in Tailwind shades, same pattern as BeforeAfterComparison. Both files are brand-new this session (added by the two parallel side-specific audit agents)."
+    },
+    {
+      "pair": ["apps/web/src/utils/draftStorage.ts", "dustguard-operations/apps/web/src/utils/draftStorage.ts"],
+      "docWhitelisted": false,
+      "verifiedAccurate": "NEW FINDING, not in the prior doc. Genuinely diverged, not lazy copy-paste: Side A's loadDraft() adds owner-scoping (prevents draft leakage between accounts sharing a device) and TTL-expiry logging that Side B's version lacks. Flagged for reconciliation, not merged (out of this task's edit scope, actively owned by other agents)."
+    }
+  ],
+  "duplicatesMerged": [],
+  "filesDeleted": [
+    "apps/web/src/components/landing/CivicTechSection.tsx",
+    "apps/web/src/components/landing/HeroSection.tsx",
+    "apps/web/src/components/landing/LandingNav.tsx",
+    "apps/web/src/components/landing/PilotSection.tsx",
+    "apps/web/src/components/landing/ProblemSection.tsx",
+    "apps/web/src/components/landing/RoleMatrixSection.tsx",
+    "apps/web/src/components/landing/SolutionSection.tsx",
+    "apps/web/src/components/landing/WorkflowSection.tsx",
+    "dustguard-operations/apps/web/src/components/common/DevRoleSwitcher.tsx",
+    "dustguard-operations/apps/web/src/hooks/usePermission.ts"
+  ]
+}
