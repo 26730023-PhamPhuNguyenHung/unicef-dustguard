@@ -45,6 +45,7 @@ export async function syncCaseToCommunity(
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'x-service-key': process.env.INTEGRATION_SERVICE_KEY || 'dustguard-internal-2026',
       },
       body: JSON.stringify(payload),
       signal: controller.signal,

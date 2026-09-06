@@ -1,9 +1,46 @@
-import { Router, Response } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import crypto from 'node:crypto';
 import { get, query, run, transaction } from '../../db/connection.js';
-import { CommunityCaseImportSchema } from '../../shared.js';
+import { CommunityCaseImportSchema, CommunityFeedbackSchema } from '../../shared.js';
 
 export const integrationsRouter = Router();
+
+// Cross-side service auth: requires x-service-key to match INTEGRATION_SERVICE_KEY
+// (env var, with a documented local-dev default -- never hardcode a production secret here).
+const INTEGRATION_SERVICE_KEY = process.env.INTEGRATION_SERVICE_KEY || 'dustguard-internal-2026';
+
+function requireServiceKey(req: Request, res: Response, next: NextFunction): void {
+  const provided = req.headers['x-service-key'];
+  if (!provided || provided !== INTEGRATION_SERVICE_KEY) {
+    res.status(401).json({
+      success: false,
+      error: {
+        code: 'UNAUTHORIZED_SERVICE',
+        message: 'Missing or invalid x-service-key header for cross-side integration endpoint.',
+      },
+    });
+    return;
+  }
+  next();
+}
+
+integrationsRouter.use(requireServiceKey);
+
+// Ensure a normalized contractor row exists for a free-text contractor name,
+// mirroring cases.router.ts's ensureContractorId so cross-side intake stays
+// linked instead of leaving contractor_name as an orphaned string.
+function ensureContractorId(name?: string | null): string | null {
+  if (!name || !name.trim()) return null;
+  const trimmed = name.trim();
+  const existing = get<{ id: string }>(`SELECT id FROM contractors WHERE name = ?`, [trimmed]);
+  if (existing) return existing.id;
+  const newId = `ctr-${crypto.randomUUID().substring(0, 8)}`;
+  run(
+    `INSERT INTO contractors (id, name, created_at, updated_at) VALUES (?, ?, datetime('now'), datetime('now'))`,
+    [newId, trimmed]
+  );
+  return newId;
+}
 
 // POST /api/integrations/community/cases - Idempotent Case Intake from DustGuard Community
 integrationsRouter.post('/community/cases', (req, res, next) => {
@@ -23,14 +60,16 @@ integrationsRouter.post('/community/cases', (req, res, next) => {
 
     if (existingCase) {
       // Idempotency: Update safe fields only, do not create duplicate
+      const updateContractorId = data.contractor_name ? ensureContractorId(data.contractor_name) : null;
       transaction(() => {
         run(
           `UPDATE cases
            SET source_report_count = source_report_count + ?,
                contractor_name = COALESCE(?, contractor_name),
+               contractor_id = COALESCE(?, contractor_id),
                updated_at = datetime('now')
            WHERE id = ?`,
-          [data.report_count, data.contractor_name || null, existingCase.id]
+          [data.report_count, data.contractor_name || null, updateContractorId, existingCase.id]
         );
 
         // Record timeline for updated reports
@@ -69,10 +108,12 @@ integrationsRouter.post('/community/cases', (req, res, next) => {
     const nextNum = (countRow?.c || 0) + 1;
     const case_code = data.case_code || `DG-2026-OP-${String(nextNum).padStart(3, '0')}`;
 
+    const newContractorId = data.contractor_name ? ensureContractorId(data.contractor_name) : null;
+
     transaction(() => {
       run(
-        `INSERT INTO cases (id, case_code, title, description, location_text, district, latitude, longitude, source, source_reference, source_report_count, status, contractor_name, priority, created_at, updated_at)
-         VALUES (?, ?, ?, ?, ?, 'TP.HCM', ?, ?, 'COMMUNITY', ?, ?, 'NEW', ?, 'HIGH', datetime('now'), datetime('now'))`,
+        `INSERT INTO cases (id, case_code, title, description, location_text, district, latitude, longitude, source, source_reference, source_report_count, status, contractor_name, contractor_id, priority, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, 'TP.HCM', ?, ?, 'COMMUNITY', ?, ?, 'NEW', ?, ?, 'HIGH', datetime('now'), datetime('now'))`,
         [
           newCaseId,
           case_code,
@@ -84,6 +125,7 @@ integrationsRouter.post('/community/cases', (req, res, next) => {
           data.external_case_id,
           data.report_count ?? (data.reports?.length || 1),
           data.contractor_name || null,
+          newContractorId,
         ]
       );
 
@@ -135,7 +177,8 @@ integrationsRouter.post('/community/cases', (req, res, next) => {
 // POST /api/integrations/community/feedback - Receive citizen feedback from Community
 integrationsRouter.post('/community/feedback', (req, res, next) => {
   try {
-    const { external_case_id, case_code, rating, comment, is_satisfied, request_reinspection, user_name } = req.body;
+    const { external_case_id, case_code, rating, comment, is_satisfied, request_reinspection, user_name } =
+      CommunityFeedbackSchema.parse(req.body);
 
     // Tìm vụ việc trên Operations
     let targetCase = external_case_id
