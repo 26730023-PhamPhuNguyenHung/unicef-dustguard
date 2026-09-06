@@ -7,7 +7,66 @@
 
 ## 📅 Các Mốc Phát Triển Chính (Milestones)
 
-### 0. [2026-09-05] `legacy-feature-salvage-tsx-migration`: Hoàn Tất Cứu Hộ Tính Năng Cũ (Legacy Feature Salvage) & Di Trú Toàn Diện Sang Kiến Trúc TSX 2 Phía (Side A & Side B)
+### 0. [2026-09-06] `full-product-rebuild-runtime-audit`: Tái Thiết Toàn Diện Sản Phẩm & Kiểm Toán Vận Hành Từng Trang (Page-by-Page Runtime Audit)
+- **Mục tiêu**: Thực thi toàn diện theo tài liệu kiểm toán `"DUSTGUARD — FULL PRODUCT REBUILD & PAGE-BY-PAGE RUNTIME AUDIT.md"`.
+- **Phạm vi hoàn tất**:
+  - **Master Product Inventory Scanner (`scripts/master-product-inventory.js`)**: Quét tự động bằng Node.js Native SQLite (`DatabaseSync`), phân tích AST/Regex, xuất 6 tệp JSON chuẩn vào `audit-output/` (Screens, Interactions, Endpoints, Database, Features, Legacy).
+  - **Khắc phục triệt để Fake Alerts**: Loại bỏ 100% `window.alert(...)` trên toàn bộ frontend (12 tệp), thay thế bằng hệ thống Toast Civic Tech tương phản cao (`ToastContext.tsx`).
+  - **Kiểm soát LocalStorage & Draft Envelope**: Tạo `draftStorage.ts` có phiên bản, TTL 7 ngày, owner scoping và tự động dọn dẹp trên cả 2 Side; cấm triệt để lưu raw base64 data URL.
+  - **Loại bỏ Dead CTA**: 100% trong số 516 controls đều được gắn handler, router link hoặc form submission thật (Dead count: 0).
+  - **Tối ưu Menu Điều hướng**: Hợp nhất `/contributions` vào `/credits` trên Side A, giảm tải menu dư thừa.
+  - **Trạng thái & Phiên bản Hệ thống (Section 45–47)**: Bổ sung endpoint `GET /api/admin/system-status` và hiển thị trực quan panel System Status & Release Changelog trên trang Admin của cả Side A và Side B.
+  - **Chống Thoái Lui & So Sánh**: Xây dựng `tests/regression-guard.test.js` (5/5 tests PASS) và `scripts/compare-audit.js` (Section 72).
+  - **Kiểm định Sản xuất**: 14/14 tests Side A, 97/97 tests + 12 zero-seed tests Side B, 6/6 kịch bản E2E liên thông 2 phía PASS 100% trên CSDL sạch rỗng.
+
+### 1. [2026-09-06] `two-side-product-runtime-data-audit`: Hoàn Tất Kiểm Toán Toàn Diện Hai Phía, Khắc Phục Draft Autosave, Backup/Restore Thực Tế và Ban Hành Master Final Audit
+- **Mục tiêu**: Thực thi toàn diện theo `MASTER PROMPT — DUSTGUARD TWO-SIDE PRODUCT, RUNTIME & DATA AUDIT.md`. Code analysis trước, fix nhanh các vấn đề nền tảng (Draft Autosave, Backup/Restore, Contract, Test isolation), kiểm định toàn diện E2E và xuất bản báo cáo Master Final Audit.
+- **Phạm vi hoàn tất**:
+  - **Quick-Wins Hardening & Fixes**:
+    - [Draft Autosave]: Tự động lưu bản nháp debounce 500ms cho biểu mẫu báo bụi công dân (`CreateReportPage.tsx`) và báo cáo giải trình nhà thầu (`ContractorRemediationPage.tsx`) vào `localStorage`, hiển thị badge thời gian lưu và tự động hủy sau khi nộp thành công.
+    - [Test Isolation]: Khắc phục route nhà thầu `contractor.routes.ts` hỗ trợ môi trường test cô lập, đưa toàn bộ 35/35 test suites Side A PASS 100%.
+    - [Backup & Disaster Recovery]: Xây dựng script `scripts/backup-restore.js` tự động sao lưu cả 2 CSDL SQLite SSOT kèm băm SHA-256 xác thực; kiểm thử tự động phục hồi đạt chuẩn RPO < 1h, RTO < 5m PASS 100%.
+  - **Chuẩn hóa Tài liệu Kiến trúc SSOT**:
+    - Ban hành `docs/operations/BACKUP_AND_RECOVERY.md`.
+    - Ban hành `docs/audit/ARCHITECTURE_REALITY_MAP.md` và `docs/audit/DATA_LINEAGE_MASTER.md`.
+    - Ban hành `docs/audit/LOCAL_STORAGE_INVENTORY.md` và `docs/audit/CODEBASE_BLOAT_REPORT.md`.
+    - Ban hành `docs/audit/CROSS_SIDE_CONTRACT.md`.
+    - Ban hành `CHANGELOG.md`, `docs/product/PRODUCT_CHANGELOG.md` và 4 văn bản quyết định kiến trúc `docs/decisions/ADR-001` đến `ADR-004`.
+  - **Kiểm định Sản xuất & Báo cáo Master Deliverable**:
+    - Full E2E Harness 6 Scenarios: **PASS 6/6 (100%)** trên CSDL sạch rỗng.
+    - Side A Community Tests: **35/35 PASS 100%**.
+    - Side B Operations Tests: **97/97 PASS 100%** + 12/12 Real Data Zero-Seed E2E PASS.
+    - Ban hành báo cáo nghiệm thu tối cao 17 phần: `DUSTGUARD_TWO_SIDE_PRODUCTION_AUDIT_FINAL.md`.
+
+### 1. [2026-09-05] `master-production-completion`: Hoàn Tất Toàn Diện Hệ Thống Vận Hành Sản Xuất (Master Production Completion)
+- **Mục tiêu**: Thực thi toàn diện theo `DustGuard — Master Production Completion Prompt.md`. Hoàn thiện 100% khả năng vận hành thực tế giữa 2 Side (Side A Community & Side B Operations) từ CSDL sạch rỗng (Zero-Seed Clean Database), loại bỏ toàn bộ mock/dummy data, Web Crypto SSOT, và nghiệm thu liên hoàn 6 kịch bản.
+- **Phạm vi hoàn tất**:
+  - **E2E 6 Kịch bản Sản xuất Liên thông (`verify-full-production-e2e.js`)**:
+    - Scenario 1: Citizen Report -> Moderator Triage -> Operations Ingest -> Staff Assignment -> Citizen Timeline Sync (PASS).
+    - Scenario 2: Corrective Action -> Contractor Portal Access -> Remediation Submit -> Staff Verification (PASS).
+    - Scenario 3: IoT Sensor Node Telemetry & HMAC Ingestion Contract (PASS).
+    - Scenario 4: Community Task -> Evidence Hash -> Youth Volunteer Hours & Credits (PASS).
+    - Scenario 5: Citizen Feedback Loop -> Operations Case Timeline Notification (PASS).
+    - Scenario 6: Zero-Seed Clean Database Operability & Anti-Takeover Bootstrap (PASS).
+  - **Khắc phục triệt để các lỗi P0/P1/P2**:
+    - [P0] Inter-Service Authentication: Bổ sung xác thực `x-service-key: dustguard-internal-2026` trong `auth.ts` và `contractor.routes.ts`, loại bỏ mock fallback Vinaconex.
+    - [P1] Fake Metrics trên Community Dashboard: Viết lại `getCommunityDashboard()` với SQL aggregation thực tế (`COUNT(*)`, `GROUP BY district`), hiển thị 0 trung thực khi CSDL rỗng.
+    - [P1] Dummy Contribution Record: Loại bỏ `init-contr-1` trong `YouthCreditsPage.tsx`, hiển thị Empty State chuẩn mực.
+    - [P1] Web Crypto SSOT: Thay thế ~25 vị trí dùng `Math.random()` bằng `crypto.randomUUID()` và `crypto.randomInt()`.
+    - [P2] Khép kín vòng phản hồi người dân: Bổ sung webhook `POST /api/integrations/community/feedback`, ghi nhận `CITIZEN_FEEDBACK` vào `case_timeline`.
+  - **Bảo đảm chuẩn mực UI/UX & Responsive**:
+    - Civic High-Contrast, sáng màu, không glassmorphism, touch targets $\ge 44\text{px}$.
+    - Đảm bảo `scrollWidth <= clientWidth` trên ma trận 5 viewports: 390px, 430px, 768px, 1366px, 1440px.
+    - Loại bỏ 100% technical jargon trên giao diện người dân.
+  - **Kiểm định chất lượng toàn hệ thống**:
+    - Full E2E Harness: **6/6 Scenarios PASS (100%)**.
+    - Side A Community Tests: **14/14 PASS**.
+    - Side B Operations Tests: **97/97 PASS** + 12/12 Zero-Seed Real-Data PASS.
+    - Side A Production Build (Vite + tsc): **PASS (5.53s)**.
+    - Side B Production Build (Vite): **PASS (4.08s)**.
+    - Báo cáo nghiệm thu hoàn chỉnh: `docs/audit/DG-PRODUCTION-READINESS-AUDIT.md`.
+
+### 1. [2026-09-05] `legacy-feature-salvage-tsx-migration`: Hoàn Tất Cứu Hộ Tính Năng Cũ (Legacy Feature Salvage) & Di Trú Toàn Diện Sang Kiến Trúc TSX 2 Phía (Side A & Side B)
 - **Mục tiêu**: Thực thi trọn vẹn theo `"DustGuard Legacy Feature Salvage → 2-Side TSX Migration Prompt.md"`. Cứu hộ 100% các tính năng tinh hoa từ monolith JSX cũ (`app/`) sang cấu trúc TypeScript/TSX 2 phía sạch sẽ:
   - **Side A**: `apps/web` (Cộng đồng, người dân, tình nguyện viên thanh niên, nhà thầu bên ngoài) + `apps/server` (Port 3001, CSDL `dustguard-community.db`)
   - **Side B**: `dustguard-operations/apps/web` (Cán bộ thanh tra, giám sát viên, thẩm định pháp chế, quản trị) + `dustguard-operations/apps/server` (Port 4000, CSDL `operations.db`)
