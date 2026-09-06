@@ -7,6 +7,21 @@
 
 ## 📅 Các Mốc Phát Triển Chính (Milestones)
 
+### 00. [2026-09-06] `landing-problem-story-refinement-and-login-hotfix`: Tinh Chỉnh Sắc Nét Section Thực Trạng Landing Page & Khắc Phục Xác Thực Đăng Nhập Trên Live Domain
+- **Mục tiêu**: Khắc phục dứt điểm lỗi đăng nhập ("Email hoặc mật khẩu không chính xác") do thiếu dữ liệu seed tài khoản mẫu trên Cloudflare D1 Remote; tái thiết kế CSS section ProblemStory ("Phản ánh không khó. Theo dõi đến kết quả mới khó.") đạt chuẩn Civic High-Contrast, cân đối, sắc nét.
+- **Phạm vi hoàn tất**:
+  - **Khắc phục Xác thực Đăng nhập Remote D1 (Side A & Side B)**:
+    - Nạp đầy đủ 8 tài khoản demo vào bảng `users` trên D1 production database `dustguard-production` (bao gồm `citizen@dustguard.local`, `member@dustguard.local`, `moderator@dustguard.local`, `admin@dustguard.local` và alias `@dustguard.vn`, mật khẩu `DustGuard123!`).
+    - Xác thực API `/api/auth/login` trên live domain trả về HTTP 200 OK và JWT token hợp lệ.
+  - **Tái Thiết Kế CSS Section ProblemStory (Landing Page)**:
+    - Loại bỏ hoàn toàn lỗi hiển thị lệch màu (card 02 viền đỏ cam lạc lõng so với 01 và 03).
+    - Thiết kế 3 thẻ vấn đề đồng bộ, cân đối, sắc sảo: huy hiệu số `01`, `02`, `03` đỏ bo góc mềm + label uppercase tinh gọn, tiêu đề đậm nét, đoạn văn vừa vặn và dòng hệ quả thực tế rõ ràng ở chân thẻ.
+    - Hộp 1 "Quy trình truyền thống (Đứt gãy)": 4 bước rõ ràng, dải cảnh báo chân hộp nổi bật với icon AlertTriangle.
+    - Hộp 2 "Chu trình DustGuard (Khép kín)": Viền xanh Teal thương hiệu `#0D6F64`, đường tiến trình nối liền mạch, 4 bước chuyên nghiệp (Tọa độ GPS, Phân công UBND Phường, Khắc phục tại công trình, Tái kiểm 48h với icon CheckCircle2 xanh lá). Dải bảo chứng chân hộp màu xanh ngọc tươi sáng.
+  - **Kiểm định Trực quan Bằng Agent-Browser & Live Deploy**:
+    - Chạy build và deploy production thành công 100% qua `wrangler deploy`.
+    - Chụp ảnh minh chứng thực tế trên domain `https://dustguard.phamphunguyenhung.com/` (`landing_verified.png`).
+
 ### 00. [2026-09-06] `production-d1-r2-cutover`: Di Chuyển CSDL Lên Cloudflare D1 Production & R2 Storage, Hợp Nhất Unified Worker Runtime và Cắt Chuyển Tên Miền Chính Thức (dustguard.phamphunguyenhung.com)
 - **Mục tiêu**: Thực thi toàn diện theo tài liệu đặc tả `"DUSTGUARD — Production D1-R2 Migration, Runtime Completion & Live Domain Cutover.md"`.
 - **Phạm vi hoàn tất**:

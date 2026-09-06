@@ -7,6 +7,21 @@
 
 ## 📅 Bài học từ Dự án: DustGuard Operations & Community (2026-09-06)
 
+### 00. Đồng Bộ Dữ Liệu Khởi Tạo (Seed Consistency) Trên Cloudflare D1 Remote & Chuẩn Hóa Visual Hierarchy Giao Diện So Sánh Landing Page
+- **Vấn đề**:
+  - **Lỗi 401 Đăng Nhập Do Rỗng Bảng Người Dùng Sau Cutover**: Sau khi di chuyển schema lên Cloudflare D1 production, bảng `users` chỉ mới có các tài khoản tạo tự động qua test E2E. Các tài khoản trải nghiệm nhanh của Side A (`citizen@dustguard.local`, `member@dustguard.local`, `moderator@dustguard.local`, `admin@dustguard.local`) hoàn toàn chưa có trong CSDL D1 remote, dẫn đến việc người dùng bấm nút đăng nhập mẫu thì bị báo lỗi "Email hoặc mật khẩu không chính xác".
+  - **Lệch Phong Cách Thị Giác & Kéo Dãn Chiều Dọc Thẻ Vấn Đề (Unbalanced Card Stretching)**: Section ProblemStory có 3 thẻ vấn đề ở cột trái bị bọc trong `flex-1` với `justify-between`, khi cột đối chiếu bên phải có chiều cao lớn thì 3 thẻ bên trái bị kéo dãn dọc quá mức, tạo khoảng trống trắng mênh mông thô thiển. Thẻ số 02 lại có nền cam viền đỏ hồng `#E8C8C0` lạc lõng hoàn toàn so với thẻ 01 và 03, gây cảm giác như lỗi CSS active dở dang. Đồng thời, các bước quy trình thiếu điểm nhấn nghiệp vụ và dính technical jargon ("Closed-loop", "High Drop-Off").
+- **Giải pháp chuẩn hóa**:
+  1. **Kịch Bản Seed Tự Động Vào D1 Remote (`seed-remote-community-users.js`)**:
+     - Tạo script nạp 8 tài khoản mẫu chuẩn (bao gồm cả `@dustguard.local` và bí danh `@dustguard.vn`) với mật khẩu băm bcrypt an toàn (`DustGuard123!`).
+     - Tích hợp kiểm thử API `/api/auth/login` trực tiếp trên live domain để bảo đảm kết quả trả về 200 OK trước khi bàn giao.
+  2. **Tái Thiết Kế 3 Thẻ Vấn Đề Đồng Bộ, Sắc Nét & Cân Đối**:
+     - Thống nhất 100% phong cách: Nền trắng ngọc, viền `#E7E0D8`, đổ bóng mềm `shadow-[0_2px_8px_rgba(20,20,20,0.03)]`.
+     - Cấu trúc 3 tầng rõ ràng: Huy hiệu số `01`, `02`, `03` đỏ bo góc nhẹ kèm tag danh mục uppercase $\rightarrow$ Tiêu đề đậm nét `#15171C` $\rightarrow$ Đoạn văn mô tả cô đọng $\rightarrow$ Dòng hệ quả thực tế có chấm đỏ cảnh báo ở chân thẻ.
+  3. **Chuẩn Hóa 2 Hộp Quy Trình Đối Chiếu Song Song**:
+     - Hộp 1 (Truyền thống đứt gãy): Dải cảnh báo màu đỏ nhẹ nhàng với icon AlertTriangle và badge "Tỷ lệ thất lạc cao".
+     - Hộp 2 (DustGuard khép kín): Viền xanh Teal `#0D6F64` đặc trưng CivicTech, các bước có icon công cụ rõ ràng (`MapPin`, `SendHorizontal`, `SprayIcon`, `CheckCircle2`), dải bảo chứng chân hộp màu xanh ngọc tươi sáng khẳng định 100% hồ sơ được lưu vết và theo dõi công khai.
+
 ### 00. Production D1-R2 Migration & Unified Cloudflare Worker Cutover: Nghiêm Ngặt Khóa Ngoại (Foreign Key Safety), Chuẩn Hóa Enum (Case-Insensitive Enums) và Định Tuyến SPA Kép Trên Cùng Tên Miền
 - **Vấn đề**:
   - **Lỗi Vi Phạm Khóa Ngoại D1 SQLite (D1 Foreign Key Constraint Violations)**: Cloudflare D1 thực thi triệt để các ràng buộc khóa ngoại (FOREIGN KEY). Khi tạo mới bản ghi (ví dụ `ops_case_timeline`, `ops_evidence_assets`, `case_closures`), nếu tham số người thực hiện (`actor_id`, `uploaded_by`, `closed_by`) hoặc mã vụ việc (`case_id`) truyền vào chuỗi mock ('mod', 'admin', 'general') mà không tồn tại trong bảng cha (`ops_users`, `ops_cases`), SQLite ném lỗi `SQLITE_CONSTRAINT_FOREIGNKEY` gây sập API với mã 500.
