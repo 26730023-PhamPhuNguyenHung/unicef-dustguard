@@ -1,0 +1,1653 @@
+{
+  "total": 164,
+  "sideA": {
+    "total": 63,
+    "endpoints": [
+      {
+        "side": "Side A (Community)",
+        "method": "POST",
+        "path": "/api/auth/register",
+        "subPath": "/register",
+        "file": "apps/server/src/routes/auth.routes.ts",
+        "hasAuth": false,
+        "hasValidation": true,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "POST",
+        "path": "/api/auth/login",
+        "subPath": "/login",
+        "file": "apps/server/src/routes/auth.routes.ts",
+        "hasAuth": false,
+        "hasValidation": true,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "GET",
+        "path": "/api/auth/me",
+        "subPath": "/me",
+        "file": "apps/server/src/routes/auth.routes.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "POST",
+        "path": "/api/auth/logout",
+        "subPath": "/logout",
+        "file": "apps/server/src/routes/auth.routes.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "POST",
+        "path": "/api/auth/dev-switch-role",
+        "subPath": "/dev-switch-role",
+        "file": "apps/server/src/routes/auth.routes.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "GET",
+        "path": "/api/reports/check-duplicate",
+        "subPath": "/check-duplicate",
+        "file": "apps/server/src/routes/reports.routes.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "GET",
+        "path": "/api/reports/",
+        "subPath": "/",
+        "file": "apps/server/src/routes/reports.routes.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "GET",
+        "path": "/api/reports/:id",
+        "subPath": "/:id",
+        "file": "apps/server/src/routes/reports.routes.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "POST",
+        "path": "/api/reports/",
+        "subPath": "/",
+        "file": "apps/server/src/routes/reports.routes.ts",
+        "hasAuth": true,
+        "hasValidation": true,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "POST",
+        "path": "/api/reports/upload",
+        "subPath": "/upload",
+        "file": "apps/server/src/routes/reports.routes.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "POST",
+        "path": "/api/reports/:id/media",
+        "subPath": "/:id/media",
+        "file": "apps/server/src/routes/reports.routes.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "GET",
+        "path": "/api/cases/",
+        "subPath": "/",
+        "file": "apps/server/src/routes/cases.routes.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "GET",
+        "path": "/api/cases/:id",
+        "subPath": "/:id",
+        "file": "apps/server/src/routes/cases.routes.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "POST",
+        "path": "/api/cases/:id/confirm",
+        "subPath": "/:id/confirm",
+        "file": "apps/server/src/routes/cases.routes.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "DELETE",
+        "path": "/api/cases/:id/confirm",
+        "subPath": "/:id/confirm",
+        "file": "apps/server/src/routes/cases.routes.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "POST",
+        "path": "/api/cases/:id/save",
+        "subPath": "/:id/save",
+        "file": "apps/server/src/routes/cases.routes.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "DELETE",
+        "path": "/api/cases/:id/save",
+        "subPath": "/:id/save",
+        "file": "apps/server/src/routes/cases.routes.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "GET",
+        "path": "/api/cases/:id/observations",
+        "subPath": "/:id/observations",
+        "file": "apps/server/src/routes/cases.routes.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "POST",
+        "path": "/api/cases/:id/observations",
+        "subPath": "/:id/observations",
+        "file": "apps/server/src/routes/cases.routes.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "POST",
+        "path": "/api/cases/:id/feedback",
+        "subPath": "/:id/feedback",
+        "file": "apps/server/src/routes/cases.routes.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "GET",
+        "path": "/api/cases/:id/feedback",
+        "subPath": "/:id/feedback",
+        "file": "apps/server/src/routes/cases.routes.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "GET",
+        "path": "/api/communities/",
+        "subPath": "/",
+        "file": "apps/server/src/routes/communities.routes.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "GET",
+        "path": "/api/communities/:slug",
+        "subPath": "/:slug",
+        "file": "apps/server/src/routes/communities.routes.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "POST",
+        "path": "/api/communities/:id/join",
+        "subPath": "/:id/join",
+        "file": "apps/server/src/routes/communities.routes.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "POST",
+        "path": "/api/communities/:id/leave",
+        "subPath": "/:id/leave",
+        "file": "apps/server/src/routes/communities.routes.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "GET",
+        "path": "/api/communities/:id/posts",
+        "subPath": "/:id/posts",
+        "file": "apps/server/src/routes/communities.routes.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "POST",
+        "path": "/api/communities/:id/posts",
+        "subPath": "/:id/posts",
+        "file": "apps/server/src/routes/communities.routes.ts",
+        "hasAuth": true,
+        "hasValidation": true,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "GET",
+        "path": "/api/communities/posts/:postId/comments",
+        "subPath": "/posts/:postId/comments",
+        "file": "apps/server/src/routes/communities.routes.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "POST",
+        "path": "/api/communities/posts/:postId/comments",
+        "subPath": "/posts/:postId/comments",
+        "file": "apps/server/src/routes/communities.routes.ts",
+        "hasAuth": true,
+        "hasValidation": true,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "GET",
+        "path": "/api/tasks/",
+        "subPath": "/",
+        "file": "apps/server/src/routes/tasks.routes.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "GET",
+        "path": "/api/tasks/:id",
+        "subPath": "/:id",
+        "file": "apps/server/src/routes/tasks.routes.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "POST",
+        "path": "/api/tasks/:id/claim",
+        "subPath": "/:id/claim",
+        "file": "apps/server/src/routes/tasks.routes.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "POST",
+        "path": "/api/tasks/:id/submit",
+        "subPath": "/:id/submit",
+        "file": "apps/server/src/routes/tasks.routes.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "GET",
+        "path": "/api/notifications/",
+        "subPath": "/",
+        "file": "apps/server/src/routes/notifications.routes.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "PATCH",
+        "path": "/api/notifications/:id/read",
+        "subPath": "/:id/read",
+        "file": "apps/server/src/routes/notifications.routes.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "POST",
+        "path": "/api/notifications/read-all",
+        "subPath": "/read-all",
+        "file": "apps/server/src/routes/notifications.routes.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "GET",
+        "path": "/api/me/reports",
+        "subPath": "/reports",
+        "file": "apps/server/src/routes/me.routes.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "GET",
+        "path": "/api/me/saved",
+        "subPath": "/saved",
+        "file": "apps/server/src/routes/me.routes.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "GET",
+        "path": "/api/me/contributions",
+        "subPath": "/contributions",
+        "file": "apps/server/src/routes/me.routes.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "PATCH",
+        "path": "/api/me/profile",
+        "subPath": "/profile",
+        "file": "apps/server/src/routes/me.routes.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "GET",
+        "path": "/api/moderator/reports",
+        "subPath": "/reports",
+        "file": "apps/server/src/routes/moderator.routes.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "POST",
+        "path": "/api/moderator/reports/:id/verify",
+        "subPath": "/reports/:id/verify",
+        "file": "apps/server/src/routes/moderator.routes.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "POST",
+        "path": "/api/moderator/cases",
+        "subPath": "/cases",
+        "file": "apps/server/src/routes/moderator.routes.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "POST",
+        "path": "/api/moderator/reports/:id/reject",
+        "subPath": "/reports/:id/reject",
+        "file": "apps/server/src/routes/moderator.routes.ts",
+        "hasAuth": false,
+        "hasValidation": true,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "POST",
+        "path": "/api/moderator/reports/:id/merge",
+        "subPath": "/reports/:id/merge",
+        "file": "apps/server/src/routes/moderator.routes.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "PATCH",
+        "path": "/api/moderator/cases/:id/status",
+        "subPath": "/cases/:id/status",
+        "file": "apps/server/src/routes/moderator.routes.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "PUT",
+        "path": "/api/moderator/cases/:id/status",
+        "subPath": "/cases/:id/status",
+        "file": "apps/server/src/routes/moderator.routes.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "GET",
+        "path": "/api/moderator/content",
+        "subPath": "/content",
+        "file": "apps/server/src/routes/moderator.routes.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "POST",
+        "path": "/api/moderator/content/:id/action",
+        "subPath": "/content/:id/action",
+        "file": "apps/server/src/routes/moderator.routes.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "GET",
+        "path": "/api/admin/users",
+        "subPath": "/users",
+        "file": "apps/server/src/routes/admin.routes.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "PATCH",
+        "path": "/api/admin/users/:id/role",
+        "subPath": "/users/:id/role",
+        "file": "apps/server/src/routes/admin.routes.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "PATCH",
+        "path": "/api/admin/users/:id/status",
+        "subPath": "/users/:id/status",
+        "file": "apps/server/src/routes/admin.routes.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "GET",
+        "path": "/api/admin/audit",
+        "subPath": "/audit",
+        "file": "apps/server/src/routes/admin.routes.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "GET",
+        "path": "/api/admin/stats",
+        "subPath": "/stats",
+        "file": "apps/server/src/routes/admin.routes.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "GET",
+        "path": "/api/admin/system-status",
+        "subPath": "/system-status",
+        "file": "apps/server/src/routes/admin.routes.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "GET",
+        "path": "/api/dashboard/",
+        "subPath": "/",
+        "file": "apps/server/src/routes/dashboard.routes.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "GET",
+        "path": "/api/dashboard/community",
+        "subPath": "/community",
+        "file": "apps/server/src/routes/dashboard.routes.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "GET",
+        "path": "/api/dashboard/moderator",
+        "subPath": "/moderator",
+        "file": "apps/server/src/routes/dashboard.routes.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "GET",
+        "path": "/api/dashboard/admin",
+        "subPath": "/admin",
+        "file": "apps/server/src/routes/dashboard.routes.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "POST",
+        "path": "/api/integrations/operations/sync",
+        "subPath": "/operations/sync",
+        "file": "apps/server/src/routes/integrations.routes.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "GET",
+        "path": "/api/contractor/dashboard",
+        "subPath": "/dashboard",
+        "file": "apps/server/src/routes/contractor.routes.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "GET",
+        "path": "/api/contractor/actions/:id",
+        "subPath": "/actions/:id",
+        "file": "apps/server/src/routes/contractor.routes.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side A (Community)",
+        "method": "POST",
+        "path": "/api/contractor/actions/:id/remediation",
+        "subPath": "/actions/:id/remediation",
+        "file": "apps/server/src/routes/contractor.routes.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": false
+      }
+    ]
+  },
+  "sideB": {
+    "total": 101,
+    "endpoints": [
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/auth/login",
+        "subPath": "/login",
+        "file": "dustguard-operations/apps/server/src/modules/auth/auth.router.ts",
+        "hasAuth": false,
+        "hasValidation": true,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/auth/me",
+        "subPath": "/me",
+        "file": "dustguard-operations/apps/server/src/modules/auth/auth.router.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/auth/logout",
+        "subPath": "/logout",
+        "file": "dustguard-operations/apps/server/src/modules/auth/auth.router.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/auth/setup-status",
+        "subPath": "/setup-status",
+        "file": "dustguard-operations/apps/server/src/modules/auth/auth.router.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/auth/bootstrap",
+        "subPath": "/bootstrap",
+        "file": "dustguard-operations/apps/server/src/modules/auth/auth.router.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/dashboard/",
+        "subPath": "/",
+        "file": "dustguard-operations/apps/server/src/modules/dashboard/dashboard.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/dashboard/staff",
+        "subPath": "/staff",
+        "file": "dustguard-operations/apps/server/src/modules/dashboard/dashboard.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/dashboard/supervisor",
+        "subPath": "/supervisor",
+        "file": "dustguard-operations/apps/server/src/modules/dashboard/dashboard.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/projects/",
+        "subPath": "/",
+        "file": "dustguard-operations/apps/server/src/modules/projects/projects.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/projects/:id",
+        "subPath": "/:id",
+        "file": "dustguard-operations/apps/server/src/modules/projects/projects.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/projects/",
+        "subPath": "/",
+        "file": "dustguard-operations/apps/server/src/modules/projects/projects.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "PATCH",
+        "path": "/api/projects/:id",
+        "subPath": "/:id",
+        "file": "dustguard-operations/apps/server/src/modules/projects/projects.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/contractors/",
+        "subPath": "/",
+        "file": "dustguard-operations/apps/server/src/modules/contractors/contractors.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/contractors/:id",
+        "subPath": "/:id",
+        "file": "dustguard-operations/apps/server/src/modules/contractors/contractors.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/contractors/",
+        "subPath": "/",
+        "file": "dustguard-operations/apps/server/src/modules/contractors/contractors.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "PATCH",
+        "path": "/api/contractors/:id",
+        "subPath": "/:id",
+        "file": "dustguard-operations/apps/server/src/modules/contractors/contractors.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/signals/",
+        "subPath": "/",
+        "file": "dustguard-operations/apps/server/src/modules/signals/signals.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/signals/",
+        "subPath": "/",
+        "file": "dustguard-operations/apps/server/src/modules/signals/signals.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/signals/:id",
+        "subPath": "/:id",
+        "file": "dustguard-operations/apps/server/src/modules/signals/signals.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/signals/:id/matches",
+        "subPath": "/:id/matches",
+        "file": "dustguard-operations/apps/server/src/modules/signals/signals.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/signals/:id/link-case",
+        "subPath": "/:id/link-case",
+        "file": "dustguard-operations/apps/server/src/modules/signals/signals.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/signals/public-report",
+        "subPath": "/public-report",
+        "file": "dustguard-operations/apps/server/src/modules/signals/signals.router.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/signals/:id/create-case",
+        "subPath": "/:id/create-case",
+        "file": "dustguard-operations/apps/server/src/modules/signals/signals.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/tasks/",
+        "subPath": "/",
+        "file": "dustguard-operations/apps/server/src/modules/tasks/tasks.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/tasks/",
+        "subPath": "/",
+        "file": "dustguard-operations/apps/server/src/modules/tasks/tasks.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "PATCH",
+        "path": "/api/tasks/:id",
+        "subPath": "/:id",
+        "file": "dustguard-operations/apps/server/src/modules/tasks/tasks.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "DELETE",
+        "path": "/api/tasks/:id",
+        "subPath": "/:id",
+        "file": "dustguard-operations/apps/server/src/modules/tasks/tasks.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/cases/",
+        "subPath": "/",
+        "file": "dustguard-operations/apps/server/src/modules/cases/cases.router.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/cases/:id",
+        "subPath": "/:id",
+        "file": "dustguard-operations/apps/server/src/modules/cases/cases.router.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/cases/",
+        "subPath": "/",
+        "file": "dustguard-operations/apps/server/src/modules/cases/cases.router.ts",
+        "hasAuth": true,
+        "hasValidation": true,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "PATCH",
+        "path": "/api/cases/:id",
+        "subPath": "/:id",
+        "file": "dustguard-operations/apps/server/src/modules/cases/cases.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/cases/:id/transition",
+        "subPath": "/:id/transition",
+        "file": "dustguard-operations/apps/server/src/modules/cases/cases.router.ts",
+        "hasAuth": true,
+        "hasValidation": true,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/cases/:id/assign",
+        "subPath": "/:id/assign",
+        "file": "dustguard-operations/apps/server/src/modules/cases/cases.router.ts",
+        "hasAuth": false,
+        "hasValidation": true,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/cases/:id/reassign",
+        "subPath": "/:id/reassign",
+        "file": "dustguard-operations/apps/server/src/modules/cases/cases.router.ts",
+        "hasAuth": false,
+        "hasValidation": true,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/cases/:id/next-action",
+        "subPath": "/:id/next-action",
+        "file": "dustguard-operations/apps/server/src/modules/cases/cases.router.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/cases/:id/facts",
+        "subPath": "/:id/facts",
+        "file": "dustguard-operations/apps/server/src/modules/cases/cases.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/cases/:id/analysis",
+        "subPath": "/:id/analysis",
+        "file": "dustguard-operations/apps/server/src/modules/cases/cases.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/cases/:id/decisions",
+        "subPath": "/:id/decisions",
+        "file": "dustguard-operations/apps/server/src/modules/cases/cases.router.ts",
+        "hasAuth": true,
+        "hasValidation": true,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/cases/:id/missing-facts/create-task",
+        "subPath": "/:id/missing-facts/create-task",
+        "file": "dustguard-operations/apps/server/src/modules/cases/cases.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/cases/:id/close",
+        "subPath": "/:id/close",
+        "file": "dustguard-operations/apps/server/src/modules/closures/closures.router.ts",
+        "hasAuth": false,
+        "hasValidation": true,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/cases/:id/reopen",
+        "subPath": "/:id/reopen",
+        "file": "dustguard-operations/apps/server/src/modules/closures/closures.router.ts",
+        "hasAuth": false,
+        "hasValidation": true,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/legal/search",
+        "subPath": "/search",
+        "file": "dustguard-operations/apps/server/src/modules/legal/legal.router.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/legal/documents",
+        "subPath": "/documents",
+        "file": "dustguard-operations/apps/server/src/modules/legal/legal.router.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/legal/documents/:id",
+        "subPath": "/documents/:id",
+        "file": "dustguard-operations/apps/server/src/modules/legal/legal.router.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/legal/sections/:id",
+        "subPath": "/sections/:id",
+        "file": "dustguard-operations/apps/server/src/modules/legal/legal.router.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/legal/:id/legal/analyze",
+        "subPath": "/:id/legal/analyze",
+        "file": "dustguard-operations/apps/server/src/modules/legal/legal.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/legal/:id/legal/analyses",
+        "subPath": "/:id/legal/analyses",
+        "file": "dustguard-operations/apps/server/src/modules/legal/legal.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/legal/:id/legal/review",
+        "subPath": "/:id/legal/review",
+        "file": "dustguard-operations/apps/server/src/modules/legal/legal.router.ts",
+        "hasAuth": false,
+        "hasValidation": true,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/legal/import",
+        "subPath": "/import",
+        "file": "dustguard-operations/apps/server/src/modules/legal/legal.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/legal/documents",
+        "subPath": "/documents",
+        "file": "dustguard-operations/apps/server/src/modules/legal/legal.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/legal/:id/legal/evidence-gaps",
+        "subPath": "/:id/legal/evidence-gaps",
+        "file": "dustguard-operations/apps/server/src/modules/legal/legal.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/legal/:id/decision-pack",
+        "subPath": "/:id/decision-pack",
+        "file": "dustguard-operations/apps/server/src/modules/legal/legal.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/inspections/",
+        "subPath": "/",
+        "file": "dustguard-operations/apps/server/src/modules/inspections/inspections.router.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/inspections/",
+        "subPath": "/",
+        "file": "dustguard-operations/apps/server/src/modules/inspections/inspections.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/inspections/:id",
+        "subPath": "/:id",
+        "file": "dustguard-operations/apps/server/src/modules/inspections/inspections.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/inspections/:id/inspections",
+        "subPath": "/:id/inspections",
+        "file": "dustguard-operations/apps/server/src/modules/inspections/inspections.router.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/inspections/",
+        "subPath": "/",
+        "file": "dustguard-operations/apps/server/src/modules/inspections/inspections.router.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "PATCH",
+        "path": "/api/inspections/:id",
+        "subPath": "/:id",
+        "file": "dustguard-operations/apps/server/src/modules/inspections/inspections.router.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/inspections/:id/submit",
+        "subPath": "/:id/submit",
+        "file": "dustguard-operations/apps/server/src/modules/inspections/inspections.router.ts",
+        "hasAuth": false,
+        "hasValidation": true,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/findings/",
+        "subPath": "/",
+        "file": "dustguard-operations/apps/server/src/modules/findings/findings.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/findings/:id/findings",
+        "subPath": "/:id/findings",
+        "file": "dustguard-operations/apps/server/src/modules/findings/findings.router.ts",
+        "hasAuth": false,
+        "hasValidation": true,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/actions/",
+        "subPath": "/",
+        "file": "dustguard-operations/apps/server/src/modules/actions/actions.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/actions/:id/actions",
+        "subPath": "/:id/actions",
+        "file": "dustguard-operations/apps/server/src/modules/actions/actions.router.ts",
+        "hasAuth": false,
+        "hasValidation": true,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "PATCH",
+        "path": "/api/actions/:id",
+        "subPath": "/:id",
+        "file": "dustguard-operations/apps/server/src/modules/actions/actions.router.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/actions/:id/remediation",
+        "subPath": "/:id/remediation",
+        "file": "dustguard-operations/apps/server/src/modules/actions/actions.router.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/actions/:id/review",
+        "subPath": "/:id/review",
+        "file": "dustguard-operations/apps/server/src/modules/actions/actions.router.ts",
+        "hasAuth": false,
+        "hasValidation": true,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/evidence/",
+        "subPath": "/",
+        "file": "dustguard-operations/apps/server/src/modules/evidence/evidence.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/evidence/:id/evidence",
+        "subPath": "/:id/evidence",
+        "file": "dustguard-operations/apps/server/src/modules/evidence/evidence.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/evidence/upload",
+        "subPath": "/upload",
+        "file": "dustguard-operations/apps/server/src/modules/evidence/evidence.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/evidence/:id/verify-hash",
+        "subPath": "/:id/verify-hash",
+        "file": "dustguard-operations/apps/server/src/modules/evidence/evidence.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/cases/:id/decision-support",
+        "subPath": "/cases/:id/decision-support",
+        "file": "dustguard-operations/apps/server/src/modules/decision-support/decisionSupport.router.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/cases/:id/human-decisions",
+        "subPath": "/cases/:id/human-decisions",
+        "file": "dustguard-operations/apps/server/src/modules/decision-support/decisionSupport.router.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/cases/:id/transition",
+        "subPath": "/cases/:id/transition",
+        "file": "dustguard-operations/apps/server/src/modules/decision-support/decisionSupport.router.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/cases/:id/closure-safety-check",
+        "subPath": "/cases/:id/closure-safety-check",
+        "file": "dustguard-operations/apps/server/src/modules/decision-support/decisionSupport.router.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/iot/devices",
+        "subPath": "/devices",
+        "file": "dustguard-operations/apps/server/src/modules/iot/iot.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/iot/alerts",
+        "subPath": "/alerts",
+        "file": "dustguard-operations/apps/server/src/modules/iot/iot.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/iot/devices",
+        "subPath": "/devices",
+        "file": "dustguard-operations/apps/server/src/modules/iot/iot.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/iot/devices/:id",
+        "subPath": "/devices/:id",
+        "file": "dustguard-operations/apps/server/src/modules/iot/iot.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/iot/devices/:id/create-case",
+        "subPath": "/devices/:id/create-case",
+        "file": "dustguard-operations/apps/server/src/modules/iot/iot.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/iot/devices/:id/link-case",
+        "subPath": "/devices/:id/link-case",
+        "file": "dustguard-operations/apps/server/src/modules/iot/iot.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/iot/devices/:id/readings",
+        "subPath": "/devices/:id/readings",
+        "file": "dustguard-operations/apps/server/src/modules/iot/iot.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/iot/ingest",
+        "subPath": "/ingest",
+        "file": "dustguard-operations/apps/server/src/modules/iot/iot.router.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/iot/telemetry",
+        "subPath": "/telemetry",
+        "file": "dustguard-operations/apps/server/src/modules/iot/iot.router.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/automations/rules",
+        "subPath": "/rules",
+        "file": "dustguard-operations/apps/server/src/modules/automations/automations.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/automations/rules",
+        "subPath": "/rules",
+        "file": "dustguard-operations/apps/server/src/modules/automations/automations.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "PATCH",
+        "path": "/api/automations/rules/:id",
+        "subPath": "/rules/:id",
+        "file": "dustguard-operations/apps/server/src/modules/automations/automations.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/automations/runs",
+        "subPath": "/runs",
+        "file": "dustguard-operations/apps/server/src/modules/automations/automations.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/reports/overview",
+        "subPath": "/overview",
+        "file": "dustguard-operations/apps/server/src/modules/reports/reports.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": false
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/search/",
+        "subPath": "/",
+        "file": "dustguard-operations/apps/server/src/modules/search/search.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/notifications/",
+        "subPath": "/",
+        "file": "dustguard-operations/apps/server/src/modules/notifications/notifications.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/notifications/:id/read",
+        "subPath": "/:id/read",
+        "file": "dustguard-operations/apps/server/src/modules/notifications/notifications.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/notifications/read-all",
+        "subPath": "/read-all",
+        "file": "dustguard-operations/apps/server/src/modules/notifications/notifications.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/integrations/community/cases",
+        "subPath": "/community/cases",
+        "file": "dustguard-operations/apps/server/src/modules/integrations/integrations.router.ts",
+        "hasAuth": false,
+        "hasValidation": true,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/integrations/community/feedback",
+        "subPath": "/community/feedback",
+        "file": "dustguard-operations/apps/server/src/modules/integrations/integrations.router.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/admin/users",
+        "subPath": "/users",
+        "file": "dustguard-operations/apps/server/src/modules/admin/admin.router.ts",
+        "hasAuth": true,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "POST",
+        "path": "/api/admin/users",
+        "subPath": "/users",
+        "file": "dustguard-operations/apps/server/src/modules/admin/admin.router.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "PATCH",
+        "path": "/api/admin/users/:id",
+        "subPath": "/users/:id",
+        "file": "dustguard-operations/apps/server/src/modules/admin/admin.router.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/admin/audit",
+        "subPath": "/audit",
+        "file": "dustguard-operations/apps/server/src/modules/admin/admin.router.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/admin/configs",
+        "subPath": "/configs",
+        "file": "dustguard-operations/apps/server/src/modules/admin/admin.router.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "PATCH",
+        "path": "/api/admin/configs/:key",
+        "subPath": "/configs/:key",
+        "file": "dustguard-operations/apps/server/src/modules/admin/admin.router.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": true
+      },
+      {
+        "side": "Side B (Operations)",
+        "method": "GET",
+        "path": "/api/admin/system-status",
+        "subPath": "/system-status",
+        "file": "dustguard-operations/apps/server/src/modules/admin/admin.router.ts",
+        "hasAuth": false,
+        "hasValidation": false,
+        "callsDb": false
+      }
+    ]
+  }
+}

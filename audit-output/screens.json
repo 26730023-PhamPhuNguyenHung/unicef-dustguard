@@ -1,0 +1,1253 @@
+{
+  "sideA": {
+    "totalRoutes": 53,
+    "uniqueScreensCount": 29,
+    "screens": [
+      {
+        "component": "LandingPage",
+        "file": "apps/web/src/pages/LandingPage.tsx",
+        "routes": [
+          "/",
+          "/landing"
+        ],
+        "meta": {
+          "hasForm": false,
+          "hasTable": false,
+          "hasModal": false,
+          "isDashboard": false,
+          "lines": 49
+        }
+      },
+      {
+        "component": "LoginPage",
+        "file": "apps/web/src/pages/LoginPage.tsx",
+        "routes": [
+          "/login"
+        ],
+        "meta": {
+          "hasForm": true,
+          "hasTable": false,
+          "hasModal": false,
+          "isDashboard": false,
+          "lines": 246
+        }
+      },
+      {
+        "component": "RegisterPage",
+        "file": "apps/web/src/pages/RegisterPage.tsx",
+        "routes": [
+          "/register"
+        ],
+        "meta": {
+          "hasForm": true,
+          "hasTable": false,
+          "hasModal": false,
+          "isDashboard": true,
+          "lines": 164
+        }
+      },
+      {
+        "component": "ForgotPasswordPage",
+        "file": "apps/web/src/pages/ForgotPasswordPage.tsx",
+        "routes": [
+          "/forgot-password"
+        ],
+        "meta": {
+          "hasForm": true,
+          "hasTable": false,
+          "hasModal": false,
+          "isDashboard": false,
+          "lines": 90
+        }
+      },
+      {
+        "component": "DashboardPage",
+        "file": "apps/web/src/pages/DashboardPage.tsx",
+        "routes": [
+          "/dashboard"
+        ],
+        "meta": {
+          "hasForm": false,
+          "hasTable": false,
+          "hasModal": false,
+          "isDashboard": true,
+          "lines": 159
+        }
+      },
+      {
+        "component": "MapPage",
+        "file": "apps/web/src/pages/MapPage.tsx",
+        "routes": [
+          "/map"
+        ],
+        "meta": {
+          "hasForm": false,
+          "hasTable": false,
+          "hasModal": false,
+          "isDashboard": false,
+          "lines": 127
+        }
+      },
+      {
+        "component": "ReportsListPage",
+        "file": "apps/web/src/pages/ReportsListPage.tsx",
+        "routes": [
+          "/reports"
+        ],
+        "meta": {
+          "hasForm": true,
+          "hasTable": false,
+          "hasModal": false,
+          "isDashboard": false,
+          "lines": 133
+        }
+      },
+      {
+        "component": "CreateReportPage",
+        "file": "apps/web/src/pages/CreateReportPage.tsx",
+        "routes": [
+          "/reports/new"
+        ],
+        "meta": {
+          "hasForm": true,
+          "hasTable": false,
+          "hasModal": true,
+          "isDashboard": true,
+          "lines": 908
+        }
+      },
+      {
+        "component": "ReportDetailPage",
+        "file": "apps/web/src/pages/ReportDetailPage.tsx",
+        "routes": [
+          "/reports/:id"
+        ],
+        "meta": {
+          "hasForm": false,
+          "hasTable": false,
+          "hasModal": false,
+          "isDashboard": false,
+          "lines": 221
+        }
+      },
+      {
+        "component": "CaseDetailPage",
+        "file": "apps/web/src/pages/CaseDetailPage.tsx",
+        "routes": [
+          "/cases/:id"
+        ],
+        "meta": {
+          "hasForm": false,
+          "hasTable": false,
+          "hasModal": false,
+          "isDashboard": true,
+          "lines": 467
+        }
+      },
+      {
+        "component": "SubmitObservationPage",
+        "file": "apps/web/src/pages/SubmitObservationPage.tsx",
+        "routes": [
+          "/cases/:id/observe"
+        ],
+        "meta": {
+          "hasForm": true,
+          "hasTable": false,
+          "hasModal": false,
+          "isDashboard": false,
+          "lines": 270
+        }
+      },
+      {
+        "component": "MyTrackingPage",
+        "file": "apps/web/src/pages/MyTrackingPage.tsx",
+        "routes": [
+          "/following"
+        ],
+        "meta": {
+          "hasForm": false,
+          "hasTable": false,
+          "hasModal": false,
+          "isDashboard": false,
+          "lines": 162
+        }
+      },
+      {
+        "component": "CommunitiesPage",
+        "file": "apps/web/src/pages/CommunitiesPage.tsx",
+        "routes": [
+          "/communities"
+        ],
+        "meta": {
+          "hasForm": false,
+          "hasTable": false,
+          "hasModal": false,
+          "isDashboard": false,
+          "lines": 157
+        }
+      },
+      {
+        "component": "CommunityDetailPage",
+        "file": "apps/web/src/pages/CommunityDetailPage.tsx",
+        "routes": [
+          "/communities/:slug"
+        ],
+        "meta": {
+          "hasForm": true,
+          "hasTable": false,
+          "hasModal": false,
+          "isDashboard": false,
+          "lines": 324
+        }
+      },
+      {
+        "component": "TasksPage",
+        "file": "apps/web/src/pages/TasksPage.tsx",
+        "routes": [
+          "/tasks"
+        ],
+        "meta": {
+          "hasForm": true,
+          "hasTable": false,
+          "hasModal": true,
+          "isDashboard": false,
+          "lines": 445
+        }
+      },
+      {
+        "component": "NotificationsPage",
+        "file": "apps/web/src/pages/NotificationsPage.tsx",
+        "routes": [
+          "/notifications"
+        ],
+        "meta": {
+          "hasForm": false,
+          "hasTable": false,
+          "hasModal": false,
+          "isDashboard": true,
+          "lines": 143
+        }
+      },
+      {
+        "component": "ContributionsPage",
+        "file": "apps/web/src/pages/ContributionsPage.tsx",
+        "routes": [
+          "/contributions"
+        ],
+        "meta": {
+          "hasForm": false,
+          "hasTable": false,
+          "hasModal": false,
+          "isDashboard": false,
+          "lines": 117
+        }
+      },
+      {
+        "component": "YouthCreditsPage",
+        "file": "apps/web/src/pages/YouthCreditsPage.tsx",
+        "routes": [
+          "/credits",
+          "/youth/credits"
+        ],
+        "meta": {
+          "hasForm": false,
+          "hasTable": true,
+          "hasModal": true,
+          "isDashboard": false,
+          "lines": 239
+        }
+      },
+      {
+        "component": "ProfilePage",
+        "file": "apps/web/src/pages/ProfilePage.tsx",
+        "routes": [
+          "/profile"
+        ],
+        "meta": {
+          "hasForm": true,
+          "hasTable": false,
+          "hasModal": false,
+          "isDashboard": false,
+          "lines": 208
+        }
+      },
+      {
+        "component": "VerificationInboxPage",
+        "file": "apps/web/src/pages/VerificationInboxPage.tsx",
+        "routes": [
+          "/moderator/inbox",
+          "/moderator/verification"
+        ],
+        "meta": {
+          "hasForm": false,
+          "hasTable": true,
+          "hasModal": false,
+          "isDashboard": false,
+          "lines": 224
+        }
+      },
+      {
+        "component": "VerificationDetailPage",
+        "file": "apps/web/src/pages/VerificationDetailPage.tsx",
+        "routes": [
+          "/moderator/verification/:id"
+        ],
+        "meta": {
+          "hasForm": true,
+          "hasTable": false,
+          "hasModal": true,
+          "isDashboard": false,
+          "lines": 724
+        }
+      },
+      {
+        "component": "CaseCoordinationPage",
+        "file": "apps/web/src/pages/CaseCoordinationPage.tsx",
+        "routes": [
+          "/moderator/cases"
+        ],
+        "meta": {
+          "hasForm": true,
+          "hasTable": false,
+          "hasModal": true,
+          "isDashboard": false,
+          "lines": 256
+        }
+      },
+      {
+        "component": "ModerationQueuePage",
+        "file": "apps/web/src/pages/ModerationQueuePage.tsx",
+        "routes": [
+          "/moderator/content"
+        ],
+        "meta": {
+          "hasForm": false,
+          "hasTable": false,
+          "hasModal": false,
+          "isDashboard": false,
+          "lines": 120
+        }
+      },
+      {
+        "component": "ModeratorDashboardPage",
+        "file": "apps/web/src/pages/ModeratorDashboardPage.tsx",
+        "routes": [
+          "/moderator/dashboard"
+        ],
+        "meta": {
+          "hasForm": false,
+          "hasTable": true,
+          "hasModal": false,
+          "isDashboard": true,
+          "lines": 146
+        }
+      },
+      {
+        "component": "AdminOverviewPage",
+        "file": "apps/web/src/pages/AdminOverviewPage.tsx",
+        "routes": [
+          "/admin/overview"
+        ],
+        "meta": {
+          "hasForm": false,
+          "hasTable": false,
+          "hasModal": false,
+          "isDashboard": true,
+          "lines": 217
+        }
+      },
+      {
+        "component": "AdminUsersPage",
+        "file": "apps/web/src/pages/AdminUsersPage.tsx",
+        "routes": [
+          "/admin/users"
+        ],
+        "meta": {
+          "hasForm": false,
+          "hasTable": true,
+          "hasModal": false,
+          "isDashboard": false,
+          "lines": 206
+        }
+      },
+      {
+        "component": "AdminAuditPage",
+        "file": "apps/web/src/pages/AdminAuditPage.tsx",
+        "routes": [
+          "/admin/audit"
+        ],
+        "meta": {
+          "hasForm": false,
+          "hasTable": true,
+          "hasModal": false,
+          "isDashboard": false,
+          "lines": 111
+        }
+      },
+      {
+        "component": "ContractorPortalPage",
+        "file": "apps/web/src/pages/contractor/ContractorPortalPage.tsx",
+        "routes": [
+          "/contractor",
+          "/contractor/portal",
+          "/contractor/actions",
+          "/contractor/access/:token"
+        ],
+        "meta": {
+          "hasForm": false,
+          "hasTable": false,
+          "hasModal": false,
+          "isDashboard": true,
+          "lines": 250
+        }
+      },
+      {
+        "component": "ContractorRemediationPage",
+        "file": "apps/web/src/pages/contractor/ContractorRemediationPage.tsx",
+        "routes": [
+          "/contractor/actions/:id",
+          "/contractor/remediation/:id"
+        ],
+        "meta": {
+          "hasForm": true,
+          "hasTable": false,
+          "hasModal": false,
+          "isDashboard": false,
+          "lines": 472
+        }
+      }
+    ]
+  },
+  "sideB": {
+    "totalRoutes": 42,
+    "uniqueScreensCount": 31,
+    "screens": [
+      {
+        "component": "LoginPage",
+        "file": "dustguard-operations/apps/web/src/pages/LoginPage.tsx",
+        "routes": [
+          "/login"
+        ],
+        "meta": {
+          "hasForm": true,
+          "hasTable": false,
+          "hasModal": false,
+          "isDashboard": true,
+          "lines": 204
+        }
+      },
+      {
+        "component": "SetupPage",
+        "file": "dustguard-operations/apps/web/src/pages/SetupPage.tsx",
+        "routes": [
+          "/setup"
+        ],
+        "meta": {
+          "hasForm": true,
+          "hasTable": false,
+          "hasModal": false,
+          "isDashboard": true,
+          "lines": 322
+        }
+      },
+      {
+        "component": "DashboardPage",
+        "file": "dustguard-operations/apps/web/src/pages/DashboardPage.tsx",
+        "routes": [
+          "dashboard"
+        ],
+        "meta": {
+          "hasForm": false,
+          "hasTable": true,
+          "hasModal": false,
+          "isDashboard": true,
+          "lines": 548
+        }
+      },
+      {
+        "component": "ProjectsPage",
+        "file": "dustguard-operations/apps/web/src/pages/ProjectsPage.tsx",
+        "routes": [
+          "projects"
+        ],
+        "meta": {
+          "hasForm": true,
+          "hasTable": true,
+          "hasModal": true,
+          "isDashboard": false,
+          "lines": 424
+        }
+      },
+      {
+        "component": "ContractorsPage",
+        "file": "dustguard-operations/apps/web/src/pages/ContractorsPage.tsx",
+        "routes": [
+          "contractors"
+        ],
+        "meta": {
+          "hasForm": true,
+          "hasTable": true,
+          "hasModal": true,
+          "isDashboard": false,
+          "lines": 350
+        }
+      },
+      {
+        "component": "TasksPage",
+        "file": "dustguard-operations/apps/web/src/pages/TasksPage.tsx",
+        "routes": [
+          "tasks"
+        ],
+        "meta": {
+          "hasForm": true,
+          "hasTable": true,
+          "hasModal": true,
+          "isDashboard": false,
+          "lines": 850
+        }
+      },
+      {
+        "component": "CaseInboxPage",
+        "file": "dustguard-operations/apps/web/src/pages/CaseInboxPage.tsx",
+        "routes": [
+          "cases"
+        ],
+        "meta": {
+          "hasForm": true,
+          "hasTable": true,
+          "hasModal": true,
+          "isDashboard": false,
+          "lines": 517
+        }
+      },
+      {
+        "component": "CaseDetailPage",
+        "file": "dustguard-operations/apps/web/src/pages/CaseDetailPage.tsx",
+        "routes": [
+          "cases/:id",
+          "cases/:id/evidence",
+          "cases/:id/iot",
+          "cases/:id/inspection",
+          "cases/:id/actions",
+          "cases/:id/timeline"
+        ],
+        "meta": {
+          "hasForm": true,
+          "hasTable": true,
+          "hasModal": true,
+          "isDashboard": true,
+          "lines": 1652
+        }
+      },
+      {
+        "component": "LegalWorkspacePage",
+        "file": "dustguard-operations/apps/web/src/pages/LegalWorkspacePage.tsx",
+        "routes": [
+          "cases/:id/legal"
+        ],
+        "meta": {
+          "hasForm": true,
+          "hasTable": false,
+          "hasModal": true,
+          "isDashboard": false,
+          "lines": 1476
+        }
+      },
+      {
+        "component": "InspectionPlanPage",
+        "file": "dustguard-operations/apps/web/src/pages/InspectionPlanPage.tsx",
+        "routes": [
+          "cases/:id/inspection/new",
+          "inspections/new"
+        ],
+        "meta": {
+          "hasForm": true,
+          "hasTable": false,
+          "hasModal": false,
+          "isDashboard": false,
+          "lines": 178
+        }
+      },
+      {
+        "component": "LegalLibraryPage",
+        "file": "dustguard-operations/apps/web/src/pages/LegalLibraryPage.tsx",
+        "routes": [
+          "legal/library",
+          "legal/documents"
+        ],
+        "meta": {
+          "hasForm": true,
+          "hasTable": true,
+          "hasModal": false,
+          "isDashboard": false,
+          "lines": 163
+        }
+      },
+      {
+        "component": "LegalImportPage",
+        "file": "dustguard-operations/apps/web/src/pages/LegalImportPage.tsx",
+        "routes": [
+          "legal/import"
+        ],
+        "meta": {
+          "hasForm": true,
+          "hasTable": false,
+          "hasModal": false,
+          "isDashboard": false,
+          "lines": 380
+        }
+      },
+      {
+        "component": "LegalDocDetailPage",
+        "file": "dustguard-operations/apps/web/src/pages/LegalDocDetailPage.tsx",
+        "routes": [
+          "legal/documents/:id"
+        ],
+        "meta": {
+          "hasForm": false,
+          "hasTable": false,
+          "hasModal": false,
+          "isDashboard": false,
+          "lines": 96
+        }
+      },
+      {
+        "component": "InspectionListPage",
+        "file": "dustguard-operations/apps/web/src/pages/InspectionListPage.tsx",
+        "routes": [
+          "inspections"
+        ],
+        "meta": {
+          "hasForm": false,
+          "hasTable": true,
+          "hasModal": false,
+          "isDashboard": false,
+          "lines": 112
+        }
+      },
+      {
+        "component": "FieldInspectionPage",
+        "file": "dustguard-operations/apps/web/src/pages/FieldInspectionPage.tsx",
+        "routes": [
+          "inspections/:id"
+        ],
+        "meta": {
+          "hasForm": true,
+          "hasTable": false,
+          "hasModal": true,
+          "isDashboard": false,
+          "lines": 492
+        }
+      },
+      {
+        "component": "InspectionResultPage",
+        "file": "dustguard-operations/apps/web/src/pages/InspectionResultPage.tsx",
+        "routes": [
+          "inspections/:id/result"
+        ],
+        "meta": {
+          "hasForm": false,
+          "hasTable": false,
+          "hasModal": false,
+          "isDashboard": false,
+          "lines": 215
+        }
+      },
+      {
+        "component": "InspectionExportPage",
+        "file": "dustguard-operations/apps/web/src/pages/InspectionExportPage.tsx",
+        "routes": [
+          "inspections/:id/export"
+        ],
+        "meta": {
+          "hasForm": false,
+          "hasTable": true,
+          "hasModal": false,
+          "isDashboard": false,
+          "lines": 258
+        }
+      },
+      {
+        "component": "ActionsListPage",
+        "file": "dustguard-operations/apps/web/src/pages/ActionsListPage.tsx",
+        "routes": [
+          "actions"
+        ],
+        "meta": {
+          "hasForm": true,
+          "hasTable": true,
+          "hasModal": true,
+          "isDashboard": false,
+          "lines": 263
+        }
+      },
+      {
+        "component": "RemediationReviewPage",
+        "file": "dustguard-operations/apps/web/src/pages/RemediationReviewPage.tsx",
+        "routes": [
+          "actions/:id/remediation"
+        ],
+        "meta": {
+          "hasForm": true,
+          "hasTable": false,
+          "hasModal": false,
+          "isDashboard": false,
+          "lines": 204
+        }
+      },
+      {
+        "component": "ActionNoticeExportPage",
+        "file": "dustguard-operations/apps/web/src/pages/ActionNoticeExportPage.tsx",
+        "routes": [
+          "actions/:id/notice"
+        ],
+        "meta": {
+          "hasForm": false,
+          "hasTable": true,
+          "hasModal": false,
+          "isDashboard": false,
+          "lines": 200
+        }
+      },
+      {
+        "component": "IotDevicesPage",
+        "file": "dustguard-operations/apps/web/src/pages/IotDevicesPage.tsx",
+        "routes": [
+          "iot",
+          "iot/devices"
+        ],
+        "meta": {
+          "hasForm": true,
+          "hasTable": true,
+          "hasModal": true,
+          "isDashboard": true,
+          "lines": 605
+        }
+      },
+      {
+        "component": "IotDeviceDetailPage",
+        "file": "dustguard-operations/apps/web/src/pages/IotDeviceDetailPage.tsx",
+        "routes": [
+          "iot/devices/:id"
+        ],
+        "meta": {
+          "hasForm": true,
+          "hasTable": true,
+          "hasModal": true,
+          "isDashboard": false,
+          "lines": 485
+        }
+      },
+      {
+        "component": "AutomationsPage",
+        "file": "dustguard-operations/apps/web/src/pages/AutomationsPage.tsx",
+        "routes": [
+          "automations"
+        ],
+        "meta": {
+          "hasForm": false,
+          "hasTable": true,
+          "hasModal": false,
+          "isDashboard": false,
+          "lines": 230
+        }
+      },
+      {
+        "component": "EvidencePage",
+        "file": "dustguard-operations/apps/web/src/pages/EvidencePage.tsx",
+        "routes": [
+          "evidence"
+        ],
+        "meta": {
+          "hasForm": true,
+          "hasTable": false,
+          "hasModal": true,
+          "isDashboard": false,
+          "lines": 665
+        }
+      },
+      {
+        "component": "ReportsPage",
+        "file": "dustguard-operations/apps/web/src/pages/ReportsPage.tsx",
+        "routes": [
+          "reports"
+        ],
+        "meta": {
+          "hasForm": false,
+          "hasTable": false,
+          "hasModal": false,
+          "isDashboard": false,
+          "lines": 337
+        }
+      },
+      {
+        "component": "NotificationsPage",
+        "file": "dustguard-operations/apps/web/src/pages/NotificationsPage.tsx",
+        "routes": [
+          "notifications"
+        ],
+        "meta": {
+          "hasForm": false,
+          "hasTable": true,
+          "hasModal": false,
+          "isDashboard": false,
+          "lines": 110
+        }
+      },
+      {
+        "component": "ProfilePage",
+        "file": "dustguard-operations/apps/web/src/pages/ProfilePage.tsx",
+        "routes": [
+          "profile"
+        ],
+        "meta": {
+          "hasForm": false,
+          "hasTable": false,
+          "hasModal": false,
+          "isDashboard": false,
+          "lines": 95
+        }
+      },
+      {
+        "component": "SupervisorWorkloadPage",
+        "file": "dustguard-operations/apps/web/src/pages/SupervisorWorkloadPage.tsx",
+        "routes": [
+          "supervisor/workload"
+        ],
+        "meta": {
+          "hasForm": false,
+          "hasTable": true,
+          "hasModal": false,
+          "isDashboard": true,
+          "lines": 180
+        }
+      },
+      {
+        "component": "AdminUsersPage",
+        "file": "dustguard-operations/apps/web/src/pages/AdminUsersPage.tsx",
+        "routes": [
+          "admin/users"
+        ],
+        "meta": {
+          "hasForm": true,
+          "hasTable": true,
+          "hasModal": true,
+          "isDashboard": false,
+          "lines": 245
+        }
+      },
+      {
+        "component": "AdminAuditPage",
+        "file": "dustguard-operations/apps/web/src/pages/AdminAuditPage.tsx",
+        "routes": [
+          "admin/audit"
+        ],
+        "meta": {
+          "hasForm": false,
+          "hasTable": true,
+          "hasModal": false,
+          "isDashboard": false,
+          "lines": 115
+        }
+      },
+      {
+        "component": "AdminSettingsPage",
+        "file": "dustguard-operations/apps/web/src/pages/AdminSettingsPage.tsx",
+        "routes": [
+          "admin/settings"
+        ],
+        "meta": {
+          "hasForm": false,
+          "hasTable": true,
+          "hasModal": false,
+          "isDashboard": false,
+          "lines": 186
+        }
+      }
+    ]
+  },
+  "legacy": {
+    "totalRoutes": 124,
+    "uniqueScreensCount": 63,
+    "screens": [
+      {
+        "component": "DocumentsListPage",
+        "routes": [
+          "/documents"
+        ]
+      },
+      {
+        "component": "TemplatesGalleryPage",
+        "routes": [
+          "/documents/templates"
+        ]
+      },
+      {
+        "component": "DocumentEditorPage",
+        "routes": [
+          "/documents/new"
+        ]
+      },
+      {
+        "component": "DocumentPreviewPage",
+        "routes": [
+          "/documents/:id/preview"
+        ]
+      },
+      {
+        "component": "PolicyIntelligencePage",
+        "routes": [
+          "/policy"
+        ]
+      },
+      {
+        "component": "Navigate",
+        "routes": [
+          "/app/*"
+        ]
+      },
+      {
+        "component": "AdminLayout",
+        "routes": [
+          "/admin"
+        ]
+      },
+      {
+        "component": "AdminDispatchPage",
+        "routes": [
+          "dispatch"
+        ]
+      },
+      {
+        "component": "StaffAssignmentPage",
+        "routes": [
+          "dispatch/assign"
+        ]
+      },
+      {
+        "component": "CasesListPage",
+        "routes": [
+          "cases"
+        ]
+      },
+      {
+        "component": "CaseDetailPage",
+        "routes": [
+          "cases/:id"
+        ]
+      },
+      {
+        "component": "UsersPage",
+        "routes": [
+          "users"
+        ]
+      },
+      {
+        "component": "SitesListPage",
+        "routes": [
+          "sites"
+        ]
+      },
+      {
+        "component": "SiteDetailPage",
+        "routes": [
+          "sites/:id"
+        ]
+      },
+      {
+        "component": "SettingsPage",
+        "routes": [
+          "settings"
+        ]
+      },
+      {
+        "component": "CitizenLayout",
+        "routes": [
+          "/citizen"
+        ]
+      },
+      {
+        "component": "ReportNewPage",
+        "routes": [
+          "report/new"
+        ]
+      },
+      {
+        "component": "ReportConfirmPage",
+        "routes": [
+          "report/confirm/:id"
+        ]
+      },
+      {
+        "component": "ReportsListPage",
+        "routes": [
+          "reports"
+        ]
+      },
+      {
+        "component": "ReportDetailPage",
+        "routes": [
+          "reports/:id"
+        ]
+      },
+      {
+        "component": "CitizenProfilePage",
+        "routes": [
+          "profile"
+        ]
+      },
+      {
+        "component": "CommunityLayout",
+        "routes": [
+          "/community"
+        ]
+      },
+      {
+        "component": "CommunityMapPage",
+        "routes": [
+          "map"
+        ]
+      },
+      {
+        "component": "CommunityMissionsPage",
+        "routes": [
+          "missions"
+        ]
+      },
+      {
+        "component": "CommunityObservePage",
+        "routes": [
+          "observe"
+        ]
+      },
+      {
+        "component": "CommunityCreditsPage",
+        "routes": [
+          "credits"
+        ]
+      },
+      {
+        "component": "CommunityImpactPage",
+        "routes": [
+          "impact"
+        ]
+      },
+      {
+        "component": "ContractorLayout",
+        "routes": [
+          "/contractor"
+        ]
+      },
+      {
+        "component": "ContractorSitesPage",
+        "routes": [
+          "sites"
+        ]
+      },
+      {
+        "component": "ContractorTasksPage",
+        "routes": [
+          "tasks"
+        ]
+      },
+      {
+        "component": "ContractorCompliancePage",
+        "routes": [
+          "compliance"
+        ]
+      },
+      {
+        "component": "ContractorCasesPage",
+        "routes": [
+          "cases"
+        ]
+      },
+      {
+        "component": "ContractorReportsPage",
+        "routes": [
+          "reports"
+        ]
+      },
+      {
+        "component": "ExecutiveLayout",
+        "routes": [
+          "/executive"
+        ]
+      },
+      {
+        "component": "ExecutiveApprovals",
+        "routes": [
+          "approvals"
+        ]
+      },
+      {
+        "component": "ExecutiveReports",
+        "routes": [
+          "reports"
+        ]
+      },
+      {
+        "component": "ExecutiveHeatmap",
+        "routes": [
+          "heatmap"
+        ]
+      },
+      {
+        "component": "ExecutiveCases",
+        "routes": [
+          "cases"
+        ]
+      },
+      {
+        "component": "LandingPage",
+        "routes": [
+          "/"
+        ]
+      },
+      {
+        "component": "DemoHub",
+        "routes": [
+          "/demo"
+        ]
+      },
+      {
+        "component": "IoTDemo",
+        "routes": [
+          "/demo/iot"
+        ]
+      },
+      {
+        "component": "YouthCredits",
+        "routes": [
+          "/youth"
+        ]
+      },
+      {
+        "component": "YouthCertificate",
+        "routes": [
+          "/certificate"
+        ]
+      },
+      {
+        "component": "CitizenMap",
+        "routes": [
+          "/map"
+        ]
+      },
+      {
+        "component": "SensorGuide",
+        "routes": [
+          "/guide"
+        ]
+      },
+      {
+        "component": "Login",
+        "routes": [
+          "/login"
+        ]
+      },
+      {
+        "component": "NotFound",
+        "routes": [
+          "*"
+        ]
+      },
+      {
+        "component": "StaffLayout",
+        "routes": [
+          "/staff"
+        ]
+      },
+      {
+        "component": "StaffTodayPage",
+        "routes": [
+          "today"
+        ]
+      },
+      {
+        "component": "StaffDashboardPage",
+        "routes": [
+          "dashboard"
+        ]
+      },
+      {
+        "component": "TasksListPage",
+        "routes": [
+          "tasks"
+        ]
+      },
+      {
+        "component": "TaskDetailPage",
+        "routes": [
+          "tasks/:id"
+        ]
+      },
+      {
+        "component": "FieldChecklistPage",
+        "routes": [
+          "tasks/:id/checklist"
+        ]
+      },
+      {
+        "component": "FieldEvidencePage",
+        "routes": [
+          "tasks/:id/evidence"
+        ]
+      },
+      {
+        "component": "FieldConclusionPage",
+        "routes": [
+          "tasks/:id/conclusion"
+        ]
+      },
+      {
+        "component": "StaffMonitoringPage",
+        "routes": [
+          "monitoring"
+        ]
+      },
+      {
+        "component": "StaffAlertsPage",
+        "routes": [
+          "alerts"
+        ]
+      },
+      {
+        "component": "StaffReportsPage",
+        "routes": [
+          "reports"
+        ]
+      },
+      {
+        "component": "StaffProfilePage",
+        "routes": [
+          "profile"
+        ]
+      },
+      {
+        "component": "StaffNotificationsPage",
+        "routes": [
+          "notifications"
+        ]
+      },
+      {
+        "component": "StaffSettingsPage",
+        "routes": [
+          "settings"
+        ]
+      },
+      {
+        "component": "StaffActivityPage",
+        "routes": [
+          "activity"
+        ]
+      },
+      {
+        "component": "StaffHelpPage",
+        "routes": [
+          "help"
+        ]
+      }
+    ]
+  }
+}

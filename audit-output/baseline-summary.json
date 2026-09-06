@@ -1,0 +1,3028 @@
+{
+  "db": {
+    "sideA": {
+      "path": "data/dustguard-community.db",
+      "tables": [
+        {
+          "name": "users",
+          "columnCount": 15,
+          "columns": [
+            "id",
+            "email",
+            "phone",
+            "password_hash",
+            "full_name",
+            "avatar_url",
+            "role",
+            "status",
+            "district",
+            "ward",
+            "bio",
+            "display_identity",
+            "created_at",
+            "updated_at",
+            "last_login_at"
+          ],
+          "indexCount": 5,
+          "indexes": [
+            "users_status_idx",
+            "users_role_idx",
+            "users_email_idx",
+            "sqlite_autoindex_users_2",
+            "sqlite_autoindex_users_1"
+          ],
+          "foreignKeys": []
+        },
+        {
+          "name": "cases",
+          "columnCount": 21,
+          "columns": [
+            "id",
+            "case_code",
+            "title",
+            "summary",
+            "category",
+            "latitude",
+            "longitude",
+            "address",
+            "ward",
+            "district",
+            "city",
+            "status",
+            "priority",
+            "signal_count",
+            "unique_reporter_count",
+            "first_reported_at",
+            "last_activity_at",
+            "resolved_at",
+            "created_by",
+            "created_at",
+            "updated_at"
+          ],
+          "indexCount": 6,
+          "indexes": [
+            "cases_district_idx",
+            "cases_geo_idx",
+            "cases_created_at_idx",
+            "cases_status_idx",
+            "sqlite_autoindex_cases_2",
+            "sqlite_autoindex_cases_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "created_by",
+              "toTable": "users",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "reports",
+          "columnCount": 20,
+          "columns": [
+            "id",
+            "report_code",
+            "reporter_id",
+            "title",
+            "description",
+            "category",
+            "latitude",
+            "longitude",
+            "address",
+            "ward",
+            "district",
+            "city",
+            "observed_at",
+            "visibility",
+            "status",
+            "severity_observation",
+            "source",
+            "case_id",
+            "created_at",
+            "updated_at"
+          ],
+          "indexCount": 7,
+          "indexes": [
+            "reports_status_created_idx",
+            "reports_case_idx",
+            "reports_reporter_idx",
+            "reports_created_at_idx",
+            "reports_status_idx",
+            "sqlite_autoindex_reports_2",
+            "sqlite_autoindex_reports_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "case_id",
+              "toTable": "cases",
+              "toCol": "id"
+            },
+            {
+              "from": "reporter_id",
+              "toTable": "users",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "report_media",
+          "columnCount": 14,
+          "columns": [
+            "id",
+            "report_id",
+            "uploaded_by",
+            "file_name",
+            "file_path",
+            "mime_type",
+            "file_size",
+            "media_type",
+            "caption",
+            "sha256_hash",
+            "captured_at",
+            "latitude",
+            "longitude",
+            "created_at"
+          ],
+          "indexCount": 2,
+          "indexes": [
+            "report_media_report_idx",
+            "sqlite_autoindex_report_media_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "uploaded_by",
+              "toTable": "users",
+              "toCol": "id"
+            },
+            {
+              "from": "report_id",
+              "toTable": "reports",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "case_reports",
+          "columnCount": 5,
+          "columns": [
+            "id",
+            "case_id",
+            "report_id",
+            "linked_by",
+            "created_at"
+          ],
+          "indexCount": 2,
+          "indexes": [
+            "case_report_unique",
+            "sqlite_autoindex_case_reports_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "linked_by",
+              "toTable": "users",
+              "toCol": "id"
+            },
+            {
+              "from": "report_id",
+              "toTable": "reports",
+              "toCol": "id"
+            },
+            {
+              "from": "case_id",
+              "toTable": "cases",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "observations",
+          "columnCount": 9,
+          "columns": [
+            "id",
+            "case_id",
+            "user_id",
+            "observation_type",
+            "comment",
+            "observed_at",
+            "latitude",
+            "longitude",
+            "created_at"
+          ],
+          "indexCount": 3,
+          "indexes": [
+            "observations_user_idx",
+            "observations_case_idx",
+            "sqlite_autoindex_observations_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "user_id",
+              "toTable": "users",
+              "toCol": "id"
+            },
+            {
+              "from": "case_id",
+              "toTable": "cases",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "observation_media",
+          "columnCount": 7,
+          "columns": [
+            "id",
+            "observation_id",
+            "file_path",
+            "mime_type",
+            "file_size",
+            "sha256_hash",
+            "created_at"
+          ],
+          "indexCount": 2,
+          "indexes": [
+            "obs_media_idx",
+            "sqlite_autoindex_observation_media_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "observation_id",
+              "toTable": "observations",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "confirmations",
+          "columnCount": 4,
+          "columns": [
+            "id",
+            "case_id",
+            "user_id",
+            "created_at"
+          ],
+          "indexCount": 2,
+          "indexes": [
+            "confirmations_unique",
+            "sqlite_autoindex_confirmations_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "user_id",
+              "toTable": "users",
+              "toCol": "id"
+            },
+            {
+              "from": "case_id",
+              "toTable": "cases",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "saved_cases",
+          "columnCount": 4,
+          "columns": [
+            "id",
+            "case_id",
+            "user_id",
+            "created_at"
+          ],
+          "indexCount": 2,
+          "indexes": [
+            "saved_cases_unique",
+            "sqlite_autoindex_saved_cases_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "user_id",
+              "toTable": "users",
+              "toCol": "id"
+            },
+            {
+              "from": "case_id",
+              "toTable": "cases",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "case_updates",
+          "columnCount": 10,
+          "columns": [
+            "id",
+            "case_id",
+            "update_type",
+            "title",
+            "content",
+            "old_status",
+            "new_status",
+            "created_by",
+            "is_public",
+            "created_at"
+          ],
+          "indexCount": 2,
+          "indexes": [
+            "case_updates_case_idx",
+            "sqlite_autoindex_case_updates_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "created_by",
+              "toTable": "users",
+              "toCol": "id"
+            },
+            {
+              "from": "case_id",
+              "toTable": "cases",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "verification_tasks",
+          "columnCount": 15,
+          "columns": [
+            "id",
+            "case_id",
+            "title",
+            "description",
+            "task_type",
+            "latitude",
+            "longitude",
+            "address",
+            "assigned_to",
+            "status",
+            "due_at",
+            "created_by",
+            "created_at",
+            "updated_at",
+            "completed_at"
+          ],
+          "indexCount": 3,
+          "indexes": [
+            "tasks_assigned_idx",
+            "tasks_status_idx",
+            "sqlite_autoindex_verification_tasks_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "created_by",
+              "toTable": "users",
+              "toCol": "id"
+            },
+            {
+              "from": "assigned_to",
+              "toTable": "users",
+              "toCol": "id"
+            },
+            {
+              "from": "case_id",
+              "toTable": "cases",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "task_submissions",
+          "columnCount": 11,
+          "columns": [
+            "id",
+            "task_id",
+            "user_id",
+            "result",
+            "note",
+            "submitted_at",
+            "evidence_hash",
+            "evidence_url",
+            "latitude",
+            "longitude",
+            "is_within_50m"
+          ],
+          "indexCount": 2,
+          "indexes": [
+            "task_submissions_task_idx",
+            "sqlite_autoindex_task_submissions_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "user_id",
+              "toTable": "users",
+              "toCol": "id"
+            },
+            {
+              "from": "task_id",
+              "toTable": "verification_tasks",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "communities",
+          "columnCount": 11,
+          "columns": [
+            "id",
+            "name",
+            "slug",
+            "description",
+            "cover_url",
+            "district",
+            "ward",
+            "status",
+            "created_by",
+            "created_at",
+            "updated_at"
+          ],
+          "indexCount": 4,
+          "indexes": [
+            "communities_district_idx",
+            "communities_slug_idx",
+            "sqlite_autoindex_communities_2",
+            "sqlite_autoindex_communities_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "created_by",
+              "toTable": "users",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "community_members",
+          "columnCount": 5,
+          "columns": [
+            "id",
+            "community_id",
+            "user_id",
+            "role",
+            "joined_at"
+          ],
+          "indexCount": 3,
+          "indexes": [
+            "comm_member_user_idx",
+            "comm_member_unique",
+            "sqlite_autoindex_community_members_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "user_id",
+              "toTable": "users",
+              "toCol": "id"
+            },
+            {
+              "from": "community_id",
+              "toTable": "communities",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "posts",
+          "columnCount": 10,
+          "columns": [
+            "id",
+            "community_id",
+            "author_id",
+            "post_type",
+            "title",
+            "content",
+            "case_id",
+            "status",
+            "created_at",
+            "updated_at"
+          ],
+          "indexCount": 2,
+          "indexes": [
+            "posts_community_idx",
+            "sqlite_autoindex_posts_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "case_id",
+              "toTable": "cases",
+              "toCol": "id"
+            },
+            {
+              "from": "author_id",
+              "toTable": "users",
+              "toCol": "id"
+            },
+            {
+              "from": "community_id",
+              "toTable": "communities",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "comments",
+          "columnCount": 7,
+          "columns": [
+            "id",
+            "post_id",
+            "user_id",
+            "content",
+            "status",
+            "created_at",
+            "updated_at"
+          ],
+          "indexCount": 2,
+          "indexes": [
+            "comments_post_idx",
+            "sqlite_autoindex_comments_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "user_id",
+              "toTable": "users",
+              "toCol": "id"
+            },
+            {
+              "from": "post_id",
+              "toTable": "posts",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "content_reports",
+          "columnCount": 10,
+          "columns": [
+            "id",
+            "reporter_id",
+            "entity_type",
+            "entity_id",
+            "reason",
+            "description",
+            "status",
+            "reviewed_by",
+            "reviewed_at",
+            "created_at"
+          ],
+          "indexCount": 2,
+          "indexes": [
+            "content_reports_status_idx",
+            "sqlite_autoindex_content_reports_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "reviewed_by",
+              "toTable": "users",
+              "toCol": "id"
+            },
+            {
+              "from": "reporter_id",
+              "toTable": "users",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "notifications",
+          "columnCount": 10,
+          "columns": [
+            "id",
+            "user_id",
+            "type",
+            "title",
+            "message",
+            "entity_type",
+            "entity_id",
+            "is_read",
+            "created_at",
+            "read_at"
+          ],
+          "indexCount": 3,
+          "indexes": [
+            "notifications_read_idx",
+            "notifications_user_idx",
+            "sqlite_autoindex_notifications_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "user_id",
+              "toTable": "users",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "user_contributions",
+          "columnCount": 6,
+          "columns": [
+            "id",
+            "user_id",
+            "type",
+            "entity_id",
+            "status",
+            "created_at"
+          ],
+          "indexCount": 3,
+          "indexes": [
+            "contributions_type_idx",
+            "contributions_user_idx",
+            "sqlite_autoindex_user_contributions_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "user_id",
+              "toTable": "users",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "impact_stats",
+          "columnCount": 9,
+          "columns": [
+            "id",
+            "date",
+            "new_reports",
+            "verified_reports",
+            "active_cases",
+            "resolved_cases",
+            "community_observations",
+            "active_users",
+            "created_at"
+          ],
+          "indexCount": 2,
+          "indexes": [
+            "sqlite_autoindex_impact_stats_2",
+            "sqlite_autoindex_impact_stats_1"
+          ],
+          "foreignKeys": []
+        },
+        {
+          "name": "audit_logs",
+          "columnCount": 8,
+          "columns": [
+            "id",
+            "actor_id",
+            "action",
+            "entity_type",
+            "entity_id",
+            "metadata_json",
+            "ip_address",
+            "created_at"
+          ],
+          "indexCount": 3,
+          "indexes": [
+            "audit_actor_idx",
+            "audit_created_at_idx",
+            "sqlite_autoindex_audit_logs_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "actor_id",
+              "toTable": "users",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "case_feedback",
+          "columnCount": 8,
+          "columns": [
+            "id",
+            "case_id",
+            "user_id",
+            "rating",
+            "comment",
+            "is_satisfied",
+            "request_reinspection",
+            "created_at"
+          ],
+          "indexCount": 1,
+          "indexes": [
+            "sqlite_autoindex_case_feedback_1"
+          ],
+          "foreignKeys": []
+        }
+      ],
+      "totalTables": 22,
+      "totalIndexes": 63,
+      "totalColumns": 219
+    },
+    "sideB": {
+      "path": "dustguard-operations/data/dustguard-operations.db",
+      "tables": [
+        {
+          "name": "decision_support_runs",
+          "columnCount": 18,
+          "columns": [
+            "id",
+            "case_id",
+            "created_at",
+            "created_by",
+            "engine_version",
+            "rule_set_version",
+            "legal_corpus_version",
+            "assessment_status",
+            "certainty",
+            "risk_score",
+            "risk_confidence",
+            "facts_json",
+            "evidence_matrix_json",
+            "rule_trace_json",
+            "contradictions_json",
+            "missing_facts_json",
+            "recommended_actions_json",
+            "validation_status"
+          ],
+          "indexCount": 2,
+          "indexes": [
+            "idx_decision_runs_case",
+            "sqlite_autoindex_decision_support_runs_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "created_by",
+              "toTable": "users",
+              "toCol": "id"
+            },
+            {
+              "from": "case_id",
+              "toTable": "cases",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "users",
+          "columnCount": 10,
+          "columns": [
+            "id",
+            "username",
+            "password_hash",
+            "full_name",
+            "email",
+            "role",
+            "department",
+            "phone",
+            "active",
+            "created_at"
+          ],
+          "indexCount": 3,
+          "indexes": [
+            "sqlite_autoindex_users_3",
+            "sqlite_autoindex_users_2",
+            "sqlite_autoindex_users_1"
+          ],
+          "foreignKeys": []
+        },
+        {
+          "name": "sessions",
+          "columnCount": 5,
+          "columns": [
+            "id",
+            "user_id",
+            "token",
+            "expires_at",
+            "created_at"
+          ],
+          "indexCount": 2,
+          "indexes": [
+            "sqlite_autoindex_sessions_2",
+            "sqlite_autoindex_sessions_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "user_id",
+              "toTable": "users",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "contractors",
+          "columnCount": 10,
+          "columns": [
+            "id",
+            "name",
+            "contact_person",
+            "phone",
+            "email",
+            "address",
+            "tax_id",
+            "notes",
+            "created_at",
+            "updated_at"
+          ],
+          "indexCount": 1,
+          "indexes": [
+            "sqlite_autoindex_contractors_1"
+          ],
+          "foreignKeys": []
+        },
+        {
+          "name": "projects",
+          "columnCount": 17,
+          "columns": [
+            "id",
+            "code",
+            "name",
+            "address",
+            "district",
+            "province",
+            "latitude",
+            "longitude",
+            "contractor_id",
+            "contractor_name",
+            "project_owner",
+            "status",
+            "start_date",
+            "end_date",
+            "notes",
+            "created_at",
+            "updated_at"
+          ],
+          "indexCount": 3,
+          "indexes": [
+            "idx_projects_contractor",
+            "sqlite_autoindex_projects_2",
+            "sqlite_autoindex_projects_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "contractor_id",
+              "toTable": "contractors",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "cases",
+          "columnCount": 20,
+          "columns": [
+            "id",
+            "case_code",
+            "title",
+            "description",
+            "location_text",
+            "district",
+            "latitude",
+            "longitude",
+            "source",
+            "source_reference",
+            "source_report_count",
+            "status",
+            "assigned_staff_id",
+            "project_id",
+            "contractor_id",
+            "contractor_name",
+            "priority",
+            "created_at",
+            "updated_at",
+            "closed_at"
+          ],
+          "indexCount": 9,
+          "indexes": [
+            "idx_cases_contractor",
+            "idx_cases_project",
+            "idx_cases_created_at",
+            "idx_cases_code",
+            "idx_cases_district",
+            "idx_cases_assigned_staff",
+            "idx_cases_status",
+            "sqlite_autoindex_cases_2",
+            "sqlite_autoindex_cases_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "contractor_id",
+              "toTable": "contractors",
+              "toCol": "id"
+            },
+            {
+              "from": "project_id",
+              "toTable": "projects",
+              "toCol": "id"
+            },
+            {
+              "from": "assigned_staff_id",
+              "toTable": "users",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "case_timeline",
+          "columnCount": 10,
+          "columns": [
+            "id",
+            "case_id",
+            "event_type",
+            "actor_id",
+            "actor_name",
+            "actor_role",
+            "stage",
+            "description",
+            "metadata_json",
+            "created_at"
+          ],
+          "indexCount": 2,
+          "indexes": [
+            "idx_timeline_case_id",
+            "sqlite_autoindex_case_timeline_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "actor_id",
+              "toTable": "users",
+              "toCol": "id"
+            },
+            {
+              "from": "case_id",
+              "toTable": "cases",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "staff_assignments",
+          "columnCount": 10,
+          "columns": [
+            "id",
+            "case_id",
+            "staff_user_id",
+            "assigned_by",
+            "assignment_type",
+            "status",
+            "note",
+            "assigned_at",
+            "due_at",
+            "completed_at"
+          ],
+          "indexCount": 3,
+          "indexes": [
+            "idx_assignments_staff",
+            "idx_assignments_case_id",
+            "sqlite_autoindex_staff_assignments_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "assigned_by",
+              "toTable": "users",
+              "toCol": "id"
+            },
+            {
+              "from": "staff_user_id",
+              "toTable": "users",
+              "toCol": "id"
+            },
+            {
+              "from": "case_id",
+              "toTable": "cases",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "evidence_assets",
+          "columnCount": 13,
+          "columns": [
+            "id",
+            "case_id",
+            "source_type",
+            "source_id",
+            "file_path",
+            "file_name",
+            "mime_type",
+            "file_size",
+            "sha256",
+            "integrity_status",
+            "uploaded_by",
+            "captured_at",
+            "created_at"
+          ],
+          "indexCount": 3,
+          "indexes": [
+            "idx_evidence_sha256",
+            "idx_evidence_case_id",
+            "sqlite_autoindex_evidence_assets_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "uploaded_by",
+              "toTable": "users",
+              "toCol": "id"
+            },
+            {
+              "from": "case_id",
+              "toTable": "cases",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "legal_documents",
+          "columnCount": 11,
+          "columns": [
+            "id",
+            "title",
+            "document_number",
+            "authority",
+            "issued_date",
+            "effective_date",
+            "status",
+            "source_url",
+            "file_path",
+            "checksum",
+            "created_at"
+          ],
+          "indexCount": 1,
+          "indexes": [
+            "sqlite_autoindex_legal_documents_1"
+          ],
+          "foreignKeys": []
+        },
+        {
+          "name": "legal_sections",
+          "columnCount": 7,
+          "columns": [
+            "id",
+            "document_id",
+            "section_type",
+            "section_number",
+            "heading",
+            "content",
+            "parent_section_id"
+          ],
+          "indexCount": 1,
+          "indexes": [
+            "sqlite_autoindex_legal_sections_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "parent_section_id",
+              "toTable": "legal_sections",
+              "toCol": "id"
+            },
+            {
+              "from": "document_id",
+              "toTable": "legal_documents",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "legal_sections_fts",
+          "columnCount": 7,
+          "columns": [
+            "id",
+            "document_id",
+            "document_title",
+            "document_number",
+            "heading",
+            "section_number",
+            "content"
+          ],
+          "indexCount": 0,
+          "indexes": [],
+          "foreignKeys": []
+        },
+        {
+          "name": "legal_sections_fts_data",
+          "columnCount": 2,
+          "columns": [
+            "id",
+            "block"
+          ],
+          "indexCount": 0,
+          "indexes": [],
+          "foreignKeys": []
+        },
+        {
+          "name": "legal_sections_fts_idx",
+          "columnCount": 3,
+          "columns": [
+            "segid",
+            "term",
+            "pgno"
+          ],
+          "indexCount": 1,
+          "indexes": [
+            "sqlite_autoindex_legal_sections_fts_idx_1"
+          ],
+          "foreignKeys": []
+        },
+        {
+          "name": "legal_sections_fts_content",
+          "columnCount": 8,
+          "columns": [
+            "id",
+            "c0",
+            "c1",
+            "c2",
+            "c3",
+            "c4",
+            "c5",
+            "c6"
+          ],
+          "indexCount": 0,
+          "indexes": [],
+          "foreignKeys": []
+        },
+        {
+          "name": "legal_sections_fts_docsize",
+          "columnCount": 2,
+          "columns": [
+            "id",
+            "sz"
+          ],
+          "indexCount": 0,
+          "indexes": [],
+          "foreignKeys": []
+        },
+        {
+          "name": "legal_sections_fts_config",
+          "columnCount": 2,
+          "columns": [
+            "k",
+            "v"
+          ],
+          "indexCount": 1,
+          "indexes": [
+            "sqlite_autoindex_legal_sections_fts_config_1"
+          ],
+          "foreignKeys": []
+        },
+        {
+          "name": "legal_search_history",
+          "columnCount": 5,
+          "columns": [
+            "id",
+            "user_id",
+            "query",
+            "results_count",
+            "created_at"
+          ],
+          "indexCount": 1,
+          "indexes": [
+            "sqlite_autoindex_legal_search_history_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "user_id",
+              "toTable": "users",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "legal_analyses",
+          "columnCount": 10,
+          "columns": [
+            "id",
+            "case_id",
+            "analysis_type",
+            "provider",
+            "model",
+            "prompt_version",
+            "input_snapshot",
+            "output_json",
+            "created_by",
+            "created_at"
+          ],
+          "indexCount": 1,
+          "indexes": [
+            "sqlite_autoindex_legal_analyses_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "created_by",
+              "toTable": "users",
+              "toCol": "id"
+            },
+            {
+              "from": "case_id",
+              "toTable": "cases",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "legal_reviews",
+          "columnCount": 8,
+          "columns": [
+            "id",
+            "case_id",
+            "reviewer_id",
+            "status",
+            "summary",
+            "legal_basis_note",
+            "created_at",
+            "reviewed_at"
+          ],
+          "indexCount": 1,
+          "indexes": [
+            "sqlite_autoindex_legal_reviews_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "reviewer_id",
+              "toTable": "users",
+              "toCol": "id"
+            },
+            {
+              "from": "case_id",
+              "toTable": "cases",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "inspection_templates",
+          "columnCount": 6,
+          "columns": [
+            "id",
+            "name",
+            "description",
+            "category",
+            "active",
+            "created_at"
+          ],
+          "indexCount": 1,
+          "indexes": [
+            "sqlite_autoindex_inspection_templates_1"
+          ],
+          "foreignKeys": []
+        },
+        {
+          "name": "inspection_template_items",
+          "columnCount": 7,
+          "columns": [
+            "id",
+            "template_id",
+            "label",
+            "description",
+            "required",
+            "legal_section_id",
+            "sort_order"
+          ],
+          "indexCount": 1,
+          "indexes": [
+            "sqlite_autoindex_inspection_template_items_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "legal_section_id",
+              "toTable": "legal_sections",
+              "toCol": "id"
+            },
+            {
+              "from": "template_id",
+              "toTable": "inspection_templates",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "inspections",
+          "columnCount": 13,
+          "columns": [
+            "id",
+            "case_id",
+            "inspector_id",
+            "template_id",
+            "inspection_type",
+            "scheduled_date",
+            "performed_at",
+            "status",
+            "location_text",
+            "note",
+            "override_reason",
+            "created_at",
+            "updated_at"
+          ],
+          "indexCount": 2,
+          "indexes": [
+            "idx_inspections_case_id",
+            "sqlite_autoindex_inspections_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "template_id",
+              "toTable": "inspection_templates",
+              "toCol": "id"
+            },
+            {
+              "from": "inspector_id",
+              "toTable": "users",
+              "toCol": "id"
+            },
+            {
+              "from": "case_id",
+              "toTable": "cases",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "inspection_items",
+          "columnCount": 9,
+          "columns": [
+            "id",
+            "inspection_id",
+            "template_item_id",
+            "label",
+            "legal_section_id",
+            "status",
+            "note",
+            "evidence_asset_id",
+            "sort_order"
+          ],
+          "indexCount": 1,
+          "indexes": [
+            "sqlite_autoindex_inspection_items_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "evidence_asset_id",
+              "toTable": "evidence_assets",
+              "toCol": "id"
+            },
+            {
+              "from": "legal_section_id",
+              "toTable": "legal_sections",
+              "toCol": "id"
+            },
+            {
+              "from": "template_item_id",
+              "toTable": "inspection_template_items",
+              "toCol": "id"
+            },
+            {
+              "from": "inspection_id",
+              "toTable": "inspections",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "inspection_findings",
+          "columnCount": 10,
+          "columns": [
+            "id",
+            "inspection_id",
+            "case_id",
+            "category",
+            "finding",
+            "severity",
+            "legal_section_id",
+            "evidence_asset_id",
+            "staff_note",
+            "created_at"
+          ],
+          "indexCount": 2,
+          "indexes": [
+            "idx_findings_inspection_id",
+            "sqlite_autoindex_inspection_findings_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "evidence_asset_id",
+              "toTable": "evidence_assets",
+              "toCol": "id"
+            },
+            {
+              "from": "legal_section_id",
+              "toTable": "legal_sections",
+              "toCol": "id"
+            },
+            {
+              "from": "case_id",
+              "toTable": "cases",
+              "toCol": "id"
+            },
+            {
+              "from": "inspection_id",
+              "toTable": "inspections",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "corrective_actions",
+          "columnCount": 12,
+          "columns": [
+            "id",
+            "case_id",
+            "inspection_id",
+            "finding_id",
+            "title",
+            "description",
+            "responsible_party",
+            "due_at",
+            "status",
+            "created_by",
+            "created_at",
+            "completed_at"
+          ],
+          "indexCount": 3,
+          "indexes": [
+            "idx_actions_status_due",
+            "idx_actions_case_id",
+            "sqlite_autoindex_corrective_actions_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "created_by",
+              "toTable": "users",
+              "toCol": "id"
+            },
+            {
+              "from": "finding_id",
+              "toTable": "inspection_findings",
+              "toCol": "id"
+            },
+            {
+              "from": "inspection_id",
+              "toTable": "inspections",
+              "toCol": "id"
+            },
+            {
+              "from": "case_id",
+              "toTable": "cases",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "remediation_submissions",
+          "columnCount": 11,
+          "columns": [
+            "id",
+            "corrective_action_id",
+            "case_id",
+            "submitted_by",
+            "description",
+            "evidence_asset_ids",
+            "review_status",
+            "review_note",
+            "reviewed_by",
+            "submitted_at",
+            "reviewed_at"
+          ],
+          "indexCount": 1,
+          "indexes": [
+            "sqlite_autoindex_remediation_submissions_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "reviewed_by",
+              "toTable": "users",
+              "toCol": "id"
+            },
+            {
+              "from": "case_id",
+              "toTable": "cases",
+              "toCol": "id"
+            },
+            {
+              "from": "corrective_action_id",
+              "toTable": "corrective_actions",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "case_closures",
+          "columnCount": 6,
+          "columns": [
+            "id",
+            "case_id",
+            "closed_by",
+            "closure_reason",
+            "closure_summary",
+            "closed_at"
+          ],
+          "indexCount": 1,
+          "indexes": [
+            "sqlite_autoindex_case_closures_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "closed_by",
+              "toTable": "users",
+              "toCol": "id"
+            },
+            {
+              "from": "case_id",
+              "toTable": "cases",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "notifications",
+          "columnCount": 8,
+          "columns": [
+            "id",
+            "user_id",
+            "type",
+            "title",
+            "message",
+            "link",
+            "read",
+            "created_at"
+          ],
+          "indexCount": 2,
+          "indexes": [
+            "idx_notifications_user_unread",
+            "sqlite_autoindex_notifications_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "user_id",
+              "toTable": "users",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "audit_logs",
+          "columnCount": 8,
+          "columns": [
+            "id",
+            "user_id",
+            "action",
+            "entity_type",
+            "entity_id",
+            "metadata_json",
+            "ip_address",
+            "created_at"
+          ],
+          "indexCount": 2,
+          "indexes": [
+            "idx_audit_created",
+            "sqlite_autoindex_audit_logs_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "user_id",
+              "toTable": "users",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "system_configs",
+          "columnCount": 4,
+          "columns": [
+            "key",
+            "value_json",
+            "description",
+            "updated_at"
+          ],
+          "indexCount": 1,
+          "indexes": [
+            "sqlite_autoindex_system_configs_1"
+          ],
+          "foreignKeys": []
+        },
+        {
+          "name": "integration_logs",
+          "columnCount": 7,
+          "columns": [
+            "id",
+            "source",
+            "external_id",
+            "status",
+            "payload_hash",
+            "processed_at",
+            "error"
+          ],
+          "indexCount": 2,
+          "indexes": [
+            "idx_integration_external",
+            "sqlite_autoindex_integration_logs_1"
+          ],
+          "foreignKeys": []
+        },
+        {
+          "name": "signals",
+          "columnCount": 14,
+          "columns": [
+            "id",
+            "source_type",
+            "external_source_id",
+            "signal_type",
+            "title",
+            "description",
+            "location_text",
+            "latitude",
+            "longitude",
+            "observed_at",
+            "received_at",
+            "payload_json",
+            "integrity_status",
+            "created_at"
+          ],
+          "indexCount": 2,
+          "indexes": [
+            "idx_signals_source",
+            "sqlite_autoindex_signals_1"
+          ],
+          "foreignKeys": []
+        },
+        {
+          "name": "case_signals",
+          "columnCount": 6,
+          "columns": [
+            "id",
+            "case_id",
+            "signal_id",
+            "linked_at",
+            "linked_by",
+            "notes"
+          ],
+          "indexCount": 4,
+          "indexes": [
+            "idx_case_signals_signal",
+            "idx_case_signals_case",
+            "sqlite_autoindex_case_signals_2",
+            "sqlite_autoindex_case_signals_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "linked_by",
+              "toTable": "users",
+              "toCol": "id"
+            },
+            {
+              "from": "signal_id",
+              "toTable": "signals",
+              "toCol": "id"
+            },
+            {
+              "from": "case_id",
+              "toTable": "cases",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "tasks",
+          "columnCount": 14,
+          "columns": [
+            "id",
+            "case_id",
+            "title",
+            "description",
+            "task_type",
+            "source",
+            "source_entity_type",
+            "source_entity_id",
+            "assigned_to",
+            "status",
+            "priority",
+            "due_at",
+            "created_at",
+            "completed_at"
+          ],
+          "indexCount": 3,
+          "indexes": [
+            "idx_tasks_case_id",
+            "idx_tasks_assigned_to",
+            "sqlite_autoindex_tasks_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "assigned_to",
+              "toTable": "users",
+              "toCol": "id"
+            },
+            {
+              "from": "case_id",
+              "toTable": "cases",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "iot_devices",
+          "columnCount": 14,
+          "columns": [
+            "id",
+            "device_code",
+            "name",
+            "location_text",
+            "latitude",
+            "longitude",
+            "status",
+            "last_seen_at",
+            "firmware_version",
+            "secret_reference",
+            "project_id",
+            "is_simulated",
+            "created_at",
+            "updated_at"
+          ],
+          "indexCount": 2,
+          "indexes": [
+            "sqlite_autoindex_iot_devices_2",
+            "sqlite_autoindex_iot_devices_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "project_id",
+              "toTable": "projects",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "iot_readings",
+          "columnCount": 11,
+          "columns": [
+            "id",
+            "device_id",
+            "recorded_at",
+            "received_at",
+            "pm25",
+            "pm10",
+            "temperature",
+            "humidity",
+            "raw_payload_json",
+            "integrity_status",
+            "created_at"
+          ],
+          "indexCount": 2,
+          "indexes": [
+            "idx_iot_readings_device",
+            "sqlite_autoindex_iot_readings_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "device_id",
+              "toTable": "iot_devices",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "iot_events",
+          "columnCount": 6,
+          "columns": [
+            "id",
+            "device_id",
+            "event_type",
+            "severity",
+            "description",
+            "created_at"
+          ],
+          "indexCount": 2,
+          "indexes": [
+            "idx_iot_events_device",
+            "sqlite_autoindex_iot_events_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "device_id",
+              "toTable": "iot_devices",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "automation_rules",
+          "columnCount": 8,
+          "columns": [
+            "id",
+            "name",
+            "event_type",
+            "conditions_json",
+            "actions_json",
+            "enabled",
+            "created_at",
+            "updated_at"
+          ],
+          "indexCount": 1,
+          "indexes": [
+            "sqlite_autoindex_automation_rules_1"
+          ],
+          "foreignKeys": []
+        },
+        {
+          "name": "automation_runs",
+          "columnCount": 10,
+          "columns": [
+            "id",
+            "rule_id",
+            "trigger_entity_type",
+            "trigger_entity_id",
+            "status",
+            "input_json",
+            "result_json",
+            "error_message",
+            "started_at",
+            "completed_at"
+          ],
+          "indexCount": 2,
+          "indexes": [
+            "idx_automation_runs_rule",
+            "sqlite_autoindex_automation_runs_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "rule_id",
+              "toTable": "automation_rules",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "analysis_runs",
+          "columnCount": 10,
+          "columns": [
+            "id",
+            "case_id",
+            "created_at",
+            "created_by",
+            "model",
+            "prompt_version",
+            "fact_snapshot_json",
+            "legal_snapshot_json",
+            "output_json",
+            "validation_status"
+          ],
+          "indexCount": 2,
+          "indexes": [
+            "idx_analysis_runs_case",
+            "sqlite_autoindex_analysis_runs_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "created_by",
+              "toTable": "users",
+              "toCol": "id"
+            },
+            {
+              "from": "case_id",
+              "toTable": "cases",
+              "toCol": "id"
+            }
+          ]
+        },
+        {
+          "name": "human_decisions",
+          "columnCount": 12,
+          "columns": [
+            "id",
+            "case_id",
+            "decision_type",
+            "actor_id",
+            "actor_name",
+            "actor_role",
+            "reason",
+            "analysis_run_id",
+            "source_snapshot_json",
+            "supersedes_decision_id",
+            "references_json",
+            "created_at"
+          ],
+          "indexCount": 2,
+          "indexes": [
+            "idx_human_decisions_case",
+            "sqlite_autoindex_human_decisions_1"
+          ],
+          "foreignKeys": [
+            {
+              "from": "supersedes_decision_id",
+              "toTable": "human_decisions",
+              "toCol": "id"
+            },
+            {
+              "from": "analysis_run_id",
+              "toTable": "analysis_runs",
+              "toCol": "id"
+            },
+            {
+              "from": "actor_id",
+              "toTable": "users",
+              "toCol": "id"
+            },
+            {
+              "from": "case_id",
+              "toTable": "cases",
+              "toCol": "id"
+            }
+          ]
+        }
+      ],
+      "totalTables": 42,
+      "totalIndexes": 76,
+      "totalColumns": 384
+    }
+  },
+  "endpoints": {
+    "total": 58,
+    "byMethod": {
+      "GET": 27,
+      "POST": 23,
+      "PUT": 1,
+      "PATCH": 5,
+      "DELETE": 2
+    },
+    "bySide": {
+      "sideA": 58,
+      "sideB": 0
+    },
+    "list": [
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/admin.routes.ts",
+        "method": "GET",
+        "subPath": "/users",
+        "hasAuth": false,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/admin.routes.ts",
+        "method": "PATCH",
+        "subPath": "/users/:id/role",
+        "hasAuth": false,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/admin.routes.ts",
+        "method": "PATCH",
+        "subPath": "/users/:id/status",
+        "hasAuth": false,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/admin.routes.ts",
+        "method": "GET",
+        "subPath": "/audit",
+        "hasAuth": false,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/admin.routes.ts",
+        "method": "GET",
+        "subPath": "/stats",
+        "hasAuth": false,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/auth.routes.ts",
+        "method": "POST",
+        "subPath": "/register",
+        "hasAuth": false,
+        "hasValidation": true
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/auth.routes.ts",
+        "method": "POST",
+        "subPath": "/login",
+        "hasAuth": false,
+        "hasValidation": true
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/auth.routes.ts",
+        "method": "GET",
+        "subPath": "/me",
+        "hasAuth": true,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/auth.routes.ts",
+        "method": "POST",
+        "subPath": "/logout",
+        "hasAuth": false,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/auth.routes.ts",
+        "method": "POST",
+        "subPath": "/dev-switch-role",
+        "hasAuth": false,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/cases.routes.ts",
+        "method": "GET",
+        "subPath": "/",
+        "hasAuth": true,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/cases.routes.ts",
+        "method": "GET",
+        "subPath": "/:id",
+        "hasAuth": true,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/cases.routes.ts",
+        "method": "POST",
+        "subPath": "/:id/confirm",
+        "hasAuth": true,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/cases.routes.ts",
+        "method": "DELETE",
+        "subPath": "/:id/confirm",
+        "hasAuth": true,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/cases.routes.ts",
+        "method": "POST",
+        "subPath": "/:id/save",
+        "hasAuth": true,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/cases.routes.ts",
+        "method": "DELETE",
+        "subPath": "/:id/save",
+        "hasAuth": true,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/cases.routes.ts",
+        "method": "GET",
+        "subPath": "/:id/observations",
+        "hasAuth": false,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/cases.routes.ts",
+        "method": "POST",
+        "subPath": "/:id/observations",
+        "hasAuth": true,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/cases.routes.ts",
+        "method": "POST",
+        "subPath": "/:id/feedback",
+        "hasAuth": true,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/cases.routes.ts",
+        "method": "GET",
+        "subPath": "/:id/feedback",
+        "hasAuth": true,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/communities.routes.ts",
+        "method": "GET",
+        "subPath": "/",
+        "hasAuth": true,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/communities.routes.ts",
+        "method": "GET",
+        "subPath": "/:slug",
+        "hasAuth": true,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/communities.routes.ts",
+        "method": "POST",
+        "subPath": "/:id/join",
+        "hasAuth": true,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/communities.routes.ts",
+        "method": "POST",
+        "subPath": "/:id/leave",
+        "hasAuth": true,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/communities.routes.ts",
+        "method": "GET",
+        "subPath": "/:id/posts",
+        "hasAuth": false,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/communities.routes.ts",
+        "method": "POST",
+        "subPath": "/:id/posts",
+        "hasAuth": true,
+        "hasValidation": true
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/communities.routes.ts",
+        "method": "GET",
+        "subPath": "/posts/:postId/comments",
+        "hasAuth": false,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/communities.routes.ts",
+        "method": "POST",
+        "subPath": "/posts/:postId/comments",
+        "hasAuth": true,
+        "hasValidation": true
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/dashboard.routes.ts",
+        "method": "GET",
+        "subPath": "/",
+        "hasAuth": false,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/dashboard.routes.ts",
+        "method": "GET",
+        "subPath": "/community",
+        "hasAuth": false,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/dashboard.routes.ts",
+        "method": "GET",
+        "subPath": "/moderator",
+        "hasAuth": true,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/dashboard.routes.ts",
+        "method": "GET",
+        "subPath": "/admin",
+        "hasAuth": true,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/me.routes.ts",
+        "method": "GET",
+        "subPath": "/reports",
+        "hasAuth": true,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/me.routes.ts",
+        "method": "GET",
+        "subPath": "/saved",
+        "hasAuth": true,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/me.routes.ts",
+        "method": "GET",
+        "subPath": "/contributions",
+        "hasAuth": true,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/me.routes.ts",
+        "method": "PATCH",
+        "subPath": "/profile",
+        "hasAuth": true,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/moderator.routes.ts",
+        "method": "GET",
+        "subPath": "/reports",
+        "hasAuth": false,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/moderator.routes.ts",
+        "method": "POST",
+        "subPath": "/reports/:id/verify",
+        "hasAuth": false,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/moderator.routes.ts",
+        "method": "POST",
+        "subPath": "/cases",
+        "hasAuth": false,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/moderator.routes.ts",
+        "method": "POST",
+        "subPath": "/reports/:id/reject",
+        "hasAuth": false,
+        "hasValidation": true
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/moderator.routes.ts",
+        "method": "POST",
+        "subPath": "/reports/:id/merge",
+        "hasAuth": false,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/moderator.routes.ts",
+        "method": "PATCH",
+        "subPath": "/cases/:id/status",
+        "hasAuth": false,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/moderator.routes.ts",
+        "method": "PUT",
+        "subPath": "/cases/:id/status",
+        "hasAuth": false,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/moderator.routes.ts",
+        "method": "GET",
+        "subPath": "/content",
+        "hasAuth": false,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/moderator.routes.ts",
+        "method": "POST",
+        "subPath": "/content/:id/action",
+        "hasAuth": false,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/notifications.routes.ts",
+        "method": "GET",
+        "subPath": "/",
+        "hasAuth": true,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/notifications.routes.ts",
+        "method": "PATCH",
+        "subPath": "/:id/read",
+        "hasAuth": true,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/notifications.routes.ts",
+        "method": "POST",
+        "subPath": "/read-all",
+        "hasAuth": true,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/reports.routes.ts",
+        "method": "GET",
+        "subPath": "/check-duplicate",
+        "hasAuth": false,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/reports.routes.ts",
+        "method": "GET",
+        "subPath": "/",
+        "hasAuth": false,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/reports.routes.ts",
+        "method": "GET",
+        "subPath": "/:id",
+        "hasAuth": false,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/reports.routes.ts",
+        "method": "POST",
+        "subPath": "/",
+        "hasAuth": true,
+        "hasValidation": true
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/reports.routes.ts",
+        "method": "POST",
+        "subPath": "/upload",
+        "hasAuth": true,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/reports.routes.ts",
+        "method": "POST",
+        "subPath": "/:id/media",
+        "hasAuth": true,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/tasks.routes.ts",
+        "method": "GET",
+        "subPath": "/",
+        "hasAuth": false,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/tasks.routes.ts",
+        "method": "GET",
+        "subPath": "/:id",
+        "hasAuth": false,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/tasks.routes.ts",
+        "method": "POST",
+        "subPath": "/:id/claim",
+        "hasAuth": true,
+        "hasValidation": false
+      },
+      {
+        "side": "Side A (Community)",
+        "file": "apps/server/src/routes/tasks.routes.ts",
+        "method": "POST",
+        "subPath": "/:id/submit",
+        "hasAuth": true,
+        "hasValidation": false
+      }
+    ]
+  },
+  "screens": {
+    "total": 75,
+    "sideA": 34,
+    "sideB": 41,
+    "list": [
+      {
+        "side": "Side A (Community)",
+        "route": "/",
+        "component": "LandingPage",
+        "source": "apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side A (Community)",
+        "route": "/landing",
+        "component": "LandingPage",
+        "source": "apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side A (Community)",
+        "route": "/login",
+        "component": "LoginPage",
+        "source": "apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side A (Community)",
+        "route": "/register",
+        "component": "RegisterPage",
+        "source": "apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side A (Community)",
+        "route": "/forgot-password",
+        "component": "ForgotPasswordPage",
+        "source": "apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side A (Community)",
+        "route": "/dashboard",
+        "component": "DashboardPage",
+        "source": "apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side A (Community)",
+        "route": "/map",
+        "component": "MapPage",
+        "source": "apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side A (Community)",
+        "route": "/reports",
+        "component": "ReportsListPage",
+        "source": "apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side A (Community)",
+        "route": "/reports/:id",
+        "component": "ReportDetailPage",
+        "source": "apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side A (Community)",
+        "route": "/cases/:id",
+        "component": "CaseDetailPage",
+        "source": "apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side A (Community)",
+        "route": "/communities",
+        "component": "CommunitiesPage",
+        "source": "apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side A (Community)",
+        "route": "/communities/:slug",
+        "component": "CommunityDetailPage",
+        "source": "apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side A (Community)",
+        "route": "/moderator",
+        "component": "Navigate",
+        "source": "apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side A (Community)",
+        "route": "/admin",
+        "component": "Navigate",
+        "source": "apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side A (Community)",
+        "route": "/citizen/reports",
+        "component": "Navigate",
+        "source": "apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side A (Community)",
+        "route": "/citizen/report/new",
+        "component": "Navigate",
+        "source": "apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side A (Community)",
+        "route": "/citizen/report",
+        "component": "Navigate",
+        "source": "apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side A (Community)",
+        "route": "/citizen/track",
+        "component": "Navigate",
+        "source": "apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side A (Community)",
+        "route": "/citizen/map",
+        "component": "Navigate",
+        "source": "apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side A (Community)",
+        "route": "/citizen/profile",
+        "component": "Navigate",
+        "source": "apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side A (Community)",
+        "route": "/citizen/*",
+        "component": "Navigate",
+        "source": "apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side A (Community)",
+        "route": "/community/tasks",
+        "component": "Navigate",
+        "source": "apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side A (Community)",
+        "route": "/community/contributions",
+        "component": "Navigate",
+        "source": "apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side A (Community)",
+        "route": "/community/clubs",
+        "component": "Navigate",
+        "source": "apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side A (Community)",
+        "route": "/community/*",
+        "component": "Navigate",
+        "source": "apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side A (Community)",
+        "route": "/staff/*",
+        "component": "Navigate",
+        "source": "apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side A (Community)",
+        "route": "/contractor",
+        "component": "ContractorPortalPage",
+        "source": "apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side A (Community)",
+        "route": "/contractor/portal",
+        "component": "ContractorPortalPage",
+        "source": "apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side A (Community)",
+        "route": "/contractor/actions",
+        "component": "ContractorPortalPage",
+        "source": "apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side A (Community)",
+        "route": "/contractor/actions/:id",
+        "component": "ContractorRemediationPage",
+        "source": "apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side A (Community)",
+        "route": "/contractor/remediation/:id",
+        "component": "ContractorRemediationPage",
+        "source": "apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side A (Community)",
+        "route": "/contractor/access/:token",
+        "component": "ContractorPortalPage",
+        "source": "apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side A (Community)",
+        "route": "/executive/*",
+        "component": "Navigate",
+        "source": "apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side A (Community)",
+        "route": "*",
+        "component": "Navigate",
+        "source": "apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "/login",
+        "component": "LoginPage",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "/setup",
+        "component": "SetupPage",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "dashboard",
+        "component": "DashboardPage",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "projects",
+        "component": "ProjectsPage",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "contractors",
+        "component": "ContractorsPage",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "tasks",
+        "component": "TasksPage",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "cases",
+        "component": "CaseInboxPage",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "cases/:id",
+        "component": "CaseDetailPage",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "cases/:id/evidence",
+        "component": "CaseDetailPage",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "cases/:id/iot",
+        "component": "CaseDetailPage",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "cases/:id/inspection",
+        "component": "CaseDetailPage",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "cases/:id/actions",
+        "component": "CaseDetailPage",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "cases/:id/timeline",
+        "component": "CaseDetailPage",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "cases/:id/legal",
+        "component": "LegalWorkspacePage",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "cases/:id/inspection/new",
+        "component": "InspectionPlanPage",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "legal",
+        "component": "Navigate",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "legal/library",
+        "component": "LegalLibraryPage",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "legal/documents",
+        "component": "LegalLibraryPage",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "legal/import",
+        "component": "LegalImportPage",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "legal/documents/:id",
+        "component": "LegalDocDetailPage",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "inspections",
+        "component": "InspectionListPage",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "inspections/new",
+        "component": "InspectionPlanPage",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "inspections/:id",
+        "component": "FieldInspectionPage",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "inspections/:id/result",
+        "component": "InspectionResultPage",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "inspections/:id/export",
+        "component": "InspectionExportPage",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "actions",
+        "component": "ActionsListPage",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "actions/:id/remediation",
+        "component": "RemediationReviewPage",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "actions/:id/notice",
+        "component": "ActionNoticeExportPage",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "iot",
+        "component": "IotDevicesPage",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "iot/devices",
+        "component": "IotDevicesPage",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "iot/devices/:id",
+        "component": "IotDeviceDetailPage",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "automations",
+        "component": "AutomationsPage",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "evidence",
+        "component": "EvidencePage",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "reports",
+        "component": "ReportsPage",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "notifications",
+        "component": "NotificationsPage",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "profile",
+        "component": "ProfilePage",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "supervisor/workload",
+        "component": "SupervisorWorkloadPage",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "admin/users",
+        "component": "AdminUsersPage",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "admin/audit",
+        "component": "AdminAuditPage",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "admin/settings",
+        "component": "AdminSettingsPage",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      },
+      {
+        "side": "Side B (Operations)",
+        "route": "*",
+        "component": "Navigate",
+        "source": "dustguard-operations/apps/web/src/App.tsx"
+      }
+    ]
+  },
+  "legacy": {
+    "totalItems": 19,
+    "list": [
+      {
+        "type": "LEGACY ROUTE",
+        "path": "/documents",
+        "component": "DocumentsListPage",
+        "location": "app/src/app/router.jsx",
+        "status": "Replaced by Side A / Side B TSX Clean Architecture",
+        "action": "DEPRECATE / ISOLATE"
+      },
+      {
+        "type": "LEGACY ROUTE",
+        "path": "/documents/templates",
+        "component": "TemplatesGalleryPage",
+        "location": "app/src/app/router.jsx",
+        "status": "Replaced by Side A / Side B TSX Clean Architecture",
+        "action": "DEPRECATE / ISOLATE"
+      },
+      {
+        "type": "LEGACY ROUTE",
+        "path": "/templates",
+        "component": "TemplatesGalleryPage",
+        "location": "app/src/app/router.jsx",
+        "status": "Replaced by Side A / Side B TSX Clean Architecture",
+        "action": "DEPRECATE / ISOLATE"
+      },
+      {
+        "type": "LEGACY ROUTE",
+        "path": "/documents/new",
+        "component": "DocumentEditorPage",
+        "location": "app/src/app/router.jsx",
+        "status": "Replaced by Side A / Side B TSX Clean Architecture",
+        "action": "DEPRECATE / ISOLATE"
+      },
+      {
+        "type": "LEGACY ROUTE",
+        "path": "/documents/:id/edit",
+        "component": "DocumentEditorPage",
+        "location": "app/src/app/router.jsx",
+        "status": "Replaced by Side A / Side B TSX Clean Architecture",
+        "action": "DEPRECATE / ISOLATE"
+      },
+      {
+        "type": "LEGACY ROUTE",
+        "path": "/documents/editor/:id",
+        "component": "DocumentEditorPage",
+        "location": "app/src/app/router.jsx",
+        "status": "Replaced by Side A / Side B TSX Clean Architecture",
+        "action": "DEPRECATE / ISOLATE"
+      },
+      {
+        "type": "LEGACY ROUTE",
+        "path": "/documents/:id/preview",
+        "component": "DocumentPreviewPage",
+        "location": "app/src/app/router.jsx",
+        "status": "Replaced by Side A / Side B TSX Clean Architecture",
+        "action": "DEPRECATE / ISOLATE"
+      },
+      {
+        "type": "LEGACY ROUTE",
+        "path": "/documents/preview/:id",
+        "component": "DocumentPreviewPage",
+        "location": "app/src/app/router.jsx",
+        "status": "Replaced by Side A / Side B TSX Clean Architecture",
+        "action": "DEPRECATE / ISOLATE"
+      },
+      {
+        "type": "LEGACY ROUTE",
+        "path": "/policy",
+        "component": "PolicyIntelligencePage",
+        "location": "app/src/app/router.jsx",
+        "status": "Replaced by Side A / Side B TSX Clean Architecture",
+        "action": "DEPRECATE / ISOLATE"
+      },
+      {
+        "type": "LEGACY ROUTE",
+        "path": "/policy/intelligence",
+        "component": "PolicyIntelligencePage",
+        "location": "app/src/app/router.jsx",
+        "status": "Replaced by Side A / Side B TSX Clean Architecture",
+        "action": "DEPRECATE / ISOLATE"
+      },
+      {
+        "type": "LEGACY ROUTE",
+        "path": "/app/*",
+        "component": "Navigate",
+        "location": "app/src/app/router.jsx",
+        "status": "Replaced by Side A / Side B TSX Clean Architecture",
+        "action": "DEPRECATE / ISOLATE"
+      },
+      {
+        "type": "LEGACY SUB-APP",
+        "path": "app/src/apps/admin",
+        "name": "admin",
+        "action": "REPLACED BY 2-SIDE TSX ARCHITECTURE"
+      },
+      {
+        "type": "LEGACY SUB-APP",
+        "path": "app/src/apps/citizen",
+        "name": "citizen",
+        "action": "REPLACED BY 2-SIDE TSX ARCHITECTURE"
+      },
+      {
+        "type": "LEGACY SUB-APP",
+        "path": "app/src/apps/community",
+        "name": "community",
+        "action": "REPLACED BY 2-SIDE TSX ARCHITECTURE"
+      },
+      {
+        "type": "LEGACY SUB-APP",
+        "path": "app/src/apps/contractor",
+        "name": "contractor",
+        "action": "REPLACED BY 2-SIDE TSX ARCHITECTURE"
+      },
+      {
+        "type": "LEGACY SUB-APP",
+        "path": "app/src/apps/executive",
+        "name": "executive",
+        "action": "REPLACED BY 2-SIDE TSX ARCHITECTURE"
+      },
+      {
+        "type": "LEGACY SUB-APP",
+        "path": "app/src/apps/public",
+        "name": "public",
+        "action": "REPLACED BY 2-SIDE TSX ARCHITECTURE"
+      },
+      {
+        "type": "LEGACY SUB-APP",
+        "path": "app/src/apps/staff",
+        "name": "staff",
+        "action": "REPLACED BY 2-SIDE TSX ARCHITECTURE"
+      },
+      {
+        "type": "LEGACY BACKEND",
+        "path": "app/server",
+        "desc": "Old Express/Cloudflare Worker JS backend with Prisma dev.db",
+        "action": "REPLACED BY apps/server & dustguard-operations/apps/server"
+      }
+    ]
+  },
+  "codebase": {
+    "sideA": {
+      "web": {
+        "files": 71,
+        "loc": 13457
+      },
+      "server": {
+        "files": 23,
+        "loc": 5117
+      },
+      "totalFiles": 94,
+      "totalLOC": 18574
+    },
+    "sideB": {
+      "web": {
+        "files": 68,
+        "loc": 17480
+      },
+      "server": {
+        "files": 49,
+        "loc": 11566
+      },
+      "totalFiles": 117,
+      "totalLOC": 29046
+    },
+    "legacyApp": {
+      "files": 965,
+      "loc": 300900
+    }
+  }
+}

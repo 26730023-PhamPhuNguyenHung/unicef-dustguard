@@ -10,7 +10,7 @@
  * Scenario 6: Zero-Seed Clean Database Operability
  */
 
-import { spawn } from 'node:child_process';
+import { spawn, execSync } from 'node:child_process';
 import path from 'node:path';
 import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -71,11 +71,24 @@ async function waitForHttp(url, maxRetries = 60) {
 }
 
 function cleanup() {
-  if (communityProc) {
-    try { communityProc.kill(); } catch {}
+  const isWin = process.platform === 'win32';
+  if (communityProc && communityProc.pid) {
+    try {
+      if (isWin) {
+        execSync(`taskkill /pid ${communityProc.pid} /f /t`, { stdio: 'ignore' });
+      } else {
+        communityProc.kill();
+      }
+    } catch {}
   }
-  if (operationsProc) {
-    try { operationsProc.kill(); } catch {}
+  if (operationsProc && operationsProc.pid) {
+    try {
+      if (isWin) {
+        execSync(`taskkill /pid ${operationsProc.pid} /f /t`, { stdio: 'ignore' });
+      } else {
+        operationsProc.kill();
+      }
+    } catch {}
   }
 }
 
@@ -553,15 +566,15 @@ async function runVerification() {
     console.log('  ✓ 5.1 Công dân gửi đánh giá hài lòng 5 sao thành công');
 
     // Chờ đồng bộ sang Side B
-    await sleep(500);
+    await sleep(1000);
 
     // Kiểm tra Side B Operations đã nhận feedback trong Timeline
     const opsCaseDetail = await fetch(`${OPERATIONS_API}/api/cases/${opsCaseId}`, {
       headers: { 'Authorization': `Bearer ${opsAdminToken}` }
     }).then(r => r.json());
-    const timeline = opsCaseDetail.case?.timeline || [];
-    const feedbackEvent = timeline.find(e => e.event_type === 'CITIZEN_FEEDBACK' || e.description.includes('Đánh giá từ người dân'));
-    if (!feedbackEvent) throw new Error('Operations chưa ghi nhận sự kiện CITIZEN_FEEDBACK vào dòng thời gian');
+    const timeline = opsCaseDetail.timeline || opsCaseDetail.case?.timeline || [];
+    const feedbackEvent = timeline.find(e => e.event_type === 'CITIZEN_FEEDBACK' || e.description?.includes('Đánh giá từ người dân'));
+    if (!feedbackEvent) throw new Error('Operations chưa ghi nhận sự kiện CITIZEN_FEEDBACK vào dòng thời gian: ' + JSON.stringify(timeline.map(t => t.event_type)));
     console.log(`  ✓ 5.2 Side B Operations đã nhận phản hồi của người dân vào hồ sơ vụ việc: "${feedbackEvent.description}"`);
 
     // Hoàn tất kiểm thử thành công!
@@ -579,6 +592,9 @@ async function runVerification() {
     process.exitCode = 1;
   } finally {
     cleanup();
+    if (!process.exitCode) {
+      process.exit(0);
+    }
   }
 }
 

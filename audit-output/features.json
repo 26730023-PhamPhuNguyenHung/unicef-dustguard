@@ -1,0 +1,162 @@
+[
+  {
+    "id": "AUTH",
+    "name": "Authentication & Session RBAC",
+    "sideA": "LoginPage, RegisterPage",
+    "sideB": "LoginPage, SetupPage",
+    "endpoints": 10,
+    "dbTables": [
+      "users",
+      "user_roles"
+    ],
+    "status": "COMPLETE"
+  },
+  {
+    "id": "CITIZEN_REPORT",
+    "name": "Citizen Dust Incident Reporting",
+    "sideA": "CreateReportPage, ReportsListPage, ReportDetailPage",
+    "sideB": "CaseInboxPage",
+    "endpoints": 6,
+    "dbTables": [
+      "reports",
+      "evidences"
+    ],
+    "status": "COMPLETE"
+  },
+  {
+    "id": "EVIDENCE_HASH",
+    "name": "Digital Evidence Sealing (SHA-256 Web Crypto)",
+    "sideA": "CreateReportPage, SubmitObservationPage",
+    "sideB": "EvidencePage, CaseDetailPage",
+    "endpoints": 4,
+    "dbTables": [
+      "evidences"
+    ],
+    "status": "COMPLETE"
+  },
+  {
+    "id": "TRIAGE_MERGE",
+    "name": "Moderator Incident Triage & 150m Spatial Merge",
+    "sideA": "ModerationQueuePage, CaseCoordinationPage",
+    "sideB": "Integrations",
+    "endpoints": 8,
+    "dbTables": [
+      "reports",
+      "cases"
+    ],
+    "status": "COMPLETE"
+  },
+  {
+    "id": "HANDOFF_SYNC",
+    "name": "Cross-Side Webhook Handoff & Sync",
+    "sideA": "integrations.routes.ts",
+    "sideB": "integrations.router.ts",
+    "endpoints": 4,
+    "dbTables": [
+      "cases",
+      "case_timelines"
+    ],
+    "status": "COMPLETE"
+  },
+  {
+    "id": "STATUTORY_INSPECTION",
+    "name": "Statutory 10-Criteria Environmental Inspection",
+    "sideA": "N/A",
+    "sideB": "FieldInspectionPage, InspectionPlanPage, InspectionResultPage",
+    "endpoints": 9,
+    "dbTables": [
+      "inspections",
+      "inspection_findings",
+      "inspection_templates"
+    ],
+    "status": "COMPLETE"
+  },
+  {
+    "id": "LEGAL_DECISION",
+    "name": "Legal Decision Engine & Statutory Vietnamese Corpus",
+    "sideA": "N/A",
+    "sideB": "LegalWorkspacePage, LegalLibraryPage, LegalImportPage",
+    "endpoints": 7,
+    "dbTables": [
+      "legal_corpus",
+      "human_decisions"
+    ],
+    "status": "COMPLETE"
+  },
+  {
+    "id": "CONTRACTOR_PORTAL",
+    "name": "Contractor Remediation Portal & 50m Geofence Buffer",
+    "sideA": "ContractorPortalPage, ContractorRemediationPage",
+    "sideB": "ActionsListPage, RemediationReviewPage",
+    "endpoints": 6,
+    "dbTables": [
+      "contractors",
+      "corrective_actions",
+      "remediations"
+    ],
+    "status": "COMPLETE"
+  },
+  {
+    "id": "CLOSURE_GATE",
+    "name": "Safety Gate Case Closure & Feedback Reopen",
+    "sideA": "CaseDetailPage, ReportDetailPage",
+    "sideB": "CaseDetailPage, Closures",
+    "endpoints": 5,
+    "dbTables": [
+      "cases",
+      "case_timelines",
+      "reopen_requests"
+    ],
+    "status": "COMPLETE"
+  },
+  {
+    "id": "IOT_TELEMETRY",
+    "name": "IoT Remote Sensor Telemetry & HMAC Signature Ingestion",
+    "sideA": "MapPage",
+    "sideB": "IotDevicesPage, IotDeviceDetailPage",
+    "endpoints": 6,
+    "dbTables": [
+      "iot_devices",
+      "iot_telemetry",
+      "iot_anomalies"
+    ],
+    "status": "COMPLETE"
+  },
+  {
+    "id": "YOUTH_CREDITS",
+    "name": "Youth Volunteer Hours & Environmental Credits Engine",
+    "sideA": "YouthCreditsPage, TasksPage, ContributionsPage",
+    "sideB": "N/A",
+    "endpoints": 5,
+    "dbTables": [
+      "tasks",
+      "contributions",
+      "user_credits"
+    ],
+    "status": "COMPLETE"
+  },
+  {
+    "id": "CIVIC_MAP",
+    "name": "Spatial Map with 100m Civic Privacy Grid",
+    "sideA": "MapPage",
+    "sideB": "CaseInboxPage",
+    "endpoints": 4,
+    "dbTables": [
+      "reports",
+      "cases"
+    ],
+    "status": "COMPLETE"
+  },
+  {
+    "id": "ADMIN_AUDIT",
+    "name": "Immutable Audit Trail & System Configuration",
+    "sideA": "AdminAuditPage, AdminUsersPage",
+    "sideB": "AdminAuditPage, AdminUsersPage, AdminSettingsPage",
+    "endpoints": 8,
+    "dbTables": [
+      "audit_logs",
+      "system_configs"
+    ],
+    "status": "COMPLETE"
+  }
+]

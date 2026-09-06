@@ -5,9 +5,66 @@
 
 ---
 
-## 📅 Bài học từ Dự án: DustGuard Operations & Community (2026-09-05)
+## 📅 Bài học từ Dự án: DustGuard Operations & Community (2026-09-06)
 
-### 0. Legacy Feature Salvage & 2-Side TSX Migration: Kiến Trúc Phân Định Ranh Giới Khách Thể, Đồng Bộ Webhook Trạng Thái & Thể Thức Văn Bản Hành Chính A4
+### 0. Full Product Rebuild & Runtime Audit: Xóa Sổ Fake Alert, Chuẩn Hóa Draft Envelope, Giải Quyết Lỗi Phân Tích JSX Lồng Nhau và Chống Thoái Lui Tự Động
+- **Vấn đề**:
+  - **Lỗi Phân Tích Regex Cụt Khi Gặp JSX Lồng Nhau (JSX Nested Component Regex Truncation)**: Khi viết script kiểm kê tương tác tự động bằng Regex `/<(button...)\b([^>]*)>([\s\S]*?)<\/\1>/gi`, thuộc tính JSX chứa component con như `icon={<User className="w-3.5 h-3.5" />}` khiến regex dừng sớm ở ký tự `>` đầu tiên của icon, cắt cụt thuộc tính mở thẻ và đẩy `onClick={...}` vào phần innerText. Hậu quả là công cụ kiểm toán báo sai (false positive) 26 nút bị "dead" trong khi mã nguồn thực tế hoạt động hoàn hảo.
+  - **Lạm Dụng window.alert() Gây Trải Nghiệm Khó Chịu (Intrusive Fake Alerts)**: Hơn 10 vị trí trong code sử dụng `alert('...')` chặn hoàn toàn luồng giao diện người dùng, không đồng bộ với ngôn ngữ thiết kế và gây gián đoạn khó chịu.
+  - **Tràn Bộ Nhớ LocalStorage Do Lưu Trực Tiếp Ảnh Base64 (Uncontrolled Base64 Draft Bloat)**: Lưu trữ chuỗi `data:image/jpeg;base64,...` dung lượng hàng megabytes trực tiếp vào `localStorage` có nguy cơ gây lỗi `QuotaExceededError`, làm tê liệt toàn bộ tính năng lưu nháp trên trình duyệt di động.
+  - **Thiếu Kiểm Soát Thoái Lui Khi Refactor (Regression Risk)**: Thiếu bộ test tự động quét mã nguồn để đảm bảo không ai vô tình thêm lại `alert()`, duplicate menu routes hoặc lạm dụng `localStorage`.
+- **Giải pháp chuẩn hóa**:
+  1. **Bộ Phân Tích JSX Chuẩn Xác (Robust JSX Attribute Parsing)**:
+     - Nhận diện các thẻ có nested JSX attributes bằng cách kiểm tra thuộc tính trên toàn bộ khối thẻ hoặc nối phần bị cắt trước dấu `>` tiếp theo.
+     - Bỏ qua các tệp template component nguyên mẫu (ví dụ `Button.tsx` định nghĩa wrapper).
+  2. **100% Toast Civic Tech Thay Thế window.alert()**:
+     - Tạo `ToastContext.tsx` với thông báo tương phản cao, tự biến mất sau 3s-4s, có icon trực quan và hỗ trợ đa loại (success, error, info, warning).
+     - Thay thế toàn bộ `window.alert()` trên cả 2 phân hệ; tỷ lệ Fake Alert đạt chính xác 0%.
+  3. **Cơ Chế Bản Nháp Draft Envelope (`draftStorage.ts`)**:
+     - Định nghĩa Envelope chuẩn hóa: `{ schema: string, version: '1.0', updatedAt: number, ttlMs: 7 ngày, owner?: string, data: T }`.
+     - Tự động dọn dẹp bản nháp hết hạn (`cleanupExpiredDrafts()`).
+     - Nghiêm cấm lưu raw Base64 vào localStorage; chỉ lưu metadata và sử dụng `URL.createObjectURL(file)` làm preview blob tạm thời.
+  4. **Bộ Kiểm Thử Chống Thoái Lui Tự Động (`tests/regression-guard.test.js`)**:
+     - Tự động duyệt mã nguồn xác nhận: 0 `alert()`, 0 raw base64 trong localStorage, 100% DB ở chế độ WAL và integrity OK, geofence buffer cố định 50m, và không trùng lặp route điều hướng.
+
+### 1. Two-Side Product, Runtime & Data Audit: Báo Cáo Ẩn Danh (Anonymous Reporting), Bản Nháp Tự Động (Draft Autosave), Triệt Tiêu Lỗi Dính Chữ (UI Spacing) và Sao Lưu Thảm Họa (Backup/Restore CLI)
+- **Vấn đề**:
+  - **Rào cản Đăng nhập Chặn Người Dân Báo Bụi (Login Wall Friction)**: Khi người dân gặp ô nhiễm bụi công trình trên đường, họ cần gửi phản ánh trong 30 giây. Việc bọc Route Guard bắt buộc đăng nhập trên client (`ProtectedRoute`) trong khi backend đã hỗ trợ ẩn danh khiến người dùng bị chuyển hướng sang `/login`, từ bỏ báo cáo.
+  - **Mất dữ liệu biểu mẫu dài (Form Abandonment & Data Loss)**: Người dân khi nhập mô tả dài hoặc nhà thầu khi viết báo cáo giải trình ngoài hiện trường, nếu bị mất mạng hoặc lỡ F5 trang thì toàn bộ nội dung bị xóa sạch, gây ức chế lớn cho người dùng.
+  - **Lỗi Dính Chữ trên Sidebar Hẹp (Text Overlap / Co-location Clipping)**: Thẻ vụ việc `CaseCard` khi đặt trong sidebar có độ rộng cố định (~300px), các thẻ con `flex` không có `shrink-0` và thiếu khoảng cách đệm khiến chữ `2 quan sát` và nút `Chi tiết ->` bị dính liền vào nhau thành `2 quan sátChi tiết ->`.
+- **Giải pháp chuẩn hóa**:
+  1. **Mở Route Ẩn Danh Tự Do + Callout Hướng Dẫn Thân Thiện**:
+     - Cho phép truy cập `/reports/new` không qua `ProtectedRoute`.
+     - Phân định rõ ràng: Nếu khách vãng lai, hiển thị banner màu kem báo rõ phản ánh được tiếp nhận ẩn danh; nếu muốn nhận điểm rèn luyện thanh niên thì mới cần đăng nhập.
+  2. **Cơ chế Draft Autosave chuẩn mực (Debounce 500ms + Tự hủy khi Submit)**:
+     - Dùng `localStorage` lưu bản nháp sau mỗi 500ms người dùng dừng gõ.
+     - Hiển thị badge trực quan: *"Đã lưu bản nháp lúc HH:mm:ss"* và phím *"Xóa nháp"* làm lại.
+     - Bắt buộc gọi `localStorage.removeItem` ngay khi API phản hồi nộp thành công (200/201 OK).
+  3. **Quy tắc CSS Chống Dính Chữ Trên Sidebar Co Hẹp**:
+     - Luôn thêm `shrink-0` cho các CTA điều hướng cuối dòng (`Chi tiết`, `Xem thêm`).
+     - Các phần tử số liệu đi kèm icon phải có `whitespace-nowrap` và bọc trong container `flex-wrap gap-x-3 gap-y-1 min-w-0`.
+
+### 1. Master Production Completion: Xác Thực Dịch Vụ Nội Bộ (x-service-key), Vận Hành Từ CSDL Rỗng (Zero-Seed Operability) & Chuẩn Mật Mã Web Crypto
+- **Vấn đề**:
+  - **Lỗi 401 Inter-Service Drift**: Khi Side A (Community) gọi sang Side B (Operations) để lấy dữ liệu nhà thầu và ban hành yêu cầu khắc phục, việc sử dụng JWT token người dùng hoặc token mock khiến middleware xác thực người dùng chặn đứng (HTTP 401/403). Các lập trình viên thường giải quyết vội bằng cách viết fallback gán dữ liệu mẫu (mock hardcoded) trong khối `catch`, dẫn đến việc UI hiển thị nhà thầu giả định ngay cả khi CSDL rỗng.
+  - **Giả Định CSDL Đã Có Dữ Liệu (Seed Dependency Trap)**: Các dashboard hay tính năng tính KPI thường giả định đã chạy lệnh seed, nếu CSDL mới tinh (0 records) thì các hàm thống kê sử dụng `Math.max(reports, 3)` hoặc mảng tĩnh giả lập tăng trưởng làm mất tính trung thực của phần mềm CivicTech.
+  - **Lỗ hổng Sinh Mã Ngẫu Nhiên Kém An Toàn (Weak Pseudorandom Generation)**: Việc dùng `Math.random()` để sinh mã hồ sơ, mã token, hoặc hậu tố upload tệp gây rủi ro xung đột mã (collision) và rủi ro bảo mật có thể đoán trước.
+  - **Sai Lệch Phân Biệt Giữa Endpoint và Base URL**: Đặt biến môi trường `OPERATIONS_API_URL` trỏ vào một webhook endpoint cụ thể (`/api/integrations/community/cases`) nhưng lại dùng trực tiếp biến đó để ghép thêm path khác (`${OPERATIONS_API_URL}/api/actions`) dẫn đến URL bị lồng nhau và trả về 404.
+- **Giải pháp chuẩn hóa**:
+  1. **Xác Thực Dịch Vụ Nội Bộ Tường Minh (`x-service-key`)**:
+     - Thiết lập header nội bộ `x-service-key: dustguard-internal-2026` cho các lời gọi API từ server đến server. Middleware xác thực nhận diện service key và cấp quyền truy cập an toàn mà không cần giả lập phiên người dùng.
+     - Tuyệt đối cấm fallback về mock data trong khối `catch`; nếu CSDL rỗng thì trả về `[]` hoặc `null` và hiển thị Empty State chuẩn mực.
+  2. **Chuẩn Vận Hành CSDL Rỗng (Zero-Seed Operability)**:
+     - Toàn bộ câu lệnh SQL tính toán chỉ số Dashboard phải dùng hàm tổng hợp thực tế (`COUNT(*)`, `GROUP BY`).
+     - Khi hệ thống mới boot, Dashboard phải hiển thị trung thực `0 phản ánh`, `0 vụ việc`, không fake số liệu.
+  3. **Chuẩn Mật Mã Mọi Nơi (Web Crypto SSOT Everywhere)**:
+     - Cấm triệt để `Math.random()`. Luôn dùng `crypto.randomUUID()` cho UUID và `crypto.randomInt(min, max)` cho các mã số định danh nghiệp vụ.
+  4. **Tách Biệt Base URL và Webhook Endpoint**:
+     - Quy ước rõ: `OPERATIONS_BASE_URL` là gốc máy chủ (ví dụ `http://localhost:4000`), còn `OPERATIONS_API_URL` là URL đầy đủ của webhook. Có hàm helper tự động trích xuất `u.origin` nếu chỉ được cung cấp endpoint.
+  5. **Harness Kiểm Thử E2E Liên Hoàn 2 Chiều**:
+     - Bộ kiểm thử E2E tự tạo CSDL sạch và khởi động song song 2 server trên cổng thử nghiệm cô lập, xác minh toàn bộ luồng: Citizen Report -> Moderator Triage -> Operations Ingest -> Staff Assignment -> Corrective Action -> Contractor Portal -> Remediation Submit -> Staff Review -> IoT HMAC Telemetry -> Youth Credits -> Citizen Feedback Loop.
+
+### 1. Legacy Feature Salvage & 2-Side TSX Migration: Kiến Trúc Phân Định Ranh Giới Khách Thể, Đồng Bộ Webhook Trạng Thái & Thể Thức Văn Bản Hành Chính A4
 - **Vấn đề**:
   - **Nhầm Lẫn Quyền Sở Hữu Đối Tượng (Actor Domain Confusion)**: Đơn vị thi công (Contractor) là chủ thể bên ngoài chịu trách nhiệm khắc phục hiện trường, không phải cán bộ công quyền; nếu đặt cổng nộp báo cáo của nhà thầu vào phân hệ nội bộ Side B (`dustguard-operations`) sẽ làm thủng ranh giới bảo mật mạng nội bộ và phá vỡ mô hình phân quyền RBAC.
   - **Bất Đồng Bộ Trạng Thái Giữa 2 Phân Hệ (Cross-Side Status Drift)**: Khi hồ sơ ở Side B chuyển từ `INSPECTION_PENDING` sang `ACTION_REQUIRED` hoặc `CLOSED`, nếu người dân ở Side A không nhận được cập nhật tức thì, họ sẽ có cảm giác chính quyền "chìm xuồng" phản ánh của mình.
