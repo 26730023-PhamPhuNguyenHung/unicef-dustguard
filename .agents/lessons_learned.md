@@ -7,6 +7,24 @@
 
 ## 📅 Bài học từ Dự án: DustGuard Operations & Community (2026-09-06)
 
+### 00. Production D1-R2 Migration & Unified Cloudflare Worker Cutover: Nghiêm Ngặt Khóa Ngoại (Foreign Key Safety), Chuẩn Hóa Enum (Case-Insensitive Enums) và Định Tuyến SPA Kép Trên Cùng Tên Miền
+- **Vấn đề**:
+  - **Lỗi Vi Phạm Khóa Ngoại D1 SQLite (D1 Foreign Key Constraint Violations)**: Cloudflare D1 thực thi triệt để các ràng buộc khóa ngoại (FOREIGN KEY). Khi tạo mới bản ghi (ví dụ `ops_case_timeline`, `ops_evidence_assets`, `case_closures`), nếu tham số người thực hiện (`actor_id`, `uploaded_by`, `closed_by`) hoặc mã vụ việc (`case_id`) truyền vào chuỗi mock ('mod', 'admin', 'general') mà không tồn tại trong bảng cha (`ops_users`, `ops_cases`), SQLite ném lỗi `SQLITE_CONSTRAINT_FOREIGNKEY` gây sập API với mã 500.
+  - **Lỗi Phân Biệt Hoa Thường Enum CHECK Constraint (Enum Case Sensitivity)**: CSDL SQLite lưu CHECK constraint dưới dạng chữ thường: `CHECK(role IN ('citizen', 'community_member', 'moderator', 'admin'))` và `CHECK(severity_observation IN ('low', 'medium', 'high', 'unknown'))`. Khi client hoặc kiểm thử gửi chữ hoa như `YOUTH_VOLUNTEER` hay `HIGH`, câu lệnh INSERT bị từ chối hoàn toàn.
+  - **Xung Đột Routing Khi Ghép 2 Ứng Dụng SPA Vào Cùng Một Tên Miền**: Phân hệ Side A chạy ở `/` còn Side B chạy ở `/operations`. Nếu không cấu hình cẩn trọng, mọi request F5 tải lại trang `/operations/cases/xxx` sẽ bị Worker fallback nhầm về `/index.html` của Side A, gây trắng trang hoặc lỗi router 404.
+- **Giải pháp chuẩn hóa**:
+  1. **Bảo Vệ Khóa Ngoại An Toàn (Safe Foreign Key Resolution)**:
+     - Với các trường có thể null (`actor_id`): Luôn kiểm tra sự tồn tại trong CSDL trước khi gán; nếu không tìm thấy, truyền `NULL` an toàn để SQLite chấp nhận.
+     - Với các trường bắt buộc (`closed_by`): Tự động fallback lấy ID cán bộ hợp lệ đầu tiên trong bảng cha nếu phiên gọi không có token đăng nhập.
+  2. **Vệ Sinh Enum Trước Khi Thao Tác SQL (Enum Sanitization Whitelist)**:
+     - Viết logic bọc: `.toLowerCase()` và đối chiếu mảng `validRoles` / `validSeverities`. Nếu giá trị ngoại lai không nằm trong whitelist, tự động gán fallback mặc định an toàn (`citizen`, `medium`).
+  3. **Bộ Định Tuyến Worker Phân Nhánh SPA Chuẩn Tắc (Dual SPA Routing Strategy)**:
+     - Side B Vite: Thiết lập `base: '/operations/'` và React `BrowserRouter basename={import.meta.env.BASE_URL}`.
+     - Worker Asset Fallback: Tách bạch rõ ràng:
+       - Nếu `url.pathname.startsWith('/operations')`: Khi asset trả về 404, Worker fallback request về `/operations/index.html`.
+       - Các đường dẫn còn lại: Khi asset trả về 404, Worker fallback request về `/index.html`.
+     - Phân phối toàn bộ JS/CSS với mã 200 trực tiếp từ Cloudflare Edge CDN.
+
 ### 0. Full Product Rebuild & Runtime Audit: Xóa Sổ Fake Alert, Chuẩn Hóa Draft Envelope, Giải Quyết Lỗi Phân Tích JSX Lồng Nhau và Chống Thoái Lui Tự Động
 - **Vấn đề**:
   - **Lỗi Phân Tích Regex Cụt Khi Gặp JSX Lồng Nhau (JSX Nested Component Regex Truncation)**: Khi viết script kiểm kê tương tác tự động bằng Regex `/<(button...)\b([^>]*)>([\s\S]*?)<\/\1>/gi`, thuộc tính JSX chứa component con như `icon={<User className="w-3.5 h-3.5" />}` khiến regex dừng sớm ở ký tự `>` đầu tiên của icon, cắt cụt thuộc tính mở thẻ và đẩy `onClick={...}` vào phần innerText. Hậu quả là công cụ kiểm toán báo sai (false positive) 26 nút bị "dead" trong khi mã nguồn thực tế hoạt động hoàn hảo.

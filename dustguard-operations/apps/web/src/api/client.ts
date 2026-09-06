@@ -6,6 +6,14 @@ export interface ApiError {
   invalidParams?: any[];
 }
 
+export function resolveApiUrl(endpoint: string): string {
+  const apiPrefix = import.meta.env.VITE_API_PREFIX ?? (import.meta.env.PROD ? '/api/operations' : '');
+  if (apiPrefix && endpoint.startsWith('/api')) {
+    return `${apiPrefix}${endpoint.slice(4)}`;
+  }
+  return endpoint;
+}
+
 async function request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const token = localStorage.getItem('dustguard_token');
   const devUserId = localStorage.getItem('dustguard_dev_user_id');
@@ -22,7 +30,8 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
     headers.set('x-user-id', devUserId);
   }
 
-  const res = await fetch(endpoint, {
+  const finalUrl = resolveApiUrl(endpoint);
+  const res = await fetch(finalUrl, {
     ...options,
     headers,
   });

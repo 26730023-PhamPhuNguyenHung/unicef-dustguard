@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Shield, Menu, X, ArrowUpRight, Send } from 'lucide-react';
+import { OPERATIONS_APP_URL } from '../../config/constants';
 
 interface LandingHeaderProps {
   lang: 'vi' | 'en';
@@ -70,9 +71,7 @@ export const LandingHeader: React.FC<LandingHeaderProps> = ({ lang, onToggleLang
 
           {/* Secondary CTA: Dành cho Đơn vị Xử lý (Side B) */}
           <a
-            href="http://localhost:3002"
-            target="_blank"
-            rel="noreferrer"
+            href={OPERATIONS_APP_URL}
             className="text-[13px] font-semibold text-[#0369A1] hover:text-[#0C4A6E] hover:bg-[#E0F2FE]/70 px-3.5 py-2 rounded-lg transition-colors flex items-center gap-1 border border-[#BAE6FD]/80"
           >
             <span>{lang === 'vi' ? 'Đơn vị xử lý' : 'Operations'}</span>
@@ -136,9 +135,7 @@ export const LandingHeader: React.FC<LandingHeaderProps> = ({ lang, onToggleLang
 
             <div className="flex items-center justify-between pt-1">
               <a
-                href="http://localhost:3002"
-                target="_blank"
-                rel="noreferrer"
+                href={OPERATIONS_APP_URL}
                 className="text-[13px] font-semibold text-[#0369A1] flex items-center gap-1"
               >
                 <span>{lang === 'vi' ? 'Cổng Đơn vị Xử lý' : 'Operations'}</span>

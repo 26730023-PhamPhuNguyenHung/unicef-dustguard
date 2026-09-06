@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Users, Shield, ArrowRight, Camera, CheckCircle2, ShieldAlert, Award, FileCheck2, Building2, Scale } from 'lucide-react';
+import { OPERATIONS_APP_URL } from '../../config/constants';
 
 interface RoleStoriesProps {
   lang: 'vi' | 'en';
@@ -168,9 +169,7 @@ export const RoleStories: React.FC<RoleStoriesProps> = ({ lang }) => {
             {/* Bottom Action */}
             <div className="pt-2">
               <a
-                href="http://localhost:3002"
-                target="_blank"
-                rel="noreferrer"
+                href={OPERATIONS_APP_URL}
                 className="w-full py-3 rounded-xl bg-[#0369A1] hover:bg-[#0284C7] text-white font-bold text-xs sm:text-sm shadow-xs transition-all flex items-center justify-center gap-2 active:scale-95"
               >
                 <span>{lang === 'vi' ? 'Truy cập Cổng Điều hành Nghiệp vụ' : 'Open Operations Workspace'}</span>

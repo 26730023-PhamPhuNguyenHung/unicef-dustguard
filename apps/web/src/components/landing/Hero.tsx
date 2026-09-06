@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Send, ArrowRight, ShieldCheck, Clock, Eye } from 'lucide-react';
 import { CaseStory } from './CaseStory';
+import { OPERATIONS_APP_URL } from '../../config/constants';
 
 interface HeroProps {
   lang: 'vi' | 'en';
@@ -63,9 +64,7 @@ export const Hero: React.FC<HeroProps> = ({ lang }) => {
 
               {/* Phía Chuyên trách (Secondary) */}
               <a
-                href="http://localhost:3002"
-                target="_blank"
-                rel="noreferrer"
+                href={OPERATIONS_APP_URL}
                 className="h-12 px-5 rounded-xl bg-white hover:bg-[#F0F9FF] text-[#0369A1] font-bold text-[14px] flex items-center justify-center gap-1.5 transition-colors w-full sm:w-auto border border-[#BAE6FD]"
               >
                 <span>{lang === 'vi' ? 'Dành cho đơn vị xử lý' : 'For authorities'}</span>

@@ -3,6 +3,7 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.js';
 import { resolveCommunityHome } from '../utils/auth-redirect.js';
 import { LogIn, Mail, Lock, AlertCircle, ArrowRight, Shield, Building2, ExternalLink } from 'lucide-react';
+import { OPERATIONS_APP_URL } from '../config/constants';
 
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -224,7 +225,7 @@ export const LoginPage: React.FC = () => {
             </div>
 
             <a
-              href="http://localhost:3002/login"
+              href={`${OPERATIONS_APP_URL}/login`}
               className="w-full py-3 rounded-xl bg-[#0369A1] hover:bg-[#0284C7] text-white font-bold text-sm shadow-sm transition-all flex items-center justify-center gap-2"
             >
               <span>Chuyển sang Cổng Điều hành (Operations)</span>
@@ -232,7 +233,11 @@ export const LoginPage: React.FC = () => {
             </a>
 
             <div className="text-[11px] text-content-sub">
-              Mã cổng vận hành nội bộ: <code className="font-mono font-bold text-[#0369A1]">Port 3002</code>
+              {import.meta.env.PROD ? (
+                <>Đường dẫn cổng vận hành: <code className="font-mono font-bold text-[#0369A1]">/operations</code></>
+              ) : (
+                <>Mã cổng vận hành nội bộ: <code className="font-mono font-bold text-[#0369A1]">Port 3002</code></>
+              )}
             </div>
           </div>
         )}

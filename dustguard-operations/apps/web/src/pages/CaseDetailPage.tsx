@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { api } from '../api/client';
+import { api, resolveApiUrl } from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { CaseHeader } from '../components/case/CaseHeader';
@@ -478,7 +478,7 @@ export const CaseDetailPage: React.FC = () => {
             icon={<FileText className="w-3.5 h-3.5" />}
             onClick={() => {
               const token = localStorage.getItem('dustguard_token');
-              const url = `/api/cases/${currentCase.id}/decision-pack${token ? `?token=${encodeURIComponent(token)}` : ''}`;
+              const url = resolveApiUrl(`/api/cases/${currentCase.id}/decision-pack${token ? `?token=${encodeURIComponent(token)}` : ''}`);
               window.open(url, '_blank');
             }}
           >
@@ -586,7 +586,7 @@ export const CaseDetailPage: React.FC = () => {
               size="sm"
               onClick={() => {
                 const token = localStorage.getItem('dustguard_token');
-                const url = `/api/cases/${currentCase.id}/decision-pack${token ? `?token=${encodeURIComponent(token)}` : ''}`;
+                const url = resolveApiUrl(`/api/cases/${currentCase.id}/decision-pack${token ? `?token=${encodeURIComponent(token)}` : ''}`);
                 window.open(url, '_blank');
               }}
               icon={<FileText className="w-3.5 h-3.5" />}
@@ -1169,7 +1169,7 @@ export const CaseDetailPage: React.FC = () => {
                 icon={<FileText className="w-4 h-4" />}
                 onClick={() => {
                   const token = localStorage.getItem('dustguard_token');
-                  const url = `/api/cases/${currentCase.id}/decision-pack${token ? `?token=${encodeURIComponent(token)}` : ''}`;
+                  const url = resolveApiUrl(`/api/cases/${currentCase.id}/decision-pack${token ? `?token=${encodeURIComponent(token)}` : ''}`);
                   window.open(url, '_blank');
                 }}
               >

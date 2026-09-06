@@ -7,6 +7,33 @@
 
 ## 📅 Các Mốc Phát Triển Chính (Milestones)
 
+### 00. [2026-09-06] `production-d1-r2-cutover`: Di Chuyển CSDL Lên Cloudflare D1 Production & R2 Storage, Hợp Nhất Unified Worker Runtime và Cắt Chuyển Tên Miền Chính Thức (dustguard.phamphunguyenhung.com)
+- **Mục tiêu**: Thực thi toàn diện theo tài liệu đặc tả `"DUSTGUARD — Production D1-R2 Migration, Runtime Completion & Live Domain Cutover.md"`.
+- **Phạm vi hoàn tất**:
+  - **Cơ sở dữ liệu Cloudflare D1 Production SSOT**:
+    - Thiết lập kết nối D1 Database `ad40205a-ec4b-40f3-8ab2-c2e7b9e78699` (`dustguard-production`).
+    - Soạn thảo 5 tệp migration chuẩn: `0001_core.sql`, `0002_community.sql` (22 bảng), `0003_operations.sql` (30 bảng + virtual table FTS5), `0004_cross_side.sql`, `0005_indexes_constraints.sql`.
+    - Apply thành công 100% lên Remote D1 Production với 60 bảng quan hệ và bảng tra cứu FTS5.
+    - Nạp cơ sở tri thức pháp lý (QCVN 05:2023, NĐ 45/2022, QĐ 29/2021) vào D1 Remote và bảng ảo FTS5 `legal_sections_fts`.
+  - **Lưu trữ Bằng chứng Số Cloudflare R2 (`dustguard-storage`)**:
+    - Kết nối binding `STORAGE` & `EVIDENCE_BUCKET`.
+    - Tính toán băm toàn vẹn SHA-256 qua Web Crypto API, đối chứng tải về qua Worker stream khớp 100%.
+  - **Unified Worker Runtime Native (Hono + TypeScript)**:
+    - `server/index.ts`: Worker entrypoint hợp nhất phục vụ API, phục vụ Uploads stream từ R2 và phân phối SPA Static Assets cho cả Side A (`/`) và Side B (`/operations`).
+    - `server/version.ts`: Tự động sinh từ `git rev-parse HEAD` qua `scripts/generate-version.js`.
+    - `server/community.ts`: Toàn bộ router Side A (Auth, Reports + validation/district fallback, Cases, Observations, Tasks, Admin).
+    - `server/operations.ts`: Toàn bộ router Side B (Bootstrap, Login, Cases, Staff Assignment, Cổng kiểm soát 4 điều kiện đóng hồ sơ, Trí tuệ Pháp lý FTS5, Cross-side Ingest idempotent).
+  - **Đồng bộ Frontend & Phân phối Trực tiếp**:
+    - Cấu hình Side B Vite `base: '/operations/'`, `BrowserRouter basename`.
+    - Điều hướng API client động: Side A gọi `/api/*`, Side B gọi `/api/operations/*`.
+    - Thay thế toàn bộ liên kết hardcode `http://localhost:3002` thành URL động `/operations` trên môi trường Production.
+    - Script build hợp nhất `scripts/build-production.js` đóng gói cả 2 frontend vào `dist/` và `dist/operations/`.
+  - **Kiểm định Runtime Sống (Live Production Verification)**:
+    - 31/31 bài test E2E thực tế trên domain `https://dustguard.phamphunguyenhung.com` **PASS 100%** (`scripts/test-production-e2e.js`).
+    - GET `/api/system/version`: Trả về commit hash `f64b3a7` trùng khớp Git HEAD.
+    - GET `/api/system/health`: Trả về `{"status":"ok","database":"ok","storage":"ok"}`.
+    - Static Assets: Side A và Side B phân phối trực tiếp từ Cloudflare Edge CDN với mã HTTP 200.
+
 ### 0. [2026-09-06] `full-product-rebuild-runtime-audit`: Tái Thiết Toàn Diện Sản Phẩm & Kiểm Toán Vận Hành Từng Trang (Page-by-Page Runtime Audit)
 - **Mục tiêu**: Thực thi toàn diện theo tài liệu kiểm toán `"DUSTGUARD — FULL PRODUCT REBUILD & PAGE-BY-PAGE RUNTIME AUDIT.md"`.
 - **Phạm vi hoàn tất**:

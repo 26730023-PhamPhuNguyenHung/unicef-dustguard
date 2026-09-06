@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Shield, ExternalLink, Mail, Phone, MapPin, Heart } from 'lucide-react';
+import { OPERATIONS_APP_URL } from '../../config/constants';
 
 interface LandingFooterProps {
   lang: 'vi' | 'en';
@@ -83,9 +84,7 @@ export const LandingFooter: React.FC<LandingFooterProps> = ({ lang }) => {
             <ul className="space-y-2 text-[11px]">
               <li>
                 <a
-                  href="http://localhost:3002"
-                  target="_blank"
-                  rel="noreferrer"
+                  href={OPERATIONS_APP_URL}
                   className="hover:text-white flex items-center gap-1 transition-colors"
                 >
                   <span>Trung tâm Điều hành (Operations)</span>
@@ -94,9 +93,7 @@ export const LandingFooter: React.FC<LandingFooterProps> = ({ lang }) => {
               </li>
               <li>
                 <a
-                  href="http://localhost:3002/evidence"
-                  target="_blank"
-                  rel="noreferrer"
+                  href={`${OPERATIONS_APP_URL}/evidence`}
                   className="hover:text-white flex items-center gap-1 transition-colors"
                 >
                   <span>Kho Bằng chứng số SHA-256</span>
@@ -105,9 +102,7 @@ export const LandingFooter: React.FC<LandingFooterProps> = ({ lang }) => {
               </li>
               <li>
                 <a
-                  href="http://localhost:3002/inspections"
-                  target="_blank"
-                  rel="noreferrer"
+                  href={`${OPERATIONS_APP_URL}/inspections`}
                   className="hover:text-white flex items-center gap-1 transition-colors"
                 >
                   <span>Thanh tra hiện trường QCVN 18</span>
@@ -116,9 +111,7 @@ export const LandingFooter: React.FC<LandingFooterProps> = ({ lang }) => {
               </li>
               <li>
                 <a
-                  href="http://localhost:3002/login"
-                  target="_blank"
-                  rel="noreferrer"
+                  href={`${OPERATIONS_APP_URL}/login`}
                   className="hover:text-white flex items-center gap-1 transition-colors font-medium text-sky-400"
                 >
                   <span>Đăng nhập Cán bộ Chuyên môn</span>

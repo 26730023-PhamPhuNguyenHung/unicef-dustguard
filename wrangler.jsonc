@@ -1,0 +1,44 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "dust-guard-vn",
+  "main": "server/index.ts",
+  "compatibility_date": "2024-09-23",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "dustguard-production",
+      "database_id": "ad40205a-ec4b-40f3-8ab2-c2e7b9e78699",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "STORAGE",
+      "bucket_name": "dustguard-storage"
+    },
+    {
+      "binding": "EVIDENCE_BUCKET",
+      "bucket_name": "dustguard-storage"
+    }
+  ],
+  "vars": {
+    "ENVIRONMENT": "production",
+    "APP_ORIGIN": "https://dustguard.phamphunguyenhung.com",
+    "ALLOWED_ORIGINS": "https://dustguard.phamphunguyenhung.com,http://localhost:3000,http://localhost:3002,http://localhost:8787",
+    "INTEGRATION_SERVICE_KEY": "dustguard-internal-2026"
+  },
+  "routes": [
+    {
+      "pattern": "dustguard.phamphunguyenhung.com",
+      "custom_domain": true
+    }
+  ]
+}

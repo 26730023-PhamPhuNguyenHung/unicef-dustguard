@@ -55,21 +55,7 @@ export const AdminUsersPage: React.FC = () => {
     e.preventDefault();
     setSubmitting(true);
     try {
-      // Direct post to admin/users
-      const token = localStorage.getItem('dustguard_token');
-      const res = await fetch('/api/admin/users', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(newUser),
-      });
-
-      if (!res.ok) {
-        const errJson = await res.json();
-        throw new Error(errJson.error || errJson.detail || 'Lỗi tạo tài khoản');
-      }
+      await api.admin.createUser(newUser);
 
       success('Tạo cán bộ thành công', `Tài khoản ${newUser.username} đã được cấp phát.`);
       setCreateModalOpen(false);

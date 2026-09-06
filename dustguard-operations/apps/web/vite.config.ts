@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 import path from 'node:path';
 
 export default defineConfig({
+  base: process.env.VITE_BASE || (process.env.NODE_ENV === 'production' ? '/operations/' : '/'),
   plugins: [
     react(),
     {
