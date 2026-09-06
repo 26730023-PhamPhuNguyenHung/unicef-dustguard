@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Users, Shield, ArrowRight, Camera, CheckCircle2, ShieldAlert, Award, FileCheck2, Building2, Scale } from 'lucide-react';
-import { OPERATIONS_APP_URL } from '../../config/constants';
+import { Users, Shield, ArrowRight, Camera, CheckCircle2, Award, FileCheck2, Building2, Scale } from 'lucide-react';
 
 interface RoleStoriesProps {
   lang: 'vi' | 'en';
@@ -9,15 +8,18 @@ interface RoleStoriesProps {
 
 export const RoleStories: React.FC<RoleStoriesProps> = ({ lang }) => {
   return (
-    <section id="roles" className="py-20 md:py-28 bg-[#F4EFEA] border-y border-[#E8E1D9]">
-      <div className="max-w-[1280px] mx-auto px-5 sm:px-8">
+    <section id="roles" className="py-14 md:py-24 bg-[#F4EFEA] border-y border-[#E8E1D9]">
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-8">
         
         {/* EDITORIAL HEADING */}
-        <div className="max-w-3xl mb-16 space-y-4">
+        <div className="max-w-3xl mb-12 md:mb-16 space-y-3.5">
           <span className="text-[12px] font-mono font-bold tracking-widest uppercase text-[#B42318]">
             {lang === 'vi' ? 'MÔ HÌNH HAI PHÍA ĐỒNG HÀNH' : 'TWO-SIDE COLLABORATIVE MODEL'}
           </span>
-          <h2 className="text-[34px] sm:text-[44px] lg:text-[50px] font-black text-[#0F172A] tracking-[-0.02em] leading-[1.1] text-balance">
+          <h2
+            className="text-[30px] sm:text-[42px] lg:text-[48px] font-black text-[#0F172A] tracking-[-0.02em] leading-[1.12]"
+            style={{ textWrap: 'pretty' }}
+          >
             {lang === 'vi' ? (
               <>
                 Một chu trình khép kín. <br />
@@ -30,7 +32,10 @@ export const RoleStories: React.FC<RoleStoriesProps> = ({ lang }) => {
               </>
             )}
           </h2>
-          <p className="text-[17px] text-[#475569] leading-relaxed max-w-[640px]">
+          <p
+            className="text-[15px] sm:text-[17px] text-[#475569] leading-relaxed max-w-[640px]"
+            style={{ textWrap: 'pretty' }}
+          >
             {lang === 'vi'
               ? 'Xóa bỏ mô hình phản ánh một chiều rơi vào im lặng. DustGuard kết nối sức mạnh quan sát của cộng đồng với năng lực thực thi của đơn vị chức năng.'
               : 'Breaking the silence of one-way reporting. DustGuard bridges civic ground observation with authoritative field enforcement.'}
@@ -38,10 +43,10 @@ export const RoleStories: React.FC<RoleStoriesProps> = ({ lang }) => {
         </div>
 
         {/* 2-SIDE COMPARATIVE CARDS */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 items-stretch">
           
           {/* SIDE A: PHÍA CỘNG ĐỒNG */}
-          <div className="bg-white rounded-3xl border border-[#E2DCD5] p-7 sm:p-9 flex flex-col justify-between space-y-6 shadow-xs relative overflow-hidden group hover:border-[#B42318]/40 transition-all">
+          <div className="bg-white rounded-3xl border border-[#E2DCD5] p-6 sm:p-9 flex flex-col justify-between space-y-6 shadow-xs relative overflow-hidden group hover:border-[#B42318]/40 transition-all">
             <div className="space-y-5">
               {/* Header Badge */}
               <div className="flex items-center justify-between">
@@ -56,10 +61,10 @@ export const RoleStories: React.FC<RoleStoriesProps> = ({ lang }) => {
 
               {/* Title & Description */}
               <div className="space-y-2">
-                <h3 className="text-[24px] font-black text-[#0F172A] tracking-tight">
+                <h3 className="text-[22px] sm:text-[24px] font-black text-[#0F172A] tracking-tight" style={{ textWrap: 'pretty' }}>
                   {lang === 'vi' ? 'Ghi nhận · Xác thực & Theo dõi' : 'Observe · Verify & Track'}
                 </h3>
-                <p className="text-[14px] text-[#475569] leading-relaxed">
+                <p className="text-[14px] text-[#475569] leading-relaxed" style={{ textWrap: 'pretty' }}>
                   {lang === 'vi'
                     ? 'Chụp ảnh có tọa độ GPS, mã hóa bằng chứng số bất biến, xác thực tín hiệu chéo giữa các tình nguyện viên và theo dõi hồ sơ cho tới khi có kết quả khắc phục.'
                     : 'Capture geoverified photos, secure tamper-evident hashes, cross-confirm signals, and track civic cases transparently.'}
@@ -97,20 +102,20 @@ export const RoleStories: React.FC<RoleStoriesProps> = ({ lang }) => {
               </div>
             </div>
 
-            {/* Bottom Action */}
-            <div className="pt-2">
+            {/* Bottom Action (Touch target >= 44px) */}
+            <div className="pt-3">
               <Link
                 to="/reports/new"
-                className="w-full py-3 rounded-xl bg-[#B42318] hover:bg-[#91180D] text-white font-bold text-xs sm:text-sm shadow-xs transition-all flex items-center justify-center gap-2 active:scale-95"
+                className="w-full min-h-[44px] h-12 rounded-xl bg-[#B42318] hover:bg-[#91180D] text-white font-bold text-sm shadow-xs transition-all flex items-center justify-center gap-2 active:scale-[0.99]"
               >
-                <span>{lang === 'vi' ? 'Gửi phản ánh hoặc tham gia CLB' : 'Submit report or join club'}</span>
+                <span>{lang === 'vi' ? 'Gửi phản ánh' : 'Submit dust report'}</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
           </div>
 
           {/* SIDE B: PHÍA CHUYÊN TRÁCH */}
-          <div className="bg-white rounded-3xl border border-[#BAE6FD] p-7 sm:p-9 flex flex-col justify-between space-y-6 shadow-xs relative overflow-hidden group hover:border-[#0284C7] transition-all">
+          <div className="bg-white rounded-3xl border border-[#BAE6FD] p-6 sm:p-9 flex flex-col justify-between space-y-6 shadow-xs relative overflow-hidden group hover:border-[#0284C7] transition-all">
             <div className="space-y-5">
               {/* Header Badge */}
               <div className="flex items-center justify-between">
@@ -125,10 +130,10 @@ export const RoleStories: React.FC<RoleStoriesProps> = ({ lang }) => {
 
               {/* Title & Description */}
               <div className="space-y-2">
-                <h3 className="text-[24px] font-black text-[#0F172A] tracking-tight">
+                <h3 className="text-[22px] sm:text-[24px] font-black text-[#0F172A] tracking-tight" style={{ textWrap: 'pretty' }}>
                   {lang === 'vi' ? 'Tiếp nhận · Thanh tra & Xử lý' : 'Intake · Inspect & Enforce'}
                 </h3>
-                <p className="text-[14px] text-[#475569] leading-relaxed">
+                <p className="text-[14px] text-[#475569] leading-relaxed" style={{ textWrap: 'pretty' }}>
                   {lang === 'vi'
                     ? 'Tự động nhập hồ sơ từ cộng đồng, kiểm tra hiện trường theo 10 tiêu chuẩn QCVN 18/BXD, đối chiếu pháp lý FTS5 và giám sát nhà thầu khắc phục trong bán kính 50m.'
                     : 'Auto-intake civic dossiers, conduct 10-criterion site checklists, cross-reference FTS5 environmental laws, and enforce remediation within 50m.'}
@@ -166,15 +171,15 @@ export const RoleStories: React.FC<RoleStoriesProps> = ({ lang }) => {
               </div>
             </div>
 
-            {/* Bottom Action */}
-            <div className="pt-2">
-              <a
-                href={OPERATIONS_APP_URL}
-                className="w-full py-3 rounded-xl bg-[#0369A1] hover:bg-[#0284C7] text-white font-bold text-xs sm:text-sm shadow-xs transition-all flex items-center justify-center gap-2 active:scale-95"
+            {/* Bottom Action (Touch target >= 44px, routing directly to /login?side=operations) */}
+            <div className="pt-3">
+              <Link
+                to="/login?side=operations"
+                className="w-full min-h-[44px] h-12 rounded-xl bg-[#0369A1] hover:bg-[#0284C7] text-white font-bold text-sm shadow-xs transition-all flex items-center justify-center gap-2 active:scale-[0.99]"
               >
-                <span>{lang === 'vi' ? 'Truy cập Cổng Điều hành Nghiệp vụ' : 'Open Operations Workspace'}</span>
+                <span>{lang === 'vi' ? 'Dành cho đơn vị xử lý' : 'For Operations Side'}</span>
                 <ArrowRight className="w-4 h-4" />
-              </a>
+              </Link>
             </div>
           </div>
 

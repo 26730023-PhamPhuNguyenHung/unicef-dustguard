@@ -167,7 +167,7 @@ export const AutomationsPage: React.FC = () => {
       ) : (
         <div className="civic-card overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+            <table className="w-full text-left text-xs min-w-[700px]">
               <thead className="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold uppercase tracking-wider text-[11px]">
                 <tr>
                   <th className="px-4 py-3">Thời gian</th>

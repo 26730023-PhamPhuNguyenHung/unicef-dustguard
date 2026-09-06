@@ -69,7 +69,7 @@ export const BottomActionBar: React.FC<BottomActionBarProps> = ({
         </div>
 
         {/* Right: Actions */}
-        <div className="flex items-center gap-2 w-full sm:w-auto justify-end shrink-0">
+        <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 w-full sm:w-auto justify-end shrink-0">
           {onSecondaryAction && (
             <Button
               type="button"
@@ -77,6 +77,7 @@ export const BottomActionBar: React.FC<BottomActionBarProps> = ({
               size="sm"
               loading={secondaryLoading}
               onClick={onSecondaryAction}
+              className="flex-1 sm:flex-none"
             >
               {secondaryLabel}
             </Button>
@@ -88,7 +89,7 @@ export const BottomActionBar: React.FC<BottomActionBarProps> = ({
             size="sm"
             loading={primaryLoading}
             onClick={onPrimaryAction}
-            className="shadow-xs font-bold"
+            className="shadow-xs font-bold flex-1 sm:flex-none"
           >
             <span>{primaryLabel}</span>
           </Button>

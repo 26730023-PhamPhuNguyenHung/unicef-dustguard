@@ -36,7 +36,7 @@ export const MapPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-border-subtle">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-content-main">Bản đồ phản ánh cộng đồng</h1>
-          <p className="text-xs text-content-sub">Các điểm nóng và tiến độ xử lý bụi phát tán tại TP. Hồ Chí Minh</p>
+          <p className="text-xs text-content-sub">Các điểm nóng và tiến độ xử lý bụi phát tán tại Hà Nội</p>
         </div>
 
         {/* Filters */}

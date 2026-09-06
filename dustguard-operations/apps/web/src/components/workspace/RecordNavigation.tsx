@@ -22,7 +22,7 @@ export const RecordNavigation: React.FC<RecordNavigationProps> = ({
 }) => {
   return (
     <div
-      className={`flex items-center gap-1.5 overflow-x-auto bg-surface p-1 rounded-lg border border-slate-200/90 shadow-2xs scrollbar-none select-none ${className}`}
+      className={`flex items-center gap-1 overflow-x-auto bg-surface p-1 rounded-lg border border-slate-200/90 shadow-2xs scrollbar-thin select-none ${className}`}
     >
       {tabs.map(tab => {
         const isActive = activeTab === tab.id;
@@ -31,10 +31,10 @@ export const RecordNavigation: React.FC<RecordNavigationProps> = ({
             key={tab.id}
             type="button"
             onClick={() => onTabChange(tab.id)}
-            className={`flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-md whitespace-nowrap transition-all cursor-pointer ${
+            className={`flex items-center gap-1.5 shrink-0 px-3 py-2 text-xs font-semibold rounded-md whitespace-nowrap transition-all cursor-pointer touch-target min-h-[44px] ${
               isActive
-                ? 'bg-dustguard-redSoft text-dustguard-red border-b-2 border-dustguard-red'
-                : 'text-ink-600 hover:text-ink-900 hover:bg-surface-subtle'
+                ? 'bg-dustguard-redSoft text-dustguard-red border-b-2 border-dustguard-red font-bold shadow-2xs'
+                : 'text-ink-700 hover:text-ink-900 hover:bg-surface-subtle'
             }`}
           >
             {tab.icon && <span className="shrink-0">{tab.icon}</span>}

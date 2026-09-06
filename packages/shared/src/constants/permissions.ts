@@ -45,7 +45,8 @@ export const ROLE_PERMISSIONS: Record<string, Permission[]> = {
     'case:follow',
     'community:view',
     'notification:view',
-    'profile:manage'
+    'profile:manage',
+    'contribution:view'
   ],
   member: [
     // Toàn bộ quyền của Citizen

@@ -89,7 +89,7 @@ export const CitizenFeedbackSection: React.FC<CitizenFeedbackSectionProps> = ({
       </div>
 
       {isClosedOrResolved && !hasSubmitted && (
-        <form onSubmit={handleSubmit} className="p-4 bg-surface-ground rounded-civic border border-border-subtle space-y-4">
+        <form onSubmit={handleSubmit} className="p-4 bg-surface-subtle rounded-civic border border-border-subtle space-y-4">
           <div>
             <label className="block text-xs font-bold uppercase tracking-wider text-content-sub mb-2">
               1. Bạn đánh giá thế nào về kết quả xử lý tại hiện trường?
@@ -220,7 +220,7 @@ export const CitizenFeedbackSection: React.FC<CitizenFeedbackSectionProps> = ({
                 </div>
 
                 {f.comment && (
-                  <p className="text-content-sub bg-surface-ground p-2.5 rounded border border-border-subtle">
+                  <p className="text-content-sub bg-surface-subtle p-2.5 rounded border border-border-subtle text-pretty">
                     &ldquo;{f.comment}&rdquo;
                   </p>
                 )}

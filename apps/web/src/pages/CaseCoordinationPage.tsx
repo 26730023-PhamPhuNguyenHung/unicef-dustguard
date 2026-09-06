@@ -168,15 +168,17 @@ export const CaseCoordinationPage: React.FC = () => {
 
       {/* MODAL CẬP NHẬT TRẠNG THÁI */}
       {editingCase && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-xl border border-border-subtle">
+        <div className="fixed inset-0 bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4 z-50" role="dialog" aria-modal="true">
+          <div className="bg-white rounded-t-2xl sm:rounded-2xl max-w-lg w-full p-5 sm:p-6 space-y-4 shadow-xl border border-border-subtle max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between">
               <h3 className="text-base font-bold text-content-main">
                 Cập nhật trạng thái vụ việc
               </h3>
               <button
+                type="button"
                 onClick={() => setEditingCase(null)}
-                className="p-1 rounded-lg text-content-muted hover:text-content-main"
+                className="p-2 rounded-lg text-content-muted hover:text-content-main min-w-[44px] min-h-[44px] flex items-center justify-center cursor-pointer"
+                aria-label="Đóng"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -194,7 +196,7 @@ export const CaseCoordinationPage: React.FC = () => {
                 <select
                   value={newStatus}
                   onChange={(e: any) => setNewStatus(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl border border-border-subtle text-xs sm:text-sm bg-white focus:border-primary focus:outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-border-subtle text-xs sm:text-sm bg-white focus:border-primary focus:outline-none"
                 >
                   {Object.entries(CASE_STATUS_LABELS).map(([k, v]) => (
                     <option key={k} value={k}>
@@ -213,7 +215,7 @@ export const CaseCoordinationPage: React.FC = () => {
                   placeholder="VD: Đã chuyển thông tin cho ban chỉ huy công trình"
                   value={updateTitle}
                   onChange={(e) => setUpdateTitle(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl border border-border-subtle text-xs sm:text-sm bg-white focus:border-primary focus:outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-border-subtle text-xs sm:text-sm bg-white focus:border-primary focus:outline-none"
                 />
               </div>
 
@@ -226,22 +228,22 @@ export const CaseCoordinationPage: React.FC = () => {
                   placeholder="VD: Nhà thầu đã tiếp nhận và cam kết rửa đường lúc 17h hàng ngày..."
                   value={updateNote}
                   onChange={(e) => setUpdateNote(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl border border-border-subtle text-xs sm:text-sm bg-white focus:border-primary focus:outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-border-subtle text-xs sm:text-sm bg-white focus:border-primary focus:outline-none"
                 />
               </div>
 
-              <div className="pt-3 flex justify-end gap-2 border-t border-border-subtle">
+              <div className="pt-3 flex items-center justify-end gap-2 border-t border-border-subtle">
                 <button
                   type="button"
                   onClick={() => setEditingCase(null)}
-                  className="px-4 py-2 rounded-lg text-xs font-semibold text-content-sub hover:bg-surface-secondary"
+                  className="px-4 py-2.5 rounded-xl text-xs font-semibold text-content-sub hover:bg-surface-secondary min-h-[44px] flex items-center justify-center cursor-pointer"
                 >
                   Hủy
                 </button>
                 <button
                   type="submit"
                   disabled={updating}
-                  className="px-5 py-2 rounded-xl bg-primary text-white font-bold text-xs hover:bg-primary-dark transition-colors shadow-xs"
+                  className="px-5 py-2.5 rounded-xl bg-primary text-white font-bold text-xs hover:bg-primary-dark transition-colors shadow-xs min-h-[44px] flex items-center justify-center cursor-pointer disabled:opacity-50"
                 >
                   {updating ? 'Đang lưu...' : 'Lưu cập nhật'}
                 </button>

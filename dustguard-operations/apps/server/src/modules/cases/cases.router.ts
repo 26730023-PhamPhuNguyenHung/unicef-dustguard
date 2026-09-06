@@ -105,7 +105,8 @@ casesRouter.get('/', (req: AuthRequest, res) => {
         sql += ` AND c.status IN ('INSPECTION_PLANNED', 'INSPECTION_IN_PROGRESS')`;
         break;
       case 'pending_action':
-        sql += ` AND c.status = 'ACTION_REQUIRED'`;
+      case 'remediation':
+        sql += ` AND c.status IN ('ACTION_REQUIRED', 'REMEDIATION')`;
         break;
       case 'pending_reinspection':
         sql += ` AND c.status = 'REINSPECTION'`;
@@ -149,7 +150,7 @@ casesRouter.get('/', (req: AuthRequest, res) => {
 
   // Assignee filter
   if (assignee && typeof assignee === 'string') {
-    if (assignee === 'unassigned') {
+    if (assignee === 'unassigned' || assignee === 'none') {
       sql += ` AND c.assigned_staff_id IS NULL`;
     } else {
       sql += ` AND c.assigned_staff_id = ?`;

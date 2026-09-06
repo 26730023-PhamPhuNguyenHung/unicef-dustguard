@@ -5,7 +5,142 @@
 
 ---
 
-## 📅 Bài học từ Dự án: DustGuard Operations & Community (2026-09-06)
+### 08. Chuẩn Hóa Visual System & Application Shell Side B (Port 3002): Chống Co Cụm Mobile Drawer, Chống Đè Chữ Horizontal Scroll Tabs & Đảm Bảo Zero Glassmorphism Benchmark
+- **Vấn đề thực tế phát hiện**:
+  - **Co cụm không gian Mobile Drawer (360px)**: Drawer menu điều hướng trên thiết bị di động trước đây dùng độ rộng cứng `w-72` (288px) không giới hạn theo tỷ lệ viewport, chiếm gần trọn màn hình 360px và không chừa đủ diện tích cho lớp backdrop. Người dùng không thấy rõ đây là một tấm sliding sheet và khó bấm ra ngoài để đóng menu.
+  - **Hiện tượng đè chữ do co flex (Flex-shrink text overlap)**: Trong các thanh điều hướng cuộn ngang (`overflow-x-auto`) như Tab vụ việc (`CaseInboxPage.tsx`) hay Tab hồ sơ chi tiết (`RecordNavigation.tsx`), dù các nút tab đã có `whitespace-nowrap` nhưng thiếu `shrink-0` (hoặc `flex-shrink-0`). Khi container bị co hẹp, trình duyệt tự động ép flex-basis của các nút con lại khiến chữ tràn ra ngoài và đè chồng chéo lên nhau.
+  - **Touch Target không đồng đều (< 44px)**: Các nút bấm icon trên Header (Hamburger, Search, Bell, Profile, Logout) và các nút phụ (Clear [X], Pill filters, More actions) có kích thước 32px-36px, không đạt chuẩn WCAG 2.2 touch target tối thiểu 44px trên mobile.
+  - **Nút CTA và Actions container bị tràn ngang**: Các nhóm nút hành động trong PageHeader, RecordHeader, CaseHeader và Dashboard Header thiếu `flex-wrap`, trên màn hình nhỏ bị đẩy trôi ra ngoài mép phải.
+- **Giải pháp chuẩn hóa**:
+  1. **SSOT Mobile Drawer Width & Offset Formula**:
+     - Áp dụng công thức: `w-[280px] max-w-[calc(100vw-3rem)]` (hoặc `max-w-[calc(100vw-48px)]`).
+     - Đảm bảo trên viewport hẹp nhất 360px luôn chừa tối thiểu 48px - 80px lề cho backdrop tối màu (`bg-ink-900/50`), giữ vững cảm quan thị giác nhiều lớp và thao tác tap-outside cực nhạy.
+     - Tích hợp body scroll lock khi mobile menu kích hoạt.
+  2. **Quy Tắc Bắt Buộc `shrink-0` Cho Mọi Phần Tử Trong Container Cuộn Ngang**:
+     - Mọi item tab, badge đếm số lượng, hay filter pill đặt trong thanh cuộn ngang `overflow-x-auto` bắt buộc phải có `shrink-0` đi kèm `whitespace-nowrap`.
+     - Tuyệt đối không dựa dẫm vào `min-w-fit` mà bỏ quên `shrink-0`.
+  3. **Chuẩn Hóa Touch Target $\ge 44\text{px}$ Bằng Responsive Spacing**:
+     - Sử dụng `min-h-[44px] min-w-[44px]` hoặc `p-2.5 sm:p-2` cho mọi nút icon trên mobile.
+     - Nút `Button.tsx` biến thể `size="sm"` đặt `min-h-[44px] sm:min-h-[36px]`, vừa bảo đảm diện tích chạm ngón tay trên điện thoại vừa giữ được độ thanh mảnh trên máy tính để bàn.
+  4. **Responsive Actions Wrap & Mobile Full-Width CTA**:
+     - Bọc các container nút bấm trong `flex flex-wrap items-center gap-2 w-full sm:w-auto`.
+     - Trên mobile, các nút hành động chính (BottomActionBar, Case CTA) co giãn `flex-1 sm:flex-none` hoặc `w-full sm:w-auto` để tối ưu thao tác một tay.
+  5. **Giữ Vững Chuẩn Mực Zero Glassmorphism & High Contrast**:
+     - 100% nền sáng màu (`#F7F6F3` / `#FFFFFF`), chữ mực đậm (`#171313` / `#0F172A`), đường viền sắc nét (`#E7E5E4`), điểm nhấn đỏ dấu ấn `#9F241F` và xanh trầm `#0D6F64`.
+     - 0 bộ lọc làm mờ (`backdrop-filter: blur()`), bảo đảm tính trang trọng và minh bạch của ứng dụng công quyền Civic Tech.
+
+### 07. Chuyên Sâu Tối Ưu Mobile UX Trên Toàn Bộ Dải Màn Hình 360px - 430px (Side A & Side B)
+- **Vấn đề thực tế phát hiện**:
+  - **Horizontal overflow (scrollWidth > innerWidth)**: Nhiều container, modal và layout không có `w-full max-w-full overflow-x-hidden` ở tầng root; các bảng dữ liệu nhiều cột (TasksListPage, YouthCredits leaderboard) tràn ngang làm người dùng vuốt trôi cả màn hình trên thiết bị `360x800` hoặc `390x844`.
+  - **Text clipping & rớt chữ đơn lẻ**: Thiếu `scrollbar-gutter: stable;` và `text-wrap: pretty;` ở tầng CSS base; các nhãn nút thời hạn SLA chia 4 cột quá hẹp trên 360px khiến chữ rớt cụt `(Khẩn / cấp)`.
+  - **Modal và Drawer tràn ra ngoài viewport**: Các modal tại Side B (TasksListPage, TaskDetailPage, SitesListPage, SiteDetailPage, CasesListPage, CaseDetailPage, StaffAlertsPage, StaffMonitoringPage) hiển thị hộp nổi trung tâm `items-center`, thiếu khả năng cuộn `max-h-[92dvh] overflow-y-auto`, thiếu padding an toàn đáy `pb-safe`, thiếu `Escape` listener và không khóa body scroll.
+  - **Button quá nhỏ (< 44px) và dính sát nhau**: Các nút phân trang, nút đóng modal, nút thao tác 1-click có chiều cao chỉ 32px-36px, không đạt chuẩn WCAG 2.2 touch target tối thiểu 44px.
+  - **Nút hành động dính sát đáy bị che bởi thanh điều hướng**: Các màn hình hiện trường (`FieldChecklistPage`, `FieldEvidencePage`, `FieldConclusionPage`) thiếu padding đáy lớn (`pb-28 sm:pb-32`) và thanh nút CTA không cố định với `pb-safe`.
+- **Giải pháp chuẩn hóa triệt để**:
+  1. **Global CSS Base & Utility Classes (`app/src/index.css`)**:
+     - Thêm `scrollbar-gutter: stable;` và `text-wrap: pretty;` vào `html`.
+     - Thêm `overflow-x: hidden; min-height: 100dvh;` vào `body`.
+     - Định nghĩa tiện ích `@utility pb-safe { padding-bottom: max(16px, env(safe-area-inset-bottom, 16px)); }` và `@utility pt-safe`.
+  2. **Chuẩn Hóa Toàn Bộ Modal Thành Mobile Bottom Sheet (SSOT Pattern)**:
+     - Backdrop: `fixed inset-0 z-50 bg-[#231b14]/60 flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-y-auto`.
+     - Backdrop Click-Outside: Thẻ vô hình `<div className="fixed inset-0 bg-transparent" onClick={closeModal} aria-hidden="true" />`.
+     - Container: `relative w-full max-w-md bg-white rounded-t-3xl sm:rounded-3xl border border-[#E7E5E4] p-5 sm:p-6 shadow-2xl space-y-4 max-h-[92dvh] overflow-y-auto pb-safe z-10`.
+     - Footer: `flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5 pt-3 border-t border-[#E7E5E4]`.
+     - Keyboard & Scroll Lock: Mọi modal đều tích hợp `useEffect` lắng nghe phím `Escape` và khóa `document.body.style.overflow = 'hidden'`, giải phóng `unset` khi unmount.
+  3. **Responsive Table sang Mobile Card View**:
+     - Bảng dữ liệu nhiều cột được phân tách: `hidden md:block overflow-x-auto` cho `<table>` trên màn hình lớn, và `md:hidden flex flex-col gap-3` hiển thị dưới dạng thẻ thông tin tóm tắt trên mobile.
+  4. **Touch Target $\ge 44\text{px}$ & Zero Jargon**:
+     - Toàn bộ nút phân trang, nút tab, nút đóng [X], nút chọn SLA, và CTA đều đạt chuẩn `min-h-[44px] min-w-[44px]`.
+     - Tuyệt đối không dùng `transform: scale()` hoặc `zoom: 0.7`.
+
+### 06. Audit Toàn Diện Router Kiến Trúc Đa Ứng Dụng (Side A Community vs Side B Operations) & Edge Worker Routing Isolation
+- **Vấn đề**:
+  - **Route trùng lặp và xung đột alias**: Trong `apps/web/src/App.tsx`, route `/cases` bị định nghĩa trùng 2 lần, các alias `/citizen/*` bị khai báo 2 block mâu thuẫn (`/citizen/track` map nhầm sang `/reports` thay vì `/following`, alias `/citizen/report` trỏ vào component cũ thay vì `/reports/new`). Trang `/forbidden` có import nhưng thiếu `<Route path="/forbidden" />`.
+  - **Lạc trôi ứng dụng do hardcode URL và thiếu Base path awareness**: Trong `dustguard-operations/apps/web/src/pages/SetupPage.tsx`, `window.location.href = '/dashboard'` khiến người dùng trên production (chạy tại base `/operations/`) bị văng ngược sang Side A (`/dashboard`). Trong `apps/web/src/pages/LoginPage.tsx`, 4 vị trí gọi API auth bị hardcode `http://localhost:3002/api/auth/login` gây lỗi kết nối khi chạy production hoặc môi trường khác port.
+  - **Chệch hướng luồng SPA trên Cloudflare Edge Worker**: Worker Hono đóng vai trò reverse proxy phục vụ cả 2 SPA tĩnh qua R2/Asset fetcher. Khi người dùng truy cập `/operations/*`, nếu worker fallback asset fetch về `/` thay vì `/operations/index.html`, trang Side B sẽ không thể nạp bundle JS riêng của nó hoặc nảy sinh trailing slash 404. Ngoài ra, các endpoints API của nhà thầu (`/contractor/*`) chỉ có trên Side B nhưng giao diện nhà thầu lại nằm trên Side A, khiến API gọi worker trả về 404.
+  - **CommandPalette và nút điều hướng lệch path**: Trong Side B, `CommandPalette.tsx` trỏ thiết bị IoT về `/iot/${d.id}` thay vì `/iot/devices/${d.id}` dẫn đến 404 khi người dùng tìm kiếm nhanh.
+- **Giải pháp chuẩn hóa**:
+  1. **SSOT Router Graph & Cross-App Redirection (`OperationsRedirect`)**:
+     - Dọn sạch 100% route trùng lặp và xung đột trong Side A (`apps/web/src/App.tsx`). Đăng ký đầy đủ `<ForbiddenPage />` và chuẩn hóa alias `/citizen/report` $\rightarrow$ `/reports/new`, `/citizen/track` $\rightarrow$ `/following`.
+     - Tạo component `OperationsRedirect` trên Side A: Bất kỳ truy cập nào tới `/operations/*`, `/staff/*`, `/executive/*` sẽ tự động chuyển hướng sang `OPERATIONS_APP_URL` (`http://localhost:3002` ở dev hoặc `/operations` ở prod) thay vì bị fallback mù quáng về `/dashboard` của Side A.
+  2. **Base URL & Dynamic Endpoint Injection**:
+     - Thay thế toàn bộ `window.location.href = '/path'` bằng `${import.meta.env.BASE_URL || '/'}path`.
+     - Thay thế toàn bộ chuỗi hardcode `http://localhost:3002` bằng `OPERATIONS_APP_URL` / `API_BASE_URL` trỏ linh hoạt theo môi trường.
+     - Đồng bộ đối xứng liên kết chuyển đổi giữa 2 ứng dụng: Side A có nút "Cổng Điều hành (Side B)" trên AppShell, Side B có nút "Cổng Cộng đồng (Side A)" trên AppLayout.
+  3. **Edge Worker Routing Isolation & D1 Single Source of Truth**:
+     - `server/index.ts` phân định rõ: `/operations/*` fetch chính xác `/operations/index.html`, mọi path khác fetch `/index.html`.
+     - Đăng ký root health check `GET /health` trả về 200 OK tương đồng với `/api/health`.
+     - Gắn trực tiếp các API Cổng Nhà Thầu (`GET /contractor/dashboard`, `GET /contractor/actions/:id`, `POST /contractor/actions/:id/remediation`) vào `server/community.ts` với D1 queries và geofence buffer 50m, bảo đảm Side A gọi trực tiếp worker thành công 100% không qua trung gian.
+  4. **Automated Verification Gate (`tests/router-audit-verification.test.js`)**:
+     - Tích hợp bài test tự động phân tích tĩnh (Static Analysis) quét sạch các chuỗi `http://localhost:3000`, `http://localhost:3002` và kiểm tra 0 route trùng lặp trước mỗi lần deploy.
+
+### 05. Chuẩn Hóa Toàn Diện Shared Interaction-Heavy Components (Table, Form, Modal & Drawer) Đa Nền Tảng
+- **Vấn đề**:
+  - **Bảng dữ liệu ép co rúm trên mobile 360px**: Nhiều trang nghiệp vụ (ContractorsPage, ProjectsPage, AutomationsPage, IotDeviceDetailPage, DecisionSupportSection, AdminAuditPage, AdminUsersPage, DataTable.tsx, UnifiedDataTable.jsx) chứa các bảng 6-10 cột không có min-width trên thẻ `<table>`. Khi xem trên viewport nhỏ 360px-390px, các cột co rúm lại, chữ xếp chồng lên nhau hoặc tràn layout ngang. Thậm chí `DataTable.tsx` còn bị lỗi cú pháp `emptyMessage` undefined gây crash runtime khi bảng rỗng.
+  - **Form nhiều trường bị trôi nút Submit ra ngoài màn hình trên mobile**: Các form tạo mới nhiều trường (Contractors, Projects, PublicReportModal) sử dụng `grid-cols-2` hoặc `grid-cols-3` cứng nhắc, thiếu `max-h-[90vh]` và `overflow-y-auto`. Khi bàn phím ảo mobile bật lên, thanh nút hành động bị đẩy trôi ra ngoài màn hình, người dùng không thể cuộn xuống để bấm nút Gửi/Tạo mới.
+  - **Modal / Drawer trên mobile dạng hộp nổi lửng lơ giữa màn hình**: Đa số modal (Modal.tsx, ActionModal, DecisionModal, QuickPreviewModal, PublicReportModal, CreateReportPage, CaseCoordinationPage, VerificationDetailPage, SideDrawer, DecisionWorkspaceDrawer, EvidenceDetailDrawer) hiển thị hộp vuông ở giữa màn hình, góc bấm nút Đóng [X] nhỏ (< 32px), gây khó thao tác một tay trên điện thoại.
+- **Giải pháp chuẩn hóa**:
+  1. **Table Responsive Container & Min-Width**:
+     - Mọi bảng dữ liệu dạng `<table>` đều được bọc trong container `overflow-x-auto` và gắn `min-w-[600px]` đến `min-w-[750px]` tùy số lượng cột.
+     - Trên desktop hiển thị bảng dữ liệu đầy đủ, sắc nét; trên mobile cho phép vuốt ngang mượt mà mà không làm vỡ khung viền trang.
+     - Sửa lỗi `emptyMessage` trong `DataTable.tsx` với fallback mặc định thân thiện.
+  2. **Form Mobile-First Single Column & Sticky Action Footers**:
+     - Chuyển toàn bộ form từ `grid-cols-2` / `grid-cols-3` thành `grid-cols-1 sm:grid-cols-2` và `grid-cols-1 sm:grid-cols-3`.
+     - Container form đặt `max-h-[90vh] flex flex-col`, phần nhập liệu đặt `overflow-y-auto flex-1`.
+     - Thanh nút hành động (Submit / Cancel) được cố định với `sticky bottom-0 bg-white pt-3 shrink-0`, đảm bảo người dùng luôn nhìn thấy và bấm được CTA mà không bị bàn phím ảo hay chiều cao màn hình che khuất.
+  3. **Modal & Drawer Chuyển Dạng Mobile Bottom Sheet**:
+     - Thiết lập chuẩn container: `items-end sm:items-center justify-center p-0 sm:p-4`.
+     - Card modal: `rounded-t-2xl sm:rounded-xl max-h-[90vh] flex flex-col overflow-hidden`.
+     - Nút đóng [X] nâng cấp touch target lên chuẩn WCAG `min-h-[44px] min-w-[44px]` (hoặc `w-10 h-10` kèm padding an toàn).
+     - Drawer bên phải trên mobile chuyển mượt thành bottom sheet kéo từ đáy lên (`fixed inset-x-0 bottom-0 sm:inset-y-0 sm:right-0`).
+
+### 04. Audit Tương Tác & User Flows: Phòng Ngừa Dead-End Navigation, RBAC Routing Trap & Thiếu Permission Guards
+- **Vấn đề**:
+  - **RBAC Routing Trap (Lỗi phân quyền chặn nhầm người dùng hợp lệ)**:
+    - Route `/contributions` được thiết kế dành cho người dân để theo dõi hành trình và dấu ấn đóng góp, nhưng trong `ROLE_PERMISSIONS.citizen` lại thiếu quyền `'contribution:view'`. Kết quả là người dùng có role `citizen` khi bấm vào menu "Dấu ấn đóng góp" bị `ProtectedRoute` chặn và chuyển hướng sang `/forbidden` (hoặc `/dashboard`).
+    - Trong `AppShell.tsx`, khi người dùng đổi sang vai trò `citizen` từ Dev Role Switcher, code cũ lại chủ động chuyển hướng ra khỏi `/contributions` vì coi đây là route nội bộ.
+  - **Route Mapping Mâu Thuẫn & Cũ Kỹ**:
+    - Trong `App.tsx`, component mới thiết kế hoàn chỉnh `YouthCreditsPage` không được nối vào `/contributions`, mà route này lại bị trỏ vào component cũ `ContributionsPage`. Đồng thời route `/cases` bị định nghĩa trùng lặp 2 lần (`<Navigate to="/reports" />` chặn phía trên route chính thức).
+  - **Dead-End Navigation (Cụt luồng tương tác)**:
+    - Trong `MyTrackingPage.tsx` (tab Đã đóng góp) và `YouthCreditsPage.tsx` (Nhật ký hoạt động), danh sách hiển thị các đóng góp nhưng không có đường link hoặc CTA để người dùng bấm vào xem chi tiết vụ việc (`/cases/:id`) hay chi tiết phản ánh (`/reports/:id`).
+    - Trong `CaseDetailPage.tsx` (tab Evidence), nút "Thêm ảnh mới" hiển thị tự do mà không kiểm tra quyền `can('observation:create')`, dẫn đến khách vãng lai hoặc tài khoản không đủ quyền bấm vào trang tạo quan sát bị lỗi.
+  - **Location String Bất Nhất**:
+    - `ReportDetailPage.tsx` và `MapPage.tsx` còn sót chuỗi `"TP. Hồ Chí Minh"`, trong khi SSOT địa bàn và tọa độ trung tâm là Hà Nội (`62 Nguyễn Chí Thanh, Láng Thượng`).
+- **Giải pháp chuẩn hóa**:
+  1. **Cấp Quyền Tường Minh & Đồng Bộ RBAC**:
+     - Bổ sung `'contribution:view'` vào `ROLE_PERMISSIONS.citizen` trong `packages/shared/src/constants/permissions.ts`.
+     - Xóa logic ép redirect khỏi `/contributions` của role `citizen` trong `AppShell.tsx`.
+  2. **Chuẩn Hóa Graph Điều Hướng (`App.tsx` & `navigation.ts`)**:
+     - Map chuẩn xác `/contributions` sang `<YouthCreditsPage />`.
+     - Dọn dẹp 100% route trùng lặp `/cases` và `/citizen/*`.
+     - Đồng bộ nhãn hiển thị `"Dấu ấn đóng góp"` trên Desktop Sidebar và Mobile Navigation.
+  3. **Xóa Bỏ Điểm Nghẽn Luồng (No Dead-End)**:
+     - Biến tiêu đề nhật ký và tên mục đóng góp thành Link tương tác, bổ sung nút CTA `"Xem chi tiết →"` / `"Xem →"` kèm số giờ thực tế.
+     - Guard chặt chẽ các nút hành động nhạy cảm bằng `can(action:create)`.
+  4. **Triệt Tiêu Hoàn Toàn Địa Chỉ Lệch Chuẩn**:
+     - Nối chuỗi Google Maps URL và nhãn phụ bản đồ theo đúng địa bàn Hà Nội SSOT.
+
+### 03. Chuẩn Hóa Kiến Trúc AppShell & Ưu Tiên Sửa Shared Components Trước Thay Vì CSS Hack Từng Trang
+- **Vấn đề**:
+  - **Style Inconsistencies & CSS Patchwork**: Các trang độc lập tự khai báo các class không tồn tại trong `tailwind.config.js` (ví dụ `bg-surface-ground`, `border-l-3`) hoặc áp đặt các padding quá lớn trên mobile (`p-8 sm:p-12`, `p-12`). Khi màn hình co về kích thước di động 360px-390px, nội dung bị ép hẹp nghiêm trọng gây rớt chữ hoặc tràn ngang (horizontal overflow).
+  - **Trải Nghiệm Mobile Menu Sơ Sài**: Menu drawer trên mobile chỉ hiển thị một danh sách link trắng xóa trôi nổi, không có backdrop overlay đóng menu khi bấm ra ngoài, không khóa cuộn trang nền (`body overflow: hidden`), không hỗ trợ phím `Escape`, và thiếu toàn bộ thông tin tài khoản, chuyển vai trò DEV cũng như nút đăng xuất.
+  - **Xung Đột Vị Trí Giữa Toast Thông Báo & Mobile Bottom Bar**: Toast được ghim cố định ở `bottom-4 right-4`. Trên di động, vị trí này đè trực tiếp lên thanh điều hướng dưới cùng (Bottom Navigation Bar cao ~64px), khiến người dùng không thể bấm tab hoặc bị che khuất nội dung thông báo.
+  - **Glassmorphism Phá Vỡ Tương Phản**: Một số nơi dùng `bg-white/95`, `bg-black/40` gây chìm chữ, không đạt độ tương phản chuẩn Civic Tech (>7:1).
+- **Giải pháp chuẩn hóa**:
+  1. **SSOT Page Container (`.civic-container`)**:
+     - Định nghĩa `.civic-container` tập trung tại `index.css`: `w-full max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8`. Mobile luôn giữ đúng `px-4` (16px), loại bỏ hoàn toàn các padding khổng lồ `p-12` tại từng trang.
+  2. **Mobile Drawer Hoàn Thiện Vòng Đời**:
+     - Tích hợp Solid Dark Backdrop (`bg-[#171313]/60`) đóng menu khi tap ra ngoài.
+     - Lắng nghe sự kiện bàn phím `Escape` và tự động đóng menu khi `location.pathname` thay đổi.
+     - Tự động khóa cuộn trang nền khi drawer mở.
+     - Tích hợp đầy đủ hồ sơ người dùng, chuyển đổi vai trò DEV, liên kết Cổng điều hành Side B và nút Đăng xuất ngay trong drawer.
+  3. **Tách Biệt Cao Độ Cho Toast Thông Báo**:
+     - Điều chỉnh container `ToastProvider` thành `bottom-20 sm:bottom-4 right-0 sm:right-4`, nâng toàn bộ thông báo bay lên trên thanh Bottom Navigation an toàn.
+     - Đảm bảo nút đóng toast đạt touch target `min-h-[44px] min-w-[44px]`.
+  4. **Chuẩn Hóa Mobile Bottom Sheet Cho Modals**:
+     - Chuyển đổi các modal (`ContributionSummaryModal`, `DuplicateReportModal`) thành dạng Bottom Sheet trên di động (`flex items-end sm:items-center`, bo góc đỉnh `rounded-t-2xl sm:rounded-2xl`, thêm padding an toàn `.pb-safe`).
+  5. **Quy Tắc Ưu Tiên Shared Components**:
+     - Luôn sửa và hoàn thiện tại các component dùng chung (`AppShell`, `EmptyState`, `LoadingSkeleton`, `StatCard`, `ReportCard`, `CaseCard`, `BeforeAfterComparison`, `CitizenFeedbackSection`, `index.css`) trước khi can thiệp vào từng trang riêng lẻ.
 
 ### 02. Chuyển Đổi Từ "Tín Chỉ Hàn Lâm 20h = 4.0 Tín Chỉ" Sang "Dấu Ấn Đóng Góp & Giờ Thực Địa Thực Chất"
 - **Vấn đề**:

@@ -88,8 +88,8 @@ export const ContributionSummaryModal: React.FC<ContributionSummaryModalProps> =
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 overflow-y-auto animate-in fade-in duration-150">
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-2xl w-full max-h-[92vh] overflow-y-auto space-y-5 p-5 sm:p-7 my-auto">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-[#171313]/65 overflow-y-auto animate-in fade-in duration-150" role="dialog" aria-modal="true">
+      <div className="bg-white rounded-t-2xl sm:rounded-2xl border border-slate-200 shadow-2xl max-w-2xl w-full max-h-[92vh] overflow-y-auto space-y-5 p-5 sm:p-7 pb-safe sm:pb-7 my-0 sm:my-auto">
         
         {/* Modal Controls Header */}
         <div className="flex items-center justify-between border-b border-slate-200 pb-3.5 print:hidden">

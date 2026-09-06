@@ -56,29 +56,29 @@ export const LandingFooter: React.FC<LandingFooterProps> = ({ lang }) => {
             <h4 className="font-bold text-white text-xs uppercase tracking-wider">
               {lang === 'vi' ? 'Phía Cộng Đồng' : 'Community Side'}
             </h4>
-            <ul className="space-y-2 text-[11px]">
+            <ul className="space-y-2 text-[12px]">
               <li>
-                <Link to="/reports/new" className="hover:text-white transition-colors">
+                <Link to="/reports/new" className="hover:text-white transition-colors py-1 block">
                   {lang === 'vi' ? 'Gửi phản ánh mới' : 'Submit Report'}
                 </Link>
               </li>
               <li>
-                <Link to="/map" className="hover:text-white transition-colors">
+                <Link to="/map" className="hover:text-white transition-colors py-1 block">
                   {lang === 'vi' ? 'Bản đồ ô nhiễm thời gian thực' : 'Real-Time Dust Map'}
                 </Link>
               </li>
               <li>
-                <Link to="/reports" className="hover:text-white transition-colors">
+                <Link to="/reports" className="hover:text-white transition-colors py-1 block">
                   {lang === 'vi' ? 'Danh mục hồ sơ đang theo dõi' : 'Active Public Cases'}
                 </Link>
               </li>
               <li>
-                <Link to="/communities" className="hover:text-white transition-colors">
+                <Link to="/communities" className="hover:text-white transition-colors py-1 block">
                   {lang === 'vi' ? 'Mạng lưới CLB & Dấu ấn đóng góp' : 'Youth Volunteer Clubs'}
                 </Link>
               </li>
               <li>
-                <Link to="/login" className="hover:text-white transition-colors font-medium text-amber-400">
+                <Link to="/login" className="hover:text-white transition-colors font-medium text-amber-400 py-1 block">
                   {lang === 'vi' ? 'Đăng nhập Cộng đồng' : 'Community Login'}
                 </Link>
               </li>
@@ -90,11 +90,19 @@ export const LandingFooter: React.FC<LandingFooterProps> = ({ lang }) => {
             <h4 className="font-bold text-white text-xs uppercase tracking-wider">
               {lang === 'vi' ? 'Phía Chuyên Trách' : 'Professional Side'}
             </h4>
-            <ul className="space-y-2 text-[11px]">
+            <ul className="space-y-2 text-[12px]">
+              <li>
+                <Link
+                  to="/login?side=operations"
+                  className="hover:text-white flex items-center gap-1.5 transition-colors font-semibold text-sky-300 py-1"
+                >
+                  <span>{lang === 'vi' ? 'Dành cho đơn vị xử lý' : 'For Operations Side'}</span>
+                </Link>
+              </li>
               <li>
                 <a
                   href={OPERATIONS_APP_URL}
-                  className="hover:text-white flex items-center gap-1 transition-colors"
+                  className="hover:text-white flex items-center gap-1 transition-colors py-1"
                 >
                   <span>Trung tâm Điều hành (Operations)</span>
                   <ExternalLink className="w-3 h-3 opacity-60" />
@@ -103,7 +111,7 @@ export const LandingFooter: React.FC<LandingFooterProps> = ({ lang }) => {
               <li>
                 <a
                   href={`${OPERATIONS_APP_URL}/evidence`}
-                  className="hover:text-white flex items-center gap-1 transition-colors"
+                  className="hover:text-white flex items-center gap-1 transition-colors py-1"
                 >
                   <span>Kho Bằng chứng số SHA-256</span>
                   <ExternalLink className="w-3 h-3 opacity-60" />
@@ -112,7 +120,7 @@ export const LandingFooter: React.FC<LandingFooterProps> = ({ lang }) => {
               <li>
                 <a
                   href={`${OPERATIONS_APP_URL}/inspections`}
-                  className="hover:text-white flex items-center gap-1 transition-colors"
+                  className="hover:text-white flex items-center gap-1 transition-colors py-1"
                 >
                   <span>Thanh tra hiện trường QCVN 18</span>
                   <ExternalLink className="w-3 h-3 opacity-60" />
@@ -121,7 +129,7 @@ export const LandingFooter: React.FC<LandingFooterProps> = ({ lang }) => {
               <li>
                 <a
                   href={`${OPERATIONS_APP_URL}/login`}
-                  className="hover:text-white flex items-center gap-1 transition-colors font-medium text-sky-400"
+                  className="hover:text-white flex items-center gap-1 transition-colors font-medium text-sky-400 py-1"
                 >
                   <span>Đăng nhập Cán bộ Chuyên môn</span>
                   <ExternalLink className="w-3 h-3 opacity-60" />

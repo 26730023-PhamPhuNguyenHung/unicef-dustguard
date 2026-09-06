@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { api } from '../api/client';
 import { useToast } from '../context/ToastContext';
 import { Button } from '../components/common/Button';
@@ -148,7 +149,7 @@ export const ContractorsPage: React.FC = () => {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-xs">
+            <table className="w-full text-left border-collapse text-xs min-w-[680px]">
               <thead>
                 <tr className="border-b border-slate-200 bg-slate-50/75 text-slate-700 font-semibold">
                   <th className="py-2.5 px-3">Tên đơn vị / Doanh nghiệp</th>
@@ -156,6 +157,7 @@ export const ContractorsPage: React.FC = () => {
                   <th className="py-2.5 px-3">Điện thoại / Email</th>
                   <th className="py-2.5 px-3">Mã số thuế</th>
                   <th className="py-2.5 px-3">Địa chỉ trụ sở</th>
+                  <th className="py-2.5 px-3 text-right">Thao tác</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-slate-800">
@@ -171,7 +173,7 @@ export const ContractorsPage: React.FC = () => {
                     <td className="py-2.5 px-3">
                       <div className="space-y-0.5">
                         {c.phone && (
-                          <div className="flex items-center gap-1 text-slate-700">
+                           <div className="flex items-center gap-1 text-slate-700">
                             <Phone className="w-3 h-3 text-slate-400 shrink-0" />
                             <span>{c.phone}</span>
                           </div>
@@ -198,6 +200,20 @@ export const ContractorsPage: React.FC = () => {
                         '—'
                       )}
                     </td>
+                    <td className="py-2.5 px-3 text-right whitespace-nowrap">
+                      <div className="flex items-center justify-end gap-1.5">
+                        <Link to={`/cases?search=${encodeURIComponent(c.name)}`}>
+                          <Button variant="outline" size="sm" className="text-[11px] h-7 px-2">
+                            Xem vụ việc
+                          </Button>
+                        </Link>
+                        <Link to={`/actions?status=OPEN`}>
+                          <Button variant="secondary" size="sm" className="text-[11px] h-7 px-2">
+                            Khắc phục
+                          </Button>
+                        </Link>
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -208,9 +224,9 @@ export const ContractorsPage: React.FC = () => {
 
       {/* Create Modal */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden border border-slate-200 animate-in fade-in zoom-in-95 duration-100">
-            <div className="px-5 py-3.5 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-slate-900/40 p-0 sm:p-4" role="dialog" aria-modal="true">
+          <div className="bg-white rounded-t-2xl sm:rounded-xl shadow-xl w-full max-w-md overflow-hidden border border-slate-200 flex flex-col max-h-[90vh] sm:max-h-[85vh] animate-in fade-in zoom-in-95 duration-100">
+            <div className="px-5 py-3.5 border-b border-slate-200 flex items-center justify-between bg-slate-50 shrink-0">
               <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
                 <Building2 className="w-4 h-4 text-dustguard-teal" />
                 Thêm Nhà thầu / Đơn vị Mới
@@ -218,13 +234,14 @@ export const ContractorsPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600 p-1"
+                className="text-slate-400 hover:text-slate-600 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg cursor-pointer"
+                aria-label="Đóng cửa sổ"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <form onSubmit={handleCreate} className="p-5 space-y-4">
+            <form onSubmit={handleCreate} className="p-4 sm:p-5 space-y-4 overflow-y-auto flex-1">
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">
                   Tên đơn vị / Doanh nghiệp thi công *
@@ -234,12 +251,12 @@ export const ContractorsPage: React.FC = () => {
                   required
                   value={name}
                   onChange={e => setName(e.target.value)}
-                  className="w-full px-3 py-1.5 border border-slate-300 rounded-lg text-xs outline-none focus:ring-1 focus:ring-dustguard-red"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs outline-none focus:ring-1 focus:ring-dustguard-red"
                   placeholder="ví dụ: Công ty Cổ phần Xây dựng Thăng Long"
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
                     Người đại diện / Phụ trách
@@ -248,7 +265,7 @@ export const ContractorsPage: React.FC = () => {
                     type="text"
                     value={contactPerson}
                     onChange={e => setContactPerson(e.target.value)}
-                    className="w-full px-3 py-1.5 border border-slate-300 rounded-lg text-xs outline-none focus:ring-1 focus:ring-dustguard-red"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs outline-none focus:ring-1 focus:ring-dustguard-red"
                     placeholder="ví dụ: Trần Văn B"
                   />
                 </div>
@@ -261,13 +278,13 @@ export const ContractorsPage: React.FC = () => {
                     type="text"
                     value={taxId}
                     onChange={e => setTaxId(e.target.value)}
-                    className="w-full px-3 py-1.5 border border-slate-300 rounded-lg text-xs font-mono outline-none focus:ring-1 focus:ring-dustguard-red"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs font-mono outline-none focus:ring-1 focus:ring-dustguard-red"
                     placeholder="0101234567"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
                     Số điện thoại
@@ -276,7 +293,7 @@ export const ContractorsPage: React.FC = () => {
                     type="text"
                     value={phone}
                     onChange={e => setPhone(e.target.value)}
-                    className="w-full px-3 py-1.5 border border-slate-300 rounded-lg text-xs outline-none focus:ring-1 focus:ring-dustguard-red"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs outline-none focus:ring-1 focus:ring-dustguard-red"
                     placeholder="0912.345.xxx"
                   />
                 </div>
@@ -289,7 +306,7 @@ export const ContractorsPage: React.FC = () => {
                     type="email"
                     value={email}
                     onChange={e => setEmail(e.target.value)}
-                    className="w-full px-3 py-1.5 border border-slate-300 rounded-lg text-xs outline-none focus:ring-1 focus:ring-dustguard-red"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs outline-none focus:ring-1 focus:ring-dustguard-red"
                     placeholder="contact@thanglong.vn"
                   />
                 </div>
@@ -303,7 +320,7 @@ export const ContractorsPage: React.FC = () => {
                   type="text"
                   value={address}
                   onChange={e => setAddress(e.target.value)}
-                  className="w-full px-3 py-1.5 border border-slate-300 rounded-lg text-xs outline-none focus:ring-1 focus:ring-dustguard-red"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs outline-none focus:ring-1 focus:ring-dustguard-red"
                   placeholder="Số 45 phố Hoàng Quốc Việt, Cầu Giấy, Hà Nội"
                 />
               </div>
@@ -316,12 +333,12 @@ export const ContractorsPage: React.FC = () => {
                   rows={2}
                   value={notes}
                   onChange={e => setNotes(e.target.value)}
-                  className="w-full px-3 py-1.5 border border-slate-300 rounded-lg text-xs outline-none focus:ring-1 focus:ring-dustguard-red"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs outline-none focus:ring-1 focus:ring-dustguard-red"
                   placeholder="Lĩnh vực thi công, ghi chú liên lạc nội bộ..."
                 />
               </div>
 
-              <div className="pt-2 flex items-center justify-end gap-2 border-t border-slate-100">
+              <div className="pt-3 flex items-center justify-end gap-2 border-t border-slate-100 shrink-0 bg-white sticky bottom-0">
                 <Button
                   type="button"
                   variant="outline"

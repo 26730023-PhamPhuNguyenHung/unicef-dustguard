@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { api } from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
@@ -21,10 +21,12 @@ import { CorrectiveAction } from '@dustguard-operations/shared';
 export const ActionsListPage: React.FC = () => {
   const { can } = useAuth();
   const { success, error } = useToast();
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const [actions, setActions] = useState<CorrectiveAction[]>([]);
   const [loading, setLoading] = useState(true);
-  const [statusFilter, setStatusFilter] = useState('');
-  const [overdueOnly, setOverdueOnly] = useState(false);
+  const [statusFilter, setStatusFilter] = useState(searchParams.get('status') || '');
+  const [overdueOnly, setOverdueOnly] = useState(searchParams.get('overdue') === 'true');
 
   // Remediation submit modal for demo / staff assisting contractor
   const [remediationModalOpen, setRemediationModalOpen] = useState(false);
@@ -32,9 +34,26 @@ export const ActionsListPage: React.FC = () => {
   const [remediationDesc, setRemediationDesc] = useState('');
   const [submittingRemediation, setSubmittingRemediation] = useState(false);
 
+  // Sync state when URL params change
+  useEffect(() => {
+    const qStatus = searchParams.get('status') || '';
+    const qOverdue = searchParams.get('overdue') === 'true';
+    if (qStatus !== statusFilter) setStatusFilter(qStatus);
+    if (qOverdue !== overdueOnly) setOverdueOnly(qOverdue);
+  }, [searchParams]);
+
   useEffect(() => {
     loadActions();
   }, [statusFilter, overdueOnly]);
+
+  const updateFilters = (newStatus: string, newOverdue: boolean) => {
+    setStatusFilter(newStatus);
+    setOverdueOnly(newOverdue);
+    const newParams = new URLSearchParams();
+    if (newStatus) newParams.set('status', newStatus);
+    if (newOverdue) newParams.set('overdue', 'true');
+    setSearchParams(newParams, { replace: true });
+  };
 
   const loadActions = async () => {
     try {
@@ -89,7 +108,7 @@ export const ActionsListPage: React.FC = () => {
         <div className="flex flex-wrap items-center gap-2">
           <select
             value={statusFilter}
-            onChange={e => setStatusFilter(e.target.value)}
+            onChange={e => updateFilters(e.target.value, overdueOnly)}
             className="p-2 border border-slate-300 rounded-lg text-xs bg-white outline-none focus:ring-2 focus:ring-dustguard-red"
           >
             <option value="">Tất cả trạng thái</option>
@@ -102,7 +121,7 @@ export const ActionsListPage: React.FC = () => {
 
           <button
             type="button"
-            onClick={() => setOverdueOnly(!overdueOnly)}
+            onClick={() => updateFilters(statusFilter, !overdueOnly)}
             className={`px-3 py-2 rounded-lg text-xs font-semibold border transition-colors ${
               overdueOnly
                 ? 'bg-rose-600 text-white border-rose-600'
@@ -203,8 +222,8 @@ export const ActionsListPage: React.FC = () => {
 
                 {/* Right CTA */}
                 <div className="flex flex-wrap items-center gap-2 self-end md:self-center flex-shrink-0">
-                  {act.status === 'SUBMITTED' && hasSubmissions && (
-                    <Link to={`/actions/${act.submissions![0].id}/remediation`}>
+                  {act.status === 'SUBMITTED' && (
+                    <Link to={`/actions/${hasSubmissions ? act.submissions![0].id : act.id}/remediation`}>
                       <Button variant="primary" size="sm">
                         Thẩm duyệt báo cáo &rarr;
                       </Button>

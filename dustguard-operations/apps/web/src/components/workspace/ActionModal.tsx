@@ -115,18 +115,18 @@ export const ActionModal: React.FC<ActionModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 bg-slate-900/60 flex items-center justify-center p-3 sm:p-4 z-50 animate-fade-in"
+      className="fixed inset-0 bg-slate-900/60 flex items-end sm:items-center justify-center p-0 sm:p-4 z-50 animate-fade-in"
       style={{ scrollbarGutter: 'stable' }}
       onClick={e => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
       <div
-        className="bg-white rounded-xl max-w-lg w-full border border-slate-300 shadow-2xl overflow-hidden flex flex-col"
+        className="bg-white rounded-t-2xl sm:rounded-xl max-w-lg w-full border border-slate-300 shadow-2xl overflow-hidden flex flex-col max-h-[90vh] sm:max-h-[85vh]"
         style={{ textWrap: 'pretty' }}
       >
         {/* Header */}
-        <div className="px-5 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+        <div className="px-5 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2.5">
             <span className="p-1.5 bg-white rounded-md border border-slate-200 shadow-2xs text-red-700">
               <ListTodo className="w-4 h-4" />
@@ -143,15 +143,15 @@ export const ActionModal: React.FC<ActionModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-800 hover:bg-slate-200 rounded-md transition-colors cursor-pointer"
+            className="p-2 text-slate-400 hover:text-slate-800 hover:bg-slate-200 rounded-md transition-colors cursor-pointer min-w-[44px] min-h-[44px] inline-flex items-center justify-center"
             title="Đóng cửa sổ"
           >
-            <X className="w-4 h-4" />
+            <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-5 space-y-4 text-xs">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-5 space-y-4 text-xs overflow-y-auto flex-1">
           {/* Cần xác minh */}
           <div className="space-y-1.5">
             <label className="block font-bold text-slate-800 text-xs">

@@ -46,6 +46,12 @@ export const InspectionListPage: React.FC = () => {
             <option value="IN_PROGRESS">Đang thực hiện (IN_PROGRESS)</option>
             <option value="COMPLETED">Đã hoàn thành (COMPLETED)</option>
           </select>
+
+          <Link to="/inspections/new">
+            <Button variant="primary" size="sm" icon={<Plus className="w-4 h-4" />}>
+              Lập kế hoạch kiểm tra
+            </Button>
+          </Link>
         </div>
       </div>
 

@@ -416,15 +416,15 @@ export const CaseStory: React.FC<CaseStoryProps> = ({ lang }) => {
               className="pointer-events-none absolute top-0 bottom-0 w-[3px] bg-white shadow-[0_0_12px_rgba(255,255,255,0.9),0_0_4px_#10B981] z-20 -translate-x-1/2"
             />
 
-            {/* USER MANUAL TOGGLE */}
+            {/* USER MANUAL TOGGLE (Touch target >= 44px) */}
             {animationDone && (
               <button
                 type="button"
                 onClick={handleToggleView}
-                className="absolute bottom-2.5 right-2.5 z-30 px-2.5 py-1 rounded-lg bg-white/95 hover:bg-white text-[#0F172A] border border-[#CBD5E1] shadow-xs text-[11px] font-semibold flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer"
+                className="absolute bottom-2.5 right-2.5 z-30 min-h-[44px] px-3.5 py-2 rounded-xl bg-white text-[#0F172A] border border-[#CBD5E1] shadow-md text-[12px] font-bold flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer hover:bg-[#FAF7F2]"
                 title={lang === 'vi' ? 'Nhấn để chuyển đổi xem Before / After' : 'Toggle Before / After'}
               >
-                <RotateCcw className="w-3 h-3 text-[#B42318]" />
+                <RotateCcw className="w-3.5 h-3.5 text-[#B42318] shrink-0" />
                 <span>
                   {activeView === 'after'
                     ? lang === 'vi'

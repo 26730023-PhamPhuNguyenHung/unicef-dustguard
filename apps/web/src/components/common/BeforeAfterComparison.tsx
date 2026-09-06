@@ -81,12 +81,12 @@ export const BeforeAfterComparison: React.FC<BeforeAfterComparisonProps> = ({
   // Case 1: Missing both photos
   if (!beforeUrl && !afterUrl) {
     return (
-      <div className={`p-8 bg-surface-ground rounded-civic-lg border border-border-subtle text-center ${className}`}>
+      <div className={`p-6 sm:p-8 bg-surface-subtle rounded-civic-lg border border-border-subtle text-center ${className}`}>
         <div className="w-12 h-12 mx-auto rounded-full bg-surface-card flex items-center justify-center text-content-muted mb-2">
           <Columns className="w-6 h-6" />
         </div>
-        <p className="text-xs font-bold text-content-main">Chưa có ảnh đối chứng hiện trường</p>
-        <p className="text-[11px] text-content-sub mt-0.5">
+        <p className="text-xs font-bold text-content-main text-pretty">Chưa có ảnh đối chứng hiện trường</p>
+        <p className="text-[11px] text-content-sub mt-0.5 text-pretty">
           Hình ảnh vi phạm ban đầu và minh chứng khắc phục sẽ hiển thị tại đây khi được cập nhật.
         </p>
       </div>
@@ -105,11 +105,11 @@ export const BeforeAfterComparison: React.FC<BeforeAfterComparisonProps> = ({
             Đang chờ đơn vị thi công nộp ảnh khắc phục
           </span>
         </div>
-        <div className="relative aspect-video bg-surface-ground rounded-civic-lg border border-border-subtle overflow-hidden">
+        <div className="relative aspect-video bg-surface-subtle rounded-civic-lg border border-border-subtle overflow-hidden">
           <img src={beforeUrl} alt={beforeLabel} className="w-full h-full object-cover" />
         </div>
         {beforeSha256 && (
-          <div className="p-2.5 bg-surface-ground rounded-lg border border-border-subtle text-[11px] font-mono text-content-main flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1">
+          <div className="p-2.5 bg-surface-subtle rounded-lg border border-border-subtle text-[11px] font-mono text-content-main flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1">
             <span className="font-bold flex items-center gap-1.5 text-content-main shrink-0">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" /> Mã băm SHA-256 niêm phong:
             </span>
@@ -140,7 +140,7 @@ export const BeforeAfterComparison: React.FC<BeforeAfterComparisonProps> = ({
           <button
             type="button"
             onClick={() => setViewMode('slider')}
-            className={`px-3 py-1 rounded-md text-xs font-bold flex items-center gap-1.5 transition-colors ${
+            className={`px-3.5 py-1.5 min-h-[38px] rounded-md text-xs font-bold flex items-center gap-1.5 transition-colors ${
               viewMode === 'slider' ? 'bg-primary text-white shadow-sm' : 'text-content-sub hover:text-content-main'
             }`}
           >
@@ -149,7 +149,7 @@ export const BeforeAfterComparison: React.FC<BeforeAfterComparisonProps> = ({
           <button
             type="button"
             onClick={() => setViewMode('split')}
-            className={`px-3 py-1 rounded-md text-xs font-bold flex items-center gap-1.5 transition-colors ${
+            className={`px-3.5 py-1.5 min-h-[38px] rounded-md text-xs font-bold flex items-center gap-1.5 transition-colors ${
               viewMode === 'split' ? 'bg-primary text-white shadow-sm' : 'text-content-sub hover:text-content-main'
             }`}
           >
@@ -173,7 +173,7 @@ export const BeforeAfterComparison: React.FC<BeforeAfterComparisonProps> = ({
             className="absolute inset-0 w-full h-full object-cover"
             draggable={false}
           />
-          <div className="absolute bottom-3 right-3 px-2.5 py-1 rounded-md bg-white/95 text-emerald-800 border border-emerald-300 text-xs font-bold shadow-sm pointer-events-none">
+          <div className="absolute bottom-3 right-3 px-2.5 py-1 rounded-md bg-white text-emerald-800 border border-emerald-300 text-xs font-bold shadow-sm pointer-events-none">
             {afterLabel}
           </div>
 
@@ -192,7 +192,7 @@ export const BeforeAfterComparison: React.FC<BeforeAfterComparisonProps> = ({
               }}
               draggable={false}
             />
-            <div className="absolute bottom-3 left-3 px-2.5 py-1 rounded-md bg-white/95 text-red-800 border border-red-300 text-xs font-bold shadow-sm pointer-events-none">
+            <div className="absolute bottom-3 left-3 px-2.5 py-1 rounded-md bg-white text-red-800 border border-red-300 text-xs font-bold shadow-sm pointer-events-none">
               {beforeLabel}
             </div>
           </div>
@@ -225,7 +225,7 @@ export const BeforeAfterComparison: React.FC<BeforeAfterComparisonProps> = ({
                 </span>
               )}
             </div>
-            <div className="aspect-video bg-surface-ground rounded-civic-lg border border-border-subtle overflow-hidden">
+            <div className="aspect-video bg-surface-subtle rounded-civic-lg border border-border-subtle overflow-hidden">
               <img src={beforeUrl!} alt={beforeLabel} className="w-full h-full object-cover" />
             </div>
           </div>
@@ -242,7 +242,7 @@ export const BeforeAfterComparison: React.FC<BeforeAfterComparisonProps> = ({
                 </span>
               )}
             </div>
-            <div className="aspect-video bg-surface-ground rounded-civic-lg border border-border-subtle overflow-hidden">
+            <div className="aspect-video bg-surface-subtle rounded-civic-lg border border-border-subtle overflow-hidden">
               <img src={afterUrl!} alt={afterLabel} className="w-full h-full object-cover" />
             </div>
           </div>
@@ -253,7 +253,7 @@ export const BeforeAfterComparison: React.FC<BeforeAfterComparisonProps> = ({
       {(beforeSha256 || afterSha256) && (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] font-mono">
           {beforeSha256 && (
-            <div className="p-2.5 bg-surface-ground rounded-lg border border-border-subtle space-y-0.5">
+            <div className="p-2.5 bg-surface-subtle rounded-lg border border-border-subtle space-y-0.5">
               <span className="font-bold text-content-main flex items-center gap-1">
                 <ShieldCheck className="w-3.5 h-3.5 text-red-600" /> Băm SHA-256 ảnh vi phạm:
               </span>
@@ -261,7 +261,7 @@ export const BeforeAfterComparison: React.FC<BeforeAfterComparisonProps> = ({
             </div>
           )}
           {afterSha256 && (
-            <div className="p-2.5 bg-surface-ground rounded-lg border border-border-subtle space-y-0.5">
+            <div className="p-2.5 bg-surface-subtle rounded-lg border border-border-subtle space-y-0.5">
               <span className="font-bold text-content-main flex items-center gap-1">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" /> Băm SHA-256 ảnh khắc phục:
               </span>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { api } from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
@@ -111,9 +112,13 @@ export const AdminUsersPage: React.FC = () => {
               </div>
 
               <div className="flex items-center gap-3 self-end sm:self-center">
-                <span className="text-slate-500">
-                  Thụ lý: <strong>{u.assigned_cases_count} Case</strong>
-                </span>
+                <Link
+                  to={`/cases?assignee=${u.id}`}
+                  className="text-slate-600 hover:text-dustguard-red hover:underline flex items-center gap-1 font-medium"
+                  title={`Xem các vụ việc được giao cho ${u.full_name}`}
+                >
+                  <span>Thụ lý: <strong>{u.assigned_cases_count || 0} hồ sơ</strong> &rarr;</span>
+                </Link>
 
                 <span className={`px-2 py-0.5 rounded font-bold text-[10px] ${
                   u.active === 1 ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'

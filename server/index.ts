@@ -56,7 +56,7 @@ export function createUnifiedApp() {
     }, isOk ? 200 : 503);
   });
 
-  app.get('/api/health', (c) => {
+  const returnHealth = (c: any) => {
     return c.json({
       ok: true,
       status: 'healthy',
@@ -64,7 +64,10 @@ export function createUnifiedApp() {
       version: BUILD_METADATA.commit,
       timestamp: new Date().toISOString()
     });
-  });
+  };
+
+  app.get('/health', returnHealth);
+  app.get('/api/health', returnHealth);
 
   // ============================================================================
   // R2 UPLOADS SERVING
@@ -93,6 +96,17 @@ export function createUnifiedApp() {
   // Side A (Community) mounted on /api
   app.route('/api', communityRouter);
 
+  // Fallback 404 cho API (RFC 7807)
+  app.notFound((c) => {
+    return c.json({
+      type: 'https://tools.ietf.org/html/rfc7807',
+      title: 'Endpoint Not Found',
+      status: 404,
+      detail: `Đường dẫn API '${c.req.path}' không tồn tại trên hệ thống.`,
+      instance: c.req.path
+    }, 404);
+  });
+
   return app;
 }
 
@@ -111,9 +125,10 @@ export default {
       return Response.redirect(new URL(target, request.url), 302);
     }
 
-    // 1. Nếu là yêu cầu API hoặc Uploads -> Hono xử lý
+    // 1. Nếu là yêu cầu API hoặc Uploads -> Hono xử lý (Không bao giờ trả HTML cho API)
     if (
       url.pathname.startsWith('/api') ||
+      url.pathname.startsWith('/operations/api') ||
       url.pathname.startsWith('/uploads') ||
       url.pathname === '/health'
     ) {
@@ -126,24 +141,29 @@ export default {
       if (url.pathname.startsWith('/operations')) {
         const hasFileExt = /\.[a-zA-Z0-9]+$/.test(url.pathname);
         if (hasFileExt) {
-          let assetRes = await env.ASSETS.fetch(request);
-          if (assetRes.status === 404 || !assetRes.ok) {
-            const fallbackReq = new Request(new URL('/operations/index.html', request.url), request);
-            assetRes = await env.ASSETS.fetch(fallbackReq);
-          }
-          return assetRes;
+          // File tĩnh có đuôi (.js, .css, .webp...): phục vụ trực tiếp
+          return env.ASSETS.fetch(request);
         }
 
-        // SPA route của Side B (/operations/dashboard, /operations/cases...): Luôn phục vụ /operations/index.html
-        const spaReq = new Request(new URL('/operations/index.html', request.url), request);
-        return env.ASSETS.fetch(spaReq);
+        // SPA subroute của Side B (/operations/dashboard, /operations/cases...):
+        // Thử fetch asset trước (nếu là /operations/ thì trả về operations/index.html)
+        let res = await env.ASSETS.fetch(request);
+        if (res.status === 404 || !res.ok) {
+          res = await env.ASSETS.fetch(new Request(new URL('/operations/index.html', request.url), request));
+        }
+        return res;
       }
 
-      // Nhánh Side A (Root / SPA)
+      // Nhánh Side A (Root / Community / Landing / Public)
+      const hasFileExt = /\.[a-zA-Z0-9]+$/.test(url.pathname);
+      if (hasFileExt) {
+        return env.ASSETS.fetch(request);
+      }
+
       let assetRes = await env.ASSETS.fetch(request);
       if (assetRes.status === 404 || !assetRes.ok) {
-        const fallbackReq = new Request(new URL('/index.html', request.url), request);
-        assetRes = await env.ASSETS.fetch(fallbackReq);
+        // Fallback SPA cho các route như /reports, /dashboard, /map...
+        assetRes = await env.ASSETS.fetch(new Request(new URL('/', request.url), request));
       }
       return assetRes;
     }

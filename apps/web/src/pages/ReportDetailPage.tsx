@@ -166,7 +166,7 @@ export const ReportDetailPage: React.FC = () => {
             </div>
             {report.latitude && report.longitude && (
               <a
-                href={getGoogleMapsUrl(report.latitude, report.longitude, `${report.address}, ${report.district}, TP. Hồ Chí Minh`)}
+                href={getGoogleMapsUrl(report.latitude, report.longitude, [report.address, report.ward, report.district, 'Hà Nội'].filter(Boolean).join(', '))}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:underline bg-red-50 px-2.5 py-1 rounded-lg border border-red-200 shadow-2xs transition-colors"

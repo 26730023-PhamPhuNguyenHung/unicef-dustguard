@@ -68,6 +68,18 @@ export const AppLayout: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  // Body scroll lock on mobile drawer
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [mobileMenuOpen]);
+
   const handleLogout = async () => {
     await logout();
     navigate('/login');
@@ -124,10 +136,10 @@ export const AppLayout: React.FC = () => {
       <header className="h-14 bg-surface border-b border-slate-200/90 sticky top-0 z-30 shadow-xs w-full">
         <div className="w-full px-3 sm:px-5 lg:px-6 h-full flex items-center justify-between gap-3">
           {/* Left: Logo & Product Name */}
-          <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-1.5 sm:p-2 rounded-md text-ink-600 hover:bg-surface-subtle touch-target"
+              className="lg:hidden p-2 rounded-lg text-ink-700 hover:bg-surface-subtle touch-target min-h-[44px] min-w-[44px] inline-flex items-center justify-center cursor-pointer transition-colors"
               aria-label="Mở menu"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -162,7 +174,7 @@ export const AppLayout: React.FC = () => {
             <button
               type="button"
               onClick={() => setCommandPaletteOpen(true)}
-              className="w-full flex items-center justify-between px-3 py-1.5 text-xs bg-surface-subtle hover:bg-stone-200/70 border border-slate-200/90 rounded-md text-ink-500 transition-colors group cursor-pointer"
+              className="w-full flex items-center justify-between px-3 py-1.5 text-xs bg-surface-subtle hover:bg-stone-200/70 border border-slate-200/90 rounded-md text-ink-500 transition-colors group cursor-pointer min-h-[36px]"
             >
               <span className="flex items-center gap-2">
                 <Search className="w-3.5 h-3.5 text-ink-400 group-hover:text-ink-600" />
@@ -175,12 +187,12 @@ export const AppLayout: React.FC = () => {
           </div>
 
           {/* Right: Role Switcher, Actions, Notifications & Profile */}
-          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
             {/* Search Icon Trigger for < md */}
             <button
               type="button"
               onClick={() => setCommandPaletteOpen(true)}
-              className="md:hidden p-2 rounded-md text-ink-600 hover:bg-surface-subtle"
+              className="md:hidden p-2 rounded-lg text-ink-700 hover:bg-surface-subtle touch-target min-h-[44px] min-w-[44px] inline-flex items-center justify-center cursor-pointer transition-colors"
               aria-label="Tìm kiếm"
             >
               <Search className="w-5 h-5" />
@@ -196,7 +208,7 @@ export const AppLayout: React.FC = () => {
                   aria-label="Chuyển đổi vai trò nghiệp vụ (chỉ môi trường phát triển)"
                   value={user.role}
                   onChange={e => switchRole(e.target.value as Role)}
-                  className="text-xs font-semibold bg-surface-subtle hover:bg-stone-200/60 text-ink-800 border border-slate-200/90 rounded-md py-1.5 pl-2.5 pr-7 appearance-none cursor-pointer outline-none focus:ring-1 focus:ring-dustguard-red transition-colors"
+                  className="text-xs font-semibold bg-surface-subtle hover:bg-stone-200/60 text-ink-800 border border-slate-200/90 rounded-md py-1.5 pl-2.5 pr-7 appearance-none cursor-pointer outline-none focus:ring-1 focus:ring-dustguard-red transition-colors min-h-[36px]"
                 >
                   {(Object.keys(DEV_ACCOUNTS) as Role[]).map(r => (
                     <option key={r} value={r}>
@@ -208,15 +220,27 @@ export const AppLayout: React.FC = () => {
               </div>
             )}
 
+            {/* Cross-Side Link to Community Portal (Side A) */}
+            <a
+              href={import.meta.env.PROD ? '/' : 'http://localhost:3000'}
+              target="_blank"
+              rel="noreferrer"
+              className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-semibold bg-surface-subtle hover:bg-stone-200/60 text-ink-700 border border-slate-200/90 transition-colors"
+              title="Mở Cổng Cộng đồng & Người dân (Side A)"
+            >
+              <Users className="w-3.5 h-3.5 text-[#0D6F64]" />
+              <span>Cổng Cộng đồng (Side A)</span>
+            </a>
+
             {/* Notifications */}
             <Link
               to="/notifications"
-              className="relative p-2 rounded-md text-ink-600 hover:bg-surface-subtle hover:text-ink-900 touch-target"
+              className="relative p-2 rounded-lg text-ink-700 hover:bg-surface-subtle hover:text-ink-900 touch-target min-h-[44px] min-w-[44px] inline-flex items-center justify-center transition-colors"
               aria-label="Thông báo"
             >
               <Bell className="w-4.5 h-4.5" />
               {unreadCount > 0 && (
-                <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-dustguard-red text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-dustguard-red text-white text-[10px] font-bold rounded-full flex items-center justify-center pointer-events-none">
                   {unreadCount > 9 ? '9+' : unreadCount}
                 </span>
               )}
@@ -224,9 +248,9 @@ export const AppLayout: React.FC = () => {
 
             {/* Current User */}
             {user ? (
-              <div className="flex items-center gap-1.5 sm:gap-2 border-l border-slate-200 pl-1.5 sm:pl-2">
-                <Link to="/profile" className="flex items-center gap-2 text-left hover:opacity-85 transition-opacity">
-                  <div className="w-7.5 h-7.5 rounded-full bg-surface-subtle text-ink-700 flex items-center justify-center font-bold text-xs border border-slate-200">
+              <div className="flex items-center gap-1 sm:gap-2 border-l border-slate-200 pl-1.5 sm:pl-2">
+                <Link to="/profile" className="flex items-center gap-2 text-left hover:opacity-85 transition-opacity min-h-[44px] px-1 rounded-md">
+                  <div className="w-7.5 h-7.5 rounded-full bg-surface-subtle text-ink-700 flex items-center justify-center font-bold text-xs border border-slate-200 shrink-0">
                     {user.full_name.charAt(0)}
                   </div>
                   <div className="hidden min-[1366px]:block">
@@ -242,7 +266,7 @@ export const AppLayout: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className="p-1.5 text-ink-400 hover:text-dustguard-red rounded-md hover:bg-surface-subtle cursor-pointer"
+                  className="p-2 text-ink-500 hover:text-dustguard-red hover:bg-surface-subtle rounded-lg cursor-pointer touch-target min-h-[44px] min-w-[44px] inline-flex items-center justify-center transition-colors"
                   title="Đăng xuất"
                   aria-label="Đăng xuất"
                 >
@@ -252,7 +276,7 @@ export const AppLayout: React.FC = () => {
             ) : (
               <Link
                 to="/login"
-                className="text-xs font-semibold bg-dustguard-red text-white px-3 py-1.5 rounded-md hover:bg-dustguard-redHover"
+                className="text-xs font-semibold bg-dustguard-red text-white px-3 py-1.5 rounded-md hover:bg-dustguard-redHover min-h-[36px] inline-flex items-center"
               >
                 Đăng nhập
               </Link>
@@ -309,13 +333,30 @@ export const AppLayout: React.FC = () => {
 
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="lg:hidden fixed inset-0 z-40">
-            <div className="fixed inset-0 bg-ink-900/40" onClick={() => setMobileMenuOpen(false)} />
-            <div className="relative w-72 max-w-full bg-surface h-full shadow-lg p-4 flex flex-col justify-between overflow-y-auto">
+          <div className="lg:hidden fixed inset-0 z-40 animate-fade-in">
+            <div
+              className="fixed inset-0 bg-ink-900/50 transition-opacity"
+              onClick={() => setMobileMenuOpen(false)}
+              aria-hidden="true"
+            />
+            <div className="relative w-[280px] max-w-[calc(100vw-3rem)] bg-surface h-full shadow-2xl border-r border-slate-200 p-4 sm:p-5 flex flex-col justify-between overflow-y-auto z-10 scrollbar-thin">
               <div className="space-y-4">
                 <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-                  <span className="font-bold text-ink-900 text-sm">Danh mục chức năng</span>
-                  <button onClick={() => setMobileMenuOpen(false)} className="p-1 text-ink-500">
+                  <div className="flex items-center gap-2">
+                    <img
+                      src="/images/logo/dustguard-shield-logo.webp"
+                      alt="DustGuard"
+                      className="h-6 w-auto object-contain"
+                      width={20}
+                      height={24}
+                    />
+                    <span className="font-bold text-ink-900 text-sm">Danh mục chức năng</span>
+                  </div>
+                  <button
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="p-2 text-ink-500 hover:text-ink-900 hover:bg-surface-subtle rounded-lg cursor-pointer touch-target min-h-[44px] min-w-[44px] inline-flex items-center justify-center transition-colors"
+                    aria-label="Đóng menu"
+                  >
                     <X className="w-5 h-5" />
                   </button>
                 </div>
@@ -327,7 +368,7 @@ export const AppLayout: React.FC = () => {
 
                     return (
                       <div key={section.title} className="space-y-1">
-                        <div className="px-2 py-0.5 text-[10px] font-bold text-ink-400 uppercase tracking-wider">
+                        <div className="px-2 py-1 text-[10px] font-bold text-ink-400 uppercase tracking-wider">
                           {section.title}
                         </div>
                         {visibleItems.map(item => {
@@ -337,9 +378,9 @@ export const AppLayout: React.FC = () => {
                               key={item.path}
                               to={item.path}
                               onClick={() => setMobileMenuOpen(false)}
-                              className={`flex items-center gap-2.5 px-3 py-2 rounded-md text-xs font-medium transition-colors ${
+                              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-semibold min-h-[44px] transition-colors touch-target ${
                                 isActive
-                                  ? 'bg-dustguard-redSoft text-dustguard-red font-bold border-l-3 border-dustguard-red'
+                                  ? 'bg-dustguard-redSoft text-dustguard-red font-bold border-l-3 border-dustguard-red shadow-2xs'
                                   : 'text-ink-700 hover:bg-surface-subtle hover:text-ink-900'
                               }`}
                             >
@@ -359,9 +400,9 @@ export const AppLayout: React.FC = () => {
               <div className="pt-4 border-t border-slate-200">
                 <button
                   onClick={handleLogout}
-                  className="flex items-center gap-2 text-xs font-semibold text-rose-700 w-full px-2 py-1.5 rounded hover:bg-rose-50 cursor-pointer"
+                  className="flex items-center gap-2.5 text-xs font-semibold text-rose-700 w-full min-h-[44px] px-3 py-2.5 rounded-lg hover:bg-rose-50 cursor-pointer transition-colors touch-target"
                 >
-                  <LogOut className="w-4 h-4" />
+                  <LogOut className="w-4 h-4 shrink-0" />
                   <span>Đăng xuất tài khoản</span>
                 </button>
               </div>
@@ -370,7 +411,7 @@ export const AppLayout: React.FC = () => {
         )}
 
         {/* Dynamic Route Content (Full width fluid canvas) */}
-        <main className="flex-1 min-w-0 w-full p-4 sm:p-5 lg:p-6 overflow-x-hidden">
+        <main className="flex-1 min-w-0 w-full p-3.5 sm:p-5 lg:p-6 overflow-x-hidden">
           <Outlet />
         </main>
       </div>

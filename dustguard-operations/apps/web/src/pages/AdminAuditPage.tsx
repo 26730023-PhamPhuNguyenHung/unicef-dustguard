@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { api } from '../api/client';
 import { ShieldCheck, Search, Filter, Clock, User } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -86,7 +87,14 @@ export const AdminAuditPage: React.FC = () => {
                     {log.action}
                   </span>
                   <span className="text-slate-500">
-                    Đối tượng: <strong className="text-slate-700">{log.entity_type}</strong> ({log.entity_id})
+                    Đối tượng: <strong className="text-slate-700">{log.entity_type}</strong>{' '}
+                    {log.entity_type === 'CASE' ? (
+                      <Link to={`/cases/${log.entity_id}`} className="font-mono text-dustguard-red hover:underline font-bold">
+                        ({log.entity_id})
+                      </Link>
+                    ) : (
+                      <span className="font-mono">({log.entity_id})</span>
+                    )}
                   </span>
                 </div>
                 <time className="text-slate-400 font-mono text-[11px]">

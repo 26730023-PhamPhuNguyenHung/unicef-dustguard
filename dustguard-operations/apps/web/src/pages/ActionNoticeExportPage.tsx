@@ -153,7 +153,7 @@ export const ActionNoticeExportPage: React.FC = () => {
               </p>
             )}
             <p>
-              <strong>3. Thời hạn hoàn thành bắt buộc (SLA):</strong> Trong vòng <strong>48 giờ</strong> (Hạn chót: {action.due_date ? new Date(action.due_date).toLocaleString('vi-VN') : 'Theo thông báo'}).
+              <strong>3. Thời hạn hoàn thành bắt buộc (SLA):</strong> Trong vòng <strong>48 giờ</strong> (Hạn chót: {(action.due_at || action.due_date) ? new Date(action.due_at || action.due_date).toLocaleString('vi-VN') : 'Theo thông báo'}).
             </p>
           </div>
 

@@ -5,6 +5,7 @@ import { usePermission } from '../../utils/permissions.js';
 import { NAVIGATION_CONFIG, NavItemConfig, NavSectionConfig } from '../../config/navigation.js';
 import { UserRole } from '@dustguard/shared';
 import { apiRequest } from '../../api/client.js';
+import { OPERATIONS_APP_URL } from '../../config/constants.js';
 import {
   LogOut,
   PlusCircle,
@@ -51,6 +52,31 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
     }
   }, [user, location.pathname]);
 
+  // Đóng mobile menu khi chuyển route
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
+
+  // Khóa cuộn trang nền và lắng nghe Escape khi mở mobile drawer
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
+          setMobileMenuOpen(false);
+        }
+      };
+      window.addEventListener('keydown', handleKeyDown);
+
+      return () => {
+        document.body.style.overflow = originalOverflow;
+        window.removeEventListener('keydown', handleKeyDown);
+      };
+    }
+  }, [mobileMenuOpen]);
+
   const isActive = (path: string) => {
     if (path === '/dashboard' && (location.pathname === '/' || location.pathname === '/dashboard')) return true;
     if (path === '/reports' && location.pathname === '/reports') return true;
@@ -61,7 +87,7 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
   };
 
   const navItemClass = (path: string) => `
-    flex items-center gap-3 px-3.5 py-2.5 rounded-civic text-xs font-semibold transition-all
+    flex items-center gap-3 px-3.5 py-2.5 min-h-[44px] rounded-civic text-xs font-semibold transition-all select-none
     ${isActive(path)
       ? 'bg-primary-light text-primary font-bold border-l-3 border-primary shadow-xs'
       : 'text-content-sub hover:bg-surface-secondary hover:text-content-main'
@@ -81,7 +107,7 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
         navigate('/dashboard', { replace: true });
       } else if (currentPath.startsWith('/admin') && targetRole !== 'admin') {
         navigate('/dashboard', { replace: true });
-      } else if ((currentPath === '/tasks' || currentPath === '/contributions') && targetRole === 'citizen') {
+      } else if (currentPath === '/tasks' && targetRole === 'citizen') {
         navigate('/dashboard', { replace: true });
       }
     } catch (err) {
@@ -268,23 +294,23 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
           <div className="flex items-center gap-2 sm:gap-3">
             {/* Quick Link to Operations Side B (Transparent Civic Coordination) */}
             <a
-              href="http://localhost:3002"
+              href={OPERATIONS_APP_URL}
               target="_blank"
               rel="noreferrer"
-              className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-semibold bg-surface-secondary hover:bg-gray-200 text-content-sub border border-border-subtle transition-colors"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-md text-xs font-semibold bg-surface-secondary hover:bg-gray-200 text-content-sub border border-border-subtle transition-colors min-h-[40px]"
               title="Mở Cổng Điều hành Chuyên trách (Side B)"
             >
-              <ShieldCheck className="w-3.5 h-3.5 text-[#0D6F64]" />
+              <ShieldCheck className="w-4 h-4 text-[#0D6F64]" />
               <span>Cổng Điều hành (Side B)</span>
             </a>
 
             {/* Notifications with Real Badge */}
             <Link
               to="/notifications"
-              className="relative p-2 rounded-md text-content-sub hover:bg-surface-secondary hover:text-content-main touch-target"
+              className="relative p-2 rounded-md text-content-sub hover:bg-surface-secondary hover:text-content-main touch-target min-w-[44px] min-h-[44px]"
               aria-label="Thông báo"
             >
-              <Bell className="w-4.5 h-4.5" />
+              <Bell className="w-5 h-5" />
               {unreadNotifications > 0 && (
                 <span className="absolute top-1 right-1 w-4 h-4 bg-primary text-white text-[10px] font-bold rounded-full flex items-center justify-center">
                   {unreadNotifications > 9 ? '9+' : unreadNotifications}
@@ -296,37 +322,169 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
             <div className="lg:hidden">
               <Link
                 to="/reports/new"
-                className="px-3 py-1.5 rounded-civic bg-primary text-white text-xs font-bold flex items-center gap-1 shadow-xs active:scale-95"
+                className="px-3.5 py-2 rounded-civic bg-primary text-white text-xs font-bold flex items-center gap-1.5 shadow-xs active:scale-95 min-h-[38px]"
               >
-                <PlusCircle className="w-3.5 h-3.5" />
+                <PlusCircle className="w-4 h-4" />
                 <span>Gửi phản ánh</span>
               </Link>
             </div>
           </div>
         </header>
 
-        {/* Mobile Drawer Menu */}
+        {/* Mobile Drawer Menu with Solid Backdrop */}
         {mobileMenuOpen && (
-          <div className="lg:hidden fixed inset-0 top-14 bg-white z-40 p-4 overflow-y-auto space-y-4 shadow-xl">
-            <div className="space-y-4">
-              {renderNavSections(() => setMobileMenuOpen(false))}
+          <div className="lg:hidden fixed inset-0 z-50 flex" role="dialog" aria-modal="true" aria-label="Menu điều hướng">
+            {/* Solid Dark Backdrop Overlay */}
+            <div
+              className="fixed inset-0 bg-[#171313]/60 transition-opacity"
+              onClick={() => setMobileMenuOpen(false)}
+              aria-hidden="true"
+            />
+
+            {/* Slide-out Drawer Panel */}
+            <div className="relative w-72 max-w-[85vw] bg-surface-card h-full flex flex-col shadow-2xl z-10 border-r border-border-subtle">
+              {/* Drawer Header */}
+              <div className="p-4 border-b border-border-subtle flex items-center justify-between">
+                <Link
+                  to="/dashboard"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-2 select-none"
+                >
+                  <img
+                    src="/images/logo/dustguard-shield-logo.webp"
+                    alt="DustGuard Shield"
+                    className="h-7 w-auto object-contain"
+                    width={24}
+                    height={28}
+                  />
+                  <div>
+                    <div className="font-extrabold text-sm tracking-tight text-content-main leading-tight">
+                      DustGuard
+                    </div>
+                    <div className="text-[10px] font-medium text-content-sub leading-none mt-0.5">
+                      Cộng đồng môi trường
+                    </div>
+                  </div>
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="p-2 rounded-md text-content-sub hover:bg-surface-secondary touch-target min-w-[44px] min-h-[44px] flex items-center justify-center"
+                  aria-label="Đóng menu"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Drawer Primary Action CTA */}
+              <div className="p-3 border-b border-border-subtle">
+                <Link
+                  to="/reports/new"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-civic bg-primary text-white font-bold text-xs hover:bg-primary-hover transition-all shadow-xs min-h-[44px]"
+                >
+                  <PlusCircle className="w-4 h-4" />
+                  <span>Gửi phản ánh</span>
+                </Link>
+              </div>
+
+              {/* Drawer Navigation Links */}
+              <nav className="flex-1 px-3 py-2 space-y-2 overflow-y-auto scrollbar-thin">
+                {renderNavSections(() => setMobileMenuOpen(false))}
+
+                {/* Mobile Side B Link inside Drawer */}
+                <div className="pt-3 border-t border-border-subtle mt-3">
+                  <a
+                    href={OPERATIONS_APP_URL}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-civic text-xs font-semibold text-content-sub hover:bg-surface-secondary transition-colors min-h-[44px]"
+                  >
+                    <ShieldCheck className="w-4 h-4 text-[#0D6F64] shrink-0" />
+                    <span>Cổng Điều hành (Side B)</span>
+                  </a>
+                </div>
+              </nav>
+
+              {/* Drawer Footer with User Info / Dev Role Switcher */}
+              <div className="p-3 border-t border-border-subtle bg-surface-subtle pb-safe space-y-2">
+                {import.meta.env.DEV === true && (
+                  <div className="p-1.5 rounded-civic bg-surface-secondary/70 border border-border-subtle flex items-center justify-between text-[11px]">
+                    <span className="font-extrabold text-[10px] text-content-muted uppercase tracking-wider px-1">
+                      DEV:
+                    </span>
+                    <select
+                      disabled={switchLoading}
+                      value={user?.role || 'citizen'}
+                      onChange={(e) => handleDevSwitchRole(e.target.value as UserRole)}
+                      className="text-xs font-semibold bg-white text-content-main border border-border-subtle rounded-md py-1.5 px-2 cursor-pointer outline-none focus:border-primary min-h-[38px]"
+                      aria-label="Chọn vai trò thử nghiệm"
+                    >
+                      <option value="citizen">Người dân (Citizen)</option>
+                      <option value="community_member">Thành viên CLB (Member)</option>
+                      <option value="moderator">Điều phối viên (Moderator)</option>
+                      <option value="admin">Quản trị viên (Admin)</option>
+                    </select>
+                  </div>
+                )}
+
+                {user ? (
+                  <div className="flex items-center justify-between gap-2">
+                    <Link
+                      to="/profile"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center gap-2.5 overflow-hidden hover:opacity-85 transition-opacity flex-1 min-w-0 min-h-[44px]"
+                    >
+                      <div className="w-8 h-8 rounded-full bg-primary-light text-primary font-bold flex items-center justify-center text-xs shrink-0 border border-primary/20">
+                        {user.fullName?.charAt(0) || 'U'}
+                      </div>
+                      <div className="truncate">
+                        <div className="text-xs font-bold text-content-main truncate">{user.fullName}</div>
+                        <div className="text-[10px] text-content-sub font-semibold">
+                          {ROLE_LABELS[user.role] || user.role}
+                        </div>
+                      </div>
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        logout();
+                        setMobileMenuOpen(false);
+                      }}
+                      title="Đăng xuất"
+                      className="p-2 text-content-sub hover:text-primary rounded-md hover:bg-white transition-colors cursor-pointer min-w-[44px] min-h-[44px] flex items-center justify-center"
+                      aria-label="Đăng xuất"
+                    >
+                      <LogOut className="w-4 h-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <Link
+                    to="/login"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="w-full py-2.5 text-center text-xs font-bold rounded-civic bg-white border border-border-subtle hover:border-primary text-content-main transition-colors shadow-xs min-h-[44px] flex items-center justify-center"
+                  >
+                    Đăng nhập
+                  </Link>
+                )}
+              </div>
             </div>
           </div>
         )}
 
-        {/* 3. Main Content Container */}
+        {/* 3. Main Content Container (Civic SSOT Page Container) */}
         <main className="flex-1 min-w-0 pb-24 lg:pb-12">
-          <div className="p-4 sm:p-6 lg:p-8 max-w-[1180px] w-full mx-auto">
+          <div className="civic-container py-4 sm:py-6 lg:py-8">
             {children}
           </div>
         </main>
       </div>
 
-      {/* 4. Mobile Bottom Navigation Bar (5 Primary Tabs) */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-surface-card border-t border-border-subtle flex items-center justify-around py-2 px-1 z-30 shadow-lg">
+      {/* 4. Mobile Bottom Navigation Bar (5 Primary Tabs with Safe-Area) */}
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-surface-card border-t border-border-subtle flex items-center justify-around z-30 shadow-lg pb-safe pt-1 px-1">
         <Link
           to="/dashboard"
-          className={`flex flex-col items-center gap-0.5 text-[10px] font-medium touch-target ${
+          className={`flex flex-col items-center justify-center gap-0.5 text-[10px] font-medium touch-target min-h-[44px] min-w-[44px] ${
             isActive('/dashboard') ? 'text-primary font-bold' : 'text-content-sub'
           }`}
         >
@@ -335,7 +493,7 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
         </Link>
         <Link
           to="/map"
-          className={`flex flex-col items-center gap-0.5 text-[10px] font-medium touch-target ${
+          className={`flex flex-col items-center justify-center gap-0.5 text-[10px] font-medium touch-target min-h-[44px] min-w-[44px] ${
             isActive('/map') ? 'text-primary font-bold' : 'text-content-sub'
           }`}
         >
@@ -344,7 +502,8 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
         </Link>
         <Link
           to="/reports/new"
-          className="flex flex-col items-center gap-0.5 text-[10px] font-bold text-primary touch-target"
+          className="flex flex-col items-center justify-center gap-0.5 text-[10px] font-bold text-primary touch-target min-h-[44px] min-w-[44px]"
+          aria-label="Gửi phản ánh mới"
         >
           <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center -mt-5 shadow-md border-2 border-white active:scale-95 transition-transform">
             <PlusCircle className="w-5 h-5" />
@@ -353,7 +512,7 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
         </Link>
         <Link
           to="/following"
-          className={`flex flex-col items-center gap-0.5 text-[10px] font-medium touch-target ${
+          className={`flex flex-col items-center justify-center gap-0.5 text-[10px] font-medium touch-target min-h-[44px] min-w-[44px] ${
             isActive('/following') ? 'text-primary font-bold' : 'text-content-sub'
           }`}
         >
@@ -362,7 +521,7 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
         </Link>
         <Link
           to="/profile"
-          className={`flex flex-col items-center gap-0.5 text-[10px] font-medium touch-target ${
+          className={`flex flex-col items-center justify-center gap-0.5 text-[10px] font-medium touch-target min-h-[44px] min-w-[44px] ${
             isActive('/profile') ? 'text-primary font-bold' : 'text-content-sub'
           }`}
         >

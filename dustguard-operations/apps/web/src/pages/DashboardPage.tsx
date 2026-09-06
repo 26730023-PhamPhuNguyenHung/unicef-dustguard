@@ -102,17 +102,17 @@ export const DashboardPage: React.FC = () => {
     );
   }
 
-  const { metrics, priorityQueue = [], recentActivities = [], supervisor } = data;
+  const { metrics = {} as any, priorityQueue = [], recentActivities = [], supervisor = {} as any } = data || {};
 
   const isZeroSeed =
     priorityQueue.length === 0 &&
     recentActivities.length === 0 &&
-    metrics.open_cases === 0;
+    (metrics?.open_cases ?? 0) === 0;
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       {/* 1. Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-slate-200/80">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 pb-2 border-b border-slate-200/80">
         <div>
           <div className="flex items-center gap-2">
             <span className="text-[11px] font-bold text-dustguard-red uppercase tracking-wider bg-dustguard-redSoft px-2 py-0.5 rounded border border-dustguard-redBorder">
@@ -129,9 +129,9 @@ export const DashboardPage: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-2 shrink-0">
-          <Link to="/cases">
-            <Button variant="primary" size="sm" icon={<Inbox className="w-4 h-4" />}>
+        <div className="flex flex-wrap items-center gap-2 shrink-0 w-full sm:w-auto pt-1 sm:pt-0">
+          <Link to="/cases?create=1" className="w-full sm:w-auto">
+            <Button variant="primary" size="sm" icon={<Inbox className="w-4 h-4" />} className="w-full sm:w-auto">
               Tạo vụ việc mới
             </Button>
           </Link>
@@ -165,7 +165,7 @@ export const DashboardPage: React.FC = () => {
             </div>
           </div>
           <div className="flex items-center gap-2 shrink-0">
-            <Link to="/cases">
+            <Link to="/cases?create=1">
               <Button variant="primary" size="sm" icon={<Inbox className="w-4 h-4" />}>
                 Tạo hồ sơ đầu tiên
               </Button>
@@ -185,72 +185,72 @@ export const DashboardPage: React.FC = () => {
           {/* Card 1: Open Cases */}
           <Link
             to="/cases"
-            className="civic-card-interactive p-4 sm:p-5 border-l-4 border-slate-700 flex flex-col justify-between bg-surface shadow-xs hover:border-slate-900"
+            className="civic-card-interactive p-3.5 sm:p-5 border-l-4 border-slate-700 flex flex-col justify-between bg-surface shadow-xs hover:border-slate-900"
           >
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-ink-600 uppercase tracking-wider">Vụ việc đang mở</span>
-              <Inbox className="w-4.5 h-4.5 text-slate-700" />
+              <span className="text-[11px] sm:text-xs font-bold text-ink-600 uppercase tracking-wider line-clamp-1">Vụ việc đang mở</span>
+              <Inbox className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-slate-700 shrink-0" />
             </div>
             <div className="text-2xl sm:text-3xl font-black text-ink-900 mt-2">
               {metrics.open_cases || 0}
             </div>
             <div className="text-[11px] text-ink-500 mt-1 flex items-center justify-between pt-2 border-t border-slate-100">
-              <span>Đang trong tiến trình</span>
-              <ArrowRight className="w-3 h-3 text-ink-400" />
+              <span className="truncate">Đang trong tiến trình</span>
+              <ArrowRight className="w-3 h-3 text-ink-400 shrink-0" />
             </div>
           </Link>
 
           {/* Card 2: SLA At Risk */}
           <Link
             to="/actions?overdue=true"
-            className="civic-card-interactive p-4 sm:p-5 border-l-4 border-dustguard-red flex flex-col justify-between bg-surface shadow-xs hover:bg-dustguard-redSoft/30"
+            className="civic-card-interactive p-3.5 sm:p-5 border-l-4 border-dustguard-red flex flex-col justify-between bg-surface shadow-xs hover:bg-dustguard-redSoft/30"
           >
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-dustguard-red uppercase tracking-wider">Thời hạn cần xử lý gấp</span>
-              <AlertTriangle className="w-4.5 h-4.5 text-dustguard-red" />
+              <span className="text-[11px] sm:text-xs font-bold text-dustguard-red uppercase tracking-wider line-clamp-1">Hạn cần xử lý gấp</span>
+              <AlertTriangle className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-dustguard-red shrink-0" />
             </div>
             <div className="text-2xl sm:text-3xl font-black text-dustguard-red mt-2">
               {metrics.sla_at_risk || 0}
             </div>
             <div className="text-[11px] text-dustguard-red font-semibold mt-1 flex items-center justify-between pt-2 border-t border-red-100">
-              <span>Hạn định 48h luật định</span>
-              <ArrowRight className="w-3 h-3 text-dustguard-red" />
+              <span className="truncate">Hạn định 48h luật định</span>
+              <ArrowRight className="w-3 h-3 text-dustguard-red shrink-0" />
             </div>
           </Link>
 
           {/* Card 3: Pending Inspection */}
           <Link
             to="/inspections"
-            className="civic-card-interactive p-4 sm:p-5 border-l-4 border-dustguard-teal flex flex-col justify-between bg-surface shadow-xs hover:border-teal-700"
+            className="civic-card-interactive p-3.5 sm:p-5 border-l-4 border-dustguard-teal flex flex-col justify-between bg-surface shadow-xs hover:border-teal-700"
           >
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-dustguard-teal uppercase tracking-wider">Chờ thanh tra</span>
-              <ClipboardCheck className="w-4.5 h-4.5 text-dustguard-teal" />
+              <span className="text-[11px] sm:text-xs font-bold text-dustguard-teal uppercase tracking-wider line-clamp-1">Chờ thanh tra</span>
+              <ClipboardCheck className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-dustguard-teal shrink-0" />
             </div>
             <div className="text-2xl sm:text-3xl font-black text-dustguard-teal mt-2">
               {metrics.pending_inspection || 0}
             </div>
             <div className="text-[11px] text-ink-500 mt-1 flex items-center justify-between pt-2 border-t border-slate-100">
-              <span>10 Tiêu chuẩn QCVN 18</span>
-              <ArrowRight className="w-3 h-3 text-ink-400" />
+              <span className="truncate">10 Tiêu chuẩn QCVN 18</span>
+              <ArrowRight className="w-3 h-3 text-ink-400 shrink-0" />
             </div>
           </Link>
 
           {/* Card 4: Awaiting Remediation */}
           <Link
-            to="/cases?tab=remediation"
-            className="civic-card-interactive p-4 sm:p-5 border-l-4 border-amber-600 flex flex-col justify-between bg-surface shadow-xs hover:border-amber-700"
+            to="/cases?tab=pending_action"
+            className="civic-card-interactive p-3.5 sm:p-5 border-l-4 border-amber-600 flex flex-col justify-between bg-surface shadow-xs hover:border-amber-700"
           >
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-amber-700 uppercase tracking-wider">Chờ nhà thầu nộp</span>
-              <Wrench className="w-4.5 h-4.5 text-amber-600" />
+              <span className="text-[11px] sm:text-xs font-bold text-amber-700 uppercase tracking-wider line-clamp-1">Chờ nhà thầu nộp</span>
+              <Wrench className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-amber-600 shrink-0" />
             </div>
             <div className="text-2xl sm:text-3xl font-black text-amber-800 mt-2">
               {metrics.awaiting_remediation || 0}
             </div>
             <div className="text-[11px] text-ink-500 mt-1 flex items-center justify-between pt-2 border-t border-slate-100">
-              <span>Khắc phục hiện trường</span>
-              <ArrowRight className="w-3 h-3 text-ink-400" />
+              <span className="truncate">Khắc phục hiện trường</span>
+              <ArrowRight className="w-3 h-3 text-ink-400 shrink-0" />
             </div>
           </Link>
         </div>

@@ -543,7 +543,7 @@ export const TasksPage: React.FC = () => {
                   )}
 
                   {t.task_type === 'FIELD_INSPECTION' && t.case_id && (
-                    <Link to={`/cases/${t.case_id}?tab=inspections`}>
+                    <Link to={`/cases/${t.case_id}/inspection`}>
                       <button className="px-2.5 py-1 text-xs font-semibold rounded border border-emerald-200 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 transition-colors touch-target">
                         Hiện trường
                       </button>

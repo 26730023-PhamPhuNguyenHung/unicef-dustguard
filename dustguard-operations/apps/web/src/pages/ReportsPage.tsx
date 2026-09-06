@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { api } from '../api/client';
 import { useToast } from '../context/ToastContext';
 import {
@@ -209,11 +210,11 @@ export const ReportsPage: React.FC = () => {
                 {data.cases.by_stage.map((st: any) => {
                   const percentage = data.cases.total > 0 ? Math.round((st.count / data.cases.total) * 100) : 0;
                   return (
-                    <div key={st.status} className="space-y-1">
+                    <Link to={`/cases?status=${st.status}`} key={st.status} className="block space-y-1 hover:bg-slate-50 p-1 rounded transition-colors group">
                       <div className="flex items-center justify-between text-xs">
-                        <span className="font-medium text-slate-700">{getStatusLabel(st.status)}</span>
-                        <span className="font-bold text-slate-900">
-                          {st.count} vụ ({percentage}%)
+                        <span className="font-medium text-slate-700 group-hover:text-dustguard-red">{getStatusLabel(st.status)}</span>
+                        <span className="font-bold text-slate-900 group-hover:text-dustguard-red">
+                          {st.count} vụ ({percentage}%) &rarr;
                         </span>
                       </div>
                       <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
@@ -222,7 +223,7 @@ export const ReportsPage: React.FC = () => {
                           style={{ width: `${Math.max(percentage, 4)}%` }}
                         />
                       </div>
-                    </div>
+                    </Link>
                   );
                 })}
               </div>
@@ -242,16 +243,16 @@ export const ReportsPage: React.FC = () => {
                 {data.cases.by_source.map((src: any) => {
                   const percentage = data.cases.total > 0 ? Math.round((src.count / data.cases.total) * 100) : 0;
                   return (
-                    <div key={src.source} className="p-3 bg-slate-50 rounded-lg border border-slate-200 flex items-center justify-between">
+                    <Link to={`/cases?source=${src.source}`} key={src.source} className="p-3 bg-slate-50 hover:bg-slate-100 rounded-lg border border-slate-200 flex items-center justify-between transition-colors group">
                       <div className="space-y-0.5">
-                        <div className="text-xs font-bold text-slate-800">{getSourceLabel(src.source)}</div>
+                        <div className="text-xs font-bold text-slate-800 group-hover:text-dustguard-teal">{getSourceLabel(src.source)}</div>
                         <div className="text-[11px] text-slate-500 font-mono">SOURCE_KEY: {src.source}</div>
                       </div>
                       <div className="text-right">
-                        <div className="text-base font-bold text-slate-900">{src.count} vụ</div>
+                        <div className="text-base font-bold text-slate-900 group-hover:text-dustguard-teal">{src.count} vụ &rarr;</div>
                         <div className="text-[11px] text-dustguard-teal font-semibold">{percentage}% tổng số</div>
                       </div>
-                    </div>
+                    </Link>
                   );
                 })}
               </div>

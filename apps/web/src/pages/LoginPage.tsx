@@ -78,7 +78,7 @@ export const LoginPage: React.FC = () => {
     try {
       const opsUrl = import.meta.env.PROD
         ? '/api/operations/auth/login'
-        : (import.meta.env.VITE_OPERATIONS_API_URL || 'http://localhost:3002/api/auth/login');
+        : (import.meta.env.VITE_OPERATIONS_API_URL || `${OPERATIONS_APP_URL}/api/auth/login`);
 
       let response = await fetch(opsUrl, {
         method: 'POST',
@@ -88,7 +88,7 @@ export const LoginPage: React.FC = () => {
 
       // Fallback cho local dev nếu proxy khác cổng
       if (response.status === 404 && !import.meta.env.PROD) {
-        response = await fetch('http://localhost:3002/api/auth/login', {
+        response = await fetch(`${OPERATIONS_APP_URL}/api/auth/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username: identifier.trim(), password })
@@ -165,7 +165,7 @@ export const LoginPage: React.FC = () => {
     try {
       const opsUrl = import.meta.env.PROD
         ? '/api/operations/auth/login'
-        : (import.meta.env.VITE_OPERATIONS_API_URL || 'http://localhost:3002/api/auth/login');
+        : (import.meta.env.VITE_OPERATIONS_API_URL || `${OPERATIONS_APP_URL}/api/auth/login`);
 
       let response = await fetch(opsUrl, {
         method: 'POST',
@@ -174,7 +174,7 @@ export const LoginPage: React.FC = () => {
       });
 
       if (response.status === 404 && !import.meta.env.PROD) {
-        response = await fetch('http://localhost:3002/api/auth/login', {
+        response = await fetch(`${OPERATIONS_APP_URL}/api/auth/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username: demoUsername, password: 'Password123!' })
@@ -202,7 +202,7 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-[85vh] flex items-center justify-center py-10 px-4 bg-[#FBF9F5]">
+    <div className="min-h-[85vh] flex items-center justify-center py-10 px-4 bg-page">
       <div className="bg-surface-card rounded-civic-lg border border-border-subtle p-7 sm:p-9 max-w-md w-full shadow-sm space-y-6">
         
         {/* Header Thương hiệu Canonical */}
@@ -239,7 +239,7 @@ export const LoginPage: React.FC = () => {
             onClick={() => handleTabChange('professional')}
             className={`py-2.5 px-3 rounded-lg transition-all text-center flex items-center justify-center gap-1.5 touch-target ${
               activeSide === 'professional'
-                ? 'bg-white text-[#0D6F64] shadow-xs border border-[#0D6F64]/30 font-bold'
+                ? 'bg-white text-teal shadow-xs border border-teal/30 font-bold'
                 : 'text-content-sub hover:text-content-main'
             }`}
           >
@@ -383,8 +383,8 @@ export const LoginPage: React.FC = () => {
           /* PHÍA ĐƠN VỊ XỬ LÝ: FORM ĐĂNG NHẬP TRỰC TIẾP                       */
           /* ================================================================= */
           <div className="space-y-5">
-            <div className="p-3.5 rounded-xl bg-teal-50/70 border border-teal-200/80 text-left space-y-1">
-              <div className="flex items-center gap-1.5 text-[#0D6F64] font-bold text-xs">
+            <div className="p-3.5 rounded-xl bg-teal-soft border border-teal-border text-left space-y-1">
+              <div className="flex items-center gap-1.5 text-teal font-bold text-xs">
                 <Building2 className="w-4 h-4 shrink-0" />
                 <span>Cổng Tác chiến Đơn vị Xử lý</span>
               </div>
@@ -407,7 +407,7 @@ export const LoginPage: React.FC = () => {
                     value={identifier}
                     onChange={(e) => setIdentifier(e.target.value)}
                     placeholder="staff1, supervisor1, legal1..."
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border-subtle text-xs sm:text-sm bg-white text-slate-900 focus:border-[#0D6F64] focus:outline-none"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border-subtle text-xs sm:text-sm bg-white text-slate-900 focus:border-teal focus:outline-none"
                   />
                 </div>
               </div>
@@ -427,7 +427,7 @@ export const LoginPage: React.FC = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border-subtle text-xs sm:text-sm bg-white text-slate-900 focus:border-[#0D6F64] focus:outline-none"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border-subtle text-xs sm:text-sm bg-white text-slate-900 focus:border-teal focus:outline-none"
                   />
                 </div>
               </div>
@@ -436,7 +436,7 @@ export const LoginPage: React.FC = () => {
                 type="submit"
                 id="btn-operations-login"
                 disabled={loading || !identifier.trim() || !password.trim()}
-                className="w-full py-3 rounded-xl bg-[#0D6F64] text-white font-bold text-sm shadow-sm hover:bg-[#0B5C53] transition-all disabled:opacity-50 active:scale-95 flex items-center justify-center gap-2 touch-target"
+                className="w-full py-3 rounded-xl bg-teal text-white font-bold text-sm shadow-sm hover:bg-teal-hover transition-all disabled:opacity-50 active:scale-95 flex items-center justify-center gap-2 touch-target"
               >
                 {loading ? 'Đang xác thực nghiệp vụ...' : 'Đăng nhập Đơn vị Xử lý'}
                 <LogIn className="w-4 h-4" />
@@ -447,7 +447,7 @@ export const LoginPage: React.FC = () => {
             {demoMode && (
               <div className="pt-3 border-t border-border-subtle space-y-2 bg-stone-50/70 p-3 rounded-xl border border-stone-200/80">
                 <div className="flex items-center justify-between text-[10px] font-bold text-content-sub uppercase tracking-wider">
-                  <span className="flex items-center gap-1.5 text-[#0D6F64]">
+                  <span className="flex items-center gap-1.5 text-teal">
                     <Sparkles className="w-3 h-3" />
                     Tài khoản trải nghiệm
                   </span>
@@ -457,7 +457,7 @@ export const LoginPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => handleQuickLoginOperations('staff1')}
-                    className="p-2 rounded-lg border border-border-subtle bg-white hover:bg-teal-50 font-semibold text-content-main text-left hover:border-[#0D6F64]/40 transition-colors shadow-2xs"
+                    className="p-2 rounded-lg border border-border-subtle bg-white hover:bg-teal-soft font-semibold text-content-main text-left hover:border-teal/40 transition-colors shadow-2xs"
                   >
                     <div className="font-bold text-slate-900">staff1</div>
                     <div className="text-[10px] text-slate-500">Cán bộ Hiện trường</div>
@@ -465,7 +465,7 @@ export const LoginPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => handleQuickLoginOperations('supervisor1')}
-                    className="p-2 rounded-lg border border-border-subtle bg-white hover:bg-teal-50 font-semibold text-content-main text-left hover:border-[#0D6F64]/40 transition-colors shadow-2xs"
+                    className="p-2 rounded-lg border border-border-subtle bg-white hover:bg-teal-soft font-semibold text-content-main text-left hover:border-teal/40 transition-colors shadow-2xs"
                   >
                     <div className="font-bold text-slate-900">supervisor1</div>
                     <div className="text-[10px] text-slate-500">Lãnh đạo Điều phối</div>
@@ -473,7 +473,7 @@ export const LoginPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => handleQuickLoginOperations('legal1')}
-                    className="p-2 rounded-lg border border-border-subtle bg-white hover:bg-teal-50 font-semibold text-content-main text-left hover:border-[#0D6F64]/40 transition-colors shadow-2xs"
+                    className="p-2 rounded-lg border border-border-subtle bg-white hover:bg-teal-soft font-semibold text-content-main text-left hover:border-teal/40 transition-colors shadow-2xs"
                   >
                     <div className="font-bold text-slate-900">legal1</div>
                     <div className="text-[10px] text-slate-500">Chuyên viên Pháp chế</div>
@@ -481,7 +481,7 @@ export const LoginPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => handleQuickLoginOperations('admin')}
-                    className="p-2 rounded-lg border border-border-subtle bg-white hover:bg-teal-50 font-semibold text-content-main text-left hover:border-[#0D6F64]/40 transition-colors shadow-2xs"
+                    className="p-2 rounded-lg border border-border-subtle bg-white hover:bg-teal-soft font-semibold text-content-main text-left hover:border-teal/40 transition-colors shadow-2xs"
                   >
                     <div className="font-bold text-slate-900">admin</div>
                     <div className="text-[10px] text-slate-500">Quản trị Vận hành</div>

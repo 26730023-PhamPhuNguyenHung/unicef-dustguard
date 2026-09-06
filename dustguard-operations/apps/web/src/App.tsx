@@ -4,6 +4,8 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
 import { AppLayout } from './components/layout/AppLayout';
 
+import { ErrorBoundary } from './components/common/ErrorBoundary';
+
 // Pages
 import { LoginPage } from './pages/LoginPage';
 import { SetupPage } from './pages/SetupPage';
@@ -60,83 +62,86 @@ export function App() {
     <BrowserRouter basename={import.meta.env.BASE_URL}>
       <ToastProvider>
         <AuthProvider>
-          <Routes>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/setup" element={<SetupPage />} />
+          <ErrorBoundary>
+            <Routes>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/setup" element={<SetupPage />} />
 
-            <Route
-              path="/"
-              element={
-                <ProtectedRoute>
-                  <AppLayout />
-                </ProtectedRoute>
-              }
-            >
-              <Route index element={<Navigate to="/dashboard" replace />} />
-              <Route path="dashboard" element={<DashboardPage />} />
-              
-              {/* Projects & Contractors */}
-              <Route path="projects" element={<ProjectsPage />} />
-              <Route path="contractors" element={<ContractorsPage />} />
+              <Route
+                path="/"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout />
+                  </ProtectedRoute>
+                }
+              >
+                <Route index element={<Navigate to="/dashboard" replace />} />
+                <Route path="dashboard" element={<DashboardPage />} />
+                
+                {/* Projects & Contractors */}
+                <Route path="projects" element={<ProjectsPage />} />
+                <Route path="contractors" element={<ContractorsPage />} />
 
-              {/* Tasks */}
-              <Route path="tasks" element={<TasksPage />} />
+                {/* Tasks */}
+                <Route path="tasks" element={<TasksPage />} />
 
-              {/* Cases */}
-              <Route path="cases" element={<CaseInboxPage />} />
-              <Route path="cases/:id" element={<CaseDetailPage />} />
-              <Route path="cases/:id/evidence" element={<CaseDetailPage />} />
-              <Route path="cases/:id/iot" element={<CaseDetailPage />} />
-              <Route path="cases/:id/inspection" element={<CaseDetailPage />} />
-              <Route path="cases/:id/actions" element={<CaseDetailPage />} />
-              <Route path="cases/:id/timeline" element={<CaseDetailPage />} />
-              <Route path="cases/:id/legal" element={<LegalWorkspacePage />} />
-              <Route path="cases/:id/inspection/new" element={<InspectionPlanPage />} />
-              
-              {/* Legal */}
-              <Route path="legal" element={<Navigate to="/legal/library" replace />} />
-              <Route path="legal/library" element={<LegalLibraryPage />} />
-              <Route path="legal/documents" element={<LegalLibraryPage />} />
-              <Route path="legal/import" element={<LegalImportPage />} />
-              <Route path="legal/documents/:id" element={<LegalDocDetailPage />} />
+                {/* Cases */}
+                <Route path="cases" element={<CaseInboxPage />} />
+                <Route path="cases/:id" element={<CaseDetailPage />} />
+                <Route path="cases/:id/evidence" element={<CaseDetailPage />} />
+                <Route path="cases/:id/iot" element={<CaseDetailPage />} />
+                <Route path="cases/:id/inspection" element={<CaseDetailPage />} />
+                <Route path="cases/:id/actions" element={<CaseDetailPage />} />
+                <Route path="cases/:id/timeline" element={<CaseDetailPage />} />
+                <Route path="cases/:id/legal" element={<LegalWorkspacePage />} />
+                <Route path="cases/:id/inspection/new" element={<InspectionPlanPage />} />
+                
+                {/* Legal */}
+                <Route path="legal" element={<Navigate to="/legal/library" replace />} />
+                <Route path="legal/library" element={<LegalLibraryPage />} />
+                <Route path="legal/documents" element={<LegalLibraryPage />} />
+                <Route path="legal/import" element={<LegalImportPage />} />
+                <Route path="legal/documents/:id" element={<LegalDocDetailPage />} />
 
-              {/* Inspections */}
-              <Route path="inspections" element={<InspectionListPage />} />
-              <Route path="inspections/new" element={<InspectionPlanPage />} />
-              <Route path="inspections/:id" element={<FieldInspectionPage />} />
-              <Route path="inspections/:id/result" element={<InspectionResultPage />} />
-              <Route path="inspections/:id/export" element={<InspectionExportPage />} />
+                {/* Inspections */}
+                <Route path="inspections" element={<InspectionListPage />} />
+                <Route path="inspections/new" element={<InspectionPlanPage />} />
+                <Route path="inspections/:id" element={<FieldInspectionPage />} />
+                <Route path="inspections/:id/result" element={<InspectionResultPage />} />
+                <Route path="inspections/:id/export" element={<InspectionExportPage />} />
 
-              {/* Corrective Actions */}
-              <Route path="actions" element={<ActionsListPage />} />
-              <Route path="actions/:id/remediation" element={<RemediationReviewPage />} />
-              <Route path="actions/:id/notice" element={<ActionNoticeExportPage />} />
+                {/* Corrective Actions */}
+                <Route path="actions" element={<ActionsListPage />} />
+                <Route path="actions/:id/remediation" element={<RemediationReviewPage />} />
+                <Route path="actions/:id/notice" element={<ActionNoticeExportPage />} />
 
-              {/* IoT Telemetry */}
-              <Route path="iot" element={<IotDevicesPage />} />
-              <Route path="iot/devices" element={<IotDevicesPage />} />
-              <Route path="iot/devices/:id" element={<IotDeviceDetailPage />} />
+                {/* IoT Telemetry */}
+                <Route path="iot" element={<IotDevicesPage />} />
+                <Route path="iot/devices" element={<IotDevicesPage />} />
+                <Route path="iot/devices/:id" element={<IotDeviceDetailPage />} />
+                <Route path="iot/:id" element={<IotDeviceDetailPage />} />
 
-              {/* Automations */}
-              <Route path="automations" element={<AutomationsPage />} />
+                {/* Automations */}
+                <Route path="automations" element={<AutomationsPage />} />
 
-              {/* Evidence Management */}
-              <Route path="evidence" element={<EvidencePage />} />
+                {/* Evidence Management */}
+                <Route path="evidence" element={<EvidencePage />} />
 
-              {/* Operational Reports */}
-              <Route path="reports" element={<ReportsPage />} />
+                {/* Operational Reports */}
+                <Route path="reports" element={<ReportsPage />} />
 
-              {/* Staff & Admin */}
-              <Route path="notifications" element={<NotificationsPage />} />
-              <Route path="profile" element={<ProfilePage />} />
-              <Route path="supervisor/workload" element={<SupervisorWorkloadPage />} />
-              <Route path="admin/users" element={<AdminUsersPage />} />
-              <Route path="admin/audit" element={<AdminAuditPage />} />
-              <Route path="admin/settings" element={<AdminSettingsPage />} />
+                {/* Staff & Admin */}
+                <Route path="notifications" element={<NotificationsPage />} />
+                <Route path="profile" element={<ProfilePage />} />
+                <Route path="supervisor/workload" element={<SupervisorWorkloadPage />} />
+                <Route path="admin/users" element={<AdminUsersPage />} />
+                <Route path="admin/audit" element={<AdminAuditPage />} />
+                <Route path="admin/settings" element={<AdminSettingsPage />} />
 
-              <Route path="*" element={<Navigate to="/dashboard" replace />} />
-            </Route>
-          </Routes>
+                <Route path="*" element={<Navigate to="/dashboard" replace />} />
+              </Route>
+            </Routes>
+          </ErrorBoundary>
         </AuthProvider>
       </ToastProvider>
     </BrowserRouter>

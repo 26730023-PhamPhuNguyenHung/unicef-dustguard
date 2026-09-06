@@ -130,7 +130,7 @@ export const AdminUsersPage: React.FC = () => {
       ) : (
         <div className="bg-surface-card rounded-civic-lg border border-border-subtle overflow-hidden shadow-sm">
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+            <table className="w-full text-left text-xs min-w-[680px]">
               <thead className="bg-surface-secondary/60 text-content-sub uppercase border-b border-border-subtle font-semibold">
                 <tr>
                   <th className="py-3 px-4">Người dùng</th>

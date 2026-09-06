@@ -134,24 +134,52 @@ export const MyTrackingPage: React.FC = () => {
                 />
               ) : (
                 <div className="space-y-3">
-                  {myContributions.map((ct) => (
-                    <div
-                      key={ct.id}
-                      className="bg-surface-card p-4 rounded-xl border border-border-subtle shadow-xs flex items-center justify-between"
-                    >
-                      <div className="space-y-1">
-                        <div className="text-xs font-bold text-content-main capitalize">
-                          {ct.type === 'confirmation' ? 'Đồng ghi nhận vụ việc' : (ct.type === 'observation' ? 'Bổ sung quan sát hiện trường' : 'Phản ánh ban đầu')}
+                  {myContributions.map((ct) => {
+                    const targetLink = ct.caseId ? `/cases/${ct.caseId}` : (ct.type === 'report' ? `/reports/${ct.id}` : null);
+                    return (
+                      <div
+                        key={ct.id}
+                        className="bg-surface-card p-4 rounded-xl border border-border-subtle shadow-xs flex items-center justify-between gap-3"
+                      >
+                        <div className="space-y-1 min-w-0">
+                          <div className="text-xs font-bold text-content-main">
+                            {targetLink ? (
+                              <Link to={targetLink} className="hover:text-primary transition-colors line-clamp-1">
+                                {ct.title || (ct.type === 'confirmation' ? 'Đồng ghi nhận vụ việc' : (ct.type === 'observation' ? 'Bổ sung quan sát hiện trường' : 'Phản ánh ban đầu'))}
+                              </Link>
+                            ) : (
+                              ct.title || (ct.type === 'confirmation' ? 'Đồng ghi nhận vụ việc' : (ct.type === 'observation' ? 'Bổ sung quan sát hiện trường' : 'Phản ánh ban đầu'))
+                            )}
+                          </div>
+                          <div className="text-[11px] text-content-sub flex items-center gap-2 flex-wrap">
+                            <span>{ct.typeLabel || 'Đóng góp vì môi trường'}</span>
+                            <span>•</span>
+                            <span>{new Date(ct.created_at || ct.createdAt).toLocaleString('vi-VN')}</span>
+                            {ct.contributionHours ? (
+                              <>
+                                <span>•</span>
+                                <span className="font-semibold text-primary">+{ct.contributionHours} giờ</span>
+                              </>
+                            ) : null}
+                          </div>
                         </div>
-                        <div className="text-[11px] text-content-sub">
-                          Ngày ghi nhận: {new Date(ct.created_at || ct.createdAt).toLocaleString('vi-VN')}
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span className="text-[11px] font-bold text-state-success bg-emerald-50 px-2.5 py-1 rounded-md whitespace-nowrap">
+                            {ct.statusText || 'Đã ghi nhận'}
+                          </span>
+                          {targetLink && (
+                            <Link
+                              to={targetLink}
+                              className="text-xs font-bold text-primary hover:text-primary-dark inline-flex items-center gap-1 px-2 py-1"
+                            >
+                              Xem
+                              <ArrowRight className="w-3.5 h-3.5" />
+                            </Link>
+                          )}
                         </div>
                       </div>
-                      <span className="text-[11px] font-bold text-state-success bg-emerald-50 px-2.5 py-1 rounded-md">
-                        Đã ghi nhận
-                      </span>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>

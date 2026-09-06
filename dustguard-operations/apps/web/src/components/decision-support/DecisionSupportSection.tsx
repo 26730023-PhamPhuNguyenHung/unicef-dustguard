@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { api } from '../../api/client';
 import { useToast } from '../../context/ToastContext';
 import { useAuth } from '../../context/AuthContext';
@@ -89,6 +90,25 @@ export const DecisionSupportSection: React.FC<DecisionSupportSectionProps> = ({
     } finally {
       setSubmittingDecision(false);
     }
+  };
+
+  const getRecommendedActionRoute = (act: any) => {
+    if (act.route) return act.route;
+    const label = (act.buttonLabel || '').toLowerCase();
+    const title = (act.title || '').toLowerCase();
+    if (label.includes('kiểm tra') || title.includes('kiểm tra')) {
+      return `/cases/${caseId}/inspection/new`;
+    }
+    if (label.includes('pháp lý') || label.includes('luật') || title.includes('pháp lý')) {
+      return `/cases/${caseId}/legal`;
+    }
+    if (label.includes('khắc phục') || label.includes('biện pháp') || title.includes('khắc phục')) {
+      return `/cases/${caseId}/actions`;
+    }
+    if (label.includes('chứng cứ') || label.includes('ảnh') || title.includes('chứng cứ')) {
+      return `/cases/${caseId}/evidence`;
+    }
+    return `/cases/${caseId}`;
   };
 
   if (loading) {
@@ -248,7 +268,7 @@ export const DecisionSupportSection: React.FC<DecisionSupportSectionProps> = ({
           </span>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
+          <table className="w-full text-left text-xs min-w-[720px]">
             <thead className="bg-slate-50 text-slate-600 font-bold border-b border-slate-200">
               <tr>
                 <th className="px-4 py-3">Mã & Nội dung nhận định</th>
@@ -409,9 +429,11 @@ export const DecisionSupportSection: React.FC<DecisionSupportSectionProps> = ({
                   <div className="text-slate-600 mt-1">{act.description}</div>
                   <div className="text-slate-500 italic mt-0.5">Lý do: {act.reason}</div>
                 </div>
-                <span className="shrink-0 px-2 py-1 bg-teal-100 text-teal-800 font-bold rounded text-[11px]">
-                  {act.buttonLabel}
-                </span>
+                <Link to={getRecommendedActionRoute(act)} className="shrink-0">
+                  <Button variant="primary" size="sm" className="text-[11px] h-7 px-2.5 font-bold">
+                    {act.buttonLabel} &rarr;
+                  </Button>
+                </Link>
               </div>
             ))}
           </div>

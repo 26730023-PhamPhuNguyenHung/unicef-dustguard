@@ -23,7 +23,7 @@ export const CaseCard: React.FC<CaseCardProps> = ({ caseData }) => {
         </div>
 
         <Link to={`/cases/${caseData.id}`}>
-          <h3 className="text-base font-bold text-content-main hover:text-primary transition-colors line-clamp-2 mb-2">
+          <h3 className="text-base font-bold text-content-main hover:text-primary transition-colors line-clamp-2 mb-2 text-pretty">
             {caseData.title}
           </h3>
         </Link>
@@ -32,7 +32,7 @@ export const CaseCard: React.FC<CaseCardProps> = ({ caseData }) => {
           {categoryLabel}
         </p>
 
-        <p className="text-xs text-content-sub line-clamp-2 mb-4">
+        <p className="text-xs text-content-sub line-clamp-2 mb-4 text-pretty">
           {caseData.summary}
         </p>
 
@@ -42,7 +42,7 @@ export const CaseCard: React.FC<CaseCardProps> = ({ caseData }) => {
         </div>
       </div>
 
-      <div className="px-4 sm:px-5 py-3 bg-surface-secondary/60 border-t border-border-subtle flex items-center justify-between gap-2 text-xs text-content-sub">
+      <div className="px-4 sm:px-5 py-2.5 bg-surface-secondary/60 border-t border-border-subtle flex items-center justify-between gap-2 text-xs text-content-sub">
         <div className="flex items-center flex-wrap gap-x-3 gap-y-1 min-w-0">
           <span className="inline-flex items-center gap-1 font-medium text-content-main whitespace-nowrap" title="Số người cùng ghi nhận">
             <Users className="w-3.5 h-3.5 text-primary shrink-0" />
@@ -56,7 +56,7 @@ export const CaseCard: React.FC<CaseCardProps> = ({ caseData }) => {
 
         <Link
           to={`/cases/${caseData.id}`}
-          className="shrink-0 inline-flex items-center gap-1 font-bold text-primary hover:text-primary-dark transition-colors py-1 pl-2"
+          className="shrink-0 inline-flex items-center gap-1 font-bold text-primary hover:text-primary-dark transition-colors py-2 px-1 min-h-[44px]"
         >
           Chi tiết
           <ArrowRight className="w-3.5 h-3.5" />

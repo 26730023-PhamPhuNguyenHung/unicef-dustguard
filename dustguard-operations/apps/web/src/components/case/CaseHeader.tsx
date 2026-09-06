@@ -50,10 +50,10 @@ export const CaseHeader: React.FC<CaseHeaderProps> = ({
   const cta = getPrimaryCta(caseData.status);
 
   return (
-    <div className="bg-white border border-slate-200/90 rounded-lg p-5 sm:p-6 shadow-xs">
-      <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+    <div className="bg-white border border-slate-200/90 rounded-lg p-4 sm:p-6 shadow-xs">
+      <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-3 sm:gap-4">
         {/* Left info */}
-        <div className="space-y-2 flex-1">
+        <div className="space-y-2 flex-1 min-w-0">
           <div className="flex flex-wrap items-center gap-2">
             <span className="font-mono text-xs font-bold text-dustguard-red bg-dustguard-redSoft border border-dustguard-redBorder px-2 py-0.5 rounded">
               {caseData.case_code}
@@ -69,14 +69,14 @@ export const CaseHeader: React.FC<CaseHeaderProps> = ({
             </span>
           </div>
 
-          <h1 className="text-xl sm:text-2xl font-bold text-ink-900 leading-tight">
+          <h1 className="text-lg sm:text-2xl font-bold text-ink-900 leading-tight tracking-tight">
             {caseData.title}
           </h1>
 
           <div className="flex flex-wrap items-center gap-y-1.5 gap-x-4 text-xs sm:text-sm text-ink-600 pt-0.5">
             <div className="flex items-center gap-1">
               <MapPin className="w-3.5 h-3.5 text-ink-400 shrink-0" />
-              <span>{caseData.location_text}</span>
+              <span className="truncate">{caseData.location_text}</span>
             </div>
             <div className="flex items-center gap-1">
               <User className="w-3.5 h-3.5 text-ink-400 shrink-0" />
@@ -97,13 +97,13 @@ export const CaseHeader: React.FC<CaseHeaderProps> = ({
         </div>
 
         {/* Right CTA: Single Dominant DustGuard Red Button */}
-        <div className="flex items-center gap-2 self-start shrink-0 pt-1 lg:pt-0">
+        <div className="flex flex-wrap items-center gap-2 self-start shrink-0 pt-2 lg:pt-0 w-full lg:w-auto">
           <Button
             variant={cta.variant}
             size="md"
             icon={cta.icon}
             onClick={onPrimaryAction}
-            className="font-semibold shadow-xs"
+            className="font-semibold shadow-xs w-full sm:w-auto min-h-[44px]"
           >
             {cta.label}
           </Button>
@@ -112,7 +112,7 @@ export const CaseHeader: React.FC<CaseHeaderProps> = ({
             <Button
               variant="secondary"
               size="md"
-              className="px-2.5"
+              className="px-3 min-h-[44px] min-w-[44px] touch-target"
               onClick={() => onSecondaryAction('toggle_menu')}
               aria-label="Thao tác khác"
             >

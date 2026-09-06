@@ -64,32 +64,32 @@ export const EvidenceDetailDrawer: React.FC<EvidenceDetailDrawerProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 overflow-hidden bg-slate-900/50 flex justify-end animate-fade-in"
+      className="fixed inset-0 z-50 overflow-hidden bg-slate-900/50 flex items-end sm:items-stretch justify-end animate-fade-in"
       style={{ scrollbarGutter: 'stable' }}
       onClick={e => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
       <div
-        className="w-full max-w-xl sm:max-w-2xl bg-white h-full shadow-2xl flex flex-col border-l border-slate-300 animate-slide-left"
+        className="w-full max-w-xl sm:max-w-2xl bg-white max-h-[92vh] sm:max-h-full rounded-t-2xl sm:rounded-none shadow-2xl flex flex-col sm:border-l border-slate-300 animate-slide-left overflow-hidden"
         style={{ textWrap: 'pretty' }}
       >
         {/* Drawer Header */}
-        <div className="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-2.5">
-            <span className="p-2 bg-emerald-50 rounded-lg border border-emerald-200 text-emerald-800">
+        <div className="px-4 py-3.5 sm:px-6 sm:py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-2.5 min-w-0 flex-1">
+            <span className="p-2 bg-emerald-50 rounded-lg border border-emerald-200 text-emerald-800 shrink-0">
               <Camera className="w-5 h-5 text-emerald-700" />
             </span>
-            <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-sm sm:text-base font-bold text-slate-900 leading-snug">
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-wrap items-center gap-2">
+                <h2 className="text-sm sm:text-base font-bold text-slate-900 leading-snug tracking-tight">
                   ĐIỀU TRA BẰNG CHỨNG
                 </h2>
                 <Badge variant={isVerifiedIntegrity ? 'success' : 'warning'} size="sm">
                   {isVerifiedIntegrity ? 'Toàn vẹn số học' : 'Chưa đối soát'}
                 </Badge>
               </div>
-              <p className="text-[11px] text-slate-500 font-mono mt-0.5">
+              <p className="text-[11px] text-slate-500 font-mono mt-0.5 truncate">
                 {fact.friendly_code || fact.id} · {new Date(fact.source_timestamp).toLocaleString('vi-VN')}
               </p>
             </div>
@@ -97,7 +97,7 @@ export const EvidenceDetailDrawer: React.FC<EvidenceDetailDrawerProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-800 hover:bg-slate-200 rounded-md transition-colors cursor-pointer"
+            className="p-2 text-slate-400 hover:text-slate-800 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer touch-target min-h-[44px] min-w-[44px] inline-flex items-center justify-center shrink-0 ml-2"
             title="Đóng bảng điều tra"
           >
             <X className="w-5 h-5" />
@@ -105,7 +105,7 @@ export const EvidenceDetailDrawer: React.FC<EvidenceDetailDrawerProps> = ({
         </div>
 
         {/* Drawer Body */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-5 text-xs">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 sm:space-y-5 text-xs">
           {/* Visual Preview Box */}
           <div className="rounded-xl overflow-hidden border border-slate-200 bg-slate-100 shadow-2xs">
             {filePath ? (

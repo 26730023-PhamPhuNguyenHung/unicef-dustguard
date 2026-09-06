@@ -252,16 +252,16 @@ export const ProblemStory: React.FC<ProblemStoryProps> = ({ lang }) => {
                   </span>
                 </div>
 
-                {/* 4 Bước ngang đứt gãy */}
-                <div className="flex items-center gap-1.5 sm:gap-2">
+                {/* 4 Bước ngang đứt gãy: Grid 2x2 trên mobile, flex ngang trên desktop */}
+                <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center sm:gap-2">
                   {/* B1 */}
-                  <div className="flex-1 p-2.5 rounded-xl bg-[#FAF8F5] border border-[#EAE3DC] flex flex-col justify-between min-h-[72px]">
+                  <div className="p-2.5 rounded-xl bg-[#FAF8F5] border border-[#EAE3DC] flex flex-col justify-between min-h-[72px] sm:flex-1">
                     <div className="flex items-center justify-between text-xs">
                       <span className="font-mono text-stone-400 font-bold">01</span>
-                      <Camera className="w-4 h-4 text-stone-400" />
+                      <Camera className="w-4 h-4 text-stone-400 shrink-0" />
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-slate-800 leading-tight">
+                      <div className="text-xs font-bold text-slate-800 leading-tight" style={{ textWrap: 'pretty' }}>
                         {lang === 'vi' ? 'Ảnh rời rạc' : 'Scattered Photo'}
                       </div>
                       <div className="text-[11px] text-stone-500 mt-0.5 leading-tight">
@@ -270,16 +270,16 @@ export const ProblemStory: React.FC<ProblemStoryProps> = ({ lang }) => {
                     </div>
                   </div>
 
-                  <span className="text-red-300 font-mono select-none text-xs tracking-tighter shrink-0">···&gt;</span>
+                  <span className="hidden sm:inline-block text-red-300 font-mono select-none text-xs tracking-tighter shrink-0">···&gt;</span>
 
                   {/* B2 */}
-                  <div className="flex-1 p-2.5 rounded-xl bg-[#FAF8F5] border border-[#EAE3DC] flex flex-col justify-between min-h-[72px]">
+                  <div className="p-2.5 rounded-xl bg-[#FAF8F5] border border-[#EAE3DC] flex flex-col justify-between min-h-[72px] sm:flex-1">
                     <div className="flex items-center justify-between text-xs">
                       <span className="font-mono text-stone-400 font-bold">02</span>
-                      <MessageSquare className="w-4 h-4 text-stone-400" />
+                      <MessageSquare className="w-4 h-4 text-stone-400 shrink-0" />
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-slate-800 leading-tight">
+                      <div className="text-xs font-bold text-slate-800 leading-tight" style={{ textWrap: 'pretty' }}>
                         {lang === 'vi' ? 'Tin nhắn mạng' : 'Chat Message'}
                       </div>
                       <div className="text-[11px] text-stone-500 mt-0.5 leading-tight">
@@ -288,16 +288,16 @@ export const ProblemStory: React.FC<ProblemStoryProps> = ({ lang }) => {
                     </div>
                   </div>
 
-                  <span className="text-red-300 font-mono select-none text-xs tracking-tighter shrink-0">···&gt;</span>
+                  <span className="hidden sm:inline-block text-red-300 font-mono select-none text-xs tracking-tighter shrink-0">···&gt;</span>
 
                   {/* B3 */}
-                  <div className="flex-1 p-2.5 rounded-xl bg-[#FAF8F5] border border-[#EAE3DC] flex flex-col justify-between min-h-[72px]">
+                  <div className="p-2.5 rounded-xl bg-[#FAF8F5] border border-[#EAE3DC] flex flex-col justify-between min-h-[72px] sm:flex-1">
                     <div className="flex items-center justify-between text-xs">
                       <span className="font-mono text-stone-400 font-bold">03</span>
-                      <FileSpreadsheet className="w-4 h-4 text-stone-400" />
+                      <FileSpreadsheet className="w-4 h-4 text-stone-400 shrink-0" />
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-slate-800 leading-tight">
+                      <div className="text-xs font-bold text-slate-800 leading-tight" style={{ textWrap: 'pretty' }}>
                         {lang === 'vi' ? 'Sổ sách Excel' : 'Manual Excel'}
                       </div>
                       <div className="text-[11px] text-stone-500 mt-0.5 leading-tight">
@@ -306,16 +306,16 @@ export const ProblemStory: React.FC<ProblemStoryProps> = ({ lang }) => {
                     </div>
                   </div>
 
-                  <span className="text-red-300 font-mono select-none text-xs tracking-tighter shrink-0">···&gt;</span>
+                  <span className="hidden sm:inline-block text-red-300 font-mono select-none text-xs tracking-tighter shrink-0">···&gt;</span>
 
                   {/* B4: MẤT DẤU */}
-                  <div className="flex-1 p-2.5 rounded-xl bg-[#FFF5F5] border border-dashed border-[#FCA5A5] flex flex-col justify-between min-h-[72px]">
+                  <div className="p-2.5 rounded-xl bg-[#FFF5F5] border border-dashed border-[#FCA5A5] flex flex-col justify-between min-h-[72px] sm:flex-1">
                     <div className="flex items-center justify-between text-xs">
                       <span className="font-mono text-red-600 font-bold">04</span>
-                      <HelpCircle className="w-4 h-4 text-red-600" />
+                      <HelpCircle className="w-4 h-4 text-red-600 shrink-0" />
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-red-700 leading-tight">
+                      <div className="text-xs font-bold text-red-700 leading-tight" style={{ textWrap: 'pretty' }}>
                         {lang === 'vi' ? 'Mất dấu' : 'Dropped'}
                       </div>
                       <div className="text-[11px] text-red-500 mt-0.5 font-medium leading-tight">
@@ -328,7 +328,7 @@ export const ProblemStory: React.FC<ProblemStoryProps> = ({ lang }) => {
                 {/* Alert Bar đỏ ở đáy */}
                 <div className="rounded-xl bg-[#FFF5F5] border border-[#FED7D7] px-3.5 py-2 flex items-center gap-2">
                   <AlertTriangle className="w-4 h-4 text-red-600 shrink-0" />
-                  <span className="text-xs text-[#991B1B] font-medium leading-tight">
+                  <span className="text-xs text-[#991B1B] font-medium leading-tight" style={{ textWrap: 'pretty' }}>
                     {lang === 'vi'
                       ? 'Hồ sơ dễ bị đóng trên giấy trong khi ô nhiễm thực tế vẫn tiếp diễn.'
                       : 'Cases get closed on paper while physical pollution continues.'}
@@ -360,16 +360,16 @@ export const ProblemStory: React.FC<ProblemStoryProps> = ({ lang }) => {
                   </span>
                 </div>
 
-                {/* 4 Bước ngang khép kín */}
-                <div className="flex items-center gap-1.5 sm:gap-2">
+                {/* 4 Bước ngang khép kín: Grid 2x2 trên mobile, flex ngang trên desktop */}
+                <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center sm:gap-2">
                   {/* B1 */}
-                  <div className="flex-1 p-2.5 rounded-xl bg-[#F4FAF8] border border-[#D5EBE6] flex flex-col justify-between min-h-[72px]">
+                  <div className="p-2.5 rounded-xl bg-[#F4FAF8] border border-[#D5EBE6] flex flex-col justify-between min-h-[72px] sm:flex-1">
                     <div className="flex items-center justify-between text-xs">
                       <span className="font-mono text-[#0D6F64] font-bold">01</span>
-                      <MapPin className="w-4 h-4 text-[#0D6F64]" />
+                      <MapPin className="w-4 h-4 text-[#0D6F64] shrink-0" />
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-slate-800 leading-tight">
+                      <div className="text-xs font-bold text-slate-800 leading-tight" style={{ textWrap: 'pretty' }}>
                         {lang === 'vi' ? 'Tọa độ GPS' : 'GPS Location'}
                       </div>
                       <div className="text-[11px] text-stone-500 mt-0.5 leading-tight">
@@ -378,16 +378,16 @@ export const ProblemStory: React.FC<ProblemStoryProps> = ({ lang }) => {
                     </div>
                   </div>
 
-                  <span className="text-teal-400 font-mono select-none text-xs tracking-tighter shrink-0">---&gt;</span>
+                  <span className="hidden sm:inline-block text-teal-400 font-mono select-none text-xs tracking-tighter shrink-0">---&gt;</span>
 
                   {/* B2 */}
-                  <div className="flex-1 p-2.5 rounded-xl bg-[#F4FAF8] border border-[#D5EBE6] flex flex-col justify-between min-h-[72px]">
+                  <div className="p-2.5 rounded-xl bg-[#F4FAF8] border border-[#D5EBE6] flex flex-col justify-between min-h-[72px] sm:flex-1">
                     <div className="flex items-center justify-between text-xs">
                       <span className="font-mono text-[#0D6F64] font-bold">02</span>
-                      <User className="w-4 h-4 text-[#0D6F64]" />
+                      <User className="w-4 h-4 text-[#0D6F64] shrink-0" />
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-slate-800 leading-tight">
+                      <div className="text-xs font-bold text-slate-800 leading-tight" style={{ textWrap: 'pretty' }}>
                         {lang === 'vi' ? 'Phân công' : 'Dispatched'}
                       </div>
                       <div className="text-[11px] text-stone-500 mt-0.5 leading-tight">
@@ -396,16 +396,16 @@ export const ProblemStory: React.FC<ProblemStoryProps> = ({ lang }) => {
                     </div>
                   </div>
 
-                  <span className="text-teal-400 font-mono select-none text-xs tracking-tighter shrink-0">---&gt;</span>
+                  <span className="hidden sm:inline-block text-teal-400 font-mono select-none text-xs tracking-tighter shrink-0">---&gt;</span>
 
                   {/* B3 */}
-                  <div className="flex-1 p-2.5 rounded-xl bg-[#F4FAF8] border border-[#D5EBE6] flex flex-col justify-between min-h-[72px]">
+                  <div className="p-2.5 rounded-xl bg-[#F4FAF8] border border-[#D5EBE6] flex flex-col justify-between min-h-[72px] sm:flex-1">
                     <div className="flex items-center justify-between text-xs">
                       <span className="font-mono text-[#0D6F64] font-bold">03</span>
-                      <Wrench className="w-4 h-4 text-[#0D6F64]" />
+                      <Wrench className="w-4 h-4 text-[#0D6F64] shrink-0" />
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-slate-800 leading-tight">
+                      <div className="text-xs font-bold text-slate-800 leading-tight" style={{ textWrap: 'pretty' }}>
                         {lang === 'vi' ? 'Khắc phục' : 'Remediated'}
                       </div>
                       <div className="text-[11px] text-stone-500 mt-0.5 leading-tight">
@@ -414,16 +414,16 @@ export const ProblemStory: React.FC<ProblemStoryProps> = ({ lang }) => {
                     </div>
                   </div>
 
-                  <span className="text-teal-400 font-mono select-none text-xs tracking-tighter shrink-0">---&gt;</span>
+                  <span className="hidden sm:inline-block text-teal-400 font-mono select-none text-xs tracking-tighter shrink-0">---&gt;</span>
 
                   {/* B4: TÁI KIỂM 48H */}
-                  <div className="flex-1 p-2.5 rounded-xl bg-[#E8F8F0] border-2 border-[#10B981] flex flex-col justify-between min-h-[72px] shadow-xs">
+                  <div className="p-2.5 rounded-xl bg-[#E8F8F0] border-2 border-[#10B981] flex flex-col justify-between min-h-[72px] sm:flex-1 shadow-xs">
                     <div className="flex items-center justify-between text-xs">
                       <span className="font-mono text-[#065F46] font-bold">04</span>
-                      <CheckCircle2 className="w-4 h-4 text-[#059669] stroke-[2.5]" />
+                      <CheckCircle2 className="w-4 h-4 text-[#059669] stroke-[2.5] shrink-0" />
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-[#065F46] leading-tight">
+                      <div className="text-xs font-bold text-[#065F46] leading-tight" style={{ textWrap: 'pretty' }}>
                         {lang === 'vi' ? 'Tái kiểm 48h' : '48h Verified'}
                       </div>
                       <div className="text-[11px] text-[#047857] mt-0.5 font-semibold leading-tight">

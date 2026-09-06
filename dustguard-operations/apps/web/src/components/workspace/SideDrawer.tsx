@@ -39,18 +39,18 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
     <div className="fixed inset-0 z-50 overflow-hidden select-none">
       {/* Backdrop overlay */}
       <div
-        className="fixed inset-0 bg-ink-900/40 transition-opacity duration-200"
+        className="fixed inset-0 bg-ink-900/50 transition-opacity duration-150"
         onClick={onClose}
         aria-hidden="true"
       />
 
-      <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
+      <div className="fixed inset-x-0 bottom-0 sm:inset-y-0 sm:right-0 sm:left-auto max-w-full flex justify-end z-10">
         <aside
           aria-label={title}
-          className={`${width} bg-surface border-l border-slate-200 shadow-xl flex flex-col transform transition-transform duration-250 ease-out`}
+          className={`${width} w-full bg-surface border-t sm:border-t-0 sm:border-l border-slate-200 shadow-2xl flex flex-col transform transition-transform duration-250 ease-out max-h-[90vh] sm:max-h-full rounded-t-2xl sm:rounded-none overflow-hidden`}
         >
           {/* Drawer Header */}
-          <div className="px-5 py-4 border-b border-slate-200/90 flex items-center justify-between gap-3 bg-surface sticky top-0 z-10">
+          <div className="px-4 py-3.5 sm:px-5 sm:py-4 border-b border-slate-200/90 flex items-center justify-between gap-3 bg-surface sticky top-0 z-10">
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
                 <h3 className="text-sm sm:text-base font-bold text-ink-900 truncate">
@@ -66,7 +66,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="p-1.5 rounded-md text-ink-400 hover:text-ink-900 hover:bg-surface-subtle transition-colors cursor-pointer"
+              className="p-2 rounded-lg text-ink-400 hover:text-ink-900 hover:bg-surface-subtle transition-colors cursor-pointer touch-target min-h-[44px] min-w-[44px] inline-flex items-center justify-center"
               aria-label="Đóng ngăn kéo"
             >
               <X className="w-5 h-5" />
@@ -74,13 +74,13 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
           </div>
 
           {/* Drawer Body */}
-          <div className="flex-1 overflow-y-auto p-5 space-y-4 scrollbar-thin">
+          <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 scrollbar-thin">
             {children}
           </div>
 
           {/* Drawer Footer if any */}
           {footer && (
-            <div className="p-4 border-t border-slate-200/90 bg-surface-subtle sticky bottom-0 z-10">
+            <div className="p-3.5 sm:p-4 border-t border-slate-200/90 bg-surface-subtle sticky bottom-0 z-10">
               {footer}
             </div>
           )}

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { api } from '../api/client';
 import { useToast } from '../context/ToastContext';
 import { Button } from '../components/common/Button';
@@ -175,7 +176,7 @@ export const ProjectsPage: React.FC = () => {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-xs">
+            <table className="w-full text-left border-collapse text-xs min-w-[750px]">
               <thead>
                 <tr className="border-b border-slate-200 bg-slate-50/75 text-slate-700 font-semibold">
                   <th className="py-2.5 px-3">Mã / Tên công trình</th>
@@ -184,6 +185,7 @@ export const ProjectsPage: React.FC = () => {
                   <th className="py-2.5 px-3">Chủ đầu tư</th>
                   <th className="py-2.5 px-3">Trạng thái</th>
                   <th className="py-2.5 px-3">Tọa độ</th>
+                  <th className="py-2.5 px-3 text-right">Thao tác</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-slate-800">
@@ -219,6 +221,20 @@ export const ProjectsPage: React.FC = () => {
                     <td className="py-2.5 px-3 font-mono text-[11px] text-slate-500">
                       {p.latitude && p.longitude ? `${p.latitude.toFixed(4)}, ${p.longitude.toFixed(4)}` : '—'}
                     </td>
+                    <td className="py-2.5 px-3 text-right whitespace-nowrap">
+                      <div className="flex items-center justify-end gap-1.5">
+                        <Link to={`/cases?search=${encodeURIComponent(p.name)}`}>
+                          <Button variant="outline" size="sm" className="text-[11px] h-7 px-2">
+                            Xem vụ việc
+                          </Button>
+                        </Link>
+                        <Link to={`/cases?create=1&project_id=${p.id}`}>
+                          <Button variant="secondary" size="sm" className="text-[11px] h-7 px-2" icon={<Plus className="w-3 h-3" />}>
+                            Tạo hồ sơ
+                          </Button>
+                        </Link>
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -229,9 +245,9 @@ export const ProjectsPage: React.FC = () => {
 
       {/* Create Modal */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-lg overflow-hidden border border-slate-200 animate-in fade-in zoom-in-95 duration-100">
-            <div className="px-5 py-3.5 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-slate-900/40 p-0 sm:p-4" role="dialog" aria-modal="true">
+          <div className="bg-white rounded-t-2xl sm:rounded-xl shadow-xl w-full max-w-lg overflow-hidden border border-slate-200 flex flex-col max-h-[90vh] sm:max-h-[85vh] animate-in fade-in zoom-in-95 duration-100">
+            <div className="px-5 py-3.5 border-b border-slate-200 flex items-center justify-between bg-slate-50 shrink-0">
               <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
                 <HardHat className="w-4 h-4 text-dustguard-red" />
                 Thêm Công trình Xây dựng Mới
@@ -239,13 +255,14 @@ export const ProjectsPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600 p-1"
+                className="text-slate-400 hover:text-slate-600 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg cursor-pointer"
+                aria-label="Đóng cửa sổ"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <form onSubmit={handleCreate} className="p-5 space-y-4">
+            <form onSubmit={handleCreate} className="p-4 sm:p-5 space-y-4 overflow-y-auto flex-1">
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">
                   Tên công trình / Dự án *
@@ -255,12 +272,12 @@ export const ProjectsPage: React.FC = () => {
                   required
                   value={name}
                   onChange={e => setName(e.target.value)}
-                  className="w-full px-3 py-1.5 border border-slate-300 rounded-lg text-xs outline-none focus:ring-1 focus:ring-dustguard-red"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs outline-none focus:ring-1 focus:ring-dustguard-red"
                   placeholder="ví dụ: Dự án Cải tạo Thoát nước & Hạ tầng Cầu Giấy"
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
                     Mã dự án (Tùy chọn)
@@ -269,7 +286,7 @@ export const ProjectsPage: React.FC = () => {
                     type="text"
                     value={code}
                     onChange={e => setCode(e.target.value)}
-                    className="w-full px-3 py-1.5 border border-slate-300 rounded-lg text-xs font-mono outline-none focus:ring-1 focus:ring-dustguard-red"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs font-mono outline-none focus:ring-1 focus:ring-dustguard-red"
                     placeholder="ví dụ: DA-CG-2026-01"
                   />
                 </div>
@@ -281,7 +298,7 @@ export const ProjectsPage: React.FC = () => {
                   <select
                     value={status}
                     onChange={e => setStatus(e.target.value as any)}
-                    className="w-full px-3 py-1.5 border border-slate-300 rounded-lg text-xs outline-none focus:ring-1 focus:ring-dustguard-red bg-white"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs outline-none focus:ring-1 focus:ring-dustguard-red bg-white"
                   >
                     <option value="ACTIVE">Đang thi công (ACTIVE)</option>
                     <option value="PLANNING">Chuẩn bị (PLANNING)</option>
@@ -291,8 +308,8 @@ export const ProjectsPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-3">
-                <div className="col-span-2">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="sm:col-span-2">
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
                     Địa chỉ hiện trường *
                   </label>
@@ -301,7 +318,7 @@ export const ProjectsPage: React.FC = () => {
                     required
                     value={address}
                     onChange={e => setAddress(e.target.value)}
-                    className="w-full px-3 py-1.5 border border-slate-300 rounded-lg text-xs outline-none focus:ring-1 focus:ring-dustguard-red"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs outline-none focus:ring-1 focus:ring-dustguard-red"
                     placeholder="Số 62 Nguyễn Chí Thanh"
                   />
                 </div>
@@ -315,13 +332,13 @@ export const ProjectsPage: React.FC = () => {
                     required
                     value={district}
                     onChange={e => setDistrict(e.target.value)}
-                    className="w-full px-3 py-1.5 border border-slate-300 rounded-lg text-xs outline-none focus:ring-1 focus:ring-dustguard-red"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs outline-none focus:ring-1 focus:ring-dustguard-red"
                     placeholder="Láng Thượng"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
                     Đơn vị thi công / Nhà thầu
@@ -329,7 +346,7 @@ export const ProjectsPage: React.FC = () => {
                   <select
                     value={contractorId}
                     onChange={e => setContractorId(e.target.value)}
-                    className="w-full px-3 py-1.5 border border-slate-300 rounded-lg text-xs outline-none focus:ring-1 focus:ring-dustguard-red bg-white"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs outline-none focus:ring-1 focus:ring-dustguard-red bg-white"
                   >
                     <option value="">-- Chưa chỉ định nhà thầu --</option>
                     {contractors.map(c => (
@@ -348,13 +365,13 @@ export const ProjectsPage: React.FC = () => {
                     type="text"
                     value={ownerName}
                     onChange={e => setOwnerName(e.target.value)}
-                    className="w-full px-3 py-1.5 border border-slate-300 rounded-lg text-xs outline-none focus:ring-1 focus:ring-dustguard-red"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs outline-none focus:ring-1 focus:ring-dustguard-red"
                     placeholder="Ban Quản lý Dự án Đô thị"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
                     Vĩ độ (Latitude)
@@ -364,7 +381,7 @@ export const ProjectsPage: React.FC = () => {
                     step="0.0001"
                     value={latitude}
                     onChange={e => setLatitude(Number(e.target.value))}
-                    className="w-full px-3 py-1.5 border border-slate-300 rounded-lg text-xs font-mono outline-none focus:ring-1 focus:ring-dustguard-red"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs font-mono outline-none focus:ring-1 focus:ring-dustguard-red"
                   />
                 </div>
 
@@ -377,7 +394,7 @@ export const ProjectsPage: React.FC = () => {
                     step="0.0001"
                     value={longitude}
                     onChange={e => setLongitude(Number(e.target.value))}
-                    className="w-full px-3 py-1.5 border border-slate-300 rounded-lg text-xs font-mono outline-none focus:ring-1 focus:ring-dustguard-red"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs font-mono outline-none focus:ring-1 focus:ring-dustguard-red"
                   />
                 </div>
               </div>
@@ -390,12 +407,12 @@ export const ProjectsPage: React.FC = () => {
                   rows={2}
                   value={notes}
                   onChange={e => setNotes(e.target.value)}
-                  className="w-full px-3 py-1.5 border border-slate-300 rounded-lg text-xs outline-none focus:ring-1 focus:ring-dustguard-red"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs outline-none focus:ring-1 focus:ring-dustguard-red"
                   placeholder="Quy mô công trường, biện pháp che chắn bụi hiện có..."
                 />
               </div>
 
-              <div className="pt-2 flex items-center justify-end gap-2 border-t border-slate-100">
+              <div className="pt-3 flex items-center justify-end gap-2 border-t border-slate-100 shrink-0 bg-white sticky bottom-0">
                 <Button
                   type="button"
                   variant="outline"

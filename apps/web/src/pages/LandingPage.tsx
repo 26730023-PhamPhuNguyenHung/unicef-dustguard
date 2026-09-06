@@ -27,7 +27,7 @@ export const LandingPage: React.FC = () => {
   }, [lang]);
 
   return (
-    <div className="min-h-screen bg-[#FBF9F5] text-[#0F172A] flex flex-col antialiased selection:bg-red-100 selection:text-[#B42318]">
+    <div className="min-h-screen bg-[#FBF9F5] text-[#0F172A] flex flex-col antialiased selection:bg-red-100 selection:text-[#B42318] [scrollbar-gutter:stable]">
       {/* Redesigned Minimal Header */}
       <LandingHeader lang={lang} onToggleLang={toggleLang} />
 

@@ -7,57 +7,115 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Civic Core Brand Palette (SSOT)
+        cream: '#FDFBF7',
+        page: '#FDFBF7',
+        ink: {
+          DEFAULT: '#0F172A',
+          900: '#0F172A',
+          800: '#1E293B',
+          700: '#334155',
+          600: '#475569',
+          500: '#64748B',
+          400: '#94A3B8',
+          300: '#CBD5E1',
+          200: '#E2E8F0',
+          100: '#F1F5F9',
+          50: '#F8FAFC',
+        },
+        dustguard: {
+          red: '#B42318',
+          redHover: '#91180E',
+          redSoft: '#FEF3F2',
+          redBorder: '#FECDCA',
+          teal: '#0D6F64',
+          tealHover: '#0A564E',
+          tealSoft: '#E6F4F2',
+          tealBorder: '#A7F3D0',
+          amber: '#B45309',
+          amberSoft: '#FEF3C7',
+          green: '#1B7A4B',
+          greenSoft: '#EDF7F2',
+        },
         primary: {
-          DEFAULT: '#9F241F',
-          dark: '#7E1C18',
-          light: '#FDF2F1',
-          border: '#F8D3D1',
-          hover: '#7E1C18'
+          DEFAULT: '#B42318',
+          hover: '#91180E',
+          dark: '#91180E',
+          light: '#FEF3F2',
+          soft: '#FEF3F2',
+          border: '#FECDCA',
+        },
+        teal: {
+          DEFAULT: '#0D6F64',
+          hover: '#0A564E',
+          soft: '#E6F4F2',
+          border: '#A7F3D0',
         },
         surface: {
-          bg: '#F7F6F3',
+          DEFAULT: '#FFFFFF',
+          bg: '#FDFBF7',
           card: '#FFFFFF',
-          secondary: '#F2EFE9',
-          muted: '#EBE7DF',
-          subtle: '#FAF8F5'
+          secondary: '#F8F6F0',
+          muted: '#EDE8DF',
+          subtle: '#F8F6F0',
         },
         content: {
-          main: '#171313',
-          sub: '#5C5550',
-          muted: '#7E7771',
-          inverse: '#FAF8F5'
+          main: '#0F172A',
+          sub: '#475569',
+          muted: '#64748B',
+          inverse: '#FDFBF7',
         },
         border: {
-          subtle: 'rgba(23, 19, 19, 0.08)',
-          DEFAULT: 'rgba(23, 19, 19, 0.12)',
-          strong: 'rgba(23, 19, 19, 0.20)',
-          focus: '#9F241F'
+          subtle: 'rgba(15, 23, 42, 0.08)',
+          DEFAULT: 'rgba(15, 23, 42, 0.12)',
+          strong: 'rgba(15, 23, 42, 0.20)',
+          focus: '#B42318',
         },
         state: {
           success: '#1B7A4B',
           'success-soft': '#EDF7F2',
           warning: '#B45309',
           'warning-soft': '#FEF3C7',
-          danger: '#9F241F',
-          'danger-soft': '#FDF2F1',
+          danger: '#B42318',
+          'danger-soft': '#FEF3F2',
           info: '#1E3A5F',
           'info-soft': '#F0F4F8',
           teal: '#0D6F64',
-          'teal-soft': '#E6F4F2'
-        }
+          'teal-soft': '#E6F4F2',
+        },
+      },
+      fontFamily: {
+        sans: ['"Be Vietnam Pro"', 'Inter', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
       },
       borderRadius: {
+        sm: '6px',
+        DEFAULT: '8px',
+        md: '10px',
+        lg: '14px',
+        xl: '20px',
+        '2xl': '24px',
         'civic-sm': '6px',
         'civic': '10px',
         'civic-lg': '14px',
-        'civic-xl': '20px'
+        'civic-xl': '20px',
+        full: '9999px',
       },
       boxShadow: {
-        'xs': '0 1px 2px rgba(23, 19, 19, 0.04)',
-        'sm': '0 2px 6px rgba(23, 19, 19, 0.06)',
-        'md': '0 8px 24px -4px rgba(23, 19, 19, 0.08)',
-        'lg': '0 16px 36px -8px rgba(23, 19, 19, 0.12)'
-      }
+        '2xs': '0 1px 2px rgba(15, 23, 42, 0.04)',
+        xs: '0 1px 2px rgba(15, 23, 42, 0.05)',
+        sm: '0 2px 6px rgba(15, 23, 42, 0.06)',
+        md: '0 8px 24px -4px rgba(15, 23, 42, 0.08)',
+        lg: '0 16px 36px -8px rgba(15, 23, 42, 0.12)',
+        xl: '0 24px 48px -12px rgba(15, 23, 42, 0.16)',
+      },
+      spacing: {
+        '4.5': '1.125rem', // 18px for icons and spacing rhythm
+      },
+      maxWidth: {
+        'container': '1280px',
+        '7xl': '80rem', // 1280px
+      },
     },
   },
   plugins: [],

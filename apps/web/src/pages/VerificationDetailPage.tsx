@@ -588,16 +588,18 @@ export const VerificationDetailPage: React.FC = () => {
 
       {/* MODAL TẠO VỤ VIỆC MỚI TỪ PHẢN ÁNH */}
       {createCaseModalOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-xl border border-border-subtle">
+        <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center p-0 sm:p-4 z-50" role="dialog" aria-modal="true">
+          <div className="bg-white rounded-t-2xl sm:rounded-2xl max-w-lg w-full p-5 sm:p-6 space-y-4 shadow-xl border border-border-subtle max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between">
               <h3 className="text-base font-extrabold text-content-main flex items-center gap-2">
                 <FolderPlus className="w-4 h-4 text-primary" />
                 Xác nhận & Khởi tạo vụ việc mới
               </h3>
               <button
+                type="button"
                 onClick={() => setCreateCaseModalOpen(false)}
-                className="p-1 text-content-muted hover:text-content-main rounded"
+                className="p-2 text-content-muted hover:text-content-main rounded-lg min-w-[44px] min-h-[44px] flex items-center justify-center cursor-pointer"
+                aria-label="Đóng"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -626,7 +628,7 @@ export const VerificationDetailPage: React.FC = () => {
                   required
                   value={newCaseSummary}
                   onChange={(e) => setNewCaseSummary(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl border border-border-subtle text-xs sm:text-sm bg-white focus:border-primary focus:outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-border-subtle text-xs sm:text-sm bg-white focus:border-primary focus:outline-none"
                 />
               </div>
 
@@ -649,14 +651,14 @@ export const VerificationDetailPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setCreateCaseModalOpen(false)}
-                  className="px-4 py-2.5 rounded-xl text-xs font-bold text-content-sub hover:bg-surface-secondary transition-colors"
+                  className="px-4 py-2.5 rounded-xl text-xs font-bold text-content-sub hover:bg-surface-secondary transition-colors min-h-[44px] flex items-center justify-center cursor-pointer"
                 >
                   Hủy bỏ
                 </button>
                 <button
                   type="submit"
                   disabled={actionLoading || !newCaseTitle.trim()}
-                  className="px-5 py-2.5 rounded-xl bg-primary text-white font-extrabold text-xs hover:bg-primary-dark transition-all shadow-xs disabled:opacity-50"
+                  className="px-5 py-2.5 rounded-xl bg-primary text-white font-extrabold text-xs hover:bg-primary-dark transition-all shadow-xs min-h-[44px] flex items-center justify-center cursor-pointer disabled:opacity-50"
                 >
                   {actionLoading ? 'Đang tạo vụ việc...' : 'Xác nhận tạo vụ việc'}
                 </button>
@@ -668,16 +670,18 @@ export const VerificationDetailPage: React.FC = () => {
 
       {/* MODAL TỪ CHỐI KÈM LÝ DO */}
       {rejectModalOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-xl border border-border-subtle">
+        <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center p-0 sm:p-4 z-50" role="dialog" aria-modal="true">
+          <div className="bg-white rounded-t-2xl sm:rounded-2xl max-w-lg w-full p-5 sm:p-6 space-y-4 shadow-xl border border-border-subtle max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between">
               <h3 className="text-base font-extrabold text-red-600 flex items-center gap-1.5">
                 <AlertTriangle className="w-5 h-5" />
                 Từ chối tiếp nhận phản ánh
               </h3>
               <button
+                type="button"
                 onClick={() => setRejectModalOpen(false)}
-                className="p-1 text-content-muted hover:text-content-main rounded"
+                className="p-2 text-content-muted hover:text-content-main rounded-lg min-w-[44px] min-h-[44px] flex items-center justify-center cursor-pointer"
+                aria-label="Đóng"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -701,14 +705,14 @@ export const VerificationDetailPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setRejectModalOpen(false)}
-                  className="px-4 py-2.5 rounded-xl text-xs font-bold text-content-sub hover:bg-surface-secondary"
+                  className="px-4 py-2.5 rounded-xl text-xs font-bold text-content-sub hover:bg-surface-secondary min-h-[44px] flex items-center justify-center cursor-pointer"
                 >
                   Hủy
                 </button>
                 <button
                   type="submit"
                   disabled={actionLoading || !rejectReason.trim()}
-                  className="px-5 py-2.5 rounded-xl bg-red-600 text-white font-extrabold text-xs hover:bg-red-700 transition-colors shadow-xs disabled:opacity-50"
+                  className="px-5 py-2.5 rounded-xl bg-red-600 text-white font-extrabold text-xs hover:bg-red-700 transition-colors shadow-xs min-h-[44px] flex items-center justify-center cursor-pointer disabled:opacity-50"
                 >
                   {actionLoading ? 'Đang xử lý...' : 'Xác nhận từ chối'}
                 </button>

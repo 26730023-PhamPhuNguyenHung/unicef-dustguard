@@ -37,15 +37,18 @@ export const TrustSection: React.FC<TrustSectionProps> = ({ lang }) => {
   ];
 
   return (
-    <section id="trust" className="py-20 md:py-28 bg-[#FBF9F5]">
-      <div className="max-w-[1280px] mx-auto px-5 sm:px-8">
+    <section id="trust" className="py-14 md:py-24 bg-[#FBF9F5]">
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-8">
         
         {/* EDITORIAL HEADING */}
-        <div className="max-w-3xl mb-16 md:mb-20 space-y-4">
+        <div className="max-w-3xl mb-12 md:mb-16 space-y-3.5">
           <span className="text-[12px] font-mono font-bold tracking-widest uppercase text-[#B42318]">
             {lang === 'vi' ? 'NGUYÊN TẮC MINH BẠCH' : 'CORE TRUST PRINCIPLES'}
           </span>
-          <h2 className="text-[34px] sm:text-[44px] lg:text-[50px] font-black text-[#0F172A] tracking-[-0.02em] leading-[1.1] text-balance">
+          <h2
+            className="text-[30px] sm:text-[42px] lg:text-[48px] font-black text-[#0F172A] tracking-[-0.02em] leading-[1.12]"
+            style={{ textWrap: 'pretty' }}
+          >
             {lang === 'vi' ? (
               <>
                 Minh bạch không nằm ở lời hứa. <br />
@@ -58,7 +61,10 @@ export const TrustSection: React.FC<TrustSectionProps> = ({ lang }) => {
               </>
             )}
           </h2>
-          <p className="text-[17px] text-[#475569] leading-relaxed max-w-[620px]">
+          <p
+            className="text-[15px] sm:text-[17px] text-[#475569] leading-relaxed max-w-[620px]"
+            style={{ textWrap: 'pretty' }}
+          >
             {lang === 'vi'
               ? 'Dữ liệu được tổ chức để mọi bên — từ người dân, đơn vị thi công đến cơ quan quản lý — đều có thể tin cậy vào sự thật khách quan.'
               : 'Structured so that every stakeholder can rely on objective, verifiable facts without ambiguity.'}
@@ -70,22 +76,28 @@ export const TrustSection: React.FC<TrustSectionProps> = ({ lang }) => {
           {principles.map((item, idx) => (
             <div
               key={idx}
-              className="space-y-4 border-t-2 border-[#0F172A] pt-6 flex flex-col justify-between"
+              className="space-y-4 border-t-2 border-[#0F172A] pt-5 flex flex-col justify-between"
             >
-              <div className="space-y-3">
+              <div className="space-y-2.5">
                 <span className="font-mono text-[14px] font-black text-[#B42318]">
                   {item.num}
                 </span>
-                <h3 className="text-[20px] sm:text-[22px] font-black text-[#0F172A] tracking-tight">
+                <h3
+                  className="text-[19px] sm:text-[21px] font-black text-[#0F172A] tracking-tight"
+                  style={{ textWrap: 'pretty' }}
+                >
                   {item.title}
                 </h3>
-                <p className="text-[15px] text-[#475569] leading-relaxed">
+                <p
+                  className="text-[14px] sm:text-[15px] text-[#475569] leading-relaxed"
+                  style={{ textWrap: 'pretty' }}
+                >
                   {item.desc}
                 </p>
               </div>
 
               {/* Minimalist verification tag */}
-              <div className="pt-4 flex items-center gap-1.5 text-[12px] font-medium text-[#64748B]">
+              <div className="pt-3 flex items-center gap-1.5 text-[12px] font-medium text-[#64748B]">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#059669]" />
                 <span>{item.detail}</span>
               </div>

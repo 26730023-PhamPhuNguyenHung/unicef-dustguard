@@ -66,6 +66,12 @@ export const CaseInboxPage: React.FC = () => {
 
   useEffect(() => {
     loadCases();
+    if (searchParams.get('create') === '1') {
+      setCreateModalOpen(true);
+    }
+    if (searchParams.get('flag')) {
+      setSelectedFlag(searchParams.get('flag') || '');
+    }
   }, [searchParams]);
 
   useEffect(() => {
@@ -80,6 +86,7 @@ export const CaseInboxPage: React.FC = () => {
         search: searchParams.get('search') || undefined,
         district: searchParams.get('district') || undefined,
         flag: searchParams.get('flag') || undefined,
+        assignee: searchParams.get('assignee') || undefined,
       });
       setCases(res.cases);
       setTotal(res.total);
@@ -153,17 +160,17 @@ export const CaseInboxPage: React.FC = () => {
       </div>
 
       {/* 10 Operational Tabs (Section 8) */}
-      <div className="border-b border-slate-200 overflow-x-auto scrollbar-thin">
-        <nav className="flex space-x-2 pb-px" aria-label="Tabs">
+      <div className="border-b border-slate-200 overflow-x-auto scrollbar-thin -mx-3.5 px-3.5 sm:mx-0 sm:px-0">
+        <nav className="flex space-x-1 sm:space-x-2 pb-px" aria-label="Tabs">
           {TABS.map(tab => {
             const isActive = currentTab === tab.id;
             return (
               <button
                 key={tab.id}
                 onClick={() => handleTabChange(tab.id)}
-                className={`whitespace-nowrap px-3.5 py-2.5 text-xs sm:text-sm font-semibold border-b-2 transition-colors touch-target ${
+                className={`whitespace-nowrap shrink-0 px-3 py-2 sm:px-3.5 sm:py-2.5 text-xs sm:text-sm font-semibold border-b-2 transition-colors touch-target min-h-[44px] cursor-pointer select-none ${
                   isActive
-                    ? 'border-dustguard-red text-dustguard-red'
+                    ? 'border-dustguard-red text-dustguard-red font-bold'
                     : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
                 }`}
               >
@@ -175,7 +182,7 @@ export const CaseInboxPage: React.FC = () => {
       </div>
 
       {/* Search & Operational Flags Bar */}
-      <div className="civic-card p-4 space-y-3">
+      <div className="civic-card p-3.5 sm:p-4 space-y-3">
         <form onSubmit={handleSearchSubmit} className="flex flex-col sm:flex-row gap-2.5">
           <div className="relative flex-1">
             <Search className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
@@ -184,7 +191,7 @@ export const CaseInboxPage: React.FC = () => {
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
               placeholder="Tìm theo mã DG-2026-XXXX, tên công trình, địa chỉ, nhà thầu..."
-              className="w-full pl-9 pr-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-dustguard-red focus:border-dustguard-red outline-none"
+              className="w-full pl-9 pr-3 py-2 border border-slate-300 rounded-lg text-xs sm:text-sm text-slate-900 focus:ring-2 focus:ring-dustguard-red focus:border-dustguard-red outline-none min-h-[44px]"
             />
           </div>
 
@@ -210,14 +217,14 @@ export const CaseInboxPage: React.FC = () => {
 
         {/* Operational Flags (Section 8) */}
         <div className="flex flex-wrap items-center gap-1.5 pt-1 text-xs">
-          <span className="font-semibold text-slate-500 mr-1 flex items-center gap-1">
+          <span className="font-semibold text-slate-500 mr-1 flex items-center gap-1 py-1">
             <Filter className="w-3.5 h-3.5" /> Cờ vận hành:
           </span>
 
           <button
             type="button"
             onClick={() => handleFlagFilter('unassigned')}
-            className={`px-2.5 py-1 rounded-full border transition-colors ${
+            className={`px-3 py-1.5 rounded-full border transition-colors cursor-pointer touch-target min-h-[36px] sm:min-h-[30px] font-semibold text-xs ${
               selectedFlag === 'unassigned'
                 ? 'bg-amber-600 text-white border-amber-600'
                 : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
@@ -229,7 +236,7 @@ export const CaseInboxPage: React.FC = () => {
           <button
             type="button"
             onClick={() => handleFlagFilter('missing_evidence')}
-            className={`px-2.5 py-1 rounded-full border transition-colors ${
+            className={`px-3 py-1.5 rounded-full border transition-colors cursor-pointer touch-target min-h-[36px] sm:min-h-[30px] font-semibold text-xs ${
               selectedFlag === 'missing_evidence'
                 ? 'bg-rose-600 text-white border-rose-600'
                 : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
@@ -241,7 +248,7 @@ export const CaseInboxPage: React.FC = () => {
           <button
             type="button"
             onClick={() => handleFlagFilter('overdue')}
-            className={`px-2.5 py-1 rounded-full border transition-colors ${
+            className={`px-3 py-1.5 rounded-full border transition-colors cursor-pointer touch-target min-h-[36px] sm:min-h-[30px] font-semibold text-xs ${
               selectedFlag === 'overdue'
                 ? 'bg-rose-600 text-white border-rose-600'
                 : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
@@ -253,7 +260,7 @@ export const CaseInboxPage: React.FC = () => {
           <button
             type="button"
             onClick={() => handleFlagFilter('open_actions')}
-            className={`px-2.5 py-1 rounded-full border transition-colors ${
+            className={`px-3 py-1.5 rounded-full border transition-colors cursor-pointer touch-target min-h-[36px] sm:min-h-[30px] font-semibold text-xs ${
               selectedFlag === 'open_actions'
                 ? 'bg-blue-600 text-white border-blue-600'
                 : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
@@ -261,6 +268,24 @@ export const CaseInboxPage: React.FC = () => {
           >
             Có yêu cầu đang xử lý
           </button>
+
+          {searchParams.get('assignee') && (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-300 font-semibold text-xs ml-1">
+              <span>Lọc: {searchParams.get('assignee') === 'unassigned' || searchParams.get('assignee') === 'none' ? 'Chưa phân công' : `Cán bộ (${searchParams.get('assignee')})`}</span>
+              <button
+                type="button"
+                onClick={() => {
+                  const next = new URLSearchParams(searchParams);
+                  next.delete('assignee');
+                  setSearchParams(next);
+                }}
+                className="hover:text-red-700 font-bold ml-0.5 text-sm leading-none"
+                title="Bỏ lọc"
+              >
+                ×
+              </button>
+            </span>
+          )}
         </div>
       </div>
 
@@ -305,7 +330,7 @@ export const CaseInboxPage: React.FC = () => {
           {cases.map(c => (
             <div
               key={c.id}
-              className="p-4 sm:p-5 hover:bg-slate-50/70 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-4"
+              className="p-3.5 sm:p-5 hover:bg-slate-50/70 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4"
             >
               <div className="space-y-1.5 flex-1 min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
@@ -353,12 +378,12 @@ export const CaseInboxPage: React.FC = () => {
               </div>
 
               {/* Action right */}
-              <div className="flex items-center gap-3 self-end md:self-center flex-shrink-0">
-                <span className="text-[11px] text-slate-400 hidden sm:inline">
+              <div className="flex items-center justify-between md:justify-end gap-3 self-stretch md:self-center flex-shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-slate-100">
+                <span className="text-[11px] text-slate-400">
                   {new Date(c.updated_at).toLocaleDateString('vi-VN')}
                 </span>
-                <Link to={`/cases/${c.id}`}>
-                  <Button variant="outline" size="sm" className="font-semibold">
+                <Link to={`/cases/${c.id}`} className="w-full sm:w-auto">
+                  <Button variant="outline" size="sm" className="font-semibold w-full sm:w-auto">
                     Xem chi tiết &rarr;
                   </Button>
                 </Link>

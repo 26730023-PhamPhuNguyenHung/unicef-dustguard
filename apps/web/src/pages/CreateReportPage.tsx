@@ -24,7 +24,8 @@ import {
   Search,
   ExternalLink,
   Loader2,
-  Navigation
+  Navigation,
+  X
 } from 'lucide-react';
 import {
   searchAddressGeocoding,
@@ -983,16 +984,16 @@ export const CreateReportPage: React.FC = () => {
 
       {/* BƯỚC 5: THÀNH CÔNG */}
       {step === 5 && (
-        <div className="bg-surface-card rounded-civic-lg border border-border-subtle p-8 sm:p-12 text-center space-y-6 shadow-sm">
+        <div className="bg-surface-card rounded-civic-lg border border-border-subtle p-6 sm:p-8 lg:p-10 text-center space-y-6 shadow-sm">
           <div className="w-16 h-16 rounded-full bg-emerald-50 text-state-success flex items-center justify-center mx-auto">
             <CheckCircle2 className="w-10 h-10" />
           </div>
 
           <div className="max-w-md mx-auto space-y-2">
-            <h2 className="text-2xl font-extrabold text-content-main">
+            <h2 className="text-2xl font-extrabold text-content-main text-pretty">
               Phản ánh đã được ghi nhận!
             </h2>
-            <p className="text-sm text-content-sub">
+            <p className="text-sm text-content-sub text-pretty leading-relaxed">
               Cảm ơn bạn đã đóng góp tín hiệu vì bầu không khí chung. Hệ thống đã tạo mã phản ánh để cộng đồng cùng theo dõi.
             </p>
           </div>
@@ -1010,38 +1011,47 @@ export const CreateReportPage: React.FC = () => {
             {createdReportId && (
               <Link
                 to={`/reports/${createdReportId}`}
-                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-primary text-white font-bold text-sm shadow-sm hover:bg-primary-dark transition-colors"
+                className="px-5 py-2.5 rounded-civic bg-primary text-white font-bold text-xs hover:bg-primary-hover transition shadow-sm min-h-[44px] inline-flex items-center justify-center"
               >
-                <Eye className="w-4 h-4" />
-                Theo dõi phản ánh này
+                Xem chi tiết phản ánh vừa gửi
               </Link>
             )}
             <Link
-              to="/dashboard"
-              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-surface-secondary text-content-main font-semibold text-sm hover:bg-gray-200 transition-colors"
+              to="/reports"
+              className="px-5 py-2.5 rounded-civic border border-border-subtle bg-white text-content-main font-bold text-xs hover:bg-surface-secondary transition shadow-xs min-h-[44px] inline-flex items-center justify-center"
             >
-              Về trang chủ
+              Xem danh sách phản ánh
             </Link>
           </div>
         </div>
       )}
 
-      {/* MODAL CẢNH BÁO TRÙNG VỤ VIỆC (Mục 38 trong prompt) */}
+      {/* MODAL CẢNH BÁO TRÙNG LẶP GẦN ĐÂY */}
       {duplicateModalOpen && nearbyCase && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-xl border border-border-subtle">
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
-                <AlertTriangle className="w-5 h-5" />
+        <div className="fixed inset-0 bg-[#171313]/65 flex items-end sm:items-center justify-center p-0 sm:p-4 z-50 animate-in fade-in" role="dialog" aria-modal="true">
+          <div className="bg-white rounded-t-2xl sm:rounded-2xl max-w-lg w-full p-5 sm:p-6 pb-safe sm:pb-6 space-y-4 shadow-xl border border-border-subtle max-h-[90vh] overflow-y-auto">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+                  <AlertTriangle className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-content-main">
+                    Có thể vấn đề này đã được ghi nhận
+                  </h3>
+                  <p className="text-xs text-content-sub mt-0.5">
+                    Tại vị trí cách đây {nearbyCase.distanceMeters || 'gần'} mét, cộng đồng đã ghi nhận một vấn đề tương tự:
+                  </p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-base font-bold text-content-main">
-                  Có thể vấn đề này đã được ghi nhận
-                </h3>
-                <p className="text-xs text-content-sub mt-0.5">
-                  Tại vị trí cách đây {nearbyCase.distanceMeters || 'gần'} mét, cộng đồng đã ghi nhận một vấn đề tương tự:
-                </p>
-              </div>
+              <button
+                type="button"
+                onClick={() => setDuplicateModalOpen(false)}
+                className="p-2 text-content-muted hover:text-content-main rounded-lg min-w-[44px] min-h-[44px] flex items-center justify-center shrink-0 cursor-pointer"
+                aria-label="Đóng thông báo"
+              >
+                <X className="w-5 h-5" />
+              </button>
             </div>
 
             <div className="p-3.5 rounded-xl bg-surface-secondary text-xs space-y-1.5 border border-border-subtle">
@@ -1057,7 +1067,7 @@ export const CreateReportPage: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-2">
               <Link
                 to={`/cases/${nearbyCase.id}`}
-                className="text-center py-2 px-3 rounded-lg border border-border-subtle text-xs font-semibold text-content-main hover:bg-surface-secondary transition-colors"
+                className="text-center py-2.5 px-3 rounded-xl border border-border-subtle text-xs font-semibold text-content-main hover:bg-surface-secondary transition-colors min-h-[44px] flex items-center justify-center"
               >
                 Xem vụ việc
               </Link>
@@ -1072,14 +1082,14 @@ export const CreateReportPage: React.FC = () => {
                     error('Lỗi xác nhận', e.message || 'Không thể gửi xác nhận.');
                   }
                 }}
-                className="text-center py-2 px-3 rounded-lg bg-primary text-white text-xs font-bold hover:bg-primary-dark transition-colors shadow-xs"
+                className="text-center py-2.5 px-3 rounded-xl bg-primary text-white text-xs font-bold hover:bg-primary-dark transition-colors shadow-xs min-h-[44px] flex items-center justify-center cursor-pointer"
               >
                 Tôi cũng ghi nhận
               </button>
               <button
                 type="button"
                 onClick={() => setDuplicateModalOpen(false)}
-                className="text-center py-2 px-3 rounded-lg text-content-sub hover:bg-gray-100 text-xs font-medium"
+                className="text-center py-2.5 px-3 rounded-xl text-content-sub hover:bg-gray-100 text-xs font-medium min-h-[44px] flex items-center justify-center cursor-pointer"
               >
                 Vẫn gửi mới
               </button>

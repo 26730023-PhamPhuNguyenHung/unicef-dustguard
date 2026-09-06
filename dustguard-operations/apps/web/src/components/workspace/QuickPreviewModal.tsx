@@ -78,18 +78,18 @@ export const QuickPreviewModal: React.FC<QuickPreviewModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 bg-slate-900/60 flex items-center justify-center p-3 sm:p-4 z-50 animate-fade-in"
+      className="fixed inset-0 bg-slate-900/60 flex items-end sm:items-center justify-center p-0 sm:p-4 z-50 animate-fade-in"
       style={{ scrollbarGutter: 'stable' }}
       onClick={e => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
       <div
-        className="bg-white rounded-xl max-w-xl w-full border border-slate-300 shadow-2xl overflow-hidden flex flex-col max-h-[92vh]"
+        className="bg-white rounded-t-2xl sm:rounded-xl max-w-xl w-full border border-slate-300 shadow-2xl overflow-hidden flex flex-col max-h-[90vh] sm:max-h-[92vh]"
         style={{ textWrap: 'pretty' }}
       >
         {/* Modal Header */}
-        <div className="px-5 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+        <div className="px-5 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2.5">
             <span className="p-1.5 bg-white rounded-md border border-slate-200 shadow-2xs">
               {categoryIcon}
@@ -109,8 +109,9 @@ export const QuickPreviewModal: React.FC<QuickPreviewModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-800 hover:bg-slate-200 rounded-md transition-colors cursor-pointer"
+            className="p-2 text-slate-400 hover:text-slate-800 hover:bg-slate-200 rounded-md transition-colors cursor-pointer min-w-[44px] min-h-[44px] inline-flex items-center justify-center"
             title="Đóng cửa sổ"
+            aria-label="Đóng cửa sổ"
           >
             <X className="w-5 h-5" />
           </button>

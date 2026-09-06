@@ -65,8 +65,9 @@ export const SetupPage: React.FC = () => {
         localStorage.setItem('dustguard_token', res.token);
       }
       success('Khởi tạo thành công', `Hệ thống DustGuard đã được kích hoạt cho quản trị viên ${res.user.full_name}`);
-      // Redirect to dashboard
-      window.location.href = '/dashboard';
+      // Redirect to dashboard respecting base URL
+      const target = `${import.meta.env.BASE_URL || '/'}dashboard`.replace(/\/+/g, '/');
+      window.location.href = target;
     } catch (err: any) {
       error('Khởi tạo thất bại', err.detail || 'Không thể thiết lập hệ thống lần đầu.');
     } finally {

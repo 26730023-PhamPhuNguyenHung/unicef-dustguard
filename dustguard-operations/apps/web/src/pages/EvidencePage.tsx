@@ -323,7 +323,7 @@ export const EvidencePage: React.FC = () => {
 
                     {asset.case_code && (
                       <Link
-                        to={`/cases/${asset.case_id}`}
+                        to={`/cases/${asset.case_id}/evidence`}
                         className="inline-flex items-center gap-1 text-xs text-dustguard-teal font-semibold hover:underline"
                       >
                         <FileText className="w-3 h-3" />
@@ -520,7 +520,7 @@ export const EvidencePage: React.FC = () => {
                     {selectedAsset.case_title && <span className="text-slate-600"> — {selectedAsset.case_title}</span>}
                   </div>
                   <Link
-                    to={`/cases/${selectedAsset.case_id}`}
+                    to={`/cases/${selectedAsset.case_id}/evidence`}
                     className="text-dustguard-teal font-semibold hover:underline flex items-center gap-1 flex-shrink-0"
                   >
                     Đến vụ việc <ExternalLink className="w-3 h-3" />

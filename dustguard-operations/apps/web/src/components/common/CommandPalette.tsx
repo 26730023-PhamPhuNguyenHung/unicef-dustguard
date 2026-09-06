@@ -104,10 +104,10 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
     results.iot.length > 0;
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-none flex items-start justify-center pt-20 p-4">
-      <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full overflow-hidden border border-slate-200 animate-in fade-in duration-150">
+    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-none flex items-start justify-center pt-12 sm:pt-20 p-3 sm:p-4">
+      <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full overflow-hidden border border-slate-200 animate-in fade-in duration-150 flex flex-col max-h-[calc(100vh-4rem)]">
         {/* Search Input Bar */}
-        <div className="p-3.5 border-b border-slate-200 flex items-center gap-3 bg-slate-50">
+        <div className="p-3 sm:p-3.5 border-b border-slate-200 flex items-center gap-2.5 sm:gap-3 bg-slate-50 shrink-0">
           <Search className="w-5 h-5 text-slate-400 flex-shrink-0" />
           <input
             ref={inputRef}
@@ -115,17 +115,18 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
             placeholder="Tìm vụ việc (DG-...), nhiệm vụ, điều khoản luật, hoặc trạm IoT..."
             value={query}
             onChange={e => setQuery(e.target.value)}
-            className="w-full text-sm bg-transparent text-slate-900 placeholder:text-slate-400 focus:outline-none"
+            className="w-full text-sm bg-transparent text-slate-900 placeholder:text-slate-400 focus:outline-none py-1"
           />
           {query && (
             <button
               onClick={() => setQuery('')}
-              className="text-slate-400 hover:text-slate-600 p-1"
+              className="text-slate-400 hover:text-slate-600 p-2 rounded-md touch-target min-h-[44px] min-w-[44px] inline-flex items-center justify-center cursor-pointer transition-colors"
+              aria-label="Xóa tìm kiếm"
             >
               <X className="w-4 h-4" />
             </button>
           )}
-          <span className="text-[11px] font-mono px-2 py-0.5 bg-slate-200 text-slate-600 rounded">
+          <span className="hidden sm:inline text-[11px] font-mono px-2 py-0.5 bg-slate-200 text-slate-600 rounded select-none">
             ESC để đóng
           </span>
         </div>
@@ -265,7 +266,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
                   {results.iot.map(d => (
                     <div
                       key={d.id}
-                      onClick={() => handleSelectRoute(`/iot/${d.id}`)}
+                      onClick={() => handleSelectRoute(`/iot/devices/${d.id}`)}
                       className="p-2.5 rounded-lg hover:bg-slate-100 cursor-pointer flex items-center justify-between text-xs transition-colors group"
                     >
                       <div className="flex items-center gap-2.5 min-w-0">

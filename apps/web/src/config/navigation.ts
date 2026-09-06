@@ -89,7 +89,7 @@ export const NAVIGATION_CONFIG: NavSectionConfig[] = [
       },
       {
         id: 'contributions',
-        label: 'Hành trình đóng góp',
+        label: 'Dấu ấn đóng góp',
         path: '/contributions',
         icon: Award,
         permission: 'contribution:view'

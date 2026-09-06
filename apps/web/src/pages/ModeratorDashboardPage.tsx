@@ -90,10 +90,10 @@ export const ModeratorDashboardPage: React.FC = () => {
           </h3>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+            <table className="w-full text-left text-xs min-w-[300px]">
               <thead className="bg-surface-secondary/60 text-content-sub uppercase border-b border-border-subtle">
                 <tr>
-                  <th className="py-2.5 px-3 font-semibold">Quận / Huyện</th>
+                  <th className="py-2.5 px-3 font-semibold">Địa bàn / Phường xã</th>
                   <th className="py-2.5 px-3 font-semibold text-center">Phản ánh</th>
                   <th className="py-2.5 px-3 font-semibold text-center">Vụ việc</th>
                 </tr>

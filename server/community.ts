@@ -1180,5 +1180,152 @@ export function createCommunityRouter() {
     });
   });
 
+  // ============================================================================
+  // 14. CONTRACTOR PORTAL ENDPOINTS (/api/contractor)
+  // ============================================================================
+  app.get('/contractor/dashboard', async (c) => {
+    try {
+      const search = c.req.query('search') || '';
+      const contractors = await query(c.env.DB, 'SELECT * FROM contractors ORDER BY created_at DESC');
+      const actions = await query(c.env.DB, 'SELECT * FROM corrective_actions ORDER BY created_at DESC');
+
+      let currentContractor = contractors.length > 0 ? contractors[0] : null;
+
+      if (search) {
+        const lower = search.toLowerCase();
+        const found = contractors.find((ctr: any) =>
+          ctr.name?.toLowerCase().includes(lower) ||
+          (ctr.tax_id && ctr.tax_id.includes(search)) ||
+          (ctr.phone && ctr.phone.includes(search))
+        );
+        if (found) currentContractor = found;
+      }
+
+      const relevantActions = actions.filter((act: any) => {
+        if (!currentContractor?.name) return true;
+        return (
+          act.responsible_party?.toLowerCase().includes(currentContractor.name.toLowerCase()) ||
+          currentContractor.name.toLowerCase().includes(act.responsible_party?.toLowerCase() || '')
+        );
+      });
+
+      const matchedActions = relevantActions.length > 0 ? relevantActions : actions;
+
+      return c.json({
+        success: true,
+        data: {
+          contractor: currentContractor,
+          actions: matchedActions,
+          total_actions: matchedActions.length,
+          open_actions: matchedActions.filter((a: any) => a.status === 'OPEN' || a.status === 'IN_PROGRESS').length,
+          submitted_actions: matchedActions.filter((a: any) => a.status === 'SUBMITTED' || a.status === 'REMEDIATION_SUBMITTED').length,
+          verified_actions: matchedActions.filter((a: any) => a.status === 'VERIFIED').length,
+        }
+      });
+    } catch (err: any) {
+      return c.json({
+        success: false,
+        error: { code: 'CONTRACTOR_FETCH_ERROR', message: err.message || 'Lỗi lấy dữ liệu nhà thầu.' }
+      }, 500);
+    }
+  });
+
+  app.get('/contractor/actions/:id', async (c) => {
+    try {
+      const id = c.req.param('id');
+      const action = await get(c.env.DB, 'SELECT * FROM corrective_actions WHERE id = ?', [id]);
+      if (!action) {
+        return c.json({
+          success: false,
+          error: { code: 'ACTION_NOT_FOUND', message: 'Không tìm thấy yêu cầu khắc phục này.' }
+        }, 404);
+      }
+
+      const caseInfo = action.case_id
+        ? await get(c.env.DB, 'SELECT id, case_code, title, location_text, latitude, longitude, status FROM cases WHERE id = ?', [action.case_id])
+        : null;
+
+      return c.json({
+        success: true,
+        data: {
+          action,
+          case: caseInfo
+        }
+      });
+    } catch (err: any) {
+      return c.json({
+        success: false,
+        error: { code: 'ACTION_DETAIL_ERROR', message: err.message }
+      }, 500);
+    }
+  });
+
+  app.post('/contractor/actions/:id/remediation', async (c) => {
+    try {
+      const id = c.req.param('id');
+      const body = await c.req.json();
+      const {
+        description,
+        contractor_name,
+        evidence_asset_ids,
+        latitude,
+        longitude,
+        site_latitude,
+        site_longitude,
+      } = body;
+
+      if (!description || !description.trim()) {
+        return c.json({
+          success: false,
+          error: { code: 'MISSING_DESCRIPTION', message: 'Mô tả biện pháp khắc phục là bắt buộc.' }
+        }, 400);
+      }
+
+      let geofencePassed = true;
+      let distanceMeters = 0;
+      if (latitude && longitude && site_latitude && site_longitude) {
+        distanceMeters = calculateDistanceMeters(latitude, longitude, site_latitude, site_longitude);
+        geofencePassed = distanceMeters <= 50;
+      }
+
+      const action = await get(c.env.DB, 'SELECT * FROM corrective_actions WHERE id = ?', [id]);
+      if (!action) {
+        return c.json({
+          success: false,
+          error: { code: 'ACTION_NOT_FOUND', message: 'Không tìm thấy yêu cầu khắc phục này.' }
+        }, 404);
+      }
+
+      const now = new Date().toISOString();
+      const subId = `rem_${crypto.randomUUID().replace(/-/g, '').substring(0, 16)}`;
+
+      await run(c.env.DB, `
+        INSERT INTO remediation_submissions (id, action_id, case_id, description, review_status, submitted_at)
+        VALUES (?, ?, ?, ?, 'PENDING', ?)
+      `, [subId, id, action.case_id || null, description.trim(), now]);
+
+      await run(c.env.DB, 'UPDATE corrective_actions SET status = "REMEDIATION_SUBMITTED", updated_at = ? WHERE id = ?', [now, id]);
+      const created = await get(c.env.DB, 'SELECT * FROM remediation_submissions WHERE id = ?', [subId]);
+
+      return c.json({
+        success: true,
+        data: {
+          submission: created,
+          geofence: {
+            passed: geofencePassed,
+            distance_meters: distanceMeters,
+            buffer_allowed: 50,
+          },
+          message: 'Đã gửi báo cáo khắc phục thành công tới Cơ quan Giám sát môi trường.'
+        }
+      });
+    } catch (err: any) {
+      return c.json({
+        success: false,
+        error: { code: 'REMEDIATION_SUBMIT_ERROR', message: err.message }
+      }, 500);
+    }
+  });
+
   return app;
 }

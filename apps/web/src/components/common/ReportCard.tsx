@@ -27,7 +27,7 @@ export const ReportCard: React.FC<ReportCardProps> = ({ report }) => {
         </div>
 
         <Link to={`/reports/${report.id}`}>
-          <h3 className="text-base font-bold text-content-main hover:text-primary transition-colors line-clamp-2 mb-2">
+          <h3 className="text-base font-bold text-content-main hover:text-primary transition-colors line-clamp-2 mb-2 text-pretty">
             {report.title}
           </h3>
         </Link>
@@ -36,7 +36,7 @@ export const ReportCard: React.FC<ReportCardProps> = ({ report }) => {
           {categoryLabel}
         </p>
 
-        <p className="text-xs text-content-sub line-clamp-2 mb-4">
+        <p className="text-xs text-content-sub line-clamp-2 mb-4 text-pretty">
           {report.description}
         </p>
 
@@ -46,7 +46,7 @@ export const ReportCard: React.FC<ReportCardProps> = ({ report }) => {
         </div>
       </div>
 
-      <div className="px-5 py-3 bg-surface-secondary/60 border-t border-border-subtle flex items-center justify-between text-xs text-content-sub">
+      <div className="px-5 py-2.5 bg-surface-secondary/60 border-t border-border-subtle flex items-center justify-between text-xs text-content-sub">
         <div className="flex items-center gap-3">
           <span className="inline-flex items-center gap-1">
             <User className="w-3.5 h-3.5 text-content-muted" />
@@ -60,7 +60,7 @@ export const ReportCard: React.FC<ReportCardProps> = ({ report }) => {
 
         <Link
           to={`/reports/${report.id}`}
-          className="inline-flex items-center gap-1 font-semibold text-primary hover:text-primary-dark transition-colors py-1"
+          className="inline-flex items-center gap-1 font-bold text-primary hover:text-primary-dark transition-colors py-2 px-1 min-h-[44px]"
         >
           Xem
           <ArrowRight className="w-3.5 h-3.5" />

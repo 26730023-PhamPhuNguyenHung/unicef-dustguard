@@ -235,6 +235,30 @@ export const FieldInspectionPage: React.FC = () => {
         </div>
       </div>
 
+      {data.status === 'COMPLETED' && (
+        <div className="civic-card p-4 bg-emerald-50 border border-emerald-200 text-emerald-900 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+            <div>
+              <p className="font-bold text-sm">Đợt kiểm tra này đã hoàn tất</p>
+              <p className="text-xs text-emerald-700">Biên bản thực địa đã được nộp và ghi nhận vào hồ sơ vụ việc.</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <Link to={`/inspections/${id}/result`} className="flex-1 sm:flex-none">
+              <Button variant="primary" size="sm" className="w-full">
+                Xem kết quả biên bản
+              </Button>
+            </Link>
+            <Link to={`/inspections/${id}/export`} className="flex-1 sm:flex-none">
+              <Button variant="outline" size="sm" className="w-full">
+                Xuất văn bản A4
+              </Button>
+            </Link>
+          </div>
+        </div>
+      )}
+
       {/* Arrival Confirmation & In-situ Measurements (Section 13 C & B) */}
       <div className="civic-card p-4 space-y-3 bg-white border border-slate-200">
         <div className="flex items-center justify-between border-b border-slate-100 pb-2">
@@ -426,15 +450,27 @@ export const FieldInspectionPage: React.FC = () => {
 
       {/* Bottom Submit Action - Big Button >= 44px */}
       <div className="pt-2">
-        <Button
-          variant="primary"
-          size="lg"
-          loading={submitting}
-          onClick={() => handleSubmitInspection(false)}
-          className="w-full font-bold shadow-md"
-        >
-          Hoàn Thành & Nộp Biên Bản Thực Địa
-        </Button>
+        {data.status === 'COMPLETED' ? (
+          <Link to={`/inspections/${id}/result`} className="block">
+            <Button
+              variant="primary"
+              size="lg"
+              className="w-full font-bold shadow-md"
+            >
+              Xem Kết Quả & Biên Bản Đã Nộp &rarr;
+            </Button>
+          </Link>
+        ) : (
+          <Button
+            variant="primary"
+            size="lg"
+            loading={submitting}
+            onClick={() => handleSubmitInspection(false)}
+            className="w-full font-bold shadow-md"
+          >
+            Hoàn Thành & Nộp Biên Bản Thực Địa
+          </Button>
+        )}
       </div>
 
       {/* Override Reason Modal if required items skipped */}

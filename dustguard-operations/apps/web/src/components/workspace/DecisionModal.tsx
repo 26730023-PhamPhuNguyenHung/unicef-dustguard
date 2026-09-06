@@ -43,14 +43,14 @@ export const DecisionModal: React.FC<DecisionModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 select-none">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 select-none">
       <div
         className="fixed inset-0 bg-ink-900/40 transition-opacity"
         onClick={onClose}
         aria-hidden="true"
       />
 
-      <div className="relative bg-surface rounded-lg max-w-xl w-full p-5 sm:p-6 space-y-4 shadow-xl border border-slate-200 z-10 animate-fade-in max-h-[90vh] overflow-y-auto scrollbar-thin">
+      <div className="relative bg-surface rounded-t-2xl sm:rounded-lg max-w-xl w-full p-4 sm:p-6 space-y-4 shadow-xl border border-slate-200 z-10 animate-fade-in max-h-[90vh] overflow-y-auto scrollbar-thin">
         {/* Header */}
         <div className="flex items-start justify-between border-b border-slate-200/90 pb-3 gap-3">
           <div className="flex items-center gap-2">
@@ -68,7 +68,8 @@ export const DecisionModal: React.FC<DecisionModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="p-1 rounded-md text-ink-400 hover:text-ink-900 hover:bg-surface-subtle cursor-pointer"
+            className="p-2 rounded-md text-ink-400 hover:text-ink-900 hover:bg-surface-subtle cursor-pointer min-w-[44px] min-h-[44px] inline-flex items-center justify-center"
+            aria-label="Đóng hộp thoại"
           >
             <X className="w-5 h-5" />
           </button>

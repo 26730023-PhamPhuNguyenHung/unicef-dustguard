@@ -1,6 +1,7 @@
 import { execSync } from 'node:child_process';
 
 const VIEWPORTS = [
+  { name: 'Compact Mobile (Benchmark 360px)', width: 360, height: 740 },
   { name: 'Mobile (iPhone 12/13/14)', width: 390, height: 844 },
   { name: 'Large Mobile (iPhone 14 Pro Max)', width: 430, height: 932 },
   { name: 'Tablet (iPad)', width: 768, height: 1024 },
@@ -79,6 +80,79 @@ for (const vp of VIEWPORTS) {
       console.log(`  ! [WARN] ${route.padEnd(28)} | ${err.message?.substring(0, 60)}`);
     }
   }
+
+  // Specialized Check for Mobile: Drawer width & Glassmorphism audit
+  if (vp.width <= 430) {
+    totalChecks++;
+    try {
+      execSync(`agent-browser open "http://localhost:3002/dashboard"`, { stdio: 'pipe' });
+      execSync(`agent-browser wait 500`, { stdio: 'pipe' });
+
+      // 1. Click menu to open drawer
+      execSync(`agent-browser click "button[aria-label='Mở menu']"`, { stdio: 'pipe' });
+      execSync(`agent-browser wait 400`, { stdio: 'pipe' });
+
+      const drawerEval = execSync(
+        `agent-browser eval "(() => {
+          const drawer = document.querySelector('.lg\\\\:hidden .relative.bg-surface');
+          if (!drawer) return 'no_drawer';
+          const w = drawer.getBoundingClientRect().width;
+          const maxAllowed = window.innerWidth - 40;
+          return [w, window.innerWidth, w <= maxAllowed].join(':');
+        })()"`,
+        { encoding: 'utf-8' }
+      );
+
+      const dMatch = drawerEval.match(/([\d.]+):(\d+):(true|false)/);
+      if (dMatch) {
+        const dWidth = parseFloat(dMatch[1]);
+        const innerW = parseInt(dMatch[2], 10);
+        const pass = dMatch[3] === 'true';
+        if (pass) {
+          passedChecks++;
+          console.log(`  ✓ [PASS] Mobile Drawer Width       | width: ${dWidth}px < ${innerW - 40}px (Clear backdrop visible!)`);
+        } else {
+          failedChecks++;
+          console.log(`  ✗ [FAIL] Mobile Drawer Width       | width: ${dWidth}px occupies whole screen (co cụm nội dung!)`);
+        }
+      }
+
+      // Close drawer
+      execSync(`agent-browser click "button[aria-label='Đóng menu']"`, { stdio: 'pipe' });
+      execSync(`agent-browser wait 300`, { stdio: 'pipe' });
+    } catch (dErr) {
+      console.log(`  ! [WARN] Mobile Drawer Test        | ${dErr.message?.substring(0, 60)}`);
+    }
+  }
+}
+
+// Global Glassmorphism audit across DOM
+totalChecks++;
+try {
+  const glassCheck = execSync(
+    `agent-browser eval "(() => {
+      const allElements = document.querySelectorAll('*');
+      let foundGlass = 0;
+      for (const el of allElements) {
+        const style = window.getComputedStyle(el);
+        if (style.backdropFilter && style.backdropFilter.includes('blur')) {
+          foundGlass++;
+        }
+      }
+      return foundGlass;
+    })()"`,
+    { encoding: 'utf-8' }
+  );
+  const count = parseInt(glassCheck.trim(), 10) || 0;
+  if (count === 0) {
+    passedChecks++;
+    console.log(`\n🛡️ [PASS] Zero Glassmorphism Audit     | 0 blur backdrop filters found across DOM`);
+  } else {
+    failedChecks++;
+    console.log(`\n⚠️ [FAIL] Glassmorphism Detected       | Found ${count} elements with backdrop-filter blur!`);
+  }
+} catch (gErr) {
+  console.log(`  ! [WARN] Glassmorphism Test        | ${gErr.message?.substring(0, 60)}`);
 }
 
 console.log('\n====================================================');

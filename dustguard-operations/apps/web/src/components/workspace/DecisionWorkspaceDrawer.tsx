@@ -80,30 +80,30 @@ export const DecisionWorkspaceDrawer: React.FC<DecisionWorkspaceDrawerProps> = (
 
   return (
     <div
-      className="fixed inset-0 z-50 overflow-hidden bg-slate-900/60 flex justify-end animate-fade-in"
+      className="fixed inset-0 z-50 overflow-hidden bg-slate-900/60 flex items-end sm:items-stretch justify-end animate-fade-in"
       style={{ scrollbarGutter: 'stable' }}
       onClick={e => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
       <div
-        className="w-full max-w-2xl sm:max-w-3xl lg:max-w-4xl bg-white h-full shadow-2xl flex flex-col border-l border-slate-300 animate-slide-left"
+        className="w-full max-w-2xl sm:max-w-3xl lg:max-w-4xl bg-white max-h-[92vh] sm:max-h-full rounded-t-2xl sm:rounded-none shadow-2xl flex flex-col sm:border-l border-slate-300 animate-slide-left overflow-hidden"
         style={{ textWrap: 'pretty' }}
       >
         {/* Drawer Header */}
-        <div className="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-2.5">
-            <span className="p-2 bg-red-50 rounded-lg border border-red-200 text-red-800">
+        <div className="px-4 py-3.5 sm:px-6 sm:py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-2.5 min-w-0 flex-1">
+            <span className="p-2 bg-red-50 rounded-lg border border-red-200 text-red-800 shrink-0">
               <Scale className="w-5 h-5 text-red-700" />
             </span>
-            <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-base sm:text-lg font-bold text-slate-900">
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-wrap items-center gap-2">
+                <h2 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
                   BÀN LÀM VIỆC RA QUYẾT ĐỊNH
                 </h2>
                 <Badge variant="red" size="sm">Cán bộ ký duyệt</Badge>
               </div>
-              <p className="text-[11px] text-slate-500 font-mono mt-0.5">
+              <p className="text-[11px] text-slate-500 font-mono mt-0.5 truncate">
                 {c.case_code || 'DG-2026-OP-013'} · {c.title || 'Hồ sơ thẩm tra căn cứ thực tế'}
               </p>
             </div>
@@ -111,7 +111,7 @@ export const DecisionWorkspaceDrawer: React.FC<DecisionWorkspaceDrawerProps> = (
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-800 hover:bg-slate-200 rounded-md transition-colors cursor-pointer"
+            className="p-2 text-slate-400 hover:text-slate-800 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer touch-target min-h-[44px] min-w-[44px] inline-flex items-center justify-center shrink-0 ml-2"
             title="Đóng bàn làm việc"
           >
             <X className="w-5 h-5" />
@@ -119,7 +119,7 @@ export const DecisionWorkspaceDrawer: React.FC<DecisionWorkspaceDrawerProps> = (
         </div>
 
         {/* Drawer Body (5 Standard Blocks) */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-5 text-xs">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 sm:space-y-5 text-xs">
           {/* 1. NHẬN ĐỊNH */}
           <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
             <span className="font-bold text-slate-900 text-xs uppercase tracking-wide flex items-center gap-1.5">

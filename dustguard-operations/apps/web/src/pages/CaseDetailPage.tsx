@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useParams, Link, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { api, resolveApiUrl } from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
@@ -60,9 +60,45 @@ export const CaseDetailPage: React.FC = () => {
   const { user, can } = useAuth();
   const { success, error } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
+
+  // Determine tab from URL path or query params
+  const resolvedTab = useMemo(() => {
+    const pathParts = location.pathname.split('/');
+    const lastPart = pathParts[pathParts.length - 1];
+    if (['evidence', 'iot', 'inspection', 'actions', 'timeline', 'decision-support', 'dossier', 'signals', 'legal'].includes(lastPart)) {
+      return lastPart;
+    }
+    const tabParam = searchParams.get('tab');
+    if (tabParam) {
+      if (tabParam === 'inspections') return 'inspection';
+      if (tabParam === 'remediation') return 'actions';
+      if (['overview', 'decision-support', 'dossier', 'legal', 'inspection', 'actions', 'timeline', 'evidence', 'iot', 'signals'].includes(tabParam)) {
+        return tabParam;
+      }
+    }
+    return 'overview';
+  }, [location.pathname, searchParams]);
 
   const [caseData, setCaseData] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState(resolvedTab);
+
+  useEffect(() => {
+    setActiveTab(resolvedTab);
+  }, [resolvedTab]);
+
+  const handleTabChange = (tabId: string) => {
+    setActiveTab(tabId);
+    if (id) {
+      if (tabId === 'overview') {
+        navigate(`/cases/${id}`, { replace: true });
+      } else {
+        navigate(`/cases/${id}/${tabId}`, { replace: true });
+      }
+    }
+  };
+
   const [loading, setLoading] = useState(true);
   const [nextActionData, setNextActionData] = useState<any>(null);
   const [evidenceGaps, setEvidenceGaps] = useState<any[]>([]);
@@ -328,7 +364,7 @@ export const CaseDetailPage: React.FC = () => {
         setActionModalOpen(true);
         break;
       case 'REMEDIATION':
-        setActiveTab('actions');
+        handleTabChange('actions');
         break;
       case 'REINSPECTION':
         navigate(`/cases/${c.id}/inspection/new`);
@@ -340,7 +376,7 @@ export const CaseDetailPage: React.FC = () => {
         setReopenModalOpen(true);
         break;
       default:
-        setActiveTab('timeline');
+        handleTabChange('timeline');
         break;
     }
   };
@@ -601,7 +637,7 @@ export const CaseDetailPage: React.FC = () => {
       <RecordNavigation
         tabs={RECORD_TABS}
         activeTab={activeTab}
-        onTabChange={tabId => setActiveTab(tabId)}
+        onTabChange={handleTabChange}
       />
 
       {/* Record Content */}
@@ -645,7 +681,7 @@ export const CaseDetailPage: React.FC = () => {
                     variant="primary"
                     size="sm"
                     className="text-xs h-7 bg-teal-700 hover:bg-teal-800 text-white"
-                    onClick={() => setActiveTab('decision-support')}
+                    onClick={() => handleTabChange('decision-support')}
                   >
                     Hỗ trợ thẩm tra &rarr;
                   </Button>
@@ -820,7 +856,7 @@ export const CaseDetailPage: React.FC = () => {
             <div className="civic-card p-5 space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-slate-500 uppercase">Minh chứng gần nhất</span>
-                <button onClick={() => setActiveTab('evidence')} className="text-xs text-dustguard-red font-semibold">
+                <button onClick={() => handleTabChange('evidence')} className="text-xs text-dustguard-red font-semibold">
                   Xem tất cả ({evidence.length})
                 </button>
               </div>
@@ -1083,7 +1119,7 @@ export const CaseDetailPage: React.FC = () => {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <Link to={`/inspections/${insp.id}`}>
+                  <Link to={insp.status === 'COMPLETED' ? `/inspections/${insp.id}/result` : `/inspections/${insp.id}`}>
                     <Button variant="outline" size="sm">
                       {insp.status === 'COMPLETED' ? 'Xem kết quả' : 'Mở Field Check'} &rarr;
                     </Button>

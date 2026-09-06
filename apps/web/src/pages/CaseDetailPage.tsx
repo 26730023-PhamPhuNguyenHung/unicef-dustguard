@@ -66,7 +66,7 @@ export const CaseDetailPage: React.FC = () => {
     // Lấy danh sách quan sát hiện trường (observations)
     apiRequest<any>(`/cases/${id}/observations`)
       .then((res) => setObservations(Array.isArray(res) ? res : (res.observations || [])))
-      .catch(() => {});
+      .catch((err) => console.warn('[CaseDetailPage] Không thể tải danh sách quan sát:', err));
   }, [id]);
 
   // Xử lý "Tôi cũng ghi nhận"
@@ -380,13 +380,15 @@ export const CaseDetailPage: React.FC = () => {
                 Tổng hợp từ {caseData.reports?.length || 1} phản ánh ban đầu và {caseData.observations?.length || 0} lần quan sát hiện trường.
               </p>
             </div>
-            <Link
-              to={`/cases/${caseData.id}/observe`}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-secondary text-content-main text-xs font-semibold hover:bg-gray-200"
-            >
-              <PlusCircle className="w-4 h-4 text-primary" />
-              Thêm ảnh mới
-            </Link>
+            {can('observation:create') && (
+              <Link
+                to={`/cases/${caseData.id}/observe`}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-secondary text-content-main text-xs font-semibold hover:bg-gray-200"
+              >
+                <PlusCircle className="w-4 h-4 text-primary" />
+                Thêm ảnh mới
+              </Link>
+            )}
           </div>
 
           {allMedia.length === 0 ? (

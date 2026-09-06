@@ -26,7 +26,21 @@ export const RemediationReviewPage: React.FC = () => {
     // We can fetch via actions list or detail
     api.actions.list().then(async res => {
       for (const act of res.actions) {
-        const sub = act.submissions?.find((s: any) => s.id === id);
+        let sub = act.submissions?.find((s: any) => s.id === id);
+        if (!sub && act.id === id && act.submissions && act.submissions.length > 0) {
+          sub = act.submissions[0];
+        }
+        if (!sub && act.id === id) {
+          sub = {
+            id: act.id,
+            action_id: act.id,
+            description: act.description || 'Báo cáo khắc phục hiện trường',
+            submitted_by: act.responsible_party || 'Nhà thầu thi công',
+            created_at: act.created_at,
+            review_status: 'PENDING',
+          };
+        }
+
         if (sub) {
           setSubmission({ ...sub, action_title: act.title, case_id: act.case_id });
 
@@ -59,16 +73,17 @@ export const RemediationReviewPage: React.FC = () => {
 
   const handleReview = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!id) return;
+    const targetId = submission?.id || id;
+    if (!targetId) return;
     setSubmitting(true);
     try {
-      await api.actions.reviewRemediation(id, {
+      await api.actions.reviewRemediation(targetId, {
         review_status: reviewStatus,
         review_note: reviewNote,
       });
 
       success('Thẩm duyệt hoàn tất', `Báo cáo khắc phục đã được xác nhận "${reviewStatus}"`);
-      navigate(submission ? `/cases/${submission.case_id}` : '/actions');
+      navigate(submission?.case_id ? `/cases/${submission.case_id}/actions` : '/actions');
     } catch (err: any) {
       error('Lỗi', err.detail);
     } finally {

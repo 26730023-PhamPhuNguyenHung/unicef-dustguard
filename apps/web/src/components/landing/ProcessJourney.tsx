@@ -55,15 +55,18 @@ export const ProcessJourney: React.FC<ProcessJourneyProps> = ({ lang }) => {
   ];
 
   return (
-    <section id="process" className="py-20 md:py-28 bg-[#FBF9F5]">
-      <div className="max-w-[1280px] mx-auto px-5 sm:px-8">
+    <section id="process" className="py-14 md:py-24 bg-[#FBF9F5]">
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-8">
         
         {/* EDITORIAL HEADING */}
-        <div className="max-w-3xl mb-16 md:mb-20 space-y-4">
+        <div className="max-w-3xl mb-12 md:mb-16 space-y-3.5">
           <span className="text-[12px] font-mono font-bold tracking-widest uppercase text-[#B42318]">
             {lang === 'vi' ? 'HÀNH TRÌNH MINH BẠCH' : 'TRANSPARENT JOURNEY'}
           </span>
-          <h2 className="text-[34px] sm:text-[44px] lg:text-[50px] font-black text-[#0F172A] tracking-[-0.02em] leading-[1.1] text-balance">
+          <h2
+            className="text-[30px] sm:text-[42px] lg:text-[48px] font-black text-[#0F172A] tracking-[-0.02em] leading-[1.12]"
+            style={{ textWrap: 'pretty' }}
+          >
             {lang === 'vi' ? (
               <>
                 Một phản ánh. <br />
@@ -78,7 +81,10 @@ export const ProcessJourney: React.FC<ProcessJourneyProps> = ({ lang }) => {
               </>
             )}
           </h2>
-          <p className="text-[17px] text-[#475569] leading-relaxed max-w-[620px]">
+          <p
+            className="text-[15px] sm:text-[17px] text-[#475569] leading-relaxed max-w-[620px]"
+            style={{ textWrap: 'pretty' }}
+          >
             {lang === 'vi'
               ? 'Không có bước nào rơi vào im lặng. Mọi giai đoạn đều có mốc thời gian và trách nhiệm rõ ràng.'
               : 'Zero dropped steps. Every phase carries transparent ownership and verifiable timestamps.'}
@@ -119,6 +125,7 @@ export const ProcessJourney: React.FC<ProcessJourneyProps> = ({ lang }) => {
                     className={`text-[17px] font-extrabold tracking-tight ${
                       step.highlight ? 'text-[#B42318]' : 'text-[#0F172A]'
                     }`}
+                    style={{ textWrap: 'pretty' }}
                   >
                     {step.name}
                   </h3>
@@ -126,7 +133,7 @@ export const ProcessJourney: React.FC<ProcessJourneyProps> = ({ lang }) => {
                     <span className="w-1.5 h-1.5 rounded-full bg-[#B42318] inline-block" />
                   )}
                 </div>
-                <p className="text-[13px] text-[#64748B] leading-relaxed">
+                <p className="text-[13px] text-[#64748B] leading-relaxed" style={{ textWrap: 'pretty' }}>
                   {step.desc}
                 </p>
               </div>
@@ -136,12 +143,12 @@ export const ProcessJourney: React.FC<ProcessJourneyProps> = ({ lang }) => {
         </div>
 
         {/* MOBILE & TABLET VERTICAL JOURNEY (< lg) */}
-        <div className="lg:hidden space-y-8 relative pl-6 border-l-2 border-[#E2DCD5] ml-4">
+        <div className="lg:hidden space-y-7 relative pl-7 border-l-2 border-[#E2DCD5] ml-4">
           {steps.map((step, idx) => (
-            <div key={idx} className="relative space-y-2">
+            <div key={idx} className="relative space-y-1.5">
               {/* Timeline dot */}
               <div
-                className={`absolute -left-[35px] top-0 w-8 h-8 rounded-xl flex items-center justify-center font-mono font-bold text-[12px] shadow-2xs ${
+                className={`absolute -left-[37px] top-0 w-8 h-8 rounded-xl flex items-center justify-center font-mono font-bold text-[12px] shadow-2xs ${
                   step.highlight
                     ? 'bg-[#B42318] text-white ring-4 ring-[#B42318]/20'
                     : 'bg-white border border-[#CBD5E1] text-[#0F172A]'
@@ -155,10 +162,11 @@ export const ProcessJourney: React.FC<ProcessJourneyProps> = ({ lang }) => {
                   className={`text-[16px] font-extrabold tracking-tight ${
                     step.highlight ? 'text-[#B42318]' : 'text-[#0F172A]'
                   }`}
+                  style={{ textWrap: 'pretty' }}
                 >
                   {step.name}
                 </h3>
-                <p className="text-[14px] text-[#475569] leading-relaxed">
+                <p className="text-[14px] text-[#475569] leading-relaxed" style={{ textWrap: 'pretty' }}>
                   {step.desc}
                 </p>
               </div>

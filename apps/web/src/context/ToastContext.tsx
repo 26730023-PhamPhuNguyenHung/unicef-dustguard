@@ -47,11 +47,11 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   return (
     <ToastContext.Provider value={{ toast, success, error, info, addToast }}>
       {children}
-      <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-md w-full pointer-events-none px-4" role="region" aria-live="polite">
+      <div className="fixed bottom-20 sm:bottom-4 right-0 sm:right-4 z-50 flex flex-col gap-2 max-w-md w-full pointer-events-none px-4" role="region" aria-live="polite">
         {toasts.map(t => (
           <div
             key={t.id}
-            className={`pointer-events-auto p-4 rounded-lg shadow-lg border flex items-start gap-3 transition-all transform duration-200 ease-out ${
+            className={`pointer-events-auto p-4 rounded-civic shadow-md border flex items-start gap-3 transition-all transform duration-200 ease-out ${
               t.type === 'success'
                 ? 'bg-emerald-50 border-emerald-300 text-emerald-950'
                 : t.type === 'error'
@@ -62,13 +62,13 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             {t.type === 'success' && <CheckCircle2 className="w-5 h-5 text-emerald-700 flex-shrink-0 mt-0.5" />}
             {t.type === 'error' && <AlertCircle className="w-5 h-5 text-rose-700 flex-shrink-0 mt-0.5" />}
             {t.type === 'info' && <Info className="w-5 h-5 text-stone-700 flex-shrink-0 mt-0.5" />}
-            <div className="flex-1">
-              <p className="font-bold text-sm">{t.title}</p>
-              {t.message && <p className="text-xs mt-0.5 opacity-90">{t.message}</p>}
+            <div className="flex-1 min-w-0">
+              <p className="font-bold text-sm text-pretty">{t.title}</p>
+              {t.message && <p className="text-xs mt-0.5 opacity-90 text-pretty">{t.message}</p>}
             </div>
             <button
               onClick={() => removeToast(t.id)}
-              className="text-stone-400 hover:text-stone-700 p-1 min-w-[28px] min-h-[28px] flex items-center justify-center rounded"
+              className="text-stone-400 hover:text-stone-700 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg touch-target -mr-1 -mt-1"
               aria-label="Đóng thông báo"
             >
               <X className="w-4 h-4" />
