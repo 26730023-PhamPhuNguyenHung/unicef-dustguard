@@ -7,7 +7,25 @@
 
 ## 📅 Các Mốc Phát Triển Chính (Milestones)
 
-### 00. [2026-09-06] `landing-problem-story-refinement-and-login-hotfix`: Tinh Chỉnh Sắc Nét Section Thực Trạng Landing Page & Khắc Phục Xác Thực Đăng Nhập Trên Live Domain
+### 00. [2026-09-06] `brand-logo-and-header-aesthetic-refinement`: Tích Hợp Logo Chính Thức DustGuard Shield & Nâng Cấp Header Tinh Tế, Đẳng Cấp CivicTech
+- **Mục tiêu**: Thay thế toàn diện icon SVG/emoji tạm bợ bằng Logo hình chiếc khiên chính thức của DustGuard VN (`dustguard-shield-logo.webp`), nâng cấp thanh Header trên toàn bộ hệ thống (Side A Landing/Community và Side B Operations) đạt chuẩn giao diện sáng màu, không glassmorphism, tương phản cao, chuyên nghiệp và chỉn chu.
+- **Phạm vi hoàn tất**:
+  - **Tổ chức Thư viện Static Assets Chuẩn**:
+    - Thiết lập thư mục `public/images/logo` cho cả `apps/web` và `dustguard-operations/apps/web`, đồng bộ tệp `dustguard-shield-logo.webp` (biểu tượng chiếc khiên đỏ với bầu trời bụi đô thị và đường chân trời thành phố).
+    - Cập nhật favicon từ emoji/SVG tạm thời sang `/favicon.webp` chính thức cho cả Side A và Side B.
+  - **Tái Thiết Kế Header Đạt Chuẩn Civic High-Contrast**:
+    - **Logo & Thương hiệu**: Hiển thị logo khiên sắc nét kèm hiệu ứng hover vi tế; nhãn `DustGuardVN` nổi bật chữ VN đỏ dấu ấn; bổ sung badge `CivicTech` xanh teal (`#0D6F64`) và tagline *"Giám sát Bụi · Minh bạch Hóa"*.
+    - **Thanh điều hướng**: Spacing nhịp nhàng, bo góc 8px, hover nền mềm mại (`#F3EFEA`) chống nhảy layout.
+    - **Hành động & Nút bấm**:
+      - Chuyển đổi ngôn ngữ `[🌐 EN]`: Đóng gói thành pill button có icon địa cầu tinh tế thay vì text trần.
+      - Nút `Đơn vị xử lý ↗`: Chuyển sang gam màu Deep Teal chuẩn CivicTech của Side B.
+      - Nút Dominant CTA `[➤ Gửi phản ánh]`: Đỏ dấu ấn `#B42318` rực rỡ, icon Send đồng bộ, tương phản cao.
+    - **Footer & Operations AppLayout**: Đồng bộ hóa logo khiên chính thức trên toàn hệ thống.
+  - **Build, Deploy & Kiểm Thử Runtime Thực Tế**:
+    - Chạy build production hợp nhất thành công 100%.
+    - `npx wrangler deploy` đưa bản cập nhật lên live domain `https://dustguard.phamphunguyenhung.com/`.
+    - Kiểm tra trực quan bằng `agent-browser`: 0 lỗi console, DOM snapshot chuẩn, hình ảnh minh chứng chụp thực tế lưu tại `artifacts/header-live-verification.png`.
+    - Chạy bộ kiểm thử E2E: **31 PASS, 0 FAIL**.
 - **Mục tiêu**: Khắc phục dứt điểm lỗi đăng nhập ("Email hoặc mật khẩu không chính xác") do thiếu dữ liệu seed tài khoản mẫu trên Cloudflare D1 Remote; tái thiết kế CSS section ProblemStory ("Phản ánh không khó. Theo dõi đến kết quả mới khó.") đạt chuẩn Civic High-Contrast, cân đối, sắc nét.
 - **Phạm vi hoàn tất**:
   - **Khắc phục Xác thực Đăng nhập Remote D1 (Side A & Side B)**:

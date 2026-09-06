@@ -15,13 +15,22 @@ export const LandingFooter: React.FC<LandingFooterProps> = ({ lang }) => {
           
           {/* Cột 1: Thương hiệu & Tôn chỉ */}
           <div className="lg:col-span-2 space-y-4">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white">
-                <Shield className="w-5 h-5 fill-white/20" />
+            <div className="flex items-center gap-3">
+              <img
+                src="/images/logo/dustguard-shield-logo.webp"
+                alt="DustGuard VN Shield"
+                className="h-9 w-auto object-contain brightness-110"
+                width={36}
+                height={43}
+              />
+              <div className="flex flex-col">
+                <span className="font-extrabold text-base tracking-tight text-white leading-tight">
+                  DustGuard<span className="text-red-400 font-black">VN</span>
+                </span>
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                  CivicTech Platform
+                </span>
               </div>
-              <span className="font-extrabold text-base tracking-tight text-white">
-                DustGuard<span className="text-red-400">VN</span>
-              </span>
             </div>
 
             <p className="text-slate-400 leading-relaxed max-w-sm">

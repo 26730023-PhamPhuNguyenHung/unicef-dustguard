@@ -136,14 +136,23 @@ export const AppLayout: React.FC = () => {
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
 
-            <Link to="/dashboard" className="flex items-center gap-2 sm:gap-2.5 select-none">
-              <div className="w-8 h-8 rounded-md bg-dustguard-red flex items-center justify-center text-white shadow-xs font-bold text-sm tracking-wider shrink-0">
-                DG
-              </div>
+            <Link to="/dashboard" className="flex items-center gap-2.5 select-none group">
+              <img
+                src="/images/logo/dustguard-shield-logo.webp"
+                alt="DustGuard VN Shield"
+                className="h-8 w-auto object-contain shrink-0 group-hover:scale-105 transition-transform"
+                width={28}
+                height={33}
+              />
               <div className="hidden sm:block">
-                <span className="font-bold text-ink-900 text-sm sm:text-base tracking-tight block leading-none">
-                  DustGuard Operations
-                </span>
+                <div className="flex items-center gap-1.5">
+                  <span className="font-extrabold text-ink-900 text-sm sm:text-base tracking-tight leading-none">
+                    DustGuard <span className="text-dustguard-red">Operations</span>
+                  </span>
+                  <span className="text-[9px] font-bold text-[#0D6F64] bg-[#0D6F64]/10 border border-[#0D6F64]/20 px-1.5 py-0.5 rounded leading-none uppercase">
+                    Side B
+                  </span>
+                </div>
                 <span className="text-[10px] text-ink-500 font-medium block mt-0.5 leading-none">
                   Quản lý Vụ việc & Giám sát Hiện trường
                 </span>

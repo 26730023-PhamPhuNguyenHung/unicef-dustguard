@@ -7,7 +7,24 @@
 
 ## 📅 Bài học từ Dự án: DustGuard Operations & Community (2026-09-06)
 
-### 00. Đồng Bộ Dữ Liệu Khởi Tạo (Seed Consistency) Trên Cloudflare D1 Remote & Chuẩn Hóa Visual Hierarchy Giao Diện So Sánh Landing Page
+### 00. Đồng Bộ Hóa Thư Viện Static Assets Trong Cấu Trúc Monorepo Đa Phân Hệ & Thiết Kế Header Civic Sáng Màu, Không Glassmorphism
+- **Vấn đề**:
+  - **Tệp Asset Thương Hiệu Thiếu Đồng Bộ Trong Monorepo**: Logo thương hiệu chính thức `dustguard-shield-logo.webp` tồn tại ở thư mục gốc `app/public`, nhưng trong monorepo hai ứng dụng độc lập `apps/web` (Side A) và `dustguard-operations/apps/web` (Side B) lại chưa có thư mục `public/`. Các nhà phát triển trước đó phải dùng giải pháp tình thế là chèn component `<Shield />` SVG của thư viện Lucide hoặc hộp màu chứa chữ `DG`, làm giảm tính trang trọng, thiếu nhất quán thương hiệu của một dự án CivicTech bảo trợ bởi các cơ quan quản lý.
+  - **Header Thiếu Trau Chuốt Visual Polish**: Thanh chuyển đổi ngôn ngữ chỉ là text `EN` trần trụi, nút `Đơn vị xử lý` dùng màu xanh da trời lạc tông với bảng màu CivicTech (Cream `#FDFBF7`, Ink `#0F172A`, Seal Red `#B42318`, Teal `#0D6F64`), và chưa có thông điệp định vị rõ ràng cạnh logo.
+- **Giải pháp chuẩn hóa**:
+  1. **Tạo Cấu Trúc Thư Mục Public Đồng Nhất Cho Toàn Bộ Monorepo**:
+     - Thiết lập `apps/web/public/images/logo/` và `dustguard-operations/apps/web/public/images/logo/`, đồng bộ tệp `dustguard-shield-logo.webp`.
+     - Cấu hình Favicon chuẩn `/favicon.webp` thay thế emoji và SVG inline tạm thời trong cả 2 tệp `index.html`.
+  2. **Thiết Kế Header CivicTech Sáng Màu, Rõ Ràng, Tinh Tế**:
+     - Áp dụng logo khiên đỏ chính thức với kích thước tối ưu (h-9 đến h-10) kèm viền mềm và animation scale nhẹ nhàng khi tương tác.
+     - Kết hợp nhãn phụ `CivicTech` tông Deep Teal `#0D6F64` và khẩu hiệu *"Giám sát Bụi · Minh bạch Hóa"*.
+     - Đóng gói nút chuyển ngôn ngữ thành pill button có icon địa cầu `[🌐 EN]`.
+     - Nút `Đơn vị xử lý ↗` sử dụng tông xanh Deep Teal `#0D6F64` chuẩn mực của Side B.
+     - Nút `Gửi phản ánh` đỏ dấu ấn `#B42318` có icon Send nổi bật làm CTA chủ đạo.
+  3. **Quy Trình Kiểm Tra Thực Nghiệm Bằng Agent-Browser Trước Khi Bàn Giao**:
+     - Chạy build và deploy trực tiếp lên Cloudflare Edge.
+     - Sử dụng `agent-browser` mở trang thực tế, verify DOM tương tác và chụp ảnh màn hình nghiệm thu thực tế.
+
 - **Vấn đề**:
   - **Lỗi 401 Đăng Nhập Do Rỗng Bảng Người Dùng Sau Cutover**: Sau khi di chuyển schema lên Cloudflare D1 production, bảng `users` chỉ mới có các tài khoản tạo tự động qua test E2E. Các tài khoản trải nghiệm nhanh của Side A (`citizen@dustguard.local`, `member@dustguard.local`, `moderator@dustguard.local`, `admin@dustguard.local`) hoàn toàn chưa có trong CSDL D1 remote, dẫn đến việc người dùng bấm nút đăng nhập mẫu thì bị báo lỗi "Email hoặc mật khẩu không chính xác".
   - **Lệch Phong Cách Thị Giác & Kéo Dãn Chiều Dọc Thẻ Vấn Đề (Unbalanced Card Stretching)**: Section ProblemStory có 3 thẻ vấn đề ở cột trái bị bọc trong `flex-1` với `justify-between`, khi cột đối chiếu bên phải có chiều cao lớn thì 3 thẻ bên trái bị kéo dãn dọc quá mức, tạo khoảng trống trắng mênh mông thô thiển. Thẻ số 02 lại có nền cam viền đỏ hồng `#E8C8C0` lạc lõng hoàn toàn so với thẻ 01 và 03, gây cảm giác như lỗi CSS active dở dang. Đồng thời, các bước quy trình thiếu điểm nhấn nghiệp vụ và dính technical jargon ("Closed-loop", "High Drop-Off").
