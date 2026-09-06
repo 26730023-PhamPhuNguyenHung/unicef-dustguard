@@ -22,14 +22,8 @@ export const LoginPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  // Chế độ demo: Chỉ kích hoạt khi URL có ?demo=1, hoặc môi trường dev, hoặc localStorage
-  const [demoMode, setDemoMode] = useState<boolean>(() => {
-    return (
-      import.meta.env.DEV ||
-      queryParams.has('demo') ||
-      localStorage.getItem('dg_demo_mode') === 'true'
-    );
-  });
+  // Chế độ trải nghiệm nhanh: Luôn sẵn sàng cho Ban Giám khảo và đối tác đánh giá
+  const [demoMode] = useState<boolean>(true);
 
   // Tự động chuyển tab nếu URL thay đổi
   useEffect(() => {
@@ -57,7 +51,19 @@ export const LoginPage: React.FC = () => {
       const target = resolveCommunityHome(loggedInUser, requestedPath);
       navigate(target, { replace: true });
     } catch (err: any) {
-      setErrorMsg(err.message || 'Email hoặc mật khẩu không chính xác.');
+      if (err.status === 401) {
+        setErrorMsg('Email hoặc mật khẩu chưa đúng.');
+      } else if (err.status === 403) {
+        setErrorMsg(err.message || 'Tài khoản này thuộc Đơn vị Xử lý. Vui lòng chuyển sang tab Đơn vị Xử lý.');
+      } else if (err.status === 429) {
+        setErrorMsg('Bạn đã thử quá nhiều lần. Vui lòng thử lại sau.');
+      } else if (err.status >= 500) {
+        setErrorMsg('Hệ thống đang gặp sự cố. Vui lòng thử lại sau.');
+      } else if (err.code === 'NETWORK_ERROR') {
+        setErrorMsg('Không thể kết nối tới máy chủ. Vui lòng kiểm tra mạng.');
+      } else {
+        setErrorMsg(err.message || 'Email hoặc mật khẩu chưa đúng.');
+      }
     } finally {
       setLoading(false);
     }
@@ -89,10 +95,26 @@ export const LoginPage: React.FC = () => {
         });
       }
 
-      const data = await response.json();
+      let data: any = {};
+      try {
+        data = await response.json();
+      } catch {
+        if (response.status >= 500) {
+          throw new Error('Hệ thống đang gặp sự cố. Vui lòng thử lại sau.');
+        }
+      }
 
       if (!response.ok) {
-        throw new Error(data.detail || data.title || 'Tên đăng nhập hoặc mật khẩu không chính xác.');
+        if (response.status === 401) {
+          throw new Error('Tên đăng nhập hoặc mật khẩu chưa đúng.');
+        } else if (response.status === 403) {
+          throw new Error(data.detail || data.title || 'Tài khoản này thuộc Phía Cộng đồng. Vui lòng chuyển sang tab Phía Cộng đồng.');
+        } else if (response.status === 429) {
+          throw new Error('Bạn đã thử quá nhiều lần. Vui lòng thử lại sau.');
+        } else if (response.status >= 500) {
+          throw new Error('Hệ thống đang gặp sự cố. Vui lòng thử lại sau.');
+        }
+        throw new Error(data.detail || data.title || 'Tên đăng nhập hoặc mật khẩu chưa đúng.');
       }
 
       if (!data.token) {
@@ -118,7 +140,7 @@ export const LoginPage: React.FC = () => {
     }
   };
 
-  // Nạp tài khoản trải nghiệm nhanh (Chỉ dùng trong Demo Mode)
+  // Nạp tài khoản trải nghiệm nhanh
   const handleQuickLoginCommunity = async (demoEmail: string) => {
     setIdentifier(demoEmail);
     setPassword('DustGuard123!');
@@ -137,7 +159,7 @@ export const LoginPage: React.FC = () => {
 
   const handleQuickLoginOperations = async (demoUsername: string) => {
     setIdentifier(demoUsername);
-    setPassword('password123');
+    setPassword('Password123!');
     setLoading(true);
     setErrorMsg(null);
     try {
@@ -148,20 +170,20 @@ export const LoginPage: React.FC = () => {
       let response = await fetch(opsUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: demoUsername, password: 'password123' })
+        body: JSON.stringify({ username: demoUsername, password: 'Password123!' })
       });
 
       if (response.status === 404 && !import.meta.env.PROD) {
         response = await fetch('http://localhost:3002/api/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username: demoUsername, password: 'password123' })
+          body: JSON.stringify({ username: demoUsername, password: 'Password123!' })
         });
       }
 
       const data = await response.json();
       if (!response.ok) {
-        throw new Error(data.detail || data.title || 'Đăng nhập mẫu thất bại.');
+        throw new Error(data.detail || data.title || 'Đăng nhập trải nghiệm thất bại.');
       }
 
       localStorage.setItem('dustguard_token', data.token);
@@ -173,7 +195,7 @@ export const LoginPage: React.FC = () => {
         window.location.href = `${OPERATIONS_APP_URL}${targetPath.replace(/^\/operations/, '')}`;
       }
     } catch (err: any) {
-      setErrorMsg(err.message || 'Đăng nhập mẫu thất bại.');
+      setErrorMsg(err.message || 'Đăng nhập trải nghiệm thất bại.');
     } finally {
       setLoading(false);
     }
@@ -302,15 +324,15 @@ export const LoginPage: React.FC = () => {
               </button>
             </form>
 
-            {/* Quick Demo Accounts - Chỉ xuất hiện khi demoMode được kích hoạt */}
+            {/* Quick Experience Accounts - Hoạt động trực tiếp với CSDL D1 */}
             {demoMode && (
-              <div className="pt-3 border-t border-border-subtle space-y-2 bg-slate-50/50 p-3 rounded-xl border">
+              <div className="pt-3 border-t border-border-subtle space-y-2 bg-stone-50/70 p-3 rounded-xl border border-stone-200/80">
                 <div className="flex items-center justify-between text-[10px] font-bold text-content-sub uppercase tracking-wider">
-                  <span className="flex items-center gap-1 text-primary">
+                  <span className="flex items-center gap-1.5 text-primary">
                     <Sparkles className="w-3 h-3" />
-                    Tài khoản trình diễn (Cộng đồng)
+                    Tài khoản trải nghiệm
                   </span>
-                  <span className="text-[10px] lowercase text-slate-500 font-normal">nhấn để đăng nhập ngay</span>
+                  <span className="text-[10px] lowercase text-stone-500 font-normal">nhấn để đăng nhập ngay</span>
                 </div>
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <button
@@ -421,15 +443,15 @@ export const LoginPage: React.FC = () => {
               </button>
             </form>
 
-            {/* Quick Demo Accounts for Operations - Chỉ xuất hiện khi demoMode được kích hoạt */}
+            {/* Quick Demo Accounts for Operations */}
             {demoMode && (
-              <div className="pt-3 border-t border-border-subtle space-y-2 bg-slate-50/50 p-3 rounded-xl border">
+              <div className="pt-3 border-t border-border-subtle space-y-2 bg-stone-50/70 p-3 rounded-xl border border-stone-200/80">
                 <div className="flex items-center justify-between text-[10px] font-bold text-content-sub uppercase tracking-wider">
-                  <span className="flex items-center gap-1 text-[#0D6F64]">
+                  <span className="flex items-center gap-1.5 text-[#0D6F64]">
                     <Sparkles className="w-3 h-3" />
-                    Tài khoản trình diễn (Đơn vị Xử lý)
+                    Tài khoản trải nghiệm
                   </span>
-                  <span className="text-[10px] lowercase text-slate-500 font-normal">nhấn để đăng nhập ngay</span>
+                  <span className="text-[10px] lowercase text-stone-500 font-normal">nhấn để đăng nhập ngay</span>
                 </div>
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <button
@@ -474,22 +496,6 @@ export const LoginPage: React.FC = () => {
             </div>
           </div>
         )}
-
-        {/* Tùy chọn chuyển đổi Chế độ Trình diễn (Demo Mode Toggle) */}
-        <div className="pt-2 text-center border-t border-border-subtle/60">
-          <button
-            type="button"
-            onClick={() => {
-              const next = !demoMode;
-              setDemoMode(next);
-              if (next) localStorage.setItem('dg_demo_mode', 'true');
-              else localStorage.removeItem('dg_demo_mode');
-            }}
-            className="text-[11px] text-content-sub hover:text-content-main underline transition-colors"
-          >
-            {demoMode ? 'Ẩn tài khoản trình diễn' : 'Hiển thị tài khoản trình diễn (Ban Giám khảo)'}
-          </button>
-        </div>
 
       </div>
     </div>

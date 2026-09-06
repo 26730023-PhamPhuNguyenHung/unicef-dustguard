@@ -132,23 +132,9 @@ export const App: React.FC = () => {
                     }
                   />
 
-                  {/* Tín chỉ sinh viên & Giờ tình nguyện thanh niên */}
-                  <Route
-                    path="/credits"
-                    element={
-                      <ProtectedRoute permission="contribution:view">
-                        <YouthCreditsPage />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/youth/credits"
-                    element={
-                      <ProtectedRoute permission="contribution:view">
-                        <YouthCreditsPage />
-                      </ProtectedRoute>
-                    }
-                  />
+                  {/* Chuyển hướng chuẩn hóa cho Tín chỉ thanh niên -> Hành trình đóng góp */}
+                  <Route path="/credits" element={<Navigate to="/contributions" replace />} />
+                  <Route path="/youth/credits" element={<Navigate to="/contributions" replace />} />
 
                   {/* Hồ sơ cá nhân */}
                   <Route
@@ -159,6 +145,18 @@ export const App: React.FC = () => {
                       </ProtectedRoute>
                     }
                   />
+
+                  {/* Citizen Legacy Route Aliases (Hỗ trợ URL cũ liền mạch) */}
+                  <Route path="/citizen" element={<Navigate to="/dashboard" replace />} />
+                  <Route path="/citizen/portal" element={<Navigate to="/dashboard" replace />} />
+                  <Route path="/citizen/report/new" element={<Navigate to="/reports/new" replace />} />
+                  <Route path="/citizen/reports" element={<Navigate to="/reports" replace />} />
+                  <Route path="/citizen/reports/:id" element={<ReportDetailPage />} />
+                  <Route path="/citizen/map" element={<Navigate to="/map" replace />} />
+                  <Route path="/citizen/nearby" element={<Navigate to="/map" replace />} />
+                  <Route path="/citizen/track" element={<Navigate to="/following" replace />} />
+                  <Route path="/citizen/profile" element={<Navigate to="/profile" replace />} />
+                  <Route path="/cases" element={<Navigate to="/reports" replace />} />
 
                   {/* Moderator Routes (Bảo vệ nghiêm ngặt) */}
                   <Route path="/moderator" element={<Navigate to="/moderator/dashboard" replace />} />

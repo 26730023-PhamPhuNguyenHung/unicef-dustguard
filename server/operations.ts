@@ -98,12 +98,21 @@ export function createOperationsRouter() {
 
     const user = await get(c.env.DB, 'SELECT * FROM ops_users WHERE (username = ? OR email = ?) AND active = 1', [username, username]);
     if (!user) {
-      return c.json({ title: 'Lỗi xác thực', detail: 'Tên đăng nhập hoặc mật khẩu không chính xác.' }, 401);
+      // Kiểm tra xem tài khoản có thuộc Phía Cộng đồng không
+      const commUser = await get(c.env.DB, 'SELECT id FROM users WHERE email = ? AND status != "deleted"', [username]);
+      if (commUser) {
+        return c.json({
+          title: 'Quyền truy cập không hợp lệ',
+          detail: 'Tài khoản này thuộc Phía Cộng đồng. Vui lòng chuyển sang tab Phía Cộng đồng.',
+          code: 'WRONG_PORTAL_SIDE'
+        }, 403);
+      }
+      return c.json({ title: 'Lỗi xác thực', detail: 'Tên đăng nhập hoặc mật khẩu chưa đúng.' }, 401);
     }
 
     const isValid = await bcrypt.compare(password, user.password_hash);
     if (!isValid) {
-      return c.json({ title: 'Lỗi xác thực', detail: 'Tên đăng nhập hoặc mật khẩu không chính xác.' }, 401);
+      return c.json({ title: 'Lỗi xác thực', detail: 'Tên đăng nhập hoặc mật khẩu chưa đúng.' }, 401);
     }
 
     const permissions = getPermissionsForRole(user.role);

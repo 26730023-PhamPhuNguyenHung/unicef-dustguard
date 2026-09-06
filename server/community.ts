@@ -95,12 +95,23 @@ export function createCommunityRouter() {
 
       const user = await get(c.env.DB, 'SELECT * FROM users WHERE email = ?', [email]);
       if (!user) {
-        return c.json({ success: false, error: { code: 'INVALID_CREDENTIALS', message: 'Email hoặc mật khẩu không chính xác.' } }, 401);
+        // Kiểm tra xem tài khoản có thuộc Đơn vị Xử lý không
+        const opsUser = await get(c.env.DB, 'SELECT id FROM ops_users WHERE (email = ? OR username = ?) AND active = 1', [email, email]);
+        if (opsUser) {
+          return c.json({
+            success: false,
+            error: {
+              code: 'WRONG_PORTAL_SIDE',
+              message: 'Tài khoản này thuộc Đơn vị Xử lý. Vui lòng chuyển sang tab Đơn vị Xử lý.'
+            }
+          }, 403);
+        }
+        return c.json({ success: false, error: { code: 'INVALID_CREDENTIALS', message: 'Email hoặc mật khẩu chưa đúng.' } }, 401);
       }
 
       const isValid = await bcrypt.compare(password, user.password_hash);
       if (!isValid) {
-        return c.json({ success: false, error: { code: 'INVALID_CREDENTIALS', message: 'Email hoặc mật khẩu không chính xác.' } }, 401);
+        return c.json({ success: false, error: { code: 'INVALID_CREDENTIALS', message: 'Email hoặc mật khẩu chưa đúng.' } }, 401);
       }
 
       const token = await sign({ id: user.id, email: user.email, role: user.role, exp: Math.floor(Date.now() / 1000) + 86400 * 30 }, JWT_SECRET, 'HS256');
@@ -720,23 +731,28 @@ export function createCommunityRouter() {
     const reportCount = contribs.filter(c => c.type === 'report').length;
     const obsCount = contribs.filter(c => c.type === 'observation').length;
     const taskCount = contribs.filter(c => c.type === 'verification').length;
-    const totalPoints = reportCount * 10 + obsCount * 15 + taskCount * 25;
-    const volunteerHours = (reportCount * 0.5 + obsCount * 1.0 + taskCount * 2.0);
-    const youthCredits = (volunteerHours / 5.0);
+    const confCount = contribs.filter(c => c.type === 'confirmation').length;
+    const contributionHours = Number((reportCount * 1.5 + obsCount * 1.0 + taskCount * 2.0 + confCount * 0.5).toFixed(1));
 
     return c.json({
       success: true,
       data: {
         stats: {
+          totalActivities: contribs.length,
           totalContributions: contribs.length,
-          totalPoints,
-          volunteerHours,
-          youthCredits: parseFloat(youthCredits.toFixed(1)),
-          reportCount,
-          observationCount: obsCount,
-          taskCount
+          contributionHours,
+          volunteerHours: contributionHours,
+          verifiedActivities: contribs.filter(c => c.status === 'accepted').length,
+          inProgressActivities: contribs.filter(c => c.status !== 'accepted').length,
+          resolvedCasesCount: contribs.filter(c => c.status === 'accepted').length,
+          locationsCount: 1,
+          locations: ['TP. Hồ Chí Minh'],
+          reports: reportCount,
+          observations: obsCount,
+          confirmations: confCount,
+          taskVerifications: taskCount
         },
-        milestoneMessage: totalPoints > 50 ? 'Chiến binh Môi trường Tích cực' : 'Tình nguyện viên mới',
+        milestoneMessage: `Bạn đã tham gia ${contribs.length} hoạt động đóng góp vì môi trường!`,
         timeline: contribs,
         contributions: contribs
       }
@@ -1028,25 +1044,59 @@ export function createCommunityRouter() {
     return c.json({ success: true, data: users });
   });
 
-  app.get('/dashboard', async (c) => {
+  const getDashboardData = async (c: any) => {
+    const user = await getUser(c);
     const reportsCount = (await get(c.env.DB, 'SELECT count(*) as c FROM reports'))?.c || 0;
+    const newReports = (await get(c.env.DB, 'SELECT count(*) as c FROM reports WHERE status = "submitted"'))?.c || 0;
+    const verifyingCases = (await get(c.env.DB, 'SELECT count(*) as c FROM cases WHERE status = "community_verifying"'))?.c || 0;
+    const inProgressCases = (await get(c.env.DB, 'SELECT count(*) as c FROM cases WHERE status IN ("formal_assigned", "in_progress")'))?.c || 0;
+    const resolvedCases = (await get(c.env.DB, 'SELECT count(*) as c FROM cases WHERE status = "resolved"'))?.c || 0;
     const casesCount = (await get(c.env.DB, 'SELECT count(*) as c FROM cases'))?.c || 0;
-    const resolvedCount = (await get(c.env.DB, 'SELECT count(*) as c FROM cases WHERE status = "resolved"'))?.c || 0;
     const usersCount = (await get(c.env.DB, 'SELECT count(*) as c FROM users'))?.c || 0;
+    const updatedToday = (await get(c.env.DB, 'SELECT count(*) as c FROM cases WHERE date(updated_at) = date("now")'))?.c || 0;
+
+    const nearbyCases = await query(c.env.DB, 'SELECT * FROM cases ORDER BY updated_at DESC LIMIT 6');
+    const priorityCases = await query(c.env.DB, 'SELECT * FROM cases WHERE severity IN ("high", "critical") OR status = "in_progress" ORDER BY updated_at DESC LIMIT 4');
+
+    let myReports: any[] = [];
+    if (user?.id) {
+      myReports = await query(c.env.DB, 'SELECT * FROM reports WHERE user_id = ? ORDER BY created_at DESC LIMIT 4', [user.id]);
+    } else {
+      myReports = await query(c.env.DB, 'SELECT * FROM reports ORDER BY created_at DESC LIMIT 4');
+    }
+
+    const recentReports = await query(c.env.DB, 'SELECT id, title, address, district, created_at FROM reports ORDER BY created_at DESC LIMIT 5');
+    const recentActivity = recentReports.map((r: any) => ({
+      id: `act_${r.id}`,
+      title: r.title || 'Phản ánh mới được ghi nhận',
+      description: `Tại ${r.address || r.district || 'hiện trường'}`,
+      time: r.created_at
+    }));
 
     return c.json({
       success: true,
       data: {
         stats: {
           totalReports: reportsCount,
-          activeCases: casesCount - resolvedCount,
-          resolvedCases: resolvedCount,
-          communityMembers: usersCount
+          newReports,
+          verifyingCases,
+          inProgressCases,
+          resolvedCases,
+          communityMembers: usersCount,
+          activeCases: casesCount - resolvedCases,
+          updatedToday
         },
+        nearbyCases,
+        priorityCases,
+        myReports,
+        recentActivity,
         hotspots: []
       }
     });
-  });
+  };
+
+  app.get('/dashboard', getDashboardData);
+  app.get('/dashboard/community', getDashboardData);
 
   // ============================================================================
   // 7. CROSS-SIDE RESOLUTION SYNC (/api/integrations/operations/sync)
