@@ -54,9 +54,9 @@ export const CaseInboxPage: React.FC = () => {
     title: '',
     description: '',
     location_text: '',
-    district: 'Quận 1',
-    latitude: 10.7769,
-    longitude: 106.7009,
+    district: 'Láng Thượng',
+    latitude: 21.0205,
+    longitude: 105.8078,
     source: 'MANUAL',
     contractor_name: '',
     priority: 'NORMAL',
@@ -464,13 +464,14 @@ export const CaseInboxPage: React.FC = () => {
               />
             </div>
             <div>
-              <label className="block font-semibold text-slate-700 mb-1">Quận / Huyện</label>
+              <label className="block font-semibold text-slate-700 mb-1">Phường / Xã (Hà Nội)</label>
               <input
                 type="text"
                 required
                 value={newCaseForm.district}
                 onChange={e => setNewCaseForm({ ...newCaseForm, district: e.target.value })}
                 className="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-dustguard-red"
+                placeholder="VD: Láng Thượng"
               />
             </div>
           </div>

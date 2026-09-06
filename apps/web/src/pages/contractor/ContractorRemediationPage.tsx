@@ -135,7 +135,7 @@ export const ContractorRemediationPage: React.FC = () => {
         const siteCoords =
           caseData?.latitude && caseData?.longitude
             ? { lat: Number(caseData.latitude), lng: Number(caseData.longitude) }
-            : { lat: 10.7769, lng: 106.7009 }; // Default fallback center
+            : { lat: 21.0205, lng: 105.8078 }; // Default fallback center (Hanoi SSOT)
 
         const result = evaluateGeofenceBuffer(coords, siteCoords, 50);
         setGeofenceResult(result);

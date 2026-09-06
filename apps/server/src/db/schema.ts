@@ -35,7 +35,7 @@ export const cases = sqliteTable('cases', {
   address: text('address').notNull(),
   ward: text('ward'),
   district: text('district').notNull(),
-  city: text('city').notNull().default('TP. Hồ Chí Minh'),
+  city: text('city').notNull().default('Hà Nội'),
   status: text('status', { 
     enum: ['new', 'community_verifying', 'confirmed_signal', 'forwarded', 'in_progress', 'resolved', 'closed', 'archived'] 
   }).notNull().default('new'),
@@ -70,7 +70,7 @@ export const reports = sqliteTable('reports', {
   address: text('address').notNull(),
   ward: text('ward'),
   district: text('district').notNull(),
-  city: text('city').notNull().default('TP. Hồ Chí Minh'),
+  city: text('city').notNull().default('Hà Nội'),
   observedAt: text('observed_at').notNull(),
   visibility: text('visibility', { enum: ['public', 'community', 'private'] }).notNull().default('public'),
   status: text('status', { 

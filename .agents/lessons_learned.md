@@ -7,6 +7,32 @@
 
 ## 📅 Bài học từ Dự án: DustGuard Operations & Community (2026-09-06)
 
+### 02. Chuyển Đổi Từ "Tín Chỉ Hàn Lâm 20h = 4.0 Tín Chỉ" Sang "Dấu Ấn Đóng Góp & Giờ Thực Địa Thực Chất"
+- **Vấn đề**:
+  - Ban đầu hệ thống áp đặt công thức gượng ép "20 giờ tình nguyện = 4.0 tín chỉ rèn luyện" (chia tỷ lệ 0.2 tín chỉ/giờ). Điều này gây phản tác dụng tâm lý với thanh niên, học sinh và người dân tình nguyện vì biến việc theo dõi bảo vệ môi trường thành một thang điểm số mang tính hàn lâm, trừu tượng và máy móc.
+  - Ngoài ra, việc quy đổi khiến số giờ thực tế bị che khuất và làm mất đi giá trị định lượng trực quan của từng hành động thực địa (chụp ảnh, xác thực GPS 50m, chụp đối chứng Before/After).
+- **Giải pháp chuẩn hóa**:
+  1. **Tôn Vinh Giờ Thực Địa & Minh Chứng Số**: Chuyển sang tính toán và hiển thị trực tiếp "Tổng giờ thực địa" (4.0h cho phản ánh đủ điều kiện, 80% cho hoạt động đang xử lý).
+  2. **Bảng Tổng Hợp Minh Chứng (Contribution Summary Modal)**: Xây dựng modal sáng màu, không glassmorphism, kết nối API backend `/api/me/contributions/summary` hiển thị rõ ràng 4 chỉ số cốt lõi: Giờ thực địa, Hoạt động tham gia, Địa bàn phủ sóng và Tác động môi trường được xác minh.
+  3. **Đồng Bộ Test Logic**: Cập nhật bộ kiểm thử nghiệp vụ `tests/youth-credits.test.js` để bảo đảm không còn bất kỳ phép chia giả định 20h / 4.0 tín chỉ nào, khẳng định tính toàn vẹn của dữ liệu thực chất.
+
+### 01. Mô Hình Hành Chính 2 Cấp Việt Nam & Chuẩn Hóa SSOT Location (Hà Nội Demo Origin) Trên Toàn Bộ Hệ Thống Monorepo
+- **Vấn đề**:
+  - **Mô Hình Hành Chính 3 Cấp Lỗi Thời Gây Nhầm Lẫn**: Codebase cũ phân tán trường `district` (Quận/Huyện) khắp các database schema, DTO validation, forms, và filter dropdowns. Điều này không phản ánh đúng định hướng tinh gọn chính quyền địa phương 2 cấp của Việt Nam (Cấp 1: Tỉnh/Thành phố trực thuộc TW; Cấp 2: Phường/Xã/Đặc khu).
+  - **Dữ Liệu Demo Lộn Xộn & Hardcode Tọa Độ Cũ**: Người dùng demo tại 62 Nguyễn Chí Thanh, Hà Nội nhưng màn hình lại hiển thị "Trạm trung tâm TP.HCM", "Khu vực Quận 7", "TP. Thủ Đức", "Bình Thạnh", và khoảng cách hardcode `~420m` bất kể khoảng cách địa lý thực tế.
+  - **Phân Tán Không Có Điểm Tựa Duy Nhất (Missing SSOT Location)**: Mỗi component tự gán tọa độ tĩnh `10.7769, 106.7009`, khi ghim bản đồ hoặc reverse-geocode thì nảy sinh lỗi lệch tọa độ.
+- **Giải pháp chuẩn hóa**:
+  1. **Thiết Lập Location SSOT Module (`@dustguard/shared/constants/location.ts`)**:
+     - Định nghĩa `DEMO_LOCATION` duy nhất tại `62 Nguyễn Chí Thanh, Phường Láng Thượng, Hà Nội` (`21.0205, 105.8078`).
+     - Tích hợp hàm toán học Haversine `calculateDistanceMeters(origin, destination)` và `formatDistance()` để tính động khoảng cách thực tế thay vì hardcode.
+  2. **Chuẩn Hóa Mô Hình Hành Chính 2 Cấp (Two-Level Administrative Hierarchy)**:
+     - Trên UI/Forms/Filters: Chỉ hiển thị `Tỉnh/Thành phố` (Cấp 1) và `Phường/Xã` (Cấp 2). Bỏ hoàn toàn dropdown và nhãn "Quận/Huyện".
+     - Tương thích ngược an toàn (Database Backward Compatibility): Trong database, cột `district` legacy được map sang giá trị `ward` (hoặc để fallback hợp lệ) để không phải chạy migration nguy hiểm phá vỡ CSDL hiện hành.
+  3. **Tái Thiết Mock Data Thành Cụm Pilot Coherent Có Tương Quan Địa Lý**:
+     - Xây dựng cụm đối tượng liên kết chặt chẽ quanh 62 Nguyễn Chí Thanh: 4 trạm đo không khí (S001-S004), 4-6 công trình đang thi công (Huỳnh Thúc Kháng, Láng Hạ, Chùa Láng, Giảng Võ), 32 phản ánh cộng đồng và 15-26 hồ sơ vụ việc liên kết theo ID thật.
+  4. **Kiểm Thử Toàn Diện Trên Cả 3 Phân Hệ Bằng Agent-Browser**:
+     - Kiểm chứng 100% routes: Side A (Port 3000), Side B (Port 3002) và Landing Page đều nhất quán, 0 console error, 45/45 responsive matrix viewports pass.
+
 ### 00. Hợp Nhất Route Graph Toàn Hệ Thống, Loại Bỏ Trùng Lặp Auth Entry & Xử Lý Định Tuyến SPA Đa Phân Hệ Trên Cloudflare Workers Assets
 - **Vấn đề**:
   - **Trùng Lặp 2 Màn Hình Login Độc Lập**: `/login` (thuộc Side A) và `/operations/login` (thuộc Side B) tồn tại song song với hai phong cách thiết kế, hai cơ chế form và hai nhóm tài khoản mẫu khác nhau. Trên `/operations/login` còn hiển thị công khai mật khẩu `password123` và dòng chữ sai lệch kiến trúc `"Hệ thống lưu trữ dữ liệu chân thực SSOT SQLite cục bộ."`.

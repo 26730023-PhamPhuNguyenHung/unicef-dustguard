@@ -30,10 +30,10 @@ export async function forwardCaseToOperations(
     case_code: caseData.case_code || caseData.caseCode,
     title: caseData.title,
     summary: caseData.summary || 'Hồ sơ chuyển giao từ Cộng đồng DustGuard VN',
-    location_text: caseData.address || `${caseData.district || 'TP.HCM'}, Việt Nam`,
-    district: caseData.district || 'TP.HCM',
-    latitude: caseData.latitude ?? 10.7769,
-    longitude: caseData.longitude ?? 106.7009,
+    location_text: caseData.address || `${caseData.district || 'Hà Nội'}, Việt Nam`,
+    district: caseData.district || 'Hà Nội',
+    latitude: caseData.latitude ?? 21.0205,
+    longitude: caseData.longitude ?? 105.8078,
     report_count: caseData.signal_count || 1,
     confirmation_count: caseData.confirmationCount || 0
   };

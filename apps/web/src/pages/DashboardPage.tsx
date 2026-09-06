@@ -4,6 +4,7 @@ import { apiRequest } from '../api/client.js';
 import { useAuth } from '../context/AuthContext.js';
 import { CaseCard } from '../components/common/CaseCard.js';
 import { LoadingSkeleton } from '../components/common/LoadingSkeleton.js';
+import { DEMO_LOCATION, calculateDistanceMeters, formatDistance } from '@dustguard/shared';
 import {
   Camera,
   Search,
@@ -46,13 +47,33 @@ export const DashboardPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let active = true;
+    setLoading(true);
     apiRequest<DashboardResponse>('/dashboard/community')
-      .then(setData)
+      .then((res) => {
+        if (active) setData(res);
+      })
       .catch((err) => {
         console.warn('Không thể tải dashboard:', err);
       })
-      .finally(() => setLoading(false));
-  }, []);
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+
+    const handleRoleChanged = () => {
+      apiRequest<DashboardResponse>('/dashboard/community')
+        .then((res) => {
+          if (active) setData(res);
+        })
+        .catch(console.warn);
+    };
+    window.addEventListener('auth:role_changed', handleRoleChanged);
+
+    return () => {
+      active = false;
+      window.removeEventListener('auth:role_changed', handleRoleChanged);
+    };
+  }, [user?.id]);
 
   if (loading) {
     return <LoadingSkeleton rows={4} />;
@@ -111,6 +132,11 @@ export const DashboardPage: React.FC = () => {
               Không khí quanh bạn <span className="text-primary">hôm nay thế nào?</span>
             </h1>
 
+            <div className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 bg-stone-100 px-3 py-1 rounded-lg border border-stone-200">
+              <MapPin className="w-3.5 h-3.5 text-[#B51F24] shrink-0" />
+              <span>62 Nguyễn Chí Thanh, Hà Nội · Tín hiệu môi trường trong bán kính gần bạn</span>
+            </div>
+
             <p className="text-xs sm:text-sm text-content-sub font-medium leading-relaxed">
               Gửi ảnh và vị trí để xử lý bụi ô nhiễm. Tín hiệu của bạn bảo vệ sức khỏe cho cả cộng đồng.
             </p>
@@ -164,7 +190,9 @@ export const DashboardPage: React.FC = () => {
           {/* Right: AQI / PM2.5 Widget Card */}
           <div className="shrink-0 p-5 rounded-2xl bg-stone-50/80 border border-stone-200 space-y-3 min-w-[280px]">
             <div className="flex items-center justify-between text-xs pb-2 border-b border-stone-200">
-              <span className="font-bold text-slate-600">Trạm đo lân cận (~420m)</span>
+              <span className="font-bold text-slate-600">
+                Trạm gần nhất · {formatDistance(calculateDistanceMeters(DEMO_LOCATION, { latitude: 21.0210, longitude: 105.8090 }))}
+              </span>
               <span className="inline-flex items-center gap-1 font-bold text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded-md text-[11px] border border-amber-200">
                 <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" /> Cần chú ý
               </span>
@@ -178,7 +206,7 @@ export const DashboardPage: React.FC = () => {
             <div className="space-y-1.5 text-xs text-slate-600">
               <div className="flex items-center gap-1.5">
                 <MapPin className="w-3.5 h-3.5 text-[#B51F24] shrink-0" />
-                <span className="font-medium truncate">Trạm trung tâm TP.HCM</span>
+                <span className="font-medium truncate">Trạm đo Nguyễn Chí Thanh · Phường Láng Thượng</span>
               </div>
               <div className="flex items-center gap-1.5 text-slate-400 text-[11px]">
                 <Clock className="w-3 h-3 shrink-0" />
@@ -301,26 +329,26 @@ export const DashboardPage: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
           <div className="p-4 rounded-2xl bg-stone-50 border border-stone-200 space-y-1.5">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-extrabold text-slate-900">Khu vực Quận 7</span>
-              <span className="text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">48 µg/m³</span>
+              <span className="text-xs font-extrabold text-slate-900">Trục Láng Hạ - Huỳnh Thúc Kháng</span>
+              <span className="text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">42 µg/m³</span>
             </div>
-            <p className="text-[11px] text-slate-500 font-medium">Trạm quan trắc tự động · Bán kính 0.5 km</p>
+            <p className="text-[11px] text-slate-500 font-medium">Phường Láng Hạ, Hà Nội · Cách ~650 m</p>
           </div>
 
           <div className="p-4 rounded-2xl bg-stone-50 border border-stone-200 space-y-1.5">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-extrabold text-slate-900">TP. Thủ Đức</span>
-              <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">32 µg/m³</span>
+              <span className="text-xs font-extrabold text-slate-900">Khu vực Chùa Láng</span>
+              <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">28 µg/m³</span>
             </div>
-            <p className="text-[11px] text-slate-500 font-medium">Đã kiểm tra phun sương dập bụi</p>
+            <p className="text-[11px] text-slate-500 font-medium">Phường Láng Thượng, Hà Nội · Phun sương dập bụi tốt</p>
           </div>
 
           <div className="p-4 rounded-2xl bg-stone-50 border border-stone-200 space-y-1.5">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-extrabold text-slate-900">Khu công trình Bình Thạnh</span>
-              <span className="text-[11px] font-bold text-red-700 bg-red-50 px-2 py-0.5 rounded-md border border-red-200">65 µg/m³</span>
+              <span className="text-xs font-extrabold text-slate-900">Công trình Huỳnh Thúc Kháng</span>
+              <span className="text-[11px] font-bold text-red-700 bg-red-50 px-2 py-0.5 rounded-md border border-red-200">58 µg/m³</span>
             </div>
-            <p className="text-[11px] text-slate-500 font-medium">Đang có đội thanh tra thực địa</p>
+            <p className="text-[11px] text-slate-500 font-medium">Phường Láng Hạ, Hà Nội · Cách ~380 m · Đang kiểm tra</p>
           </div>
         </div>
       </section>

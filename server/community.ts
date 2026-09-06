@@ -1060,9 +1060,23 @@ export function createCommunityRouter() {
 
     let myReports: any[] = [];
     if (user?.id) {
-      myReports = await query(c.env.DB, 'SELECT * FROM reports WHERE user_id = ? ORDER BY created_at DESC LIMIT 4', [user.id]);
+      myReports = await query(c.env.DB, `
+        SELECT r.*,
+               (SELECT file_path FROM report_media WHERE report_id = r.id LIMIT 1) as thumbnailPath
+        FROM reports r
+        WHERE r.reporter_id = ?
+        ORDER BY r.created_at DESC
+        LIMIT 4
+      `, [user.id]);
     } else {
-      myReports = await query(c.env.DB, 'SELECT * FROM reports ORDER BY created_at DESC LIMIT 4');
+      myReports = await query(c.env.DB, `
+        SELECT r.*,
+               (SELECT file_path FROM report_media WHERE report_id = r.id LIMIT 1) as thumbnailPath
+        FROM reports r
+        WHERE r.visibility = "public" OR r.visibility IS NULL
+        ORDER BY r.created_at DESC
+        LIMIT 4
+      `);
     }
 
     const recentReports = await query(c.env.DB, 'SELECT id, title, address, district, created_at FROM reports ORDER BY created_at DESC LIMIT 5');

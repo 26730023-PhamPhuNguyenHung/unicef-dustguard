@@ -14,8 +14,11 @@ export const CommunitiesPage: React.FC = () => {
 
   const fetchCommunities = () => {
     setLoading(true);
-    apiRequest<{ communities: any[] }>('/communities')
-      .then((res) => setCommunities(res.communities || []))
+    apiRequest<any>('/communities')
+      .then((res) => {
+        const list = Array.isArray(res) ? res : (res?.communities || []);
+        setCommunities(list);
+      })
       .catch(console.error)
       .finally(() => setLoading(false));
   };

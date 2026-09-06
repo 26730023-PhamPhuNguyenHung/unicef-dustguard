@@ -9,8 +9,8 @@ export const ProfilePage: React.FC = () => {
   const { success: toastSuccess, error: toastError } = useToast();
 
   const [fullName, setFullName] = useState(user?.fullName || '');
-  const [district, setDistrict] = useState(user?.district || 'Quận 7');
-  const [ward, setWard] = useState(user?.ward || 'Tân Phú');
+  const [district, setDistrict] = useState(user?.district || 'Láng Thượng');
+  const [ward, setWard] = useState(user?.ward || 'Láng Thượng');
   const [bio, setBio] = useState(user?.bio || '');
   const [displayIdentity, setDisplayIdentity] = useState<'name' | 'anonymous'>(
     user?.displayIdentity || 'anonymous'
@@ -39,7 +39,7 @@ export const ProfilePage: React.FC = () => {
       toastSuccess('Đã lưu hồ sơ', 'Thông tin hồ sơ của bạn đã được cập nhật thành công.');
       setTimeout(() => setSavedSuccess(false), 3000);
     } catch (err: any) {
-      toastError('Lỗi cập nhật hồ sơ', err.message || 'Lỗi lưu thông tin hồ sơ.');
+      toastError('Lỗi cập nhật', err.message || 'Không thể cập nhật thông tin hồ sơ.');
     } finally {
       setSaving(false);
     }
@@ -47,37 +47,34 @@ export const ProfilePage: React.FC = () => {
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
+      {/* Header */}
       <div>
-        <h1 className="text-xl sm:text-2xl font-extrabold text-content-main">
-          Hồ sơ của bạn
-        </h1>
-        <p className="text-xs sm:text-sm text-content-sub mt-0.5">
-          Quản lý thông tin tài khoản và cài đặt quyền riêng tư khi tham gia cộng đồng.
-        </p>
+        <h1 className="text-xl sm:text-2xl font-black text-content-main">Hồ sơ cá nhân</h1>
+        <p className="text-xs sm:text-sm text-content-sub">Quản lý thông tin tài khoản và tùy chọn quyền riêng tư khi gửi phản ánh</p>
       </div>
 
-      <div className="bg-surface-card rounded-civic-lg border border-border-subtle p-6 sm:p-8 shadow-sm space-y-6">
-        {/* User Card Header */}
-        <div className="flex items-center gap-4 pb-6 border-b border-border-subtle">
-          <div className="w-16 h-16 rounded-full bg-primary-light text-primary font-extrabold text-2xl flex items-center justify-center border-2 border-primary/20">
-            {fullName ? fullName.charAt(0) : 'U'}
-          </div>
-          <div>
-            <h2 className="text-lg font-bold text-content-main">{fullName || 'Người dùng'}</h2>
-            <div className="text-xs text-content-sub flex items-center gap-1.5 mt-0.5">
-              <Mail className="w-3.5 h-3.5" />
-              <span>{user?.email}</span>
-            </div>
-            <div className="text-xs font-semibold text-primary capitalize mt-1">
-              Vai trò: {user?.role.replace('_', ' ')}
-            </div>
-          </div>
-        </div>
+      <form onSubmit={handleSaveProfile} className="bg-surface-card rounded-civic-lg border border-border-subtle p-5 sm:p-6 space-y-5 shadow-xs">
+        {/* Thông tin cơ bản */}
+        <div className="space-y-4">
+          <h2 className="text-sm font-bold uppercase tracking-wider text-content-main pb-2 border-b border-border-subtle">
+            Thông tin chung
+          </h2>
 
-        <form onSubmit={handleSaveProfile} className="space-y-5">
           <div className="space-y-1.5">
             <label className="block text-xs font-bold uppercase tracking-wider text-content-sub">
-              Họ và tên *
+              Email đăng nhập
+            </label>
+            <input
+              type="email"
+              disabled
+              value={user?.email || ''}
+              className="w-full px-4 py-2.5 rounded-xl border border-border-subtle text-xs sm:text-sm bg-surface-secondary text-content-muted cursor-not-allowed"
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="block text-xs font-bold uppercase tracking-wider text-content-sub">
+              Họ và tên
             </label>
             <input
               type="text"
@@ -91,13 +88,13 @@ export const ProfilePage: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <label className="block text-xs font-bold uppercase tracking-wider text-content-sub">
-                Quận / Huyện sinh sống
+                Tỉnh / Thành phố
               </label>
               <input
                 type="text"
-                value={district}
-                onChange={(e) => setDistrict(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl border border-border-subtle text-xs sm:text-sm bg-white focus:border-primary focus:outline-none"
+                readOnly
+                value="Hà Nội"
+                className="w-full px-4 py-2.5 rounded-xl border border-border-subtle text-xs sm:text-sm bg-stone-100 text-stone-700 cursor-not-allowed font-medium"
               />
             </div>
             <div className="space-y-1.5">
@@ -107,7 +104,10 @@ export const ProfilePage: React.FC = () => {
               <input
                 type="text"
                 value={ward}
-                onChange={(e) => setWard(e.target.value)}
+                onChange={(e) => {
+                  setWard(e.target.value);
+                  setDistrict(e.target.value);
+                }}
                 className="w-full px-4 py-2.5 rounded-xl border border-border-subtle text-xs sm:text-sm bg-white focus:border-primary focus:outline-none"
               />
             </div>
@@ -121,12 +121,13 @@ export const ProfilePage: React.FC = () => {
               rows={3}
               value={bio}
               onChange={(e) => setBio(e.target.value)}
-              placeholder="VD: Cư dân sinh sống tại Quận 7, quan tâm đến chất lượng không khí quanh công trình..."
+              placeholder="VD: Cư dân sinh sống tại Phường Láng Thượng, Hà Nội, quan tâm đến chất lượng không khí quanh công trình..."
               className="w-full px-4 py-2.5 rounded-xl border border-border-subtle text-xs sm:text-sm bg-white focus:border-primary focus:outline-none"
             />
           </div>
+        </div>
 
-          {/* Cài đặt riêng tư / Danh tính */}
+        {/* Cài đặt riêng tư / Danh tính */}
           <div className="space-y-2 pt-2">
             <label className="block text-xs font-bold uppercase tracking-wider text-content-sub">
               Quyền riêng tư: Hiển thị danh tính công khai
@@ -201,7 +202,6 @@ export const ProfilePage: React.FC = () => {
             </button>
           </div>
         </form>
-      </div>
     </div>
   );
 };

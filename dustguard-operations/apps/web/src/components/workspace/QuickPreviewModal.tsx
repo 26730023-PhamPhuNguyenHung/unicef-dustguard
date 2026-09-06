@@ -182,7 +182,7 @@ export const QuickPreviewModal: React.FC<QuickPreviewModalProps> = ({
               ) : (
                 <span className="px-2.5 py-1 bg-slate-100 rounded border border-slate-200 text-slate-800 font-semibold flex items-center gap-1.5">
                   <MapPin className="w-3.5 h-3.5 text-slate-500" />
-                  {accompanying.location_text || 'Địa bàn quận'}
+                  {accompanying.location_text || 'Địa bàn phụ trách'}
                 </span>
               )}
               {accompanying.readings_count && (

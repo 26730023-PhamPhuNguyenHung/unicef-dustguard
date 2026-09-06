@@ -10,8 +10,10 @@ export const registerSchema = z.object({
   password: z.string().min(6, 'Mật khẩu tối thiểu 6 ký tự'),
   fullName: z.string().min(2, 'Vui lòng nhập họ và tên'),
   phone: z.string().optional(),
-  district: z.string().optional(),
-  ward: z.string().optional(),
+  provinceCity: z.string().optional().default('Hà Nội'),
+  communeWard: z.string().optional().default('Láng Thượng'),
+  ward: z.string().optional().default('Láng Thượng'),
+  district: z.string().optional().default('Láng Thượng'), // Legacy compatibility field
   role: z.enum(['citizen', 'community_member', 'moderator']).optional().default('citizen')
 });
 
@@ -22,9 +24,11 @@ export const createReportSchema = z.object({
   latitude: z.number().min(-90).max(90),
   longitude: z.number().min(-180).max(180),
   address: z.string().min(3, 'Vui lòng nhập địa chỉ'),
-  ward: z.string().optional(),
-  district: z.string().min(1, 'Vui lòng chọn quận/huyện'),
-  city: z.string().default('TP. Hồ Chí Minh'),
+  provinceCity: z.string().optional().default('Hà Nội'),
+  communeWard: z.string().optional().default('Láng Thượng'),
+  ward: z.string().optional().default('Láng Thượng'),
+  district: z.string().optional().default('Láng Thượng'), // Legacy compatibility field
+  city: z.string().default('Hà Nội'),
   observedAt: z.string(),
   visibility: z.enum(['public', 'community', 'private']).default('public'),
   severityObservation: z.enum(['low', 'medium', 'high', 'unknown']).default('unknown'),

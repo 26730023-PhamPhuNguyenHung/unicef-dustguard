@@ -157,7 +157,7 @@ export class ReportRepository {
       data.address,
       data.ward || null,
       data.district,
-      data.city || 'TP. Hồ Chí Minh',
+      data.city || 'Hà Nội',
       data.observedAt,
       data.visibility || 'public',
       data.status || 'submitted',
@@ -376,7 +376,7 @@ export class CaseRepository {
       data.address,
       data.ward || null,
       data.district,
-      data.city || 'TP. Hồ Chí Minh',
+      data.city || 'Hà Nội',
       data.status || 'new',
       data.priority || 'normal',
       now,
@@ -1034,10 +1034,14 @@ export class AuditRepository {
 
 // 11. Dashboard Aggregations (Truy vấn DB thật 100%, không fake)
 export class DashboardRepository {
-  static getCommunityDashboard() {
+  static getCommunityDashboard(currentUserId?: string) {
+    const totalReports = sqliteClient.get('SELECT COUNT(*) as count FROM reports')?.count || 0;
     const newReports = sqliteClient.get('SELECT COUNT(*) as count FROM reports WHERE status = \'submitted\'')?.count || 0;
     const verifyingCases = sqliteClient.get('SELECT COUNT(*) as count FROM cases WHERE status = \'community_verifying\'')?.count || 0;
     const inProgressCases = sqliteClient.get('SELECT COUNT(*) as count FROM cases WHERE status = \'in_progress\'')?.count || 0;
+    const resolvedCases = sqliteClient.get('SELECT COUNT(*) as count FROM cases WHERE status = \'resolved\'')?.count || 0;
+    const usersCount = sqliteClient.get('SELECT COUNT(*) as count FROM users')?.count || 0;
+    const casesCount = sqliteClient.get('SELECT COUNT(*) as count FROM cases')?.count || 0;
     const updatedToday = sqliteClient.get('SELECT COUNT(*) as count FROM case_updates WHERE created_at >= date(\'now\', \'-1 day\')')?.count || 0;
 
     const nearbyCases = sqliteClient.all(`
@@ -1067,14 +1071,41 @@ export class DashboardRepository {
       LIMIT 3
     `);
 
+    let myReports: any[] = [];
+    if (currentUserId) {
+      myReports = sqliteClient.all(`
+        SELECT r.*,
+               (SELECT file_path FROM report_media WHERE report_id = r.id LIMIT 1) as thumbnailPath
+        FROM reports r
+        WHERE r.reporter_id = ?
+        ORDER BY r.created_at DESC
+        LIMIT 4
+      `, [currentUserId]);
+    } else {
+      myReports = sqliteClient.all(`
+        SELECT r.*,
+               (SELECT file_path FROM report_media WHERE report_id = r.id LIMIT 1) as thumbnailPath
+        FROM reports r
+        WHERE r.visibility = 'public' OR r.visibility IS NULL
+        ORDER BY r.created_at DESC
+        LIMIT 4
+      `);
+    }
+
     return {
       stats: {
+        totalReports,
         newReports,
         verifyingCases,
         inProgressCases,
+        resolvedCases,
+        communityMembers: usersCount,
+        activeCases: casesCount - resolvedCases,
         updatedToday
       },
       nearbyCases,
+      priorityCases,
+      myReports,
       recentActivity: recentUpdates.map((u: any) => ({
         id: u.id,
         type: u.update_type,
@@ -1084,8 +1115,7 @@ export class DashboardRepository {
         entityId: u.case_id,
         caseId: u.case_id,
         caseCode: u.caseCode
-      })),
-      priorityCases
+      }))
     };
   }
 

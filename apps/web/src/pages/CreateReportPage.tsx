@@ -20,8 +20,19 @@ import {
   Send,
   Eye,
   Crosshair,
-  ShieldCheck
+  ShieldCheck,
+  Search,
+  ExternalLink,
+  Loader2,
+  Navigation
 } from 'lucide-react';
+import {
+  searchAddressGeocoding,
+  reverseGeocodeCoords,
+  getGoogleMapsUrl,
+  GeocodeResult,
+  HO_CHI_MINH_DISTRICTS
+} from '../utils/geocoding.js';
 
 interface UploadedMediaItem {
   file: File;
@@ -47,11 +58,17 @@ export const CreateReportPage: React.FC = () => {
   const [severityObservation, setSeverityObservation] = useState<string>('medium');
 
   // Vị trí
-  const [latitude, setLatitude] = useState<number>(10.7769);
-  const [longitude, setLongitude] = useState<number>(106.7009);
+  const [latitude, setLatitude] = useState<number>(21.0205);
+  const [longitude, setLongitude] = useState<number>(105.8078);
   const [address, setAddress] = useState('');
-  const [district, setDistrict] = useState('Quận 7');
-  const [ward, setWard] = useState('Tân Phú');
+  const [district, setDistrict] = useState('Láng Thượng');
+  const [ward, setWard] = useState('Láng Thượng');
+
+  // Geocoding & Smart Search Map State (Google Maps Style)
+  const [mapSearchText, setMapSearchText] = useState('');
+  const [searchingMap, setSearchingMap] = useState(false);
+  const [geocodeSuggestions, setGeocodeSuggestions] = useState<GeocodeResult[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   // Bằng chứng
   const [mediaList, setMediaList] = useState<UploadedMediaItem[]>([]);
@@ -165,11 +182,68 @@ export const CreateReportPage: React.FC = () => {
     }
   };
 
-  // Khi click map chọn vị trí
-  const handleMapLocationSelect = (lat: number, lng: number) => {
+  // Tìm kiếm địa chỉ bằng Photon Geocoding (Google Maps style)
+  const handleSearchAddress = async (queryText?: string) => {
+    const q = (queryText !== undefined ? queryText : mapSearchText).trim();
+    if (!q) return;
+    setSearchingMap(true);
+    try {
+      const results = await searchAddressGeocoding(q, latitude, longitude);
+      setGeocodeSuggestions(results);
+      setShowSuggestions(results.length > 0);
+      if (results.length > 0) {
+        const top = results[0];
+        setLatitude(top.latitude);
+        setLongitude(top.longitude);
+        if (top.street || top.name) setAddress(top.street || top.name || top.displayName);
+        if (top.district) setDistrict(top.district);
+        if (top.ward) setWard(top.ward);
+        checkNearbyDuplicates(top.latitude, top.longitude);
+        success('Đã tìm thấy vị trí', `Đã ghim tại: ${top.displayName}`);
+      } else {
+        info('Tìm địa điểm', 'Chưa tìm thấy vị trí cụ thể. Hãy thử nhập thêm tên quận hoặc số nhà.');
+      }
+    } catch {
+      // Bỏ qua lỗi mạng
+    } finally {
+      setSearchingMap(false);
+    }
+  };
+
+  // Chọn 1 gợi ý từ danh sách địa chỉ tìm kiếm
+  const handleSelectSuggestion = (item: GeocodeResult) => {
+    setLatitude(item.latitude);
+    setLongitude(item.longitude);
+    if (item.street || item.name) setAddress(item.street || item.name || item.displayName);
+    if (item.district) setDistrict(item.district);
+    if (item.ward) setWard(item.ward);
+    setShowSuggestions(false);
+    setMapSearchText(item.displayName);
+    checkNearbyDuplicates(item.latitude, item.longitude);
+    success('Đã chọn vị trí', item.displayName);
+  };
+
+  // Khi click map hoặc kéo thả ghim chọn vị trí
+  const handleMapLocationSelect = async (lat: number, lng: number) => {
     setLatitude(lat);
     setLongitude(lng);
     checkNearbyDuplicates(lat, lng);
+
+    // Tự động Reverse Geocode để gợi ý địa chỉ khi kéo thả ghim
+    try {
+      const rev = await reverseGeocodeCoords(lat, lng);
+      if (rev) {
+        if (!address.trim() || address === 'Vị trí ghim trên bản đồ') {
+          setAddress(rev.street || rev.name || rev.displayName);
+        }
+        if (rev.ward && !ward) {
+          setWard(rev.ward);
+          setDistrict(rev.ward);
+        }
+      }
+    } catch {
+      // Bỏ qua
+    }
   };
 
   // Xử lý upload ảnh
@@ -304,7 +378,7 @@ export const CreateReportPage: React.FC = () => {
               </div>
               <div className="flex-1 text-xs sm:text-sm leading-relaxed">
                 <span className="font-bold text-stone-900">Gửi phản ánh nhanh không cần đăng nhập:</span> Bạn đang gửi tín hiệu cộng đồng ẩn danh. 
-                Nếu bạn là Tình nguyện viên / Đoàn viên muốn nhận điểm rèn luyện thanh niên,{' '}
+                Nếu bạn muốn ghi nhận hoạt động vào hồ sơ đóng góp của mình,{' '}
                 <Link to="/login?redirect=/reports/new" className="font-bold text-primary underline hover:text-primary-dark">
                   Đăng nhập tại đây
                 </Link>.
@@ -319,30 +393,53 @@ export const CreateReportPage: React.FC = () => {
                 </span>
               </div>
               <span className="text-[11px] font-bold text-emerald-800 bg-emerald-100/80 px-2.5 py-0.5 rounded-full">
-                Tích lũy rèn luyện
+                Ghi nhận đóng góp
               </span>
             </div>
           )}
 
-          {/* Stepper Progress Bar */}
-          <div className="grid grid-cols-4 gap-2">
+          {/* Enhanced Human-Centric Stepper */}
+          <div className="flex items-center justify-between relative px-2 sm:px-6">
+            <div className="absolute left-6 right-6 top-4 h-0.5 bg-stone-200 -z-0" />
+            <div
+              className="absolute left-6 top-4 h-0.5 bg-primary transition-all duration-300 -z-0"
+              style={{ width: `${((step - 1) / 3) * 100}%` }}
+            />
             {[
               { id: 1, label: 'Thông tin' },
               { id: 2, label: 'Vị trí' },
               { id: 3, label: 'Bằng chứng' },
-              { id: 4, label: 'Gửi' }
-            ].map((s) => (
-              <div key={s.id} className="space-y-1">
-                <div
-                  className={`h-2 rounded-full transition-all ${
-                    step >= s.id ? 'bg-primary' : 'bg-surface-secondary'
-                  }`}
-                />
-                <div className="text-[11px] font-medium text-content-sub text-center hidden sm:block">
-                  {s.label}
+              { id: 4, label: 'Xác nhận' }
+            ].map((s) => {
+              const isCompleted = step > s.id;
+              const isCurrent = step === s.id;
+              return (
+                <div key={s.id} className="flex flex-col items-center gap-1.5 z-10">
+                  <div
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
+                      isCompleted
+                        ? 'bg-primary text-white ring-2 ring-primary/20'
+                        : isCurrent
+                        ? 'bg-primary text-white ring-4 ring-primary/20 scale-105 shadow-xs'
+                        : 'bg-white text-content-sub border border-stone-300'
+                    }`}
+                  >
+                    {isCompleted ? <CheckCircle2 className="w-4 h-4" /> : s.id}
+                  </div>
+                  <span
+                    className={`text-[11px] font-bold ${
+                      isCurrent
+                        ? 'text-primary'
+                        : isCompleted
+                        ? 'text-content-main'
+                        : 'text-content-muted'
+                    }`}
+                  >
+                    {s.label}
+                  </span>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
@@ -454,74 +551,159 @@ export const CreateReportPage: React.FC = () => {
 
       {/* BƯỚC 2: Ở ĐÂU? */}
       {step === 2 && (
-        <div className="bg-surface-card rounded-civic-lg border border-border-subtle p-6 sm:p-8 space-y-6 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-lg font-bold text-content-main mb-1">
-                Vị trí bạn quan sát ở đâu?
-              </h2>
-              <p className="text-xs text-content-sub">
-                Nhấp trực tiếp lên bản đồ để ghim tọa độ chính xác.
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={handleGetCurrentLocation}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-surface-secondary text-content-main text-xs font-semibold hover:bg-gray-200 transition-colors"
-            >
-              <Crosshair className="w-4 h-4 text-primary" />
-              Lấy GPS của tôi
-            </button>
+        <div className="bg-surface-card rounded-civic-lg border border-border-subtle p-6 sm:p-8 space-y-5 shadow-sm">
+          <div>
+            <h2 className="text-lg font-bold text-content-main mb-1">
+              Vị trí bạn quan sát ở đâu?
+            </h2>
+            <p className="text-xs text-content-sub">
+              Tìm kiếm địa chỉ hoặc kéo thả ghim trực tiếp trên bản đồ để xác định tọa độ chính xác như Google Maps.
+            </p>
           </div>
 
-          <div className="h-72 w-full rounded-xl overflow-hidden border border-border-subtle">
+          {/* Thanh tìm kiếm vị trí kiểu Google Maps */}
+          <div className="relative">
+            <div className="flex items-center gap-2">
+              <div className="relative flex-1">
+                <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  value={mapSearchText}
+                  onChange={(e) => {
+                    setMapSearchText(e.target.value);
+                    if (e.target.value.length > 2) {
+                      handleSearchAddress(e.target.value);
+                    }
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      handleSearchAddress();
+                    }
+                  }}
+                  placeholder="Tìm kiếm địa chỉ, tên đường hoặc địa danh (VD: 62 Nguyễn Chí Thanh)..."
+                  className="w-full pl-10 pr-20 py-2.5 rounded-xl border border-border-subtle focus:border-primary focus:outline-none text-sm bg-white shadow-2xs"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleSearchAddress()}
+                  disabled={searchingMap}
+                  className="absolute right-1.5 top-1/2 -translate-y-1/2 px-3 py-1 bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold rounded-lg transition-colors flex items-center gap-1"
+                >
+                  {searchingMap ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : 'Tìm'}
+                </button>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleGetCurrentLocation}
+                title="Lấy vị trí GPS hiện tại của thiết bị"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-surface-secondary hover:bg-stone-200 text-content-main text-xs font-bold transition-colors shrink-0 shadow-2xs"
+              >
+                <Crosshair className="w-4 h-4 text-primary" />
+                <span className="hidden sm:inline">GPS của tôi</span>
+              </button>
+            </div>
+
+            {/* Dropdown gợi ý tìm kiếm */}
+            {showSuggestions && geocodeSuggestions.length > 0 && (
+              <div className="absolute top-full left-0 right-0 mt-1.5 bg-white border border-border-subtle rounded-xl shadow-lg z-50 overflow-hidden divide-y divide-stone-100 max-h-60 overflow-y-auto">
+                {geocodeSuggestions.map((item, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => handleSelectSuggestion(item)}
+                    className="w-full text-left px-3.5 py-2.5 hover:bg-stone-50 transition-colors flex items-start gap-2.5"
+                  >
+                    <MapPin className="w-4 h-4 text-[#B51F24] shrink-0 mt-0.5" />
+                    <div>
+                      <div className="text-xs font-bold text-slate-800 line-clamp-1">{item.name || item.street || item.displayName}</div>
+                      <div className="text-[11px] text-slate-500 line-clamp-1">{item.displayName}</div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="h-72 w-full rounded-xl overflow-hidden border border-border-subtle relative shadow-2xs">
             <LeafletMap
               center={[latitude, longitude]}
-              zoom={14}
+              zoom={15}
               height="100%"
               selectedLocation={{ lat: latitude, lng: longitude }}
               onLocationSelect={handleMapLocationSelect}
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Hướng dẫn và liên kết Google Maps */}
+          <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500 px-1">
+            <span className="flex items-center gap-1">
+              <span className="text-amber-600 font-bold">💡 Mẹo:</span> Bạn có thể <strong>kéo thả ghim đỏ</strong> hoặc nhấp bất kỳ đâu trên bản đồ để căn chỉnh vị trí.
+            </span>
+            <a
+              href={getGoogleMapsUrl(latitude, longitude, address)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-[11px] font-bold text-primary hover:underline"
+            >
+              <span>Xem vị trí trên Google Maps</span>
+              <ExternalLink className="w-3 h-3" />
+            </a>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
             <div className="sm:col-span-2 space-y-1.5">
-              <label className="block text-xs font-bold uppercase tracking-wider text-content-sub">
-                Địa chỉ chi tiết hoặc tên đoạn đường *
-              </label>
+              <div className="flex items-center justify-between">
+                <label className="block text-xs font-bold uppercase tracking-wider text-content-sub">
+                  Địa chỉ chi tiết hoặc tên đoạn đường *
+                </label>
+                {address && (
+                  <button
+                    type="button"
+                    onClick={() => handleSearchAddress(address)}
+                    className="text-[11px] text-primary hover:underline font-bold inline-flex items-center gap-1"
+                  >
+                    <Navigation className="w-3 h-3" />
+                    Ghim vị trí theo địa chỉ này
+                  </button>
+                )}
+              </div>
               <input
                 type="text"
                 required
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
-                placeholder="VD: Trước số 235 đường Nguyễn Văn Linh, đoạn gần cầu..."
+                placeholder="VD: Số 62 Nguyễn Chí Thanh, đối diện cổng trường..."
                 className="w-full px-4 py-2.5 rounded-xl border border-border-subtle focus:border-primary focus:outline-none text-sm bg-white"
               />
             </div>
 
             <div className="space-y-1.5">
               <label className="block text-xs font-bold uppercase tracking-wider text-content-sub">
-                Quận / Huyện *
+                Tỉnh / Thành phố *
+              </label>
+              <input
+                type="text"
+                readOnly
+                value="Hà Nội"
+                className="w-full px-4 py-2.5 rounded-xl border border-border-subtle text-sm bg-stone-100 text-stone-700 cursor-not-allowed font-medium"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="block text-xs font-bold uppercase tracking-wider text-content-sub">
+                Phường / Xã *
               </label>
               <input
                 type="text"
                 required
-                value={district}
-                onChange={(e) => setDistrict(e.target.value)}
-                placeholder="VD: Quận 7"
-                className="w-full px-4 py-2.5 rounded-xl border border-border-subtle focus:border-primary focus:outline-none text-sm bg-white"
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="block text-xs font-bold uppercase tracking-wider text-content-sub">
-                Phường / Xã
-              </label>
-              <input
-                type="text"
                 value={ward}
-                onChange={(e) => setWard(e.target.value)}
-                placeholder="VD: Phường Tân Phú"
+                onChange={(e) => {
+                  setWard(e.target.value);
+                  setDistrict(e.target.value);
+                }}
+                placeholder="VD: Phường Láng Thượng"
                 className="w-full px-4 py-2.5 rounded-xl border border-border-subtle focus:border-primary focus:outline-none text-sm bg-white"
               />
             </div>

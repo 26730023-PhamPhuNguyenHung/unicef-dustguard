@@ -78,7 +78,7 @@ export const RoleStories: React.FC<RoleStoriesProps> = ({ lang }) => {
                 </div>
                 <div className="flex items-center gap-2.5 text-[13px] font-medium text-[#334155]">
                   <Award className="w-4 h-4 text-[#D97706] shrink-0" />
-                  <span>{lang === 'vi' ? 'Tích lũy giờ tình nguyện và chứng chỉ tín chỉ ngoại khóa cho sinh viên' : 'Accumulate volunteer hours and verified civic badges'}</span>
+                  <span>{lang === 'vi' ? 'Ghi nhận thời gian hoạt động thực tế và dấu ấn đóng góp vì môi trường' : 'Accumulate volunteer hours and verified community impact'}</span>
                 </div>
               </div>
 

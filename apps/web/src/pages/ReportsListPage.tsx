@@ -99,12 +99,14 @@ export const ReportsListPage: React.FC = () => {
               onChange={(e) => setDistrict(e.target.value)}
               className="bg-transparent font-medium text-content-main focus:outline-none cursor-pointer w-full sm:w-auto"
             >
-              <option value="">Tất cả quận/huyện</option>
-              <option value="Quận 1">Quận 1</option>
-              <option value="Quận 7">Quận 7</option>
-              <option value="Bình Thạnh">Bình Thạnh</option>
-              <option value="TP. Thủ Đức">TP. Thủ Đức</option>
-              <option value="Bình Chánh">Bình Chánh</option>
+              <option value="">Tất cả địa bàn (Hà Nội)</option>
+              <option value="Láng Thượng">Phường Láng Thượng</option>
+              <option value="Láng Hạ">Phường Láng Hạ</option>
+              <option value="Thành Công">Phường Thành Công</option>
+              <option value="Giảng Võ">Phường Giảng Võ</option>
+              <option value="Ngọc Khánh">Phường Ngọc Khánh</option>
+              <option value="Trung Hòa">Phường Trung Hòa</option>
+              <option value="Dịch Vọng">Phường Dịch Vọng</option>
             </select>
           </div>
         </div>

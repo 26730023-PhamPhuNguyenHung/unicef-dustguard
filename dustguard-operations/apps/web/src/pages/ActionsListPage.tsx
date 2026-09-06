@@ -140,9 +140,19 @@ export const ActionsListPage: React.FC = () => {
                         ? 'bg-emerald-100 text-emerald-800'
                         : act.status === 'SUBMITTED'
                         ? 'bg-blue-100 text-blue-800'
+                        : act.status === 'CLOSED'
+                        ? 'bg-slate-100 text-slate-700'
                         : 'bg-rose-100 text-rose-800'
                     }`}>
-                      {act.status}
+                      {act.status === 'VERIFIED'
+                        ? 'Đã nghiệm thu'
+                        : act.status === 'SUBMITTED'
+                        ? 'Đã nộp báo cáo'
+                        : act.status === 'CLOSED'
+                        ? 'Đã đóng'
+                        : act.status === 'IN_PROGRESS'
+                        ? 'Đang xử lý'
+                        : 'Đang mở'}
                     </span>
 
                     {isOverdue && (
@@ -174,7 +184,16 @@ export const ActionsListPage: React.FC = () => {
                   {hasSubmissions && (
                     <div className="mt-3 p-3 bg-blue-50/40 rounded-lg border border-blue-200 space-y-1.5">
                       <div className="flex items-center justify-between font-bold text-blue-900 text-[11px]">
-                        <span>Báo cáo khắc phục mới nhất: ({act.submissions![0].review_status})</span>
+                        <span>
+                          Báo cáo khắc phục mới nhất:{' '}
+                          <span className="font-semibold">
+                            {act.submissions![0].review_status === 'APPROVED'
+                              ? '(Đã phê duyệt)'
+                              : act.submissions![0].review_status === 'REJECTED'
+                              ? '(Yêu cầu làm lại)'
+                              : '(Chờ duyệt)'}
+                          </span>
+                        </span>
                         <span>{act.submissions![0].submitted_by}</span>
                       </div>
                       <p className="text-slate-700">{act.submissions![0].description}</p>

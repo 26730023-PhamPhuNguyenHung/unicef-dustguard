@@ -14,6 +14,30 @@
   - `server/routes/worker/*.routes.js`: Domain routers độc lập (100–400 dòng/file).
 - **Tuyệt đối không biến thành Microservices**: Không chia thành 5–10 Worker riêng biệt để tránh phức tạp hóa distributed infrastructure.
 
+### 📌 Invariant -1.34: Dashboard API Contract, Optional Auth & MyReports Synchronization (Side A)
+- **Bẫy lỗi**:
+  1. Router `/api/dashboard/community` không áp dụng middleware `optionalAuthenticateToken`, làm mất thông tin người dùng đang đăng nhập (`req.user = undefined`).
+  2. `DashboardRepository.getCommunityDashboard()` không nhận `currentUserId`, bỏ quên query `myReports` và thiếu `stats.totalReports` làm UI hiển thị `Xem tất cả ()` và luôn rơi vào Empty State "Chưa có phản ánh nào gần đây" dù trong SQLite đã lưu hàng chục phản ánh.
+  3. Lầm tưởng tên cột trong SQLite: bảng `reports` lưu `reporter_id` chứ không phải `user_id`. Truy vấn `WHERE user_id = ?` gây lỗi cú pháp cột.
+  4. Frontend `DashboardPage.tsx` khởi tạo `useEffect` với `[]` rỗng, không tự động re-fetch khi đổi vai trò thử nghiệm (`auth:role_changed`) hoặc khi quay lại sau khi tạo phản ánh mới.
+- **Quy tắc chuẩn**:
+  - Các route dashboard công khai nhưng có yếu tố cá nhân hóa bắt buộc phải bọc `optionalAuthenticateToken` để nhận diện session nếu có.
+  - Luôn trả về `myReports` theo `reporter_id` của user hiện tại, hoặc trả về các phản ánh công khai mới nhất nếu là khách vãng lai.
+  - Luôn đảm bảo `stats` trả về đủ `totalReports`, `newReports`, `verifyingCases`, `inProgressCases`, `resolvedCases`, `communityMembers`, `activeCases`, `updatedToday`.
+  - Frontend `useEffect` lắng nghe `[user?.id]` kết hợp listener `auth:role_changed` để đảm bảo dữ liệu luôn đồng bộ tức thì khi đăng nhập hay gửi phản ánh mới.
+
+### 📌 Invariant -1.33: DustGuard Operations (Side B) API Contract & Multi-Viewport Resilience
+- **Bẫy lỗi**:
+  1. Router server truy vấn cột không tồn tại (`SELECT * FROM signals WHERE status != 'ARCHIVED'`) gây ra lỗi 500 `no such column: status` làm sập toàn bộ API `GET /api/iot/devices/:id`.
+  2. Frontend gọi `api.iot.readings()` nhưng backend thiếu endpoint `GET /api/iot/devices/:id/readings` dẫn đến lỗi 404 và toast lỗi liên tục.
+  3. Phân quyền trong API dashboard đặt điều kiện `if (role === 'supervisor' || role === 'admin')` cho `supervisorData` khiến người dùng cán bộ (`staff`) mở trang `/supervisor/workload` bị đứng ở trạng thái loading/trống rỗng.
+  4. Màn hình laptop 14 inch ở mức Windows scale 125% (viewport ~1280px) làm bảng hàng đợi xử lý ưu tiên co rúm cột, che mất nút hành động.
+- **Quy tắc chuẩn**:
+  - Luôn kiểm tra schema SQL (`schema.sql`) trước khi thêm mệnh đề `WHERE` trên bảng cơ sở dữ liệu. Bảng `signals` dùng `integrity_status` thay vì `status`.
+  - Mọi hàm gọi trong `api/client.ts` bắt buộc phải có route tương ứng trên server (`iot.router.ts`).
+  - Dữ liệu điều phối nhân lực (`supervisorData`) luôn được cung cấp để UI tự thích ứng theo thẩm quyền thay vì backend ngắt dữ liệu đột ngột.
+  - Bảng dữ liệu nghiệp vụ quan trọng bắt buộc có `min-w-[880px]` bên trong container `overflow-x-auto` để đảm bảo hiển thị trọn vẹn 7 cột trên màn hình thu phóng 125% mà không bị đè chữ.
+
 ### 📌 Invariant -1.14: Đồng Nhất Tên Cột D1 SQLite Schema (slaDeadline vs deadline & case_timelines)
 - **Nguyên nhân**: Sử dụng tùy tiện tên cột trong câu lệnh SQL (`c.deadline` thay vì `c.slaDeadline`; `step, title, description` thay vì `eventType, eventTitle, eventDescription` trong `case_timelines`) làm SQLite ném ngoại lệ `no such column` khiến API sập và trả mã lỗi 500.
 - **Quy tắc chuẩn**:
@@ -69,6 +93,14 @@
   - **Zero Fake Success**: Tuyệt đối không sinh mã ngẫu nhiên `Math.random()`, không alert demo và không `setSuccess(true)` trong khối catch. Khi API lỗi, phải hiển thị thông báo lỗi RFC 7807 tiếng Việt rõ ràng để người dùng biết và thử lại.
   - **Evidence Integrity**: Ảnh minh chứng phải được upload qua `/api/upload` lên R2 storage và tính mã băm SHA-256 trước khi lưu URL vào D1.
   - **Task-to-Case DAG Sync**: Khi cán bộ hoàn tất nhiệm vụ thực địa, phải gọi `POST /api/staff/tasks/:id/complete` để ghi nhận timeline và cập nhật trạng thái Case trong CSDL D1.
+
+### 📌 Invariant -1.20: Xử Lý Upload Ảnh Khách Vãng Lai & Webhook Đồng Bộ Hai Chiều Side A ↔ Side B
+- **Nguyên nhân**:
+  1. `reports.routes.ts` cưỡng bức lấy `req.user!.id` khi người dùng upload tệp ảnh đính kèm cho phản ánh (`/api/reports/:id/media`). Với khách vãng lai (Citizen gửi nhanh chưa login), `req.user` là `undefined` dẫn đến runtime crash `TypeError: Cannot read properties of undefined (reading 'id')` gây lỗi 500.
+  2. Bàn giao vụ việc từ Side A sang Side B bị đứt gãy nếu không cập nhật mã hồ sơ gốc và không thiết lập webhook đồng bộ trạng thái ngược lại (`/api/integrations/operations/sync`).
+- **Quy tắc chuẩn**:
+  - Khi lưu media phản ánh, luôn kiểm tra an toàn: `const uploaderId = req.user?.id || report.reporter_id || 'usr_citizen'`.
+  - Trong luồng liên thông 2 chiều: Khi cán bộ Side B thụ lý vụ việc và đổi trạng thái (`ASSIGNED`, `IN_PROGRESS`, `RESOLVED`), hệ thống Side B tự động gửi payload webhook sang Side A kèm `case_id`, `new_status`, `update_title`, `update_note` để ghi nhận ngay mốc diễn tiến vào bảng `case_updates` của Side A.
 
 ### 📌 Invariant -1.2: Nguyên Tắc Vàng "Move, Don't Rewrite"
 - **Nguyên tắc**: Mỗi commit chỉ được phép thay đổi vị trí code HOẶC thay đổi behavior, **không được làm cả hai cùng một lúc**.
@@ -824,4 +856,11 @@
 ### 🚨 Trap 18.4: Tuyến đường cũ thiếu Alias Redirect dẫn tới 404 hoặc Test Matrix Failure
 - **Nguyên nhân**: Khi tái cấu trúc các phân hệ cộng đồng, các URL cũ được lưu trong tài liệu hoặc liên kết ngoài như `/community/discover`, `/community/observations`, `/community/cases` bị thiếu trong bảng route, gây lỗi rớt route khi người dùng truy cập trực tiếp.
 - **Giải pháp**: Thiết lập các alias redirects chuẩn trong `routes.jsx` (`<Route path="discover" element={<Navigate to="/community" replace />} />`, etc.) để bảo đảm tính tương thích ngược 100%.
+
+### 🚨 Trap 18.5: Non-standard Tailwind Spacing Class (`px-4.5`) Làm Mất Padding và Gây Dính Mép Chữ (Truncation)
+- **Nguyên nhân**: Sử dụng class `px-4.5` không có trong preset mặc định của Tailwind CSS v3 và không được định nghĩa trong `tailwind.config.js`. Trình duyệt bỏ qua class này làm `padding-left: 0; padding-right: 0`, dẫn đến chữ *"Gửi phản ánh"* bị dính sát vào border của nút primary CTA hoặc rớt chữ khi container co lại.
+- **Giải pháp**:
+  1. Luôn sử dụng class spacing chuẩn của Tailwind: `px-4` (16px), `px-5` (20px), `px-6` (24px) hoặc cú pháp arbitrary `px-[18px]`.
+  2. Bắt buộc thêm `whitespace-nowrap shrink-0` cho tất cả interactive buttons trong header/navbar để đảm bảo chữ không bao giờ bị cắt ngắn hoặc vỡ dòng trên màn hình scale cao (như laptop 14" scale 125%).
+  3. Áp dụng quy tắc tối giản CTA: Header chỉ giữ **2 nút hành động chính** (Secondary Outlined Button "Đăng nhập" + Primary Red Button "Gửi phản ánh"), tránh nhồi nhét quá nhiều nút cạnh tranh thị giác.
 

@@ -49,31 +49,7 @@ const getDashboardData = (req: AuthRequest, res: Response) => {
     [userId]
   );
 
-  // 4. OPERATIONAL PULSE (Nhịp vận hành thời gian thực)
-  const latestSignals = query(
-    `SELECT id, title, source_type, location_text, observed_at, created_at
-     FROM signals
-     ORDER BY created_at DESC
-     LIMIT 4`
-  );
-
-  const incomingEvidence = query(
-    `SELECT ea.id, ea.file_name, ea.sha256, ea.integrity_status, ea.created_at, c.case_code
-     FROM evidence_assets ea
-     LEFT JOIN cases c ON ea.case_id = c.id
-     ORDER BY ea.created_at DESC
-     LIMIT 4`
-  );
-
-  const contractorSubmissions = query(
-    `SELECT rs.id, rs.description, rs.review_status, rs.submitted_at, rs.submitted_by, c.case_code
-     FROM remediation_submissions rs
-     LEFT JOIN cases c ON rs.case_id = c.id
-     ORDER BY rs.submitted_at DESC
-     LIMIT 4`
-  );
-
-  // 5. RECENT CASE ACTIVITY TIMELINE
+  // 4. RECENT CASE ACTIVITY TIMELINE
   const recentActivities = query(
     `SELECT ct.*, c.case_code, c.title as case_title
      FROM case_timeline ct
@@ -82,38 +58,35 @@ const getDashboardData = (req: AuthRequest, res: Response) => {
      LIMIT 10`
   );
 
-  // 6. Supervisor Additions
-  let supervisorData: any = null;
-  if (role === 'supervisor' || role === 'admin') {
-    const unassignedCases = query(
-      `SELECT * FROM cases WHERE assigned_staff_id IS NULL AND status != 'CLOSED' ORDER BY created_at DESC LIMIT 8`
-    );
+  // 5. Supervisor Additions
+  const unassignedCases = query(
+    `SELECT * FROM cases WHERE assigned_staff_id IS NULL AND status != 'CLOSED' ORDER BY created_at DESC LIMIT 8`
+  );
 
-    const staffWorkload = query(
-      `SELECT u.id, u.full_name, u.role, u.department,
-              count(c.id) as active_cases_count
-       FROM users u
-       LEFT JOIN cases c ON u.id = c.assigned_staff_id AND c.status != 'CLOSED'
-       WHERE u.role = 'staff' AND u.active = 1
-       GROUP BY u.id
-       ORDER BY active_cases_count DESC`
-    );
+  const staffWorkload = query(
+    `SELECT u.id, u.full_name, u.role, u.department,
+            count(c.id) as active_cases_count
+     FROM users u
+     LEFT JOIN cases c ON u.id = c.assigned_staff_id AND c.status != 'CLOSED'
+     WHERE u.role = 'staff' AND u.active = 1
+     GROUP BY u.id
+     ORDER BY active_cases_count DESC`
+  );
 
-    const overdueCases = query(
-      `SELECT c.*, u.full_name as assigned_staff_name
-       FROM cases c
-       LEFT JOIN users u ON c.assigned_staff_id = u.id
-       WHERE c.status != 'CLOSED' AND c.created_at < datetime('now', '-7 days')
-       ORDER BY c.created_at ASC
-       LIMIT 8`
-    );
+  const overdueCases = query(
+    `SELECT c.*, u.full_name as assigned_staff_name
+     FROM cases c
+     LEFT JOIN users u ON c.assigned_staff_id = u.id
+     WHERE c.status != 'CLOSED' AND c.created_at < datetime('now', '-7 days')
+     ORDER BY c.created_at ASC
+     LIMIT 8`
+  );
 
-    supervisorData = {
-      unassignedCases,
-      staffWorkload,
-      overdueCases,
-    };
-  }
+  const supervisorData = {
+    unassignedCases,
+    staffWorkload,
+    overdueCases,
+  };
 
   const payload = {
     metrics: {
@@ -128,11 +101,6 @@ const getDashboardData = (req: AuthRequest, res: Response) => {
       ready_to_close: readyToCloseCount,
     },
     priorityQueue,
-    operationalPulse: {
-      signals: latestSignals,
-      evidence: incomingEvidence,
-      submissions: contractorSubmissions,
-    },
     myQueue,
     recentActivities,
     supervisor: supervisorData,

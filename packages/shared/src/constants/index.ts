@@ -65,11 +65,16 @@ export const TASK_STATUS_LABELS: Record<TaskStatus, { label: string; color: stri
   cancelled: { label: 'Đã hủy', color: '#475467', bg: '#F2F4F7' }
 };
 
-export const HO_CHI_MINH_CENTER = {
-  lat: 10.7769,
-  lng: 106.7009
+export const HANOI_CENTER = {
+  lat: 21.0205,
+  lng: 105.8078,
+  address: '62 Nguyễn Chí Thanh, Phường Láng Thượng, Hà Nội'
 };
+
+// Legacy compatibility alias (tránh gãy build cũ nhưng trỏ về chuẩn mới nếu cần)
+export const HO_CHI_MINH_CENTER = HANOI_CENTER;
 
 export const DUPLICATE_SEARCH_RADIUS_METERS = 150;
 
 export * from './permissions.js';
+export * from './location.js';

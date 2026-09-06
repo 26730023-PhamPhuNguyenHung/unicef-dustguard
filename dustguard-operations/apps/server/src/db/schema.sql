@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS projects (
   name TEXT NOT NULL,
   address TEXT NOT NULL,
   district TEXT NOT NULL,
-  province TEXT NOT NULL DEFAULT 'TP. Hồ Chí Minh',
+  province TEXT NOT NULL DEFAULT 'Hà Nội',
   latitude REAL,
   longitude REAL,
   contractor_id TEXT REFERENCES contractors(id) ON DELETE SET NULL,

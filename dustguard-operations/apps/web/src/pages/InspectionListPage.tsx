@@ -69,9 +69,11 @@ export const InspectionListPage: React.FC = () => {
                   <span className={`px-2 py-0.5 rounded font-bold ${
                     insp.status === 'COMPLETED' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
                   }`}>
-                    {insp.status}
+                    {insp.status === 'COMPLETED' ? 'Đã hoàn thành' : insp.status === 'IN_PROGRESS' ? 'Đang thực hiện' : 'Đã lên lịch'}
                   </span>
-                  <span className="text-slate-500 font-medium">Loại: {insp.inspection_type}</span>
+                  <span className="text-slate-500 font-medium">
+                    Loại: {insp.inspection_type === 'INITIAL' ? 'Ban đầu' : insp.inspection_type === 'REINSPECTION' ? 'Tái kiểm tra' : 'Đột xuất'}
+                  </span>
                 </div>
 
                 <Link to={`/cases/${insp.case_id}`}>

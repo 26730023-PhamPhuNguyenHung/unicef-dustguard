@@ -46,7 +46,10 @@ test('CROSS-SIDE BI-DIRECTIONAL SYNC (SIDE B -> SIDE A)', async (t) => {
   await t.test('2. Side B emits sync event: ACTION_REQUIRED (Ban hành yêu cầu khắc phục)', async () => {
     const res = await fetch(`${baseUrl}/api/integrations/operations/sync`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'x-service-key': 'dustguard-internal-2026'
+      },
       body: JSON.stringify({
         external_case_id: testCaseId,
         operations_case_id: 'op-case-001',
@@ -81,7 +84,10 @@ test('CROSS-SIDE BI-DIRECTIONAL SYNC (SIDE B -> SIDE A)', async (t) => {
   await t.test('3. Side B emits sync event: CLOSED (Nghiệm thu đạt và Đóng hồ sơ)', async () => {
     const res = await fetch(`${baseUrl}/api/integrations/operations/sync`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'x-service-key': 'dustguard-internal-2026'
+      },
       body: JSON.stringify({
         external_case_id: testCaseId,
         operations_case_id: 'op-case-001',

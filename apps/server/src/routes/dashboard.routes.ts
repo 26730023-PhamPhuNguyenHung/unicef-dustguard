@@ -1,17 +1,17 @@
 import { Router, Response } from 'express';
 import { DashboardRepository } from '../repositories/index.js';
-import { authenticateToken, requireRole } from '../middlewares/auth.js';
+import { authenticateToken, optionalAuthenticateToken, requireRole, AuthRequest } from '../middlewares/auth.js';
 
 const router = Router();
 
-// Dashboard cộng đồng công khai
-router.get('/', (req, res: Response): void => {
-  const data = DashboardRepository.getCommunityDashboard();
+// Dashboard cộng đồng công khai & theo phiên người dùng
+router.get('/', optionalAuthenticateToken, (req: AuthRequest, res: Response): void => {
+  const data = DashboardRepository.getCommunityDashboard(req.user?.id);
   res.json({ success: true, data });
 });
 
-router.get('/community', (req, res: Response): void => {
-  const data = DashboardRepository.getCommunityDashboard();
+router.get('/community', optionalAuthenticateToken, (req: AuthRequest, res: Response): void => {
+  const data = DashboardRepository.getCommunityDashboard(req.user?.id);
   res.json({ success: true, data });
 });
 

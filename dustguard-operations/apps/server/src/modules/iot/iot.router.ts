@@ -101,8 +101,8 @@ iotRouter.post('/devices', requireAuth, (req: Request, res: Response) => {
     device_code,
     name,
     location_text = req.body.location_name,
-    latitude = 10.7769,
-    longitude = 106.7009,
+    latitude = 21.0205,
+    longitude = 105.8078,
     project_id,
     secret_reference,
     firmware_version = '1.0.0',
@@ -137,8 +137,8 @@ iotRouter.post('/devices', requireAuth, (req: Request, res: Response) => {
       device_code.trim(),
       name.trim(),
       location_text.trim(),
-      Number(latitude) || 10.7769,
-      Number(longitude) || 106.7009,
+      Number(latitude) || 21.0205,
+      Number(longitude) || 105.8078,
       firmware_version,
       secretKey,
       project_id || null,
@@ -193,7 +193,7 @@ iotRouter.get('/devices/:id', requireAuth, (req: Request, res: Response) => {
   );
 
   const nearbySignals = query<any>(
-    `SELECT * FROM signals WHERE status != 'ARCHIVED' ORDER BY created_at DESC LIMIT 5`
+    `SELECT * FROM signals ORDER BY created_at DESC LIMIT 5`
   );
 
   const payload = {
@@ -212,6 +212,22 @@ iotRouter.get('/devices/:id', requireAuth, (req: Request, res: Response) => {
     data: payload,
     ...payload,
   });
+});
+
+// 2a. Device Readings History
+iotRouter.get('/devices/:id/readings', requireAuth, (req: Request, res: Response) => {
+  const { id } = req.params;
+  const limit = Math.min(parseInt((req.query.limit as string) || '50', 10), 100);
+  const device = queryOne<any>(`SELECT id FROM iot_devices WHERE id = ? OR device_code = ?`, [id, id]);
+  if (!device) {
+    res.status(404).json({ success: false, error: { code: 'NOT_FOUND', message: 'Không tìm thấy thiết bị IoT' } });
+    return;
+  }
+  const readings = query<any>(
+    `SELECT * FROM iot_readings WHERE device_id = ? ORDER BY recorded_at DESC LIMIT ?`,
+    [device.id, limit]
+  );
+  res.json({ success: true, readings });
 });
 
 // 2b. Create Case from IoT Anomaly

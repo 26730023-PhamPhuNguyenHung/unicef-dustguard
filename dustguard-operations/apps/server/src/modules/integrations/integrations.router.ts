@@ -113,15 +113,15 @@ integrationsRouter.post('/community/cases', (req, res, next) => {
     transaction(() => {
       run(
         `INSERT INTO cases (id, case_code, title, description, location_text, district, latitude, longitude, source, source_reference, source_report_count, status, contractor_name, contractor_id, priority, created_at, updated_at)
-         VALUES (?, ?, ?, ?, ?, 'TP.HCM', ?, ?, 'COMMUNITY', ?, ?, 'NEW', ?, ?, 'HIGH', datetime('now'), datetime('now'))`,
+         VALUES (?, ?, ?, ?, ?, 'Hà Nội', ?, ?, 'COMMUNITY', ?, ?, 'NEW', ?, ?, 'HIGH', datetime('now'), datetime('now'))`,
         [
           newCaseId,
           case_code,
           data.title,
           data.description || data.summary || '',
-          data.location || data.location_text || 'TP.HCM',
-          data.latitude ?? data.lat ?? 10.7769,
-          data.longitude ?? data.lng ?? 106.7009,
+          data.location || data.location_text || 'Hà Nội',
+          data.latitude ?? data.lat ?? 21.0205,
+          data.longitude ?? data.lng ?? 105.8078,
           data.external_case_id,
           data.report_count ?? (data.reports?.length || 1),
           data.contractor_name || null,

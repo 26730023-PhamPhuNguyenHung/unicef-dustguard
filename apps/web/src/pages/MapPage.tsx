@@ -114,8 +114,8 @@ export const MapPage: React.FC = () => {
             <LeafletMap
               cases={cases}
               height="600px"
-              center={selectedCase ? [selectedCase.latitude, selectedCase.longitude] : [10.7769, 106.7009]}
-              zoom={selectedCase ? 14 : 12}
+              center={selectedCase ? [selectedCase.latitude, selectedCase.longitude] : [21.0205, 105.8078]}
+              zoom={selectedCase ? 15 : 14}
               onMarkerClick={(c) => setSelectedCase(c)}
             />
           </div>

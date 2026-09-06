@@ -26,9 +26,9 @@ export const PublicReportModal: React.FC<PublicReportModalProps> = ({
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [locationText, setLocationText] = useState('');
-  const [district, setDistrict] = useState('Cầu Giấy');
-  const [latitude, setLatitude] = useState(21.0285);
-  const [longitude, setLongitude] = useState(105.8542);
+  const [district, setDistrict] = useState('Láng Thượng');
+  const [latitude, setLatitude] = useState(21.0205);
+  const [longitude, setLongitude] = useState(105.8078);
   const [reporterName, setReporterName] = useState('');
   const [reporterPhone, setReporterPhone] = useState('');
   const [urgency, setUrgency] = useState<'LOW' | 'NORMAL' | 'HIGH' | 'URGENT'>('HIGH');
@@ -124,13 +124,13 @@ export const PublicReportModal: React.FC<PublicReportModalProps> = ({
                 value={locationText}
                 onChange={e => setLocationText(e.target.value)}
                 className="w-full px-3 py-1.5 border border-slate-300 rounded-lg text-xs outline-none focus:ring-1 focus:ring-dustguard-red"
-                placeholder="Số 136 đường Xuân Thủy"
+                placeholder="Số 62 Nguyễn Chí Thanh"
               />
             </div>
 
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">
-                Quận / Huyện *
+                Phường / Xã (Hà Nội) *
               </label>
               <input
                 type="text"
@@ -138,7 +138,7 @@ export const PublicReportModal: React.FC<PublicReportModalProps> = ({
                 value={district}
                 onChange={e => setDistrict(e.target.value)}
                 className="w-full px-3 py-1.5 border border-slate-300 rounded-lg text-xs outline-none focus:ring-1 focus:ring-dustguard-red"
-                placeholder="Cầu Giấy"
+                placeholder="Láng Thượng"
               />
             </div>
           </div>

@@ -96,7 +96,7 @@ export const ActionNoticeExportPage: React.FC = () => {
           <tbody>
             <tr>
               <td className="w-1/2 align-top text-left font-bold leading-tight">
-                <div className="text-[12pt] uppercase tracking-tight">ỦY BAN NHÂN DÂN QUẬN / HUYỆN</div>
+                <div className="text-[12pt] uppercase tracking-tight">ỦY BAN NHÂN DÂN THÀNH PHỐ HÀ NỘI</div>
                 <div className="text-[12pt] uppercase tracking-tight font-extrabold">TỔ CÔNG TÁC GIÁM SÁT MÔI TRƯỜNG</div>
                 <div className="text-[11pt] font-normal italic mt-1">Số: {action.id.slice(0, 8).toUpperCase()}/TB-KPMT</div>
               </td>
@@ -175,7 +175,7 @@ export const ActionNoticeExportPage: React.FC = () => {
               <td className="w-1/2 align-top text-left text-[11pt]">
                 <strong>Nơi nhận:</strong><br />
                 - Như trên (để thực hiện);<br />
-                - Sở TN&MT, UBND Quận (để b/c);<br />
+                - Sở TN&MT, UBND Địa phương (để b/c);<br />
                 - Lưu: VT, Tổ Giám sát.
               </td>
               <td className="w-1/2 align-top text-center">

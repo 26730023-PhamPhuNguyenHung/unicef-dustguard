@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.js';
 import { usePermission } from '../../utils/permissions.js';
 import { NAVIGATION_CONFIG, NavItemConfig, NavSectionConfig } from '../../config/navigation.js';
 import { UserRole } from '@dustguard/shared';
+import { apiRequest } from '../../api/client.js';
 import {
   LogOut,
   PlusCircle,
@@ -12,8 +13,20 @@ import {
   LayoutDashboard,
   Map,
   Bookmark,
-  User
+  User,
+  Bell,
+  Search,
+  ChevronDown,
+  ShieldCheck
 } from 'lucide-react';
+
+const ROLE_LABELS: Record<string, string> = {
+  citizen: 'Người dân',
+  community_member: 'Thành viên CLB',
+  member: 'Thành viên CLB',
+  moderator: 'Điều phối viên',
+  admin: 'Quản trị viên'
+};
 
 export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, logout, devSwitchRole } = useAuth();
@@ -22,16 +35,35 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [switchLoading, setSwitchLoading] = useState(false);
+  const [unreadNotifications, setUnreadNotifications] = useState(0);
+
+  useEffect(() => {
+    if (user) {
+      apiRequest<any>('/notifications')
+        .then((res) => {
+          const list = Array.isArray(res) ? res : (res.notifications || []);
+          const unread = list.filter((n: any) => !n.is_read && !n.isRead).length;
+          setUnreadNotifications(unread);
+        })
+        .catch(() => {});
+    } else {
+      setUnreadNotifications(0);
+    }
+  }, [user, location.pathname]);
 
   const isActive = (path: string) => {
-    if (path === '/dashboard' && location.pathname === '/') return true;
-    return location.pathname.startsWith(path);
+    if (path === '/dashboard' && (location.pathname === '/' || location.pathname === '/dashboard')) return true;
+    if (path === '/reports' && location.pathname === '/reports') return true;
+    if (path !== '/dashboard' && path !== '/reports') {
+      return location.pathname.startsWith(path);
+    }
+    return false;
   };
 
   const navItemClass = (path: string) => `
-    flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all
+    flex items-center gap-3 px-3.5 py-2.5 rounded-civic text-xs font-semibold transition-all
     ${isActive(path)
-      ? 'bg-primary-light text-primary font-bold shadow-xs'
+      ? 'bg-primary-light text-primary font-bold border-l-3 border-primary shadow-xs'
       : 'text-content-sub hover:bg-surface-secondary hover:text-content-main'
     }
   `;
@@ -43,7 +75,7 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
     try {
       await devSwitchRole(targetRole);
 
-      // Revalidate ngay lập tức route hiện tại
+      // Revalidate ngay lập tức route hiện tại nếu quyền hạn thay đổi
       const currentPath = location.pathname;
       if (currentPath.startsWith('/moderator') && targetRole !== 'moderator' && targetRole !== 'admin') {
         navigate('/dashboard', { replace: true });
@@ -62,10 +94,8 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
   // Render các section được phân quyền khai báo
   const renderNavSections = (onItemClick?: () => void) => {
     return NAVIGATION_CONFIG.map((section: NavSectionConfig) => {
-      // Lọc các item thỏa mãn capability permission
       const visibleItems = section.items.filter((item: NavItemConfig) => can(item.permission));
 
-      // BẮT BUỘC: Section không có item visible thì KHÔNG render section header
       if (visibleItems.length === 0) {
         return null;
       }
@@ -74,7 +104,7 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
 
       return (
         <div key={section.id} className="pt-3 first:pt-0 space-y-1">
-          <div className="text-[11px] font-extrabold uppercase tracking-wider px-3 py-1.5 flex items-center gap-1.5 text-content-muted">
+          <div className="text-[10px] font-extrabold uppercase tracking-wider px-3 py-1.5 flex items-center gap-1.5 text-content-muted">
             {SectionIcon && <SectionIcon className="w-3.5 h-3.5 text-primary" />}
             {section.title}
           </div>
@@ -101,61 +131,88 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
   };
 
   return (
-    <div className="min-h-screen bg-surface-bg flex flex-col lg:flex-row text-content-main">
+    <div className="min-h-screen bg-surface-bg flex flex-col lg:flex-row text-content-main antialiased">
       {/* 1. Sidebar Desktop (240px) */}
-      <aside className="hidden lg:flex flex-col w-60 bg-surface-card border-r border-border-subtle shrink-0 h-screen sticky top-0 overflow-y-auto">
-        {/* Brand */}
-        <div className="p-5 border-b border-border-subtle">
-          <Link to="/dashboard" className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-primary text-white flex items-center justify-center font-bold text-lg shadow-sm">
-              🛡️
-            </div>
+      <aside className="hidden lg:flex flex-col w-60 bg-surface-card border-r border-border-subtle shrink-0 h-screen sticky top-0 overflow-y-auto z-20">
+        {/* Brand Header */}
+        <div className="p-4 border-b border-border-subtle">
+          <Link to="/dashboard" className="flex items-center gap-2.5 select-none group">
+            <img
+              src="/images/logo/dustguard-shield-logo.webp"
+              alt="DustGuard Shield Logo"
+              className="h-8 w-auto object-contain shrink-0 group-hover:scale-105 transition-transform"
+              width={28}
+              height={33}
+            />
             <div>
-              <div className="font-extrabold text-base tracking-tight text-content-main leading-none">
+              <div className="font-extrabold text-base tracking-tight text-content-main leading-tight">
                 DustGuard
               </div>
-              <div className="text-[10px] font-extrabold tracking-widest text-primary uppercase mt-0.5">
-                COMMUNITY
+              <div className="text-[11px] font-medium text-content-sub leading-none mt-0.5">
+                Cộng đồng môi trường
               </div>
             </div>
           </Link>
         </div>
 
-        {/* Primary CTA */}
-        <div className="p-4">
+        {/* Dominant Primary Action CTA */}
+        <div className="p-3.5 pb-2">
           <Link
             to="/reports/new"
-            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-white font-bold text-xs hover:bg-primary-dark transition-all shadow-xs active:scale-95"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-civic bg-primary text-white font-bold text-xs hover:bg-primary-hover transition-all shadow-xs active:scale-98 cursor-pointer"
           >
             <PlusCircle className="w-4 h-4" />
-            Gửi phản ánh
+            <span>Gửi phản ánh</span>
           </Link>
         </div>
 
-        {/* Dynamic Navigation Links based on Permissions */}
-        <nav className="flex-1 px-3 space-y-3 overflow-y-auto pb-6">
+        {/* Dynamic Navigation Links */}
+        <nav className="flex-1 px-3 space-y-2 overflow-y-auto pb-4 scrollbar-thin">
           {renderNavSections()}
         </nav>
 
-        {/* User Footer */}
-        <div className="p-3 border-t border-border-subtle bg-surface-secondary/40">
+        {/* User Footer Card & Integrated Dev Mode Role Switcher */}
+        <div className="p-3 border-t border-border-subtle bg-surface-subtle/80 space-y-2">
+          {/* Dev-Only Role Switcher Dropdown (Never renders in Production) */}
+          {import.meta.env.DEV === true && (
+            <div className="p-1.5 rounded-civic bg-surface-secondary/70 border border-border-subtle flex items-center justify-between text-[11px]">
+              <span className="font-extrabold text-[10px] text-content-muted uppercase tracking-wider px-1">
+                DEV:
+              </span>
+              <select
+                disabled={switchLoading}
+                value={user?.role || 'citizen'}
+                onChange={(e) => handleDevSwitchRole(e.target.value as UserRole)}
+                className="text-xs font-semibold bg-white text-content-main border border-border-subtle rounded-md py-1 px-2 cursor-pointer outline-none focus:border-primary"
+                aria-label="Chọn vai trò thử nghiệm"
+              >
+                <option value="citizen">Người dân (Citizen)</option>
+                <option value="community_member">Thành viên CLB (Member)</option>
+                <option value="moderator">Điều phối viên (Moderator)</option>
+                <option value="admin">Quản trị viên (Admin)</option>
+              </select>
+            </div>
+          )}
+
           {user ? (
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2.5 overflow-hidden">
+            <div className="flex items-center justify-between gap-2">
+              <Link to="/profile" className="flex items-center gap-2.5 overflow-hidden hover:opacity-85 transition-opacity flex-1 min-w-0">
                 <div className="w-8 h-8 rounded-full bg-primary-light text-primary font-bold flex items-center justify-center text-xs shrink-0 border border-primary/20">
                   {user.fullName?.charAt(0) || 'U'}
                 </div>
                 <div className="truncate">
                   <div className="text-xs font-bold text-content-main truncate">{user.fullName}</div>
-                  <div className="text-[11px] text-content-sub font-semibold capitalize">
-                    {user.role.replace('_', ' ')}
+                  <div className="text-[10px] text-content-sub font-semibold">
+                    {ROLE_LABELS[user.role] || user.role}
                   </div>
                 </div>
-              </div>
+              </Link>
               <button
+                type="button"
                 onClick={logout}
                 title="Đăng xuất"
-                className="p-1.5 text-content-sub hover:text-red-600 rounded-lg hover:bg-white transition-colors"
+                className="p-1.5 text-content-sub hover:text-primary rounded-md hover:bg-white transition-colors cursor-pointer"
+                aria-label="Đăng xuất"
               >
                 <LogOut className="w-4 h-4" />
               </button>
@@ -164,7 +221,7 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
             <div className="flex gap-2">
               <Link
                 to="/login"
-                className="w-full py-2 text-center text-xs font-bold rounded-xl bg-white border border-border-subtle hover:border-primary text-content-main transition-colors shadow-xs"
+                className="w-full py-2 text-center text-xs font-bold rounded-civic bg-white border border-border-subtle hover:border-primary text-content-main transition-colors shadow-xs"
               >
                 Đăng nhập
               </Link>
@@ -173,53 +230,103 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
         </div>
       </aside>
 
-      {/* 2. Mobile Top Bar */}
-      <header className="lg:hidden bg-surface-card border-b border-border-subtle p-3 flex items-center justify-between sticky top-0 z-30 shadow-xs">
-        <Link to="/dashboard" className="flex items-center gap-2">
-          <span className="text-xl">🛡️</span>
-          <span className="font-extrabold text-sm tracking-tight text-content-main">
-            DustGuard <span className="text-primary font-bold">COMMUNITY</span>
-          </span>
-        </Link>
+      {/* 2. Top Header Shell (Desktop & Mobile) */}
+      <div className="flex-1 flex flex-col min-w-0">
+        <header className="h-14 bg-surface-card border-b border-border-subtle sticky top-0 z-30 shadow-xs flex items-center justify-between px-4 sm:px-6">
+          {/* Mobile brand & toggle */}
+          <div className="flex items-center gap-2.5 lg:hidden">
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-1.5 rounded-md text-content-sub hover:bg-surface-secondary touch-target"
+              aria-label="Mở menu điều hướng"
+            >
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
 
-        <div className="flex items-center gap-2">
-          <Link
-            to="/reports/new"
-            className="p-2 rounded-xl bg-primary text-white text-xs font-bold flex items-center gap-1 shadow-xs active:scale-95"
-          >
-            <PlusCircle className="w-4 h-4" />
-            <span>Gửi tin</span>
-          </Link>
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-xl border border-border-subtle text-content-sub hover:bg-surface-secondary transition-colors"
-          >
-            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
-        </div>
-      </header>
-
-      {/* Mobile Drawer Menu */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 top-14 bg-white z-40 p-4 overflow-y-auto space-y-4 shadow-xl">
-          <div className="space-y-4">
-            {renderNavSections(() => setMobileMenuOpen(false))}
+            <Link to="/dashboard" className="flex items-center gap-2 select-none">
+              <img
+                src="/images/logo/dustguard-shield-logo.webp"
+                alt="DustGuard Shield"
+                className="h-7 w-auto object-contain"
+                width={24}
+                height={28}
+              />
+              <span className="font-extrabold text-sm tracking-tight text-content-main">
+                DustGuard
+              </span>
+            </Link>
           </div>
-        </div>
-      )}
 
-      {/* 3. Main Content Viewport */}
-      <main className="flex-1 flex flex-col min-w-0 pb-24 lg:pb-12">
-        <div className="p-4 sm:p-6 lg:p-8 max-w-[1180px] w-full mx-auto">
-          {children}
-        </div>
-      </main>
+          {/* Desktop Left Breadcrumb / Context */}
+          <div className="hidden lg:flex items-center gap-2 text-xs text-content-sub font-medium">
+            <span className="font-bold text-content-main">Cộng đồng DustGuard VN</span>
+            <span>•</span>
+            <span className="text-content-muted">Hệ thống Giám sát & Bàn giao Minh bạch Môi trường</span>
+          </div>
 
-      {/* 4. Mobile Bottom Navigation (5 tabs) */}
+          {/* Right Utilities: Notifications, Portal Link & Profile */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* Quick Link to Operations Side B (Transparent Civic Coordination) */}
+            <a
+              href="http://localhost:3002"
+              target="_blank"
+              rel="noreferrer"
+              className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-semibold bg-surface-secondary hover:bg-gray-200 text-content-sub border border-border-subtle transition-colors"
+              title="Mở Cổng Điều hành Chuyên trách (Side B)"
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-[#0D6F64]" />
+              <span>Cổng Điều hành (Side B)</span>
+            </a>
+
+            {/* Notifications with Real Badge */}
+            <Link
+              to="/notifications"
+              className="relative p-2 rounded-md text-content-sub hover:bg-surface-secondary hover:text-content-main touch-target"
+              aria-label="Thông báo"
+            >
+              <Bell className="w-4.5 h-4.5" />
+              {unreadNotifications > 0 && (
+                <span className="absolute top-1 right-1 w-4 h-4 bg-primary text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                  {unreadNotifications > 9 ? '9+' : unreadNotifications}
+                </span>
+              )}
+            </Link>
+
+            {/* Mobile Header CTA */}
+            <div className="lg:hidden">
+              <Link
+                to="/reports/new"
+                className="px-3 py-1.5 rounded-civic bg-primary text-white text-xs font-bold flex items-center gap-1 shadow-xs active:scale-95"
+              >
+                <PlusCircle className="w-3.5 h-3.5" />
+                <span>Gửi phản ánh</span>
+              </Link>
+            </div>
+          </div>
+        </header>
+
+        {/* Mobile Drawer Menu */}
+        {mobileMenuOpen && (
+          <div className="lg:hidden fixed inset-0 top-14 bg-white z-40 p-4 overflow-y-auto space-y-4 shadow-xl">
+            <div className="space-y-4">
+              {renderNavSections(() => setMobileMenuOpen(false))}
+            </div>
+          </div>
+        )}
+
+        {/* 3. Main Content Container */}
+        <main className="flex-1 min-w-0 pb-24 lg:pb-12">
+          <div className="p-4 sm:p-6 lg:p-8 max-w-[1180px] w-full mx-auto">
+            {children}
+          </div>
+        </main>
+      </div>
+
+      {/* 4. Mobile Bottom Navigation Bar (5 Primary Tabs) */}
       <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-surface-card border-t border-border-subtle flex items-center justify-around py-2 px-1 z-30 shadow-lg">
         <Link
           to="/dashboard"
-          className={`flex flex-col items-center gap-0.5 text-[10px] font-medium ${
+          className={`flex flex-col items-center gap-0.5 text-[10px] font-medium touch-target ${
             isActive('/dashboard') ? 'text-primary font-bold' : 'text-content-sub'
           }`}
         >
@@ -228,7 +335,7 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
         </Link>
         <Link
           to="/map"
-          className={`flex flex-col items-center gap-0.5 text-[10px] font-medium ${
+          className={`flex flex-col items-center gap-0.5 text-[10px] font-medium touch-target ${
             isActive('/map') ? 'text-primary font-bold' : 'text-content-sub'
           }`}
         >
@@ -237,16 +344,16 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
         </Link>
         <Link
           to="/reports/new"
-          className="flex flex-col items-center gap-0.5 text-[10px] font-bold text-primary"
+          className="flex flex-col items-center gap-0.5 text-[10px] font-bold text-primary touch-target"
         >
           <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center -mt-5 shadow-md border-2 border-white active:scale-95 transition-transform">
             <PlusCircle className="w-5 h-5" />
           </div>
-          <span>Gửi tin</span>
+          <span>Gửi phản ánh</span>
         </Link>
         <Link
           to="/following"
-          className={`flex flex-col items-center gap-0.5 text-[10px] font-medium ${
+          className={`flex flex-col items-center gap-0.5 text-[10px] font-medium touch-target ${
             isActive('/following') ? 'text-primary font-bold' : 'text-content-sub'
           }`}
         >
@@ -255,7 +362,7 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
         </Link>
         <Link
           to="/profile"
-          className={`flex flex-col items-center gap-0.5 text-[10px] font-medium ${
+          className={`flex flex-col items-center gap-0.5 text-[10px] font-medium touch-target ${
             isActive('/profile') ? 'text-primary font-bold' : 'text-content-sub'
           }`}
         >
@@ -263,64 +370,8 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
           <span>Hồ sơ</span>
         </Link>
       </nav>
-
-      {/* 5. Dev Mode Quick Role Switcher Bar (CHỈ RENDER KHI import.meta.env.DEV === true) */}
-      {import.meta.env.DEV === true && (
-        <div className="fixed bottom-16 lg:bottom-4 right-4 bg-white border border-border-subtle rounded-2xl shadow-lg p-2 flex items-center gap-1.5 z-50 text-xs">
-          <span className="font-extrabold text-[10px] text-content-sub uppercase tracking-wider px-1.5 hidden sm:inline">
-            DEV ROLE:
-          </span>
-          <button
-            type="button"
-            disabled={switchLoading}
-            onClick={() => handleDevSwitchRole('citizen')}
-            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold whitespace-nowrap shrink-0 cursor-pointer transition-all ${
-              user?.role === 'citizen'
-                ? 'bg-primary text-white shadow-xs'
-                : 'bg-surface-secondary text-content-main hover:bg-gray-200'
-            }`}
-          >
-            Citizen
-          </button>
-          <button
-            type="button"
-            disabled={switchLoading}
-            onClick={() => handleDevSwitchRole('community_member')}
-            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold whitespace-nowrap shrink-0 cursor-pointer transition-all ${
-              user?.role === 'community_member' || (user?.role as string) === 'member'
-                ? 'bg-primary text-white shadow-xs'
-                : 'bg-surface-secondary text-content-main hover:bg-gray-200'
-            }`}
-          >
-            Member
-          </button>
-          <button
-            type="button"
-            disabled={switchLoading}
-            onClick={() => handleDevSwitchRole('moderator')}
-            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold whitespace-nowrap shrink-0 cursor-pointer transition-all ${
-              user?.role === 'moderator'
-                ? 'bg-primary text-white shadow-xs'
-                : 'bg-surface-secondary text-content-main hover:bg-gray-200'
-            }`}
-          >
-            Moderator
-          </button>
-          <button
-            type="button"
-            disabled={switchLoading}
-            onClick={() => handleDevSwitchRole('admin')}
-            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold whitespace-nowrap shrink-0 cursor-pointer transition-all ${
-              user?.role === 'admin'
-                ? 'bg-primary text-white shadow-xs'
-                : 'bg-surface-secondary text-content-main hover:bg-gray-200'
-            }`}
-          >
-            Admin
-          </button>
-        </div>
-      )}
     </div>
   );
 };
+
 export default AppShell;

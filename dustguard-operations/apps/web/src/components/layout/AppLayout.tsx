@@ -27,11 +27,9 @@ import {
   Radio,
   Scale,
   Building2,
-  Megaphone,
   ChevronDown,
 } from 'lucide-react';
 import { Role, getRoleLabel } from '@dustguard-operations/shared';
-import { PublicReportModal } from '../case/PublicReportModal';
 
 interface NavSection {
   title: string;
@@ -50,7 +48,6 @@ export const AppLayout: React.FC = () => {
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
-  const [publicReportOpen, setPublicReportOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
@@ -187,17 +184,6 @@ export const AppLayout: React.FC = () => {
               aria-label="Tìm kiếm"
             >
               <Search className="w-5 h-5" />
-            </button>
-
-            {/* Public Citizen Report Trigger */}
-            <button
-              type="button"
-              onClick={() => setPublicReportOpen(true)}
-              className="hidden 2xl:inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-surface hover:bg-surface-subtle text-ink-700 border border-slate-200/90 rounded-md text-xs font-medium transition-colors cursor-pointer"
-              title="Tiếp nhận phản ánh hiện trường từ người dân (Public Citizen Report)"
-            >
-              <Megaphone className="w-3.5 h-3.5 text-dustguard-red" />
-              <span>Báo cáo dân cư</span>
             </button>
 
             {/* Integrated Role Switcher — DEV-ONLY convenience.
@@ -389,8 +375,6 @@ export const AppLayout: React.FC = () => {
         </main>
       </div>
 
-      {/* Citizen Public Report Modal */}
-      <PublicReportModal isOpen={publicReportOpen} onClose={() => setPublicReportOpen(false)} />
     </div>
   );
 };

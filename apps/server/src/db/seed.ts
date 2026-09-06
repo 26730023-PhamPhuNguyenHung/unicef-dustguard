@@ -1,9 +1,10 @@
 import bcrypt from 'bcryptjs';
 import { sqliteClient } from './sqlite-client.js';
 import { runMigrations } from './migrate.js';
+import { DEMO_LOCATION, HANOI_CENTER } from '@dustguard/shared';
 
 export function runSeed(): void {
-  console.log('🌱 Đang nạp seed data cho DustGuard Community...');
+  console.log('🌱 Đang nạp seed data chuẩn Hà Nội (Mô hình 2 cấp) cho DustGuard Community...');
   
   // Đảm bảo bảng đã tồn tại
   runMigrations();
@@ -13,7 +14,7 @@ export function runSeed(): void {
   const subDays = (days: number) => new Date(Date.now() - days * 86400000).toISOString();
   const subHours = (hours: number) => new Date(Date.now() - hours * 3600000).toISOString();
 
-  // 1. Seed Users (16 users)
+  // 1. Seed Users (16 users tập trung địa bàn Hà Nội)
   const usersData = [
     {
       id: 'usr_citizen',
@@ -21,9 +22,9 @@ export function runSeed(): void {
       fullName: 'Nguyễn Văn Dân',
       phone: '0901234567',
       role: 'citizen',
-      district: 'Quận 7',
-      ward: 'Tân Phong',
-      bio: 'Người dân sinh sống tại khu vực Phú Mỹ Hưng, quan tâm đến chất lượng không khí.',
+      district: 'Láng Thượng', // Compat 2-level: mapping to level 2
+      ward: 'Láng Thượng',
+      bio: 'Cư dân sinh sống tại 62 Nguyễn Chí Thanh, Phường Láng Thượng, Hà Nội.',
       displayIdentity: 'name'
     },
     {
@@ -32,9 +33,9 @@ export function runSeed(): void {
       fullName: 'Trần Thị Tình Nguyện',
       phone: '0902345678',
       role: 'community_member',
-      district: 'TP. Thủ Đức',
-      ward: 'Thảo Điền',
-      bio: 'Thành viên CLB Môi Trường Thanh Niên, thường xuyên hỗ trợ xác minh thực địa.',
+      district: 'Láng Hạ',
+      ward: 'Láng Hạ',
+      bio: 'Thành viên CLB Môi Trường Thanh Niên Hà Nội, thường xuyên hỗ trợ xác minh thực địa.',
       displayIdentity: 'name'
     },
     {
@@ -43,9 +44,9 @@ export function runSeed(): void {
       fullName: 'Lê Hoàng Điều Phối',
       phone: '0903456789',
       role: 'moderator',
-      district: 'Bình Thạnh',
-      ward: 'Phường 25',
-      bio: 'Điều phối viên mạng lưới tình nguyện viên và nhóm cộng đồng địa bàn TP.HCM.',
+      district: 'Thành Công',
+      ward: 'Thành Công',
+      bio: 'Điều phối viên mạng lưới tình nguyện viên và nhóm cộng đồng địa bàn Hà Nội.',
       displayIdentity: 'name'
     },
     {
@@ -54,24 +55,24 @@ export function runSeed(): void {
       fullName: 'Phạm Quản Trị Hệ Thống',
       phone: '0904567890',
       role: 'admin',
-      district: 'Quận 1',
-      ward: 'Bến Nghé',
-      bio: 'Quản trị viên nền tảng DustGuard Community.',
+      district: 'Giảng Võ',
+      ward: 'Giảng Võ',
+      bio: 'Quản trị viên nền tảng DustGuard Community Hà Nội.',
       displayIdentity: 'name'
     },
-    // Thêm 12 người dùng cộng đồng khác
-    { id: 'usr_05', email: 'an.tran@example.com', fullName: 'Trần Bình An', phone: '0911000001', role: 'citizen', district: 'Quận 7', ward: 'Tân Phú' },
-    { id: 'usr_06', email: 'bao.le@example.com', fullName: 'Lê Gia Bảo', phone: '0911000002', role: 'community_member', district: 'Bình Thạnh', ward: 'Phường 19' },
-    { id: 'usr_07', email: 'chi.nguyen@example.com', fullName: 'Nguyễn Kim Chi', phone: '0911000003', role: 'citizen', district: 'TP. Thủ Đức', ward: 'Hiệp Phú' },
-    { id: 'usr_08', email: 'dung.pham@example.com', fullName: 'Phạm Tiến Dũng', phone: '0911000004', role: 'community_member', district: 'Quận 2', ward: 'An Phú' },
-    { id: 'usr_09', email: 'em.vo@example.com', fullName: 'Võ Thúy Em', phone: '0911000005', role: 'citizen', district: 'Quận 4', ward: 'Phường 3' },
-    { id: 'usr_10', email: 'giang.do@example.com', fullName: 'Đỗ Trường Giang', phone: '0911000006', role: 'citizen', district: 'Bình Chánh', ward: 'Bình Hưng' },
-    { id: 'usr_11', email: 'hoa.hoang@example.com', fullName: 'Hoàng Quỳnh Hoa', phone: '0911000007', role: 'community_member', district: 'TP. Thủ Đức', ward: 'Linh Chiểu' },
-    { id: 'usr_12', email: 'khang.dang@example.com', fullName: 'Đặng Minh Khang', phone: '0911000008', role: 'citizen', district: 'Quận 1', ward: 'Đa Kao' },
-    { id: 'usr_13', email: 'linh.bui@example.com', fullName: 'Bùi Mỹ Linh', phone: '0911000009', role: 'citizen', district: 'Quận 7', ward: 'Tân Hưng' },
-    { id: 'usr_14', email: 'nam.ngo@example.com', fullName: 'Ngô Hoài Nam', phone: '0911000010', role: 'citizen', district: 'Bình Thạnh', ward: 'Phường 22' },
-    { id: 'usr_15', email: 'phuc.ly@example.com', fullName: 'Lý Gia Phúc', phone: '0911000011', role: 'community_member', district: 'TP. Thủ Đức', ward: 'Tăng Nhơn Phú A' },
-    { id: 'usr_16', email: 'quynh.vu@example.com', fullName: 'Vũ Như Quỳnh', phone: '0911000012', role: 'citizen', district: 'Quận 3', ward: 'Võ Thị Sáu' }
+    // 12 người dùng cộng đồng khác tại các phường Hà Nội
+    { id: 'usr_05', email: 'an.tran@example.com', fullName: 'Trần Bình An', phone: '0911000001', role: 'citizen', district: 'Láng Thượng', ward: 'Láng Thượng' },
+    { id: 'usr_06', email: 'bao.le@example.com', fullName: 'Lê Gia Bảo', phone: '0911000002', role: 'community_member', district: 'Láng Hạ', ward: 'Láng Hạ' },
+    { id: 'usr_07', email: 'chi.nguyen@example.com', fullName: 'Nguyễn Kim Chi', phone: '0911000003', role: 'citizen', district: 'Ngọc Khánh', ward: 'Ngọc Khánh' },
+    { id: 'usr_08', email: 'dung.pham@example.com', fullName: 'Phạm Tiến Dũng', phone: '0911000004', role: 'community_member', district: 'Yên Hòa', ward: 'Yên Hòa' },
+    { id: 'usr_09', email: 'em.vo@example.com', fullName: 'Võ Thúy Em', phone: '0911000005', role: 'citizen', district: 'Kim Mã', ward: 'Kim Mã' },
+    { id: 'usr_10', email: 'giang.do@example.com', fullName: 'Đỗ Trường Giang', phone: '0911000006', role: 'citizen', district: 'Trung Liệt', ward: 'Trung Liệt' },
+    { id: 'usr_11', email: 'hoa.hoang@example.com', fullName: 'Hoàng Quỳnh Hoa', phone: '0911000007', role: 'community_member', district: 'Trung Hòa', ward: 'Trung Hòa' },
+    { id: 'usr_12', email: 'khang.dang@example.com', fullName: 'Đặng Minh Khang', phone: '0911000008', role: 'citizen', district: 'Cát Linh', ward: 'Cát Linh' },
+    { id: 'usr_13', email: 'linh.bui@example.com', fullName: 'Bùi Mỹ Linh', phone: '0911000009', role: 'citizen', district: 'Láng Thượng', ward: 'Láng Thượng' },
+    { id: 'usr_14', email: 'nam.ngo@example.com', fullName: 'Ngô Hoài Nam', phone: '0911000010', role: 'citizen', district: 'Thành Công', ward: 'Thành Công' },
+    { id: 'usr_15', email: 'phuc.ly@example.com', fullName: 'Lý Gia Phúc', phone: '0911000011', role: 'community_member', district: 'Dịch Vọng', ward: 'Dịch Vọng' },
+    { id: 'usr_16', email: 'quynh.vu@example.com', fullName: 'Vũ Như Quỳnh', phone: '0911000012', role: 'citizen', district: 'Giảng Võ', ward: 'Giảng Võ' }
   ];
 
   for (const u of usersData) {
@@ -87,52 +88,52 @@ export function runSeed(): void {
       u.role, 
       u.district, 
       u.ward || '', 
-      u.bio || 'Cư dân tích cực theo dõi môi trường.', 
-      u.displayIdentity || 'anonymous', 
+      u.bio || 'Cư dân tích cực theo dõi môi trường Hà Nội.', 
+      u.displayIdentity || 'name', 
       subDays(30), 
       now
     ]);
   }
 
-  // 2. Seed 4 Communities
+  // 2. Seed 4 Communities (Hà Nội)
   const communitiesData = [
     {
-      id: 'comm_thuduc',
-      name: 'Cộng đồng Không khí sạch Thủ Đức',
-      slug: 'thu-duc-clean-air',
-      description: 'Mạng lưới người dân và sinh viên theo dõi bụi phát tán từ các đại công trình hạ tầng và vành đai TP. Thủ Đức.',
-      district: 'TP. Thủ Đức',
-      ward: 'Thảo Điền',
+      id: 'comm_langha',
+      name: 'Cộng đồng Không khí sạch Láng Hạ',
+      slug: 'lang-ha-clean-air',
+      description: 'Mạng lưới người dân và thanh niên theo dõi bụi phát tán từ các công trình xây dựng và giao thông trục Láng Hạ - Huỳnh Thúc Kháng.',
+      district: 'Láng Hạ',
+      ward: 'Láng Hạ',
       createdBy: 'usr_moderator',
       coverUrl: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&auto=format&fit=crop&q=60'
     },
     {
-      id: 'comm_binhthanh',
-      name: 'Green Youth Bình Thạnh',
-      slug: 'binh-thanh-green-youth',
-      description: 'Nhóm thanh niên xung kích giám sát bụi đường và xe bồn chở vật liệu quanh trục Nguyễn Hữu Cảnh và Điện Biên Phủ.',
-      district: 'Bình Thạnh',
-      ward: 'Phường 25',
+      id: 'comm_chualang',
+      name: 'Green Youth Chùa Láng',
+      slug: 'chua-lang-green-youth',
+      description: 'Nhóm thanh niên xung kích giám sát bụi đường và xe chở vật liệu quanh khu vực Chùa Láng và Hồ Láng.',
+      district: 'Láng Thượng',
+      ward: 'Láng Thượng',
       createdBy: 'usr_moderator',
       coverUrl: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&auto=format&fit=crop&q=60'
     },
     {
-      id: 'comm_quan7',
-      name: 'Cộng đồng Môi trường Quận 7',
-      slug: 'quan-7-environment',
-      description: 'Nhóm cư dân chia sẻ và đối chiếu tín hiệu bụi từ các công trình xây dựng dọc đại lộ Nguyễn Văn Linh và Nguyễn Hữu Thọ.',
-      district: 'Quận 7',
-      ward: 'Tân Phong',
+      id: 'comm_nguyenchithanh',
+      name: 'Cộng đồng Cư dân Nguyễn Chí Thanh',
+      slug: 'nguyen-chi-thanh-environment',
+      description: 'Nhóm cư dân chia sẻ và đối chiếu tín hiệu bụi từ các điểm thi công hạ tầng dọc tuyến Nguyễn Chí Thanh.',
+      district: 'Láng Thượng',
+      ward: 'Láng Thượng',
       createdBy: 'usr_moderator',
       coverUrl: 'https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?w=800&auto=format&fit=crop&q=60'
     },
     {
       id: 'comm_sinhvien',
-      name: 'Sinh viên vì Không khí sạch',
-      slug: 'sinh-vien-khong-khi-sach',
-      description: 'CLB sinh viên các trường Đại học khu vực ĐHQG TP.HCM phối hợp quan sát và lập dữ liệu hiện trường.',
-      district: 'TP. Thủ Đức',
-      ward: 'Linh Trung',
+      name: 'CLB Sinh viên Thủ đô vì Không khí sạch',
+      slug: 'sinh-vien-thu-do-vi-khong-khi-sach',
+      description: 'CLB sinh viên các trường ĐH khu vực Chùa Láng & Nguyễn Chí Thanh phối hợp quan sát và lập hồ sơ hiện trường.',
+      district: 'Láng Thượng',
+      ward: 'Láng Thượng',
       createdBy: 'usr_member',
       coverUrl: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&auto=format&fit=crop&q=60'
     }
@@ -153,20 +154,20 @@ export function runSeed(): void {
     }
   }
 
-  // 3. Seed Cases (15 cases phong phú xung quanh TP.HCM)
-  // Trong đó case đầu tiên là sample case DG-C-2026-0842 theo đúng mục 17
+  // 3. Seed Cases (15 cases liên kết logic chặt chẽ tại Hà Nội quanh 62 Nguyễn Chí Thanh)
+  // Golden Case SSOT: DG-C-2026-0842 tại nút giao Huỳnh Thúc Kháng & Nguyễn Chí Thanh
   const casesData = [
     {
       id: 'case_0842',
       caseCode: 'DG-C-2026-0842',
-      title: 'Bụi phát sinh quanh khu vực công trình Nguyễn Văn Linh',
-      summary: 'Hoạt động san lấp và xe ben chở đất cát không rửa bánh khi ra khỏi cổng công trình làm phát tán bụi mù mịt sang làn xe máy.',
+      title: 'Bụi phát sinh quanh công trình mở rộng đường Huỳnh Thúc Kháng kéo dài',
+      summary: 'Hoạt động san lấp và xe ben chở đất cát không rửa bánh khi ra khỏi cổng công trình làm phát tán bụi mù mịt sang làn đường Nguyễn Chí Thanh.',
       category: 'dust',
-      latitude: 10.7301,
-      longitude: 106.7082,
-      address: 'Đoạn giao Nguyễn Văn Linh & Nguyễn Thị Thập, Phường Tân Phú',
-      ward: 'Tân Phú',
-      district: 'Quận 7',
+      latitude: 21.0185,
+      longitude: 105.8095,
+      address: 'Nút giao Huỳnh Thúc Kháng & Nguyễn Chí Thanh, Phường Láng Thượng',
+      ward: 'Láng Thượng',
+      district: 'Láng Thượng',
       status: 'in_progress',
       priority: 'urgent',
       signalCount: 6,
@@ -178,14 +179,14 @@ export function runSeed(): void {
     {
       id: 'case_0002',
       caseCode: 'DG-C-2026-0112',
-      title: 'Vật liệu tập kết ven đường Xô Viết Nghệ Tĩnh gây bụi dày',
-      summary: 'Các đống cát đá phục vụ sửa chữa vỉa hè để lộ thiên không bạt che chắn, gió cuốn bụi vào nhà dân và quán ăn ven đường.',
+      title: 'Vật liệu tập kết ven đường Chùa Láng gây bụi dày',
+      summary: 'Các đống cát đá phục vụ sửa chữa vỉa hè để lộ thiên không bạt che chắn, gió cuốn bụi vào nhà dân và các hàng quán gần ĐH Ngoại Thương.',
       category: 'construction_material',
-      latitude: 10.8035,
-      longitude: 106.7118,
-      address: 'Gần ngã tư Đài Liệt Sĩ, Xô Viết Nghệ Tĩnh',
-      ward: 'Phường 26',
-      district: 'Bình Thạnh',
+      latitude: 21.0242,
+      longitude: 105.8041,
+      address: 'Đoạn ngõ 84 đến ngõ 185 Chùa Láng, Phường Láng Thượng',
+      ward: 'Láng Thượng',
+      district: 'Láng Thượng',
       status: 'community_verifying',
       priority: 'attention',
       signalCount: 4,
@@ -197,14 +198,14 @@ export function runSeed(): void {
     {
       id: 'case_0003',
       caseCode: 'DG-C-2026-0158',
-      title: 'Xe chở phế thải xây dựng rơi vãi trên đường Mai Chí Thọ',
-      summary: 'Đoàn xe ben chở đất thải từ khu đô thị mới không phủ kín bạt, làm đất rơi thành vệt dài gây bụi trắng xóa khi xe cộ lưu thông.',
+      title: 'Xe chở phế thải xây dựng rơi vãi trên trục đường Láng Hạ',
+      summary: 'Đoàn xe ben chở đất đá từ dự án cao ốc không phủ kín bạt, làm đất rơi thành vệt dài gây bụi trắng xóa khi các phương tiện lưu thông.',
       category: 'road_dust',
-      latitude: 10.7812,
-      longitude: 106.7345,
-      address: 'Trục Mai Chí Thọ hướng về Hầm Thủ Thiêm',
-      ward: 'An Phú',
-      district: 'TP. Thủ Đức',
+      latitude: 21.0152,
+      longitude: 105.8130,
+      address: 'Trục Láng Hạ hướng về ngã tư Huỳnh Thúc Kháng - Thái Hà, Phường Láng Hạ',
+      ward: 'Láng Hạ',
+      district: 'Láng Hạ',
       status: 'forwarded',
       priority: 'urgent',
       signalCount: 8,
@@ -216,14 +217,14 @@ export function runSeed(): void {
     {
       id: 'case_0004',
       caseCode: 'DG-C-2026-0205',
-      title: 'Bãi phế thải xây dựng tự phát tại đường Song Hành',
-      summary: 'Tập kết gạch vụn và xà bần tràn ra lề đường, người dân đi ngang qua hít phải bụi xi măng độc hại.',
+      title: 'Bãi phế thải xây dựng tự phát tại đường gom Vành Đai 2 ven sông Tô Lịch',
+      summary: 'Tập kết gạch vụn và xà bần tràn ra đường gom ven sông, gió cuốn bụi xi măng ảnh hưởng người đi bộ và người tham gia giao thông.',
       category: 'illegal_dumping',
-      latitude: 10.8245,
-      longitude: 106.7621,
-      address: 'Đường Song Hành Xa Lộ Hà Nội, gần Metro',
-      ward: 'Trường Thọ',
-      district: 'TP. Thủ Đức',
+      latitude: 21.0175,
+      longitude: 105.7985,
+      address: 'Đường Láng đoạn Cầu Cót - Cầu Yên Hòa, Phường Yên Hòa',
+      ward: 'Yên Hòa',
+      district: 'Yên Hòa',
       status: 'resolved',
       priority: 'normal',
       signalCount: 5,
@@ -236,14 +237,14 @@ export function runSeed(): void {
     {
       id: 'case_0005',
       caseCode: 'DG-C-2026-0220',
-      title: 'Công trình chung cư cao tầng phát tán bụi sơn và cát',
-      summary: 'Không dựng lưới bao che đầy đủ ở các tầng cao từ tầng 15 trở lên, bụi rơi trực tiếp xuống khu dân cư bên dưới.',
+      title: 'Công trình tổ hợp cao ốc phát tán bụi sơn và xi măng',
+      summary: 'Không kéo căng lưới bao che ở các tầng cao từ tầng 18 trở lên, bụi phát tán trực tiếp xuống khu dân cư lân cận.',
       category: 'dust',
-      latitude: 10.7415,
-      longitude: 106.7154,
-      address: 'Đường Nguyễn Thị Thập, Khu dân cư Him Lam',
-      ward: 'Tân Hưng',
-      district: 'Quận 7',
+      latitude: 21.0148,
+      longitude: 105.8135,
+      address: 'Số 88 Láng Hạ, Phường Láng Hạ',
+      ward: 'Láng Hạ',
+      district: 'Láng Hạ',
       status: 'confirmed_signal',
       priority: 'attention',
       signalCount: 5,
@@ -255,14 +256,14 @@ export function runSeed(): void {
     {
       id: 'case_0006',
       caseCode: 'DG-C-2026-0245',
-      title: 'Bụi phát tán từ điểm hạ xà bần tại chân cầu Sài Gòn',
-      summary: 'Máy xúc bốc dỡ phế liệu không phun nước dập bụi lúc giữa trưa gây khói bụi mờ mịt quanh dạ cầu.',
+      title: 'Bụi cát bao phủ lòng đường đoạn thi công hạ ngầm cáp Nguyễn Chí Thanh',
+      summary: 'Đào rãnh hạ ngầm cáp viễn thông nhưng để đất cát vương vãi trên mặt đường không thu dọn trong ngày, xe cộ đi qua tạo bụi mù.',
       category: 'dust',
-      latitude: 10.7998,
-      longitude: 106.7265,
-      address: 'Dạ cầu Sài Gòn, bờ Bình Thạnh',
-      ward: 'Phường 22',
-      district: 'Bình Thạnh',
+      latitude: 21.0210,
+      longitude: 105.8075,
+      address: 'Đối diện số 62 Nguyễn Chí Thanh, Phường Láng Thượng',
+      ward: 'Láng Thượng',
+      district: 'Láng Thượng',
       status: 'new',
       priority: 'normal',
       signalCount: 2,
@@ -274,14 +275,14 @@ export function runSeed(): void {
     {
       id: 'case_0007',
       caseCode: 'DG-C-2026-0290',
-      title: 'Đào đường lắp ống cấp nước để bụi kéo dài',
-      summary: 'Đoạn đường đào xong lấp tạm bằng đá cấp phối nhưng không tưới nước, xe buýt chạy qua tạo luồng bụi cuốn cao.',
+      title: 'Thi công chỉnh trang hồ Đống Đa làm rơi bùn đất tạo bụi hanh khô',
+      summary: 'Xe vận chuyển nạo vét bùn đất chạy qua đường Hoàng Cầu không được phủ bạt kín, bùn rơi xuống lòng đường khô lại thành bụi mịn.',
       category: 'road_dust',
-      latitude: 10.7712,
-      longitude: 106.6987,
-      address: 'Đường Nguyễn Thị Minh Khai, góc Trương Định',
-      ward: 'Võ Thị Sáu',
-      district: 'Quận 3',
+      latitude: 21.0180,
+      longitude: 105.8235,
+      address: 'Tuyến đường Hoàng Cầu ven hồ Đống Đa, Phường Ô Chợ Dừa',
+      ward: 'Ô Chợ Dừa',
+      district: 'Ô Chợ Dừa',
       status: 'in_progress',
       priority: 'normal',
       signalCount: 3,
@@ -293,14 +294,14 @@ export function runSeed(): void {
     {
       id: 'case_0008',
       caseCode: 'DG-C-2026-0310',
-      title: 'Bãi cát san lấp không che phủ gió lộng ven sông Sài Gòn',
-      summary: 'Bãi cát diện tích lớn ven sông gặp gió to thổi bụi cát bay thẳng vào khu trường mầm non gần đó.',
+      title: 'Bụi phát sinh từ công trình cải tạo trường học đường Thành Công',
+      summary: 'Hoạt động đập phá vách tường cũ không phun sương tạo lớp bụi mờ lan sang khu chợ Thành Công.',
       category: 'construction_material',
-      latitude: 10.8123,
-      longitude: 106.7456,
-      address: 'Đường số 36, Khu phố 6, Linh Đông',
-      ward: 'Linh Đông',
-      district: 'TP. Thủ Đức',
+      latitude: 21.0228,
+      longitude: 105.8152,
+      address: 'Khu tập thể Thành Công, Phường Thành Công',
+      ward: 'Thành Công',
+      district: 'Thành Công',
       status: 'community_verifying',
       priority: 'attention',
       signalCount: 3,
@@ -312,14 +313,14 @@ export function runSeed(): void {
     {
       id: 'case_0009',
       caseCode: 'DG-C-2026-0340',
-      title: 'Cắt gạch vỉa hè không thu gom bụi khô',
-      summary: 'Đội thi công dùng máy cắt đá khô tại chỗ không che chắn và không tưới nước, khói bụi trắng bao trùm người đi bộ.',
+      title: 'Cắt gạch vỉa hè không thu gom bụi khô tại ngã tư Giảng Võ',
+      summary: 'Đội lát đá vỉa hè dùng máy cắt đĩa khô không phun nước, bụi đá bay mù mịt vào các phương tiện dừng đèn đỏ.',
       category: 'dust',
-      latitude: 10.7689,
-      longitude: 106.6890,
-      address: 'Đường Nguyễn Trãi, gần chợ Bến Thành',
-      ward: 'Bến Thành',
-      district: 'Quận 1',
+      latitude: 21.0285,
+      longitude: 105.8205,
+      address: 'Nút giao Giảng Võ - Cát Linh, Phường Cát Linh',
+      ward: 'Cát Linh',
+      district: 'Cát Linh',
       status: 'resolved',
       priority: 'normal',
       signalCount: 4,
@@ -332,14 +333,14 @@ export function runSeed(): void {
     {
       id: 'case_0010',
       caseCode: 'DG-C-2026-0388',
-      title: 'Trạm trộn bê tông di động làm vương vãi vữa khô',
-      summary: 'Vữa xi măng khô rơi vãi ra mặt đường tạo thành lớp bụi mịn rất nguy hiểm khi trời hanh khô.',
+      title: 'Xe bồn chở bê tông làm rò rỉ vữa trên cầu vượt Nguyễn Chí Thanh',
+      summary: 'Vữa xi măng rò rỉ khô lại trên mặt cầu bị bánh xe nghiền nát thành bụi trắng độc hại.',
       category: 'road_dust',
-      latitude: 10.7256,
-      longitude: 106.7210,
-      address: 'Đường Huỳnh Tấn Phát, gần cầu Phú Mỹ',
-      ward: 'Tân Thuận Đông',
-      district: 'Quận 7',
+      latitude: 21.0220,
+      longitude: 105.8088,
+      address: 'Cầu vượt nút giao Nguyễn Chí Thanh - Huỳnh Thúc Kháng, Phường Láng Thượng',
+      ward: 'Láng Thượng',
+      district: 'Láng Thượng',
       status: 'confirmed_signal',
       priority: 'attention',
       signalCount: 4,
@@ -351,14 +352,14 @@ export function runSeed(): void {
     {
       id: 'case_0011',
       caseCode: 'DG-C-2026-0412',
-      title: 'Xe chở đất làm rơi vãi đất sét khô tại Đỗ Xuân Hợp',
-      summary: 'Đất sét rơi từ thùng xe gặp nắng gắt vỡ vụn thành bụi bay mù mịt khi các xe tải lớn đi qua.',
+      title: 'Xe chở vật liệu làm rơi vãi đá dăm tại đường Nguyễn Khang',
+      summary: 'Đá dăm và cát rơi từ thùng xe ben gây bụi mù mịt khi các phương tiện di chuyển với tốc độ cao.',
       category: 'road_dust',
-      latitude: 10.8201,
-      longitude: 106.7789,
-      address: 'Đoạn đường Đỗ Xuân Hợp, Phước Long B',
-      ward: 'Phước Long B',
-      district: 'TP. Thủ Đức',
+      latitude: 21.0195,
+      longitude: 105.8010,
+      address: 'Đoạn đường Nguyễn Khang ven sông Tô Lịch, Phường Yên Hòa',
+      ward: 'Yên Hòa',
+      district: 'Yên Hòa',
       status: 'in_progress',
       priority: 'urgent',
       signalCount: 7,
@@ -370,14 +371,14 @@ export function runSeed(): void {
     {
       id: 'case_0012',
       caseCode: 'DG-C-2026-0430',
-      title: 'Công trình tháo dỡ nhà cũ không dùng lưới dập bụi',
-      summary: 'Đập tường nhà 3 tầng không phun sương tạo đám mây bụi bao trùm toàn bộ hẻm dân cư.',
+      title: 'Công trình phá dỡ nhà cũ không căng bạt chắn tại ngõ Chùa Láng',
+      summary: 'Máy phá bê tông hoạt động giữa trưa không phun nước làm bụi phủ trắng xóa cây cối và nhà dân xung quanh.',
       category: 'dust',
-      latitude: 10.8010,
-      longitude: 106.6980,
-      address: 'Hẻm 120 đường Bạch Đằng',
-      ward: 'Phường 24',
-      district: 'Bình Thạnh',
+      latitude: 21.0258,
+      longitude: 105.8028,
+      address: 'Ngõ 185 Chùa Láng, Phường Láng Thượng',
+      ward: 'Láng Thượng',
+      district: 'Láng Thượng',
       status: 'forwarded',
       priority: 'urgent',
       signalCount: 6,
@@ -389,14 +390,14 @@ export function runSeed(): void {
     {
       id: 'case_0013',
       caseCode: 'DG-C-2026-0450',
-      title: 'Bãi rửa xe bồn xây dựng xả bùn ra đường',
-      summary: 'Bùn đất sau khi khô bốc thành bụi dày đặc tại lối ra vào của công trình dự án lớn.',
+      title: 'Bãi rửa xe ra vào công trình xả bùn ra vỉa hè đường Kim Mã',
+      summary: 'Nước rửa bánh xe tràn ra vỉa hè để lại lớp bùn dày, khi nắng lên biến thành bụi mịn.',
       category: 'road_dust',
-      latitude: 10.7512,
-      longitude: 106.7111,
-      address: 'Đường Nguyễn Văn Linh, đoạn gần Cầu Đa Khoa',
-      ward: 'Tân Phú',
-      district: 'Quận 7',
+      latitude: 21.0312,
+      longitude: 105.8035,
+      address: 'Gần nút giao Kim Mã - Cầu Giấy, Phường Ngọc Khánh',
+      ward: 'Ngọc Khánh',
+      district: 'Ngọc Khánh',
       status: 'new',
       priority: 'normal',
       signalCount: 1,
@@ -408,14 +409,14 @@ export function runSeed(): void {
     {
       id: 'case_0014',
       caseCode: 'DG-C-2026-0480',
-      title: 'Cải tạo công viên bờ sông làm phát tán cát bụi',
-      summary: 'Máy san nền hoạt động không che chắn bờ kè làm cát bay sang các tòa nhà chung cư đối diện.',
+      title: 'Cải tạo vườn hoa công cộng phát tán bụi cát',
+      summary: 'San ủi mặt bằng đất màu không che chắn làm gió thổi bụi cát sang trường học đối diện.',
       category: 'dust',
-      latitude: 10.7915,
-      longitude: 106.7215,
-      address: 'Khu vực công viên dạ cầu Thủ Thiêm',
-      ward: 'Phường 22',
-      district: 'Bình Thạnh',
+      latitude: 21.0270,
+      longitude: 105.8180,
+      address: 'Vườn hoa hồ Giảng Võ, Phường Giảng Võ',
+      ward: 'Giảng Võ',
+      district: 'Giảng Võ',
       status: 'closed',
       priority: 'normal',
       signalCount: 3,
@@ -428,14 +429,14 @@ export function runSeed(): void {
     {
       id: 'case_0015',
       caseCode: 'DG-C-2026-0500',
-      title: 'Tập kết bao xi măng rách tại công trình nhà phố',
-      summary: 'Các vỏ bao xi măng còn thừa vứt bừa bãi ngoài vỉa hè bị gió thổi làm bột xi măng phát tán.',
+      title: 'Tập kết bao xi măng rách tại công trình nhà dân ngõ Huỳnh Thúc Kháng',
+      summary: 'Các vỏ bao xi măng phế liệu vứt ngoài ngõ bị gió thổi làm bột xi măng phát tán vào không khí.',
       category: 'construction_material',
-      latitude: 10.8350,
-      longitude: 106.7580,
-      address: 'Đường Đặng Văn Bi, Trường Thọ',
-      ward: 'Trường Thọ',
-      district: 'TP. Thủ Đức',
+      latitude: 21.0170,
+      longitude: 105.8110,
+      address: 'Ngõ 14 Huỳnh Thúc Kháng, Phường Láng Hạ',
+      ward: 'Láng Hạ',
+      district: 'Láng Hạ',
       status: 'archived',
       priority: 'normal',
       signalCount: 2,
@@ -460,21 +461,21 @@ export function runSeed(): void {
     ]);
   }
 
-  // 4. Seed Reports (32 reports)
+  // 4. Seed Reports (32 reports deterministic liên kết chặt chẽ với các cases và khu vực Hà Nội)
   const sampleReports: any[] = [
     // Reports liên quan case 0842 (Sample case mục 17)
     {
       id: 'rep_0842_1',
       reportCode: 'DG-C-2026-0001',
       reporterId: 'usr_citizen',
-      title: 'Bụi công trình Nguyễn Văn Linh mù mịt vào giờ cao điểm',
+      title: 'Bụi công trình Huỳnh Thúc Kháng mù mịt vào giờ cao điểm',
       description: 'Chiều nào đi làm về qua đoạn này cũng bị bụi bay cay xè mắt, công trình xe tải ra vào liên tục không có vòi xịt nước.',
       category: 'dust',
-      latitude: 10.7302,
-      longitude: 106.7081,
-      address: 'Giao lộ Nguyễn Văn Linh & Nguyễn Thị Thập',
-      district: 'Quận 7',
-      ward: 'Tân Phú',
+      latitude: 21.0186,
+      longitude: 105.8094,
+      address: 'Nút giao Huỳnh Thúc Kháng & Nguyễn Chí Thanh',
+      district: 'Láng Thượng',
+      ward: 'Láng Thượng',
       observedAt: subDays(4),
       status: 'verified',
       severityObservation: 'high',
@@ -484,14 +485,14 @@ export function runSeed(): void {
       id: 'rep_0842_2',
       reportCode: 'DG-C-2026-0002',
       reporterId: 'usr_05',
-      title: 'Xe chở đất từ khu dự án làm rơi vãi đất cát ra đường',
-      description: 'Nhiều xe tải cơi nới thùng không che chắn cẩn thận làm cát đổ thành vệt dài tại làn xe máy.',
+      title: 'Xe chở đất từ dự án Huỳnh Thúc Kháng làm rơi vãi đất cát',
+      description: 'Nhiều xe tải cơi nới thùng không che chắn cẩn thận làm cát đổ thành vệt dài tại làn đường Nguyễn Chí Thanh.',
       category: 'road_dust',
-      latitude: 10.7305,
-      longitude: 106.7085,
-      address: 'Trước cổng dự án lô đất Nguyễn Văn Linh',
-      district: 'Quận 7',
-      ward: 'Tân Phú',
+      latitude: 21.0189,
+      longitude: 105.8098,
+      address: 'Trước cổng dự án đường Huỳnh Thúc Kháng kéo dài',
+      district: 'Láng Thượng',
+      ward: 'Láng Thượng',
       observedAt: subDays(4),
       status: 'verified',
       severityObservation: 'medium',
@@ -502,13 +503,13 @@ export function runSeed(): void {
       reportCode: 'DG-C-2026-0003',
       reporterId: 'usr_13',
       title: 'Bụi phát tán làm giảm tầm nhìn của người tham gia giao thông',
-      description: 'Lượng bụi phát tán mạnh vào buổi trưa khi gió to, các phương tiện đi qua phải bật đèn sương mù.',
+      description: 'Lượng bụi phát tán mạnh vào buổi trưa khi gió to, các phương tiện đi qua phải giảm tốc độ.',
       category: 'dust',
-      latitude: 10.7300,
-      longitude: 106.7078,
-      address: 'Đoạn đường Nguyễn Văn Linh hướng về cầu Tân Thuận',
-      district: 'Quận 7',
-      ward: 'Tân Phú',
+      latitude: 21.0182,
+      longitude: 105.8092,
+      address: 'Đoạn đường Nguyễn Chí Thanh hướng về cầu vượt',
+      district: 'Láng Thượng',
+      ward: 'Láng Thượng',
       observedAt: subDays(3),
       status: 'verified',
       severityObservation: 'high',
@@ -516,25 +517,29 @@ export function runSeed(): void {
     }
   ];
 
-  // Thêm 29 reports khác trải đều các quận
+  // Thêm 29 reports deterministic trải đều các phường Hà Nội
   for (let i = 4; i <= 32; i++) {
     const caseIndex = (i % casesData.length);
     const targetCase = casesData[caseIndex];
     const isLinked = i % 4 !== 0; // Một số report chưa link để moderator verify
     const repStatus = isLinked ? 'verified' : (i % 2 === 0 ? 'submitted' : 'reviewing');
     
+    // Deterministic offset thay vì Math.random()
+    const latOffset = (((i % 7) - 3) * 0.0003);
+    const lngOffset = (((i % 5) - 2) * 0.0003);
+
     sampleReports.push({
       id: `rep_${1000 + i}`,
       reportCode: `DG-C-2026-${String(i).padStart(4, '0')}`,
       reporterId: usersData[i % usersData.length].id,
-      title: `Phản ánh bụi phát sinh tại khu vực ${targetCase.district} (#${i})`,
+      title: `Phản ánh bụi phát sinh tại Phường ${targetCase.ward} (#${i})`,
       description: `Ghi nhận tình trạng khói bụi từ hoạt động thi công và vận chuyển vật liệu tại địa bàn ${targetCase.address}. Kính mong cộng đồng hỗ trợ theo dõi.`,
       category: targetCase.category,
-      latitude: targetCase.latitude + (Math.random() - 0.5) * 0.005,
-      longitude: targetCase.longitude + (Math.random() - 0.5) * 0.005,
+      latitude: Number((targetCase.latitude + latOffset).toFixed(6)),
+      longitude: Number((targetCase.longitude + lngOffset).toFixed(6)),
       address: targetCase.address,
       district: targetCase.district,
-      ward: targetCase.ward || 'Phường trung tâm',
+      ward: targetCase.ward || 'Láng Thượng',
       observedAt: subDays(Math.floor(i / 2)),
       status: repStatus,
       severityObservation: (i % 3 === 0 ? 'high' : (i % 2 === 0 ? 'medium' : 'low')),
@@ -580,27 +585,27 @@ export function runSeed(): void {
     }
   }
 
-  // 5. Seed Timeline Updates cho Case 0842 (Theo đúng sample case mục 17)
+  // 5. Seed Timeline Updates cho Case 0842 (Sample case chuẩn)
   const timelineData = [
     {
       caseId: 'case_0842',
       updateType: 'community_update',
       title: 'Phản ánh đầu tiên được ghi nhận',
-      content: 'Cộng đồng tiếp nhận phản ánh đầu tiên của người dân về tình trạng bụi tại nút giao Nguyễn Văn Linh.',
+      content: 'Cộng đồng tiếp nhận phản ánh đầu tiên của người dân về tình trạng bụi tại nút giao Huỳnh Thúc Kháng & Nguyễn Chí Thanh.',
       createdAt: subDays(4)
     },
     {
       caseId: 'case_0842',
       updateType: 'community_update',
       title: 'Nhiều tín hiệu tương tự được bổ sung',
-      content: 'Hai phản ánh tương tự kèm hình ảnh hiện trường được gửi đến từ cư dân lân cận.',
+      content: 'Hai phản ánh tương tự kèm hình ảnh hiện trường được gửi đến từ cư dân lân cận Phường Láng Thượng.',
       createdAt: subDays(3)
     },
     {
       caseId: 'case_0842',
       updateType: 'community_update',
       title: 'Cộng đồng bổ sung hình ảnh thực địa',
-      content: 'Thành viên tình nguyện ghi nhận xe tải không rửa lốp khi rời công trình.',
+      content: 'Thành viên tình nguyện ghi nhận xe tải không rửa lốp khi rời công trình ra đường Nguyễn Chí Thanh.',
       createdAt: subDays(2)
     },
     {
@@ -630,7 +635,6 @@ export function runSeed(): void {
   // 6. Seed Confirmations ("Tôi cũng ghi nhận" - 80+ records)
   for (let i = 0; i < casesData.length; i++) {
     const c = casesData[i];
-    // Cho mỗi case khoảng 4-8 confirmations
     const count = i === 0 ? 14 : Math.min(usersData.length, (i % 6) + 4);
     for (let u = 0; u < count; u++) {
       const user = usersData[u];
@@ -641,13 +645,13 @@ export function runSeed(): void {
     }
   }
 
-  // 7. Seed Observations (40+ records)
+  // 7. Seed Observations (40+ records deterministic)
   const obsTypes = ['still_present', 'reduced', 'resolved', 'additional_evidence', 'cannot_confirm'] as const;
   const obsComments = [
-    'Tôi vừa đi ngang lúc 16h, bụi vẫn còn khá nhiều ở làn xe máy.',
+    'Tôi vừa đi ngang lúc 16h, bụi vẫn còn khá nhiều ở làn xe máy đường Nguyễn Chí Thanh.',
     'Sáng nay thấy có xe bồn tưới nước mặt đường, bụi đã giảm bớt một phần.',
     'Công trình đã che bạt xanh phía ngoài, tình hình có cải thiện hơn tuần trước.',
-    'Bổ sung ảnh chụp từ tầng 5 chung cư đối diện, thấy bụi phát tán mạnh.',
+    'Bổ sung ảnh chụp từ tòa nhà đối diện, thấy bụi phát tán khi xe ben quay đầu.',
     'Lúc 11h ghé qua không thấy xe tải hoạt động nữa, tạm thời sạch sẽ.'
   ];
 
@@ -679,65 +683,65 @@ export function runSeed(): void {
     }
   }
 
-  // 8. Seed Verification Tasks (12 tasks)
+  // 8. Seed Verification Tasks (Hà Nội)
   const tasksData = [
     {
       id: 'task_01',
       caseId: 'case_0842',
-      title: 'Kiểm tra tình trạng rửa lốp xe ben tại cổng công trình Nguyễn Văn Linh',
-      description: 'Xác nhận xem công trình đã bố trí vòi rửa xe và nhân viên xịt bánh xe trước khi ra khỏi cổng hay chưa.',
+      title: 'Kiểm tra tình trạng rửa lốp xe ben tại cổng công trình Huỳnh Thúc Kháng',
+      description: 'Xác nhận xem công trình đã bố trí cầu rửa xe và nhân viên xịt bánh xe trước khi ra đường Nguyễn Chí Thanh hay chưa.',
       taskType: 'field_check',
-      latitude: 10.7301,
-      longitude: 106.7082,
-      address: 'Đoạn giao Nguyễn Văn Linh & Nguyễn Thị Thập',
+      latitude: 21.0185,
+      longitude: 105.8095,
+      address: 'Nút giao Huỳnh Thúc Kháng & Nguyễn Chí Thanh',
       status: 'open',
       assignedTo: null
     },
     {
       id: 'task_02',
       caseId: 'case_0002',
-      title: 'Chụp ảnh cập nhật che phủ bạt đống cát đá tại Xô Viết Nghệ Tĩnh',
+      title: 'Chụp ảnh cập nhật che phủ bạt đống cát đá tại Chùa Láng',
       description: 'Chụp hình ảnh minh chứng mới nhất để đối chiếu sau khi đơn vị thi công cam kết phủ bạt.',
       taskType: 'photo_update',
-      latitude: 10.8035,
-      longitude: 106.7118,
-      address: 'Gần ngã tư Đài Liệt Sĩ, Xô Viết Nghệ Tĩnh, Bình Thạnh',
+      latitude: 21.0242,
+      longitude: 105.8041,
+      address: 'Ngõ 84 Chùa Láng, Phường Láng Thượng',
       status: 'claimed',
       assignedTo: 'usr_member'
     },
     {
       id: 'task_03',
       caseId: 'case_0003',
-      title: 'Kiểm tra vệt đất rơi vãi trên làn xe máy Mai Chí Thọ',
+      title: 'Kiểm tra vệt đất rơi vãi trên làn đường Láng Hạ',
       description: 'Đối chiếu xem đơn vị dọn vệ sinh đã quét sạch lớp bùn đất khô hay chưa.',
       taskType: 'status_check',
-      latitude: 10.7812,
-      longitude: 106.7345,
-      address: 'Trục Mai Chí Thọ hướng về Hầm Thủ Thiêm',
+      latitude: 21.0152,
+      longitude: 105.8130,
+      address: 'Trục Láng Hạ hướng về ngã tư Thái Hà',
       status: 'completed',
       assignedTo: 'usr_06'
     },
     {
       id: 'task_04',
       caseId: 'case_0005',
-      title: 'Chụp góc rộng lưới bao che chung cư cao tầng Him Lam',
+      title: 'Chụp góc rộng lưới bao che chung cư cao tầng 88 Láng Hạ',
       description: 'Ghi lại hình ảnh các tầng cao xem lưới chống bụi đã được kéo kín toàn bộ hay chưa.',
       taskType: 'photo_update',
-      latitude: 10.7415,
-      longitude: 106.7154,
-      address: 'Đường Nguyễn Thị Thập, Khu dân cư Him Lam, Q7',
+      latitude: 21.0148,
+      longitude: 105.8135,
+      address: 'Số 88 Láng Hạ, Phường Láng Hạ',
       status: 'open',
       assignedTo: null
     },
     {
       id: 'task_05',
       caseId: 'case_0008',
-      title: 'Kiểm tra bãi cát san lấp ven sông Linh Đông lúc gió chiều',
-      description: 'Quan sát hướng gió và mức độ cát bay về phía khu dân cư và trường học lân cận.',
+      title: 'Kiểm tra công trình cải tạo trường học Thành Công',
+      description: 'Quan sát biện pháp phun sương dập bụi và che chắn vỉa hè xung quanh khu dân cư.',
       taskType: 'field_check',
-      latitude: 10.8123,
-      longitude: 106.7456,
-      address: 'Đường số 36, Linh Đông, TP. Thủ Đức',
+      latitude: 21.0228,
+      longitude: 105.8152,
+      address: 'Khu tập thể Thành Công, Phường Thành Công',
       status: 'open',
       assignedTo: null
     }
@@ -779,7 +783,7 @@ export function runSeed(): void {
       c.id,
       c.createdBy,
       'announcement',
-      `Kế hoạch phối hợp theo dõi các điểm nóng bụi quý này tại ${c.district}`,
+      `Kế hoạch phối hợp theo dõi các điểm nóng bụi quý này tại Phường ${c.ward}`,
       'Chào các thành viên, chúng ta sẽ tập trung hỗ trợ ghi nhận và xác minh các tín hiệu bụi từ các trục đường chính. Hãy cùng nhau bổ sung quan sát khi có dịp đi qua nhé!',
       'published',
       subDays(5),
@@ -789,12 +793,12 @@ export function runSeed(): void {
     sqliteClient.run(`
       INSERT OR REPLACE INTO comments (id, post_id, user_id, content, status, created_at, updated_at)
       VALUES (?, ?, ?, ?, ?, ?, ?)
-    `, [`cmt_${postId}_1`, postId, 'usr_citizen', 'Rất hoan nghênh sáng kiến này, mình sẽ chú ý chụp ảnh các điểm quanh khu vực mình ở.', 'visible', subDays(4), subDays(4)]);
+    `, [`cmt_${postId}_1`, postId, 'usr_citizen', 'Rất hoan nghênh sáng kiến này, mình ở 62 Nguyễn Chí Thanh sẽ chú ý chụp ảnh các điểm quanh khu vực.', 'visible', subDays(4), subDays(4)]);
   }
 
-  // 10. Seed Notifications (20+ notifications)
+  // 10. Seed Notifications
   for (let i = 0; i < 20; i++) {
-    const user = usersData[i % 4]; // Ưu tiên 4 user chính
+    const user = usersData[i % 4];
     sqliteClient.run(`
       INSERT OR REPLACE INTO notifications (id, user_id, type, title, message, entity_type, entity_id, is_read, created_at)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -803,7 +807,7 @@ export function runSeed(): void {
       user.id,
       i % 2 === 0 ? 'case_update' : 'observation',
       i % 2 === 0 ? 'Vụ việc bạn theo dõi vừa có cập nhật mới' : 'Có quan sát mới tại khu vực của bạn',
-      i % 2 === 0 ? 'Công trình Nguyễn Văn Linh đã bổ sung biện pháp dọn dẹp mặt đường.' : 'Thành viên cộng đồng vừa đăng ảnh xác thực hiện trường.',
+      i % 2 === 0 ? 'Công trình Huỳnh Thúc Kháng đã bổ sung biện pháp dọn dẹp mặt đường.' : 'Thành viên cộng đồng vừa đăng ảnh xác thực hiện trường tại Láng Thượng.',
       'case',
       'case_0842',
       i > 10 ? 1 : 0,
@@ -832,13 +836,13 @@ export function runSeed(): void {
     INSERT OR IGNORE INTO audit_logs (id, actor_id, action, entity_type, entity_id, metadata_json, ip_address, created_at)
     VALUES 
       ('aud_1', 'usr_citizen', 'LOGIN', 'user', 'usr_citizen', '{"role":"citizen"}', '127.0.0.1', '${subDays(4)}'),
-      ('aud_2', 'usr_citizen', 'CREATE_REPORT', 'report', 'rep_0842_1', '{"title":"Bụi công trình Nguyễn Văn Linh"}', '127.0.0.1', '${subDays(4)}'),
+      ('aud_2', 'usr_citizen', 'CREATE_REPORT', 'report', 'rep_0842_1', '{"title":"Bụi công trình Huỳnh Thúc Kháng"}', '127.0.0.1', '${subDays(4)}'),
       ('aud_3', 'usr_moderator', 'VERIFY_REPORT', 'report', 'rep_0842_1', '{"action":"create_case"}', '127.0.0.1', '${subDays(3)}'),
       ('aud_4', 'usr_moderator', 'CREATE_CASE', 'case', 'case_0842', '{"code":"DG-C-2026-0842"}', '127.0.0.1', '${subDays(3)}'),
       ('aud_5', 'usr_moderator', 'CHANGE_CASE_STATUS', 'case', 'case_0842', '{"old":"new","new":"in_progress"}', '127.0.0.1', '${subHours(3)}')
   `);
 
-  console.log('✅ Đã nạp thành công toàn bộ Seed Data phong phú cho DustGuard Community!');
+  console.log('✅ Đã nạp thành công toàn bộ Seed Data Hà Nội (Mô hình 2 cấp) cho DustGuard Community!');
 }
 
 // Cho phép chạy trực tiếp từ CLI

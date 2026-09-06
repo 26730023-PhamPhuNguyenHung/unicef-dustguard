@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../api/client';
 import { ShieldCheck, Search, Filter, Clock, User } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 import { AuditLog } from '@dustguard-operations/shared';
 
 export const AdminAuditPage: React.FC = () => {
+  const { user } = useAuth();
   const [logs, setLogs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionFilter, setActionFilter] = useState('');
@@ -11,7 +13,7 @@ export const AdminAuditPage: React.FC = () => {
 
   useEffect(() => {
     loadAuditLogs();
-  }, [actionFilter, entityFilter]);
+  }, [actionFilter, entityFilter, user]);
 
   const loadAuditLogs = async () => {
     try {

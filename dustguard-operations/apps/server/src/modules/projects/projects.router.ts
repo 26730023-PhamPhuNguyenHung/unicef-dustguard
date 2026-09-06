@@ -69,10 +69,10 @@ projectsRouter.post('/', requireAuth, (req: Request, res: Response, next: NextFu
       name,
       code,
       address,
-      district,
-      province = 'TP. Hồ Chí Minh',
-      latitude = 10.7769,
-      longitude = 106.7009,
+      district = req.body.ward || req.body.district || 'Láng Thượng',
+      province = 'Hà Nội',
+      latitude = 21.0205,
+      longitude = 105.8078,
       contractor_id,
       contractor_name,
       project_owner,
@@ -82,7 +82,7 @@ projectsRouter.post('/', requireAuth, (req: Request, res: Response, next: NextFu
       notes,
     } = req.body;
 
-    if (!name || !address || !district) {
+    if (!name || !address) {
       res.status(400).json({ error: 'Tên công trình, địa chỉ và quận/huyện là bắt buộc' });
       return;
     }

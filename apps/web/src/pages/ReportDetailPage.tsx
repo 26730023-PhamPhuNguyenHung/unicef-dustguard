@@ -16,8 +16,10 @@ import {
   Layers,
   Clock,
   CheckCircle2,
-  Lock
+  Lock,
+  Navigation
 } from 'lucide-react';
+import { getGoogleMapsUrl } from '../utils/geocoding.js';
 
 export const ReportDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -158,15 +160,38 @@ export const ReportDetailPage: React.FC = () => {
 
         {/* Vị trí địa lý & Bản đồ */}
         <div className="space-y-3 pt-2">
-          <div className="text-xs font-bold uppercase tracking-wider text-content-sub">
-            Vị trí quan sát
+          <div className="flex items-center justify-between">
+            <div className="text-xs font-bold uppercase tracking-wider text-content-sub">
+              Vị trí quan sát
+            </div>
+            {report.latitude && report.longitude && (
+              <a
+                href={getGoogleMapsUrl(report.latitude, report.longitude, `${report.address}, ${report.district}, TP. Hồ Chí Minh`)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:underline bg-red-50 px-2.5 py-1 rounded-lg border border-red-200 shadow-2xs transition-colors"
+              >
+                <Navigation className="w-3.5 h-3.5 text-primary" />
+                <span>Mở trên Google Maps</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
+            )}
           </div>
-          <div className="flex items-start gap-2 text-xs sm:text-sm font-semibold text-content-main">
-            <MapPin className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-            <span>{report.address}, {report.ward ? `${report.ward}, ` : ''}{report.district}</span>
+
+          <div className="flex flex-wrap items-center justify-between gap-2 text-xs sm:text-sm font-semibold text-content-main">
+            <div className="flex items-start gap-2">
+              <MapPin className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+              <span>{report.address}, {report.ward ? `${report.ward}, ` : ''}{report.district}</span>
+            </div>
+            {report.latitude && report.longitude && (
+              <span className="font-mono text-[11px] text-slate-500 bg-stone-100 px-2 py-0.5 rounded-md">
+                {Number(report.latitude).toFixed(4)}°N, {Number(report.longitude).toFixed(4)}°E
+              </span>
+            )}
           </div>
+
           {report.latitude && report.longitude && (
-            <div className="h-60 w-full rounded-xl overflow-hidden border border-border-subtle">
+            <div className="h-64 w-full rounded-xl overflow-hidden border border-border-subtle shadow-2xs">
               <LeafletMap
                 center={[report.latitude, report.longitude]}
                 zoom={15}

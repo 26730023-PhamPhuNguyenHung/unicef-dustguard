@@ -218,7 +218,7 @@ router.post('/:id/media', optionalAuthenticateToken, uploadMiddleware.single('fi
   ReportRepository.addMedia({
     id: mediaId,
     reportId: report.id,
-    uploadedBy: req.user!.id,
+    uploadedBy: req.user?.id || report.reporter_id || 'usr_citizen',
     fileName,
     filePath: relativePath,
     mimeType,

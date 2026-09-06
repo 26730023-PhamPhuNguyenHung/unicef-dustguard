@@ -7,6 +7,153 @@
 
 ## 📅 Các Mốc Phát Triển Chính (Milestones)
 
+### 04. [2026-09-06] `youth-contributions-hours-redesign-and-summary-modal`: Tái Cấu Trúc Dấu Ấn Đóng Góp, Giờ Thực Tế & Bảng Tổng Hợp Minh Chứng Tác Động Cộng Đồng (Contribution Summary Modal)
+- **Bối cảnh & Mục tiêu**:
+  - Chuyển đổi mô hình khen thưởng tình nguyện từ cơ chế cứng nhắc "20 giờ = 4.0 tín chỉ" sang **"Dấu ấn đóng góp & Giờ thực tế" (Contribution Hours & Community Impact)**.
+  - Tôn vinh thời gian cống hiến thực địa của thanh niên, học sinh, sinh viên và tình nguyện viên vì cộng đồng mà không ép buộc chia nhỏ định mức tín chỉ hàn lâm.
+  - Xây dựng component `ContributionSummaryModal.tsx` đóng vai trò bảng tổng kết dấu ấn số, trực quan hóa 4 chỉ số thực chất: Tổng giờ thực địa, Hoạt động đã tham gia, Địa bàn phủ sóng (phường/xã), và Tác động môi trường đã thẩm tra.
+  - Mở rộng API backend `apps/server/src/routes/me.routes.ts` (`GET /api/me/contributions/summary` & `GET /api/me/contributions/log`) với khả năng tính toán giờ thực tế từ chuỗi bằng chứng băm SHA-256 Web Crypto.
+- **Phạm vi hoàn tất**:
+  1. `apps/web/src/utils/creditCalculator.ts`: Viết lại logic tính toán đóng góp, bảo toàn giờ thực tế (4.0h cho phản ánh đủ bằng chứng/định vị/đối chứng, 80% cho hoạt động đang xử lý), loại bỏ phép chia 20h / 4.0 tín chỉ.
+  2. `apps/web/src/components/modals/ContributionSummaryModal.tsx` [NEW]: Thiết kế modal tổng hợp Dấu ấn đóng góp sáng màu, chuẩn Civic High-Contrast, không glassmorphism, hiển thị mã băm số, QR tra cứu và danh mục hoạt động thực chất.
+  3. `apps/web/src/pages/YouthCreditsPage.tsx`: Tinh chỉnh toàn bộ giao diện thành "Dấu ấn đóng góp", hiển thị biểu đồ tác động, thẻ giờ thực địa và nút "Mở bảng tổng hợp minh chứng".
+  4. `apps/server/src/routes/me.routes.ts`: Bổ sung endpoint tổng hợp dữ liệu đóng góp thực tế từ CSDL SQLite SSOT.
+  5. `tests/youth-credits.test.js`: Cập nhật 5/5 tests kiểm tra logic Dấu ấn đóng góp, giờ thực tế và tác động cộng đồng PASS 100%.
+  6. `docs/dustguard-he-thong-hien-tai.md` [NEW]: Biên soạn tài liệu chi tiết về toàn bộ kiến trúc và hiện trạng vận hành DustGuard VN.
+- **Kiểm chứng Chất lượng**:
+  - `node --test tests/youth-credits.test.js`: 5/5 PASS.
+  - `node --test tests/cross-side-sync.test.js`: 6/6 PASS.
+  - 100% build pass, không lỗi runtime, sẵn sàng commit.
+
+### 03. [2026-09-06] `master-rebuild-location-ssot-and-vietnam-2-level-admin-geography`: Rebuild Toàn Bộ Mock Data, Location & Địa Lý Hành Chính 2 Cấp Việt Nam (Hà Nội SSOT Demo Origin: 62 Nguyễn Chí Thanh)
+- **Bối cảnh & Mục tiêu**:
+  - Chuyển đổi toàn bộ hệ thống DustGuard VN sang **Mô hình hành chính 2 cấp** (Cấp 1: Tỉnh / Thành phố trực thuộc TW; Cấp 2: Phường / Xã / Đặc khu).
+  - Loại bỏ hoàn toàn cấp trung gian (Quận / Huyện / Thị xã) khỏi UI, form, filter, database seed và mock dataset.
+  - Thiết lập **Location Source of Truth** duy nhất (`DEMO_LOCATION` tại 62 Nguyễn Chí Thanh, Phường Láng Thượng, Hà Nội - `21.0205, 105.8078`).
+  - Xóa sạch 100% dữ liệu TP.HCM (Quận 7, Thủ Đức, Bình Thạnh, Trạm trung tâm TP.HCM...) khỏi toàn bộ Side A (Port 3000), Side B (Port 3002) và Landing Page.
+  - Tính toán khoảng cách thực tế (Dynamic Haversine Distance) thay vì hardcode `~420m`.
+- **Phạm vi hoàn tất**:
+  1. `packages/shared/src/constants/location.ts` [NEW]: Thiết lập SSOT Location module gồm `DEMO_LOCATION`, `HANOI_CENTER`, `calculateDistanceMeters()`, `formatDistance()`, `HANOI_DEMO_WARDS`, `HANOI_DEMO_ENTITIES` (4 sensors, 4 constructions).
+  2. `apps/server/src/db/seed.ts` & SQLite Database (`data/dustguard-community.db`): Viết lại bộ seed hoàn chỉnh gồm 16 users, 4 communities, 15 cases (Golden Case `DG-C-2026-0842` Huỳnh Thúc Kháng - Nguyễn Chí Thanh), 32 reports, 12 tasks đều tại các phường Láng Thượng, Láng Hạ, Thành Công, Giảng Võ, Yên Hòa.
+  3. `dustguard-operations/apps/server/src/db/seed.ts` & DB (`dustguard-operations/data/dustguard-operations.db`): Viết lại 13 users, 5 contractors, 6 projects, 26 cases (Golden Case `DG-2026-OP-014`), IoT devices, inspections, signals theo mô hình 2 cấp Hà Nội.
+  4. `apps/web/src/pages/DashboardPage.tsx`: Hero context tại 62 Nguyễn Chí Thanh, Hà Nội; widget sensor tính khoảng cách động qua `calculateDistanceMeters` (~136m); 3 highlight cards chuyển sang trục Láng Hạ - Huỳnh Thúc Kháng, Chùa Láng, Huỳnh Thúc Kháng.
+  5. `apps/web/src/pages/CreateReportPage.tsx`: Form 2 cấp (Địa chỉ chi tiết, Tỉnh/Thành phố: Hà Nội, Phường/Xã: Láng Thượng), bỏ dropdown Quận/Huyện; cập nhật placeholder địa chỉ 62 Nguyễn Chí Thanh.
+  6. `apps/web/src/pages/ReportsListPage.tsx`: Cập nhật bộ lọc địa bàn sang danh mục các phường Hà Nội.
+  7. `apps/web/src/utils/geocoding.ts`: Chuyển đổi toàn bộ từ điển tọa độ và fallback geocoding sang Hà Nội.
+  8. `dustguard-operations/apps/web/src/pages/CaseInboxPage.tsx` & `ProjectsPage.tsx` & `PublicReportModal.tsx`: Đổi nhãn `Quận / Huyện` thành `Phường / Xã (Hà Nội)`, default tọa độ và địa bàn Hà Nội.
+- **Kiểm chứng Chất lượng**:
+  - `npm --prefix apps/web run build` & `npm --prefix dustguard-operations/apps/web run build`: PASS 100% (0 lỗi).
+  - `npm --prefix app run verify:quick`: 30 test files & 5 UI smoke suites PASS (248 domain tests + 43 layout tests).
+  - `node scripts/test-responsive-matrix.js`: 45/45 PASS trên 5 viewports (Mobile 390x844, 430x932, Tablet 768x1024, Laptop 1280x720, Desktop 1440x900), 0 console error, 0 horizontal overflow.
+  - `agent-browser`: Trực tiếp mở và snapshot tại `localhost:3000/dashboard`, `localhost:3000/reports/new`, `localhost:3000/reports`, `localhost:3002/dashboard`, `localhost:3002/projects`. Không còn bất kỳ dấu vết nào của Quận 7, Thủ Đức, Bình Thạnh hay Trạm trung tâm TP.HCM.
+
+### 02. [2026-09-06] `dustguard-community-smart-geocoding-and-draggable-pin`: Nâng Cấp Bản Đồ Kiểu Google Maps, Tìm Kiếm Địa Chỉ Thông Minh & Ghim Kéo Thả Trực Quan (Draggable Pin)
+- **Mục tiêu**: Giải quyết dứt điểm vấn đề ghim bản đồ bị lệch vị trí (mặc định trung tâm Quận 1 dù người dùng gõ địa chỉ Quận 7); tích hợp cơ chế Geocoding thông minh kiểu Google Maps, cho phép kéo thả ghim tự do và mở trực tiếp vị trí trên Google Maps.
+- **Nguyên nhân gốc rễ**: Trước đây form tạo phản ánh chỉ lưu tọa độ tĩnh (`10.7769, 106.7009`) mà không chuyển đổi (geocoding) từ chuỗi địa chỉ người dùng nhập (`250 Nguyễn Hữu Thọ, Phường Tân Hưng, Quận 7`), đồng thời `LeafletMap` không hỗ trợ kéo thả ghim (`draggable: true`) và không có ô tìm kiếm địa điểm.
+- **Phạm vi hoàn tất**:
+  1. `apps/web/src/utils/geocoding.ts`: Tạo module Geocoding hỗ trợ tìm kiếm địa chỉ tự động qua Photon API (OpenStreetMap), Reverse Geocoding khi kéo thả ghim, từ điển tọa độ 24 quận huyện TP.HCM và hàm tạo link Google Maps trực tiếp.
+  2. `apps/web/src/components/common/LeafletMap.tsx`: Nâng cấp ghim đỏ giọt nước chuẩn bản đồ (`custom-selected-pin` với mũi nhọn chỉ chuẩn xác tọa độ), hỗ trợ kéo thả tự do (`draggable: true`, sự kiện `dragend`) và tự động `flyTo` mượt mà khi đổi vị trí.
+  3. `apps/web/src/pages/CreateReportPage.tsx`: Tích hợp thanh tìm kiếm địa chỉ Google Maps style với dropdown gợi ý tức thời, nút "GPS của tôi", nút "Ghim vị trí theo địa chỉ này", nút "Xem vị trí trên Google Maps".
+  4. `apps/web/src/pages/ReportDetailPage.tsx`: Bổ sung nút liên kết "Mở trên Google Maps" (`Navigation` icon) và hiển thị chỉ số tọa độ chính xác `(lat, lng)`.
+  5. Cập nhật lại tọa độ chuẩn cho các báo cáo trong SQLite DB (`rep_1788680347460_105c88bb` từ trung tâm Quận 1 về đúng đường Nguyễn Hữu Thọ, Tân Hưng, Quận 7 `10.7448°N, 106.7015°E`).
+- **Kiểm chứng**: Đã kiểm tra runtime qua `agent-browser` tại `http://localhost:3000/reports/new` và `http://localhost:3000/reports/rep_1788680347460_105c88bb`, gợi ý địa chỉ tức thì, ghim bay chuẩn xác, 248 domain tests và 43 UI smoke tests đạt 100% pass.
+
+### 01. [2026-09-06] `dustguard-community-fix-recent-reports-dashboard`: Khắc Phục Lỗi Hiển Thị "Phản Ánh Gần Đây Của Tôi" Trên Dashboard Cộng Đồng (Side A) & Khớp Nối Auth Token Backend
+- **Mục tiêu**: Khắc phục triệt để lỗi khi người dân gửi phản ánh môi trường mới nhưng khi quay lại Dashboard (`/dashboard`) thì mục "Phản ánh gần đây của tôi" không hiển thị (bị rỗng) và số lượng phản ánh bị rỗng ngoặc `Xem tất cả ()`.
+- **Nguyên nhân gốc rễ (Root Cause)**:
+  1. `apps/server/src/routes/dashboard.routes.ts`: Route `GET /api/dashboard/community` thiếu middleware `optionalAuthenticateToken`, dẫn đến không trích xuất được `req.user` từ header `Authorization: Bearer <token>`.
+  2. `apps/server/src/repositories/index.ts`: Phương thức `DashboardRepository.getCommunityDashboard()` không nhận `currentUserId`, không truy vấn `myReports` và thiếu `stats.totalReports` (khiến UI hiển thị `Xem tất cả ()` thay vì số lượng thật).
+  3. `server/community.ts`: Câu lệnh SQLite query `myReports` sử dụng sai tên cột `WHERE user_id = ?` (trong bảng `reports` cột lưu trữ thực tế là `reporter_id`).
+  4. `apps/web/src/pages/DashboardPage.tsx`: Hook `useEffect` fetch dữ liệu ban đầu có dependency array rỗng `[]`, không tự động re-fetch khi đổi vai trò thử nghiệm (`auth:role_changed`) hoặc khi người dùng hoàn tất tạo phản ánh mới.
+- **Phạm vi hoàn tất**:
+  - `apps/server/src/routes/dashboard.routes.ts`: Bổ sung `optionalAuthenticateToken` cho cả `GET /` và `GET /community`, truyền `req.user?.id` vào repository.
+  - `apps/server/src/repositories/index.ts`: Bổ sung `currentUserId` cho `DashboardRepository.getCommunityDashboard()`, truy vấn `myReports` theo `reporter_id = ?` (hoặc public reports nếu vãng lai), bổ sung đầy đủ các chỉ số `totalReports`, `resolvedCases`, `communityMembers`, `activeCases`.
+  - `server/community.ts`: Sửa `user_id` thành `reporter_id`.
+  - `apps/web/src/pages/DashboardPage.tsx`: Cập nhật `useEffect` lắng nghe `[user?.id]` và sự kiện `auth:role_changed` để tự động làm mới dữ liệu thời gian thực.
+  - **Kiểm chứng Runtime**: Đã kiểm tra trực tiếp qua `agent-browser` tại `http://localhost:3000/dashboard`, phản ánh vừa tạo "Bụi mù mịt công trình thi công đường Nguyễn Văn Linh" (mã `DG-C-2026-8993`) hiển thị ngay đầu danh sách; `Xem tất cả (93)` hiển thị số lượng chuẩn xác từ SQLite DB. Toàn bộ 248 domain tests và 43 UI smoke tests đạt 100% pass.
+
+### 00. [2026-09-06] `dustguard-operations-side-b-final-runtime-and-ux-audit`: Hoàn Thành Kiểm Toán Runtime & UX Toàn Diện DustGuard Operations (Side B), Xóa Bỏ Live Pulse, Mở Rộng 100% Hàng Đợi Ưu Tiên, Khắc Phục 100% Lỗi API/DB & Kiểm Chứng Bằng Agent-Browser
+- **Mục tiêu**: Xóa bỏ hoàn toàn "Nhịp Vận Hành (Live Pulse)" khỏi Dashboard Side B (`http://localhost:3002/dashboard`), mở rộng "Hàng Đợi Xử Lý Ưu Tiên" (Priority Queue) thành vùng nội dung chính 100% chiều ngang với đầy đủ 7 cột thông tin chuẩn; kiểm thử runtime toàn bộ 25 routes qua `agent-browser`, xác minh backend SQLite SSOT, sửa toàn bộ các lỗi phát hiện và chuẩn hóa thuật ngữ tiếng Việt Civic Tech.
+- **Phạm vi hoàn tất**:
+  - **Dashboard & Layout**: Xóa sạch component Live Pulse, queries `operationalPulse`, CSS và polling. Cho bảng "Hàng Đợi Xử Lý Ưu Tiên" chiếm trọn chiều ngang khả dụng dưới KPI cards với 7 cột chuẩn (`Mức độ`, `Mã vụ việc`, `Tên vụ việc`, `Địa bàn`, `Phụ trách`, `Trạng thái`, `Hành động`), tích hợp `min-w-[880px]` để chống co rút cột ở laptop Windows scale 125%.
+  - **Kiểm Thử Đa Khung Nhìn (Multi-Viewport Matrix)**: Xác minh và lưu ảnh chụp runtime tại Desktop 1920x1080, Laptop 1440x900, Laptop 1280x800 (125% scaling), Tablet 768x1024, Mobile 390x844.
+  - **Khắc Phục Lỗi Runtime Nghiêm Trọng**:
+    - Sửa vòng lặp redirect vô hạn (`window.location.replace`) trong `LoginPage.tsx` và bổ sung auto-auth dev mode trong `AuthContext.tsx`.
+    - Sửa lỗi truy vấn cột không tồn tại `WHERE status != 'ARCHIVED'` trên bảng `signals` tại `iot.router.ts`.
+    - Bổ sung endpoint thiếu `GET /api/iot/devices/:id/readings` trong `iot.router.ts`.
+    - Bỏ điều kiện role cho `supervisorData` trong `dashboard.router.ts` để trang Điều phối nhân lực (`/supervisor/workload`) luôn tải dữ liệu thực tế mượt mà.
+    - Sửa leak thẩm quyền RBAC hiển thị nút phân công cho `staff` trong `CaseDetailPage.tsx`.
+  - **Xác Minh Đột Biến SQLite SSOT Thực Tế (Không Dùng Dữ Liệu Giả)**:
+    - Flow 1 (Vụ việc): Chuyển trạng thái sang `TRIAGED`, phân công cán bộ `usr-staff-1`, F5 reload bảo toàn.
+    - Flow 2 (Công trình): Tạo công trình `CT-NVL-2026-01`, lưu vào bảng `projects`.
+    - Flow 3 (Nhà thầu): Tạo nhà thầu `Công ty CP Xây dựng Giao thông Cienco 1` (`ctr-ec362df7`), lưu vào bảng `contractors`.
+    - Flow 4 (Hiện trường & Khắc phục): Kiểm tra biên bản 10 tiêu chí QCVN 18, xuất biên bản A4 (`/inspections/:id/export`), xuất thông báo khắc phục A4 (`/actions/:id/notice`).
+    - Flow 5 (IoT & Cảnh báo): Hiển thị trạm phần cứng, kiểm tra tính toàn vẹn HMAC-SHA256, bấm "Tạo Vụ việc từ trạm" -> tạo vụ việc mới `DG-2026-OP-032` ghi nhận vào SQLite.
+    - Flow 6 (Bằng chứng số): Kiểm tra kho bằng chứng và hàm kiểm định băm SHA-256 Web Crypto.
+    - Trí tuệ pháp lý: Phân tích hồ sơ vụ việc, tra cứu toàn văn FTS5 điều khoản quy phạm, chuẩn hóa từ ngữ loại bỏ "FTS5/FT5S" kỹ thuật.
+    - Tìm kiếm toàn hệ thống (`Ctrl+K`): Tìm kiếm thời gian thực vụ việc, nhiệm vụ, điều luật, trạm IoT và điều hướng chính xác.
+  - **Chất Lượng Code & Kiểm Thử**:
+    - Production bundle build (`npm run build`) thành công 100% trong 4.74s.
+    - Toàn bộ 32 bài test API operations đạt 100% pass (`ℹ pass 32, ℹ fail 0`).
+    - Toàn bộ 248 bài test domain và 43 bài test UI smoke đạt 100% pass.
+
+### 00. [2026-09-06] `dustguard-operations-cleanup-side-b-header`: Chuẩn Hóa Ranh Giới Nghiệp Vụ Hai Phía, Loại Bỏ Nút "Báo Cáo Dân Cư" Thừa Trên Header Side B (Port 3002)
+- **Mục tiêu**: Đảm bảo nguyên tắc phân định ranh giới nghiêm ngặt giữa Side A (Cộng đồng / Phản ánh dân cư tại port 3000) và Side B (Cán bộ / Điều hành tác nghiệp tại port 3002). Nút "Báo cáo dân cư" cùng modal `PublicReportModal` được dọn dẹp khỏi header Side B (`dustguard-operations/apps/web/src/components/layout/AppLayout.tsx`) để tránh nhập nhằng vai trò người dùng và giao diện quản lý.
+- **Phạm vi hoàn tất**:
+  - Gỡ bỏ nút bấm "Báo cáo dân cư" (`<Megaphone />`) trên thanh header của `AppLayout.tsx` (Side B).
+  - Gỡ bỏ import và trạng thái mở modal `PublicReportModal` không cần thiết trong `AppLayout.tsx`.
+  - Giữ nguyên API tiếp nhận tín hiệu từ xa `POST /api/signals/public-report` trên server để phục vụ liên thông tự động từ Side A.
+  - TypeScript build (`npx tsc --noEmit`) đạt 100% không lỗi.
+
+### 00. [2026-09-06] `dustguard-community-side-a-rebuild-and-cross-side-completion`: Toàn Diện Tái Thiết Kế & Hoàn Thiện DustGuard Community (Side A) Đạt Chuẩn Benchmark Side B, Triệt Tiêu 100% Mock, Khép Kín Luồng Liên Thông Hai Chiều Side A ↔ Side B, Hoàn Tất Kiểm Thử Runtime & Ma Trận Hiển Thị 45/45 Pass
+- **Mục tiêu**: Nâng cấp toàn diện sản phẩm DustGuard Community (Side A, runtime tại `http://localhost:3000`, API tại `http://localhost:3001`), lấy DustGuard Operations (Side B tại `http://localhost:3002`, API tại `http://localhost:4000`) làm thước đo benchmark. Vận hành thật 100% trên cơ sở dữ liệu SQLite SSOT, loại bỏ toàn bộ mock, gỡ bỏ floating dev controls, tối ưu typography và layout sáng màu, touch targets >= 44px, không glassmorphism, liên thông hai chiều tự động giữa Side A và Side B.
+- **Phạm vi hoàn tất**:
+  - **Design System & Nhận diện Thương hiệu**:
+    - Chuẩn hóa logo khiên chính thức `/images/logo/dustguard-shield-logo.webp`, tiêu đề "DustGuard" và phụ đề "Cộng đồng môi trường".
+    - Xây dựng hệ token màu sắc chuẩn: DustGuard Red (`#9F241F`, hover `#7E1C18`, light `#FDF2F1`, border `#F8D3D1`), các bề mặt trung tính ấm áp (`#F7F6F3`, `#F2EFE9`, `#EBE7DF`), semantic colors (`#1B7A4B`, `#B45309`, `#0D6F64`).
+    - Cấm tuyệt đối glassmorphism, tuân thủ `scrollbar-gutter: stable`, `text-wrap: pretty`, touch target >= 44px.
+  - **AppShell & Điều Hướng Thông Minh**:
+    - Topbar 56px với breadcrumb động, nút chuyển nhanh sang Cổng Điều Hành (Side B), chuông thông báo hiển thị số lượng thật từ `/api/notifications`.
+    - Sidebar tổ chức theo 5 nhóm nghiệp vụ đời thường: Phản ánh & Theo dõi, Mạng lưới cộng đồng, Cá nhân, Điều phối viên, Quản trị hệ thống.
+    - Gỡ bỏ hoàn toàn thanh nổi "DEV ROLE" ở góc màn hình; tích hợp tinh gọn thành dropdown trong footer sidebar chỉ hiển thị khi `import.meta.env.DEV === true`.
+    - Profile footer hiển thị danh tính và vai trò bằng tiếng Việt chuẩn ("Người dân", "Thành viên CLB", "Điều phối viên", "Quản trị viên").
+  - **Quy Trình Gửi Phản Ánh Mới (Report Creation Wizard)**:
+    - Redesign Stepper 4 bước với số bước tròn, ring active, checkmark hoàn thành và thanh nối tiến trình.
+    - Sửa triệt để bug upload ảnh khách vãng lai không có JWT session bằng fallback `report.reporter_id || 'usr_citizen'`.
+    - Tích hợp tính mã băm SHA-256 Web Crypto tự động cho từng tệp ảnh đính kèm.
+    - Lưu trữ bền vững vào SQLite `reports` và `media`. F5 reload vẫn bảo toàn dữ liệu 100%.
+  - **Liên Thông Hai Chiều Side A ↔ Side B (E2E Test Trọng Tâm)**:
+    - Citizen gửi phản ánh `DG-C-...` trên Side A -> Điều phối viên xác thực và tạo vụ việc -> Bàn giao sang Cổng Điều Hành Side B (port 4000) -> Cán bộ Side B thụ lý, đổi trạng thái sang `ASSIGNED` -> Webhook sync về Side A (port 3001) -> Side A cập nhật trạng thái `in_progress` và thêm mốc diễn tiến vào `case_updates` -> Giao diện người dân tại `http://localhost:3000/cases/:id` cập nhật tức thì.
+  - **Tái Cấu Trúc "Tín Chỉ Thanh Niên" -> "Hành Trình Đóng Góp"**:
+    - Xóa bỏ mọi thuật ngữ crypto/token/credit gây hiểu nhầm. Thay bằng "Hành trình đóng góp", "Dấu ấn cộng đồng", số giờ tình nguyện và tổng số phản ánh được ghi nhận.
+    - Tích hợp Modal xem và in Giấy chứng nhận đóng góp thanh niên (`ContributionSummaryModal.tsx`).
+    - Tự động chuyển hướng URL cũ `/credits` và `/youth/credits` sang `/contributions`.
+  - **Kiểm Thử Ma Trận Hiển Thị Đa Viewport (Playwright Matrix Audit)**:
+    - Kiểm thử tự động 5 viewports: `390x844` (Mobile), `430x932` (Mobile lớn), `768x1024` (Tablet), `1280x720` (Laptop 125% scale), `1440x900` (Desktop) trên 9 tuyến đường nghiệp vụ chính.
+    - Kết quả: **45/45 PASS 100%**, không có bất kỳ trang nào bị tràn ngang (`scrollWidth <= innerWidth`), 0 lỗi console.
+  - **Build & Quality Gate**:
+    - `npm --prefix apps/web run build`: TypeScript & Vite build thành công 100% (0 lỗi type).
+    - `npm --prefix apps/server run build`: TypeScript server build thành công 100% (0 lỗi type).
+    - Toàn bộ các bài test E2E (`test-create-report-e2e.js`, `test-side-a-side-b-e2e.js`) đều PASS 100%.
+
+### 00. [2026-09-06] `landing-section-2-redesign-14inch-compact`: Tái Thiết Kế Section 2 (Vấn Đề & Rào Cản) Chuẩn Mockup, Gọn Đẹp, Vừa Khít Viewport Máy 14 Inch Scale 125%
+- **Mục tiêu**: Tái cấu trúc và thiết kế lại hoàn toàn Section 2 (`ProblemStory.tsx`) của Landing page theo mẫu thiết kế chuẩn; thu gọn chiều cao từ 1078px xuống còn ~590px để hiển thị trọn vẹn (vừa khít 1 khung nhìn không bị cuộn trôi tiêu đề) trên màn hình laptop 14 inch ở mức tỉ lệ phóng đại 125% của Windows.
+- **Phạm vi hoàn tất**:
+  - **Header & Quote Card**:
+    - Layout 2 cột cân đối: Bên trái là Badge `THỰC TRẠNG & GIẢI PHÁP`, Tiêu đề đậm sắc nét *"Phản ánh không khó. Theo dõi đến kết quả mới khó."* và đoạn mô tả súc tích.
+    - Bên phải tích hợp Quote Card biên tập thanh lịch: Dấu ngoặc kép đôi màu đỏ to `“`, dòng trích dẫn cảm hứng, nhãn thương hiệu DustGuardVN và dòng chữ nghiêng nghệ thuật chuẩn tiếng Việt *"Không chỉ nhận phản ánh mà đi đến kết quả"*.
+  - **Cột Trái (3 Rào cản chính)**:
+    - 3 card bo góc mềm mại, số tròn `01`, `02`, `03` màu đỏ kèm icon vuông bo góc nền cam nhạt (#FAF0EB viền #ECD3C6).
+    - Tiêu đề đậm, nội dung gọn gàng, dòng cảnh báo chấm than đỏ `!` ở đáy thẻ nổi bật và tinh tế.
+  - **Cột Phải (2 Chu trình đối chiếu)**:
+    - Hộp 1: "Quy trình truyền thống (đứt gãy)" - viền đỏ nhạt, badge "Dễ thất lạc hồ sơ", 4 bước ngang kết nối bằng mũi tên đỏ, dải alert đỏ ở đáy kèm badge "High Drop-Off".
+    - Hộp 2: "Chu trình DustGuard (khép kín)" - viền xanh teal thương hiệu, badge "Mã định danh duy nhất", 4 bước ngang kết nối bằng mũi tên xanh, dải bảo chứng xanh ngọc ở đáy kèm badge "Closed-Loop".
+  - **Footer Section**:
+    - Dải slogan ngăn cách tinh tế: `— MINH BẠCH HƠN HÔM NAY, KHÔNG KHÍ SẠCH HƠN NGÀY MAI —`.
+  - **Tối ưu Responsive & Kích thước Viewport 14" Scale 125%**:
+    - Giảm tổng chiều cao section từ 1078px xuống 593px (giảm ~45%), hiển thị trọn vẹn trong 1 màn hình laptop 14 inch (viewport height ~720-768px).
+    - Đảm bảo 0 lỗi font chữ, 0 co giật giao diện, build TypeScript pass 100%.
+
 ### 00. [2026-09-06] `route-graph-audit-and-canonical-auth-consolidation`: Kiểm Toán 100% Route Toàn Repo, Hợp Nhất Cổng Đăng Nhập /login (Một Nền Tảng · Hai Phía), Redirect /operations/login và Dọn Dẹp Nhãn Sai Lệch Kiến Trúc
 - **Mục tiêu**: Thực thi kiểm toán 100% routes toàn hệ thống bằng code scanner; hợp nhất 2 màn hình login trùng lặp (`/login` và `/operations/login`) thành một cổng canonical duy nhất `/login` với tab chuyển đổi 2 phía (Phía Cộng đồng & Phía Đơn vị Xử lý); cấu hình chuyển hướng HTTP 302 Edge Worker bảo toàn deep-link cho `/operations/login`; xóa bỏ hoàn toàn dòng text sai lệch kiến trúc ("SSOT SQLite cục bộ") và ẩn danh sách tài khoản mật khẩu công khai trừ khi bật `?demo=1`.
 - **Phạm vi hoàn tất**:

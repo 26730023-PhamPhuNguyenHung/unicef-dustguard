@@ -171,7 +171,7 @@ export const EvidenceDetailDrawer: React.FC<EvidenceDetailDrawerProps> = ({
               <span className="text-[11px] text-slate-500 font-medium flex items-center gap-1">
                 <MapPin className="w-3.5 h-3.5 text-slate-400" /> Vị trí tọa độ:
               </span>
-              <p className="text-xs font-bold text-slate-800 truncate" title={c.location_text || 'Địa bàn quận'}>
+              <p className="text-xs font-bold text-slate-800 truncate" title={c.location_text || 'Địa bàn phụ trách'}>
                 {fact.accompanying_data?.location_coords || `${c.latitude || '10.7629'}, ${c.longitude || '106.6823'}`}
               </p>
             </div>

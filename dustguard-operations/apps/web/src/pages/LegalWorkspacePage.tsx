@@ -968,7 +968,7 @@ export const LegalWorkspacePage: React.FC = () => {
                 <ul className="list-disc list-inside space-y-1 text-ink-700 font-medium">
                   <li>{evidence.length} tệp ảnh minh chứng hiện trường đã tiếp nhận và băm SHA-256.</li>
                   <li>{c.source_report_count || 1} lượt phản ánh ghi nhận từ người dân ({c.source || 'Cộng đồng'}).</li>
-                  <li>Công trình: {c.contractor_name || 'Đang xác minh'} tại {c.location_text || 'Địa bàn quận'}.</li>
+                  <li>Công trình: {c.contractor_name || 'Đang xác minh'} tại {c.location_text || 'Địa bàn phụ trách'}.</li>
                   <li>{facts.length} dữ kiện hồ sơ đã được đồng bộ vào hệ thống.</li>
                 </ul>
               </div>

@@ -1,42 +1,68 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-// Logic test mô phỏng trực tiếp từ apps/web/src/utils/creditCalculator.ts
+// Logic test mô phỏng trực tiếp từ apps/web/src/utils/creditCalculator.ts (Contribution Engine)
 function calculateItemHours(item) {
-  let baseHours = 1.5;
-  let bonusHours = 0;
+  let baseHours = 1.0;
+  if (item.type === 'report') baseHours = 1.5;
+  if (item.type === 'task' || item.type === 'verification') baseHours = 2.0;
+  if (item.type === 'confirmation') baseHours = 0.5;
 
+  let bonusHours = 0;
   if (item.hasEvidence) bonusHours += 0.5;
   if (item.hasSiteLinked) bonusHours += 0.5;
   if (item.isWithin50m) bonusHours += 0.5;
   if (item.isBeforeAfter) bonusHours += 1.0;
 
-  let weight = 0;
-  if (item.status === 'RESOLVED' || item.status === 'VERIFIED') {
+  let weight = 1.0;
+  const s = String(item.status).toUpperCase();
+  if (s === 'RESOLVED' || s === 'VERIFIED' || s === 'ACCEPTED' || s === 'COMPLETED' || s === 'CONFIRMED') {
     weight = 1.0;
-  } else if (item.status === 'PENDING') {
-    weight = 0.5;
-  } else {
+  } else if (s === 'PENDING' || s === 'SUBMITTED' || s === 'REVIEWING') {
+    weight = 0.8;
+  } else if (s === 'REJECTED') {
     weight = 0;
   }
 
   return Number(((baseHours + bonusHours) * weight).toFixed(1));
 }
 
-function evaluateYouthCredits(contributions) {
+function evaluateContributionSummary(contributions) {
   let totalHours = 0;
   let verifiedHours = 0;
   let pendingHours = 0;
+  let verifiedCount = 0;
+  let pendingCount = 0;
+
+  const locationSet = new Set();
+  const resolvedCaseIds = new Set();
 
   const logs = contributions.map((item) => {
-    const hours = calculateItemHours(item);
+    const hours = item.hours !== undefined ? item.hours : calculateItemHours(item);
     totalHours += hours;
 
-    const isVerified = item.status === 'RESOLVED' || item.status === 'VERIFIED';
+    const s = String(item.status).toUpperCase();
+    const isVerified = (
+      s === 'RESOLVED' ||
+      s === 'VERIFIED' ||
+      s === 'ACCEPTED' ||
+      s === 'COMPLETED' ||
+      s === 'CONFIRMED'
+    );
+
     if (isVerified) {
       verifiedHours += hours;
-    } else if (item.status === 'PENDING') {
+      verifiedCount += 1;
+    } else {
       pendingHours += hours;
+      pendingCount += 1;
+    }
+
+    const district = item.district || 'TP. Hồ Chí Minh';
+    if (district) locationSet.add(district);
+
+    if (item.caseId && (item.caseStatus === 'resolved' || item.caseStatus === 'closed' || s === 'RESOLVED')) {
+      resolvedCaseIds.add(item.caseId);
     }
 
     return {
@@ -46,35 +72,36 @@ function evaluateYouthCredits(contributions) {
       type: item.type || 'report',
       hours,
       isVerified,
-      statusText: isVerified ? 'Đã xác nhận' : item.status === 'PENDING' ? 'Đang thẩm tra' : 'Từ chối',
+      statusText: isVerified ? 'Đã xác minh' : s === 'REJECTED' ? 'Từ chối' : 'Đang xử lý',
+      district,
       createdAt: item.createdAt || new Date().toISOString(),
+      caseId: item.caseId,
+      caseStatus: item.caseStatus
     };
   });
 
-  const verifiedRounded = Number(verifiedHours.toFixed(1));
-  const academicCredits = Math.min(4.0, Number(((verifiedRounded / 20) * 4.0).toFixed(1)));
-  const progressPercentage = Math.min(100, Math.round((verifiedRounded / 20) * 100));
-  const hoursToNextMilestone = Math.max(0, Number((20 - verifiedRounded).toFixed(1)));
-
   return {
+    totalActivities: contributions.length,
     totalHours: Number(totalHours.toFixed(1)),
-    verifiedHours: verifiedRounded,
+    verifiedHours: Number(verifiedHours.toFixed(1)),
     pendingHours: Number(pendingHours.toFixed(1)),
-    academicCredits,
-    progressPercentage,
-    hoursToNextMilestone,
+    verifiedCount,
+    pendingCount,
+    locationsCount: locationSet.size,
+    resolvedCasesCount: resolvedCaseIds.size,
     logs,
   };
 }
 
-test('GAP-05 & GAP-06: Youth Credits & Volunteer Hours Calculation', async (t) => {
-  await t.test('Hoạt động đầy đủ bằng chứng, định vị và đối chứng đạt tối đa 4.0h', () => {
+test('DẤU ẤN ĐÓNG GÓP: Contribution Hours & Community Impact Verification', async (t) => {
+  await t.test('Phản ánh đầy đủ bằng chứng, định vị và đối chứng được ghi nhận 4.0 giờ thực tế', () => {
     const item = {
-      id: 'task-1',
-      hasEvidence: true,
-      hasSiteLinked: true,
-      isWithin50m: true,
-      isBeforeAfter: true,
+      id: 'rep-1',
+      type: 'report', // base 1.5
+      hasEvidence: true, // +0.5
+      hasSiteLinked: true, // +0.5
+      isWithin50m: true, // +0.5
+      isBeforeAfter: true, // +1.0
       status: 'VERIFIED',
     };
     const hours = calculateItemHours(item);
@@ -82,48 +109,42 @@ test('GAP-05 & GAP-06: Youth Credits & Volunteer Hours Calculation', async (t) =
     assert.equal(hours, 4.0);
   });
 
-  await t.test('Hoạt động đang chờ duyệt chỉ tính 50% trọng số', () => {
+  await t.test('Hoạt động đang xử lý ghi nhận 80% thời gian thực địa', () => {
     const item = {
-      id: 'task-2',
-      hasEvidence: true,
+      id: 'obs-2',
+      type: 'observation', // base 1.0
+      hasEvidence: true, // +0.5
       hasSiteLinked: false,
       isWithin50m: false,
       isBeforeAfter: false,
       status: 'PENDING',
     };
     const hours = calculateItemHours(item);
-    // (1.5 + 0.5) * 0.5 = 1.0
-    assert.equal(hours, 1.0);
+    // (1.0 + 0.5) * 0.8 = 1.2
+    assert.equal(hours, 1.2);
   });
 
-  await t.test('Quy đổi chuẩn 20 giờ = 4.0 tín chỉ rèn luyện', () => {
+  await t.test('Tổng hợp số hoạt động, số giờ thực tế và số địa bàn không chia 20h hay 4.0 tín chỉ', () => {
     const list = [
-      { id: '1', hasEvidence: true, hasSiteLinked: true, isWithin50m: true, isBeforeAfter: true, status: 'VERIFIED' }, // 4.0
-      { id: '2', hasEvidence: true, hasSiteLinked: true, isWithin50m: true, isBeforeAfter: true, status: 'VERIFIED' }, // 4.0
-      { id: '3', hasEvidence: true, hasSiteLinked: true, isWithin50m: true, isBeforeAfter: true, status: 'VERIFIED' }, // 4.0
-      { id: '4', hasEvidence: true, hasSiteLinked: true, isWithin50m: true, isBeforeAfter: true, status: 'VERIFIED' }, // 4.0
-      { id: '5', hasEvidence: true, hasSiteLinked: true, isWithin50m: true, isBeforeAfter: true, status: 'VERIFIED' }, // 4.0
+      { id: '1', type: 'report', hasEvidence: true, hasSiteLinked: true, isWithin50m: true, isBeforeAfter: true, status: 'VERIFIED', district: 'Quận 7', caseId: 'c1', caseStatus: 'resolved' }, // 4.0
+      { id: '2', type: 'observation', hasEvidence: true, hasSiteLinked: false, isWithin50m: false, isBeforeAfter: false, status: 'VERIFIED', district: 'Bình Thạnh', caseId: 'c2', caseStatus: 'in_progress' }, // 1.5
+      { id: '3', type: 'confirmation', hasEvidence: false, hasSiteLinked: false, isWithin50m: false, isBeforeAfter: false, status: 'CONFIRMED', district: 'TP. Thủ Đức', caseId: 'c3', caseStatus: 'resolved' }, // 0.5
     ];
-    const res = evaluateYouthCredits(list);
-    assert.equal(res.verifiedHours, 20.0);
-    assert.equal(res.academicCredits, 4.0);
-    assert.equal(res.progressPercentage, 100);
-    assert.equal(res.hoursToNextMilestone, 0);
+    const res = evaluateContributionSummary(list);
+    assert.equal(res.totalActivities, 3);
+    assert.equal(res.verifiedCount, 3);
+    assert.equal(res.verifiedHours, 6.0);
+    assert.equal(res.locationsCount, 3);
+    assert.equal(res.resolvedCasesCount, 2);
   });
 
-  await t.test('Không vượt quá 4.0 tín chỉ khi vượt 20 giờ', () => {
+  await t.test('Xác định đúng tác động và trạng thái khi có vụ việc hoàn tất', () => {
     const list = [
-      { id: '1', hasEvidence: true, hasSiteLinked: true, isWithin50m: true, isBeforeAfter: true, status: 'VERIFIED' }, // 4.0
-      { id: '2', hasEvidence: true, hasSiteLinked: true, isWithin50m: true, isBeforeAfter: true, status: 'VERIFIED' }, // 4.0
-      { id: '3', hasEvidence: true, hasSiteLinked: true, isWithin50m: true, isBeforeAfter: true, status: 'VERIFIED' }, // 4.0
-      { id: '4', hasEvidence: true, hasSiteLinked: true, isWithin50m: true, isBeforeAfter: true, status: 'VERIFIED' }, // 4.0
-      { id: '5', hasEvidence: true, hasSiteLinked: true, isWithin50m: true, isBeforeAfter: true, status: 'VERIFIED' }, // 4.0
-      { id: '6', hasEvidence: true, hasSiteLinked: true, isWithin50m: true, isBeforeAfter: true, status: 'VERIFIED' }, // 4.0
+      { id: '1', type: 'report', status: 'VERIFIED', district: 'Quận 7', caseId: 'case-alpha', caseStatus: 'resolved' },
+      { id: '2', type: 'confirmation', status: 'CONFIRMED', district: 'Quận 7', caseId: 'case-alpha', caseStatus: 'resolved' },
     ];
-    const res = evaluateYouthCredits(list);
-    assert.equal(res.verifiedHours, 24.0);
-    assert.equal(res.academicCredits, 4.0); // Cap 4.0
-    assert.equal(res.progressPercentage, 100);
-    assert.equal(res.hoursToNextMilestone, 0);
+    const res = evaluateContributionSummary(list);
+    assert.equal(res.resolvedCasesCount, 1, 'Hai đóng góp cùng 1 case resolved chỉ tính 1 case');
+    assert.equal(res.locationsCount, 1);
   });
 });

@@ -74,7 +74,7 @@ export const LandingFooter: React.FC<LandingFooterProps> = ({ lang }) => {
               </li>
               <li>
                 <Link to="/communities" className="hover:text-white transition-colors">
-                  {lang === 'vi' ? 'Mạng lưới CLB & Tín chỉ thanh niên' : 'Youth Volunteer Clubs'}
+                  {lang === 'vi' ? 'Mạng lưới CLB & Dấu ấn đóng góp' : 'Youth Volunteer Clubs'}
                 </Link>
               </li>
               <li>

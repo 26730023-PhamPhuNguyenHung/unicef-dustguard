@@ -1,4 +1,3 @@
-import React from 'react';
 import { Permission } from '@dustguard/shared';
 import {
   LayoutDashboard,
@@ -25,6 +24,7 @@ export interface NavItemConfig {
   path: string;
   icon: LucideIcon;
   permission: Permission;
+  badge?: number;
 }
 
 export interface NavSectionConfig {
@@ -36,51 +36,70 @@ export interface NavSectionConfig {
 
 export const NAVIGATION_CONFIG: NavSectionConfig[] = [
   {
-    id: 'community',
-    title: 'Cộng đồng',
+    id: 'monitoring',
+    title: 'Phản ánh & Theo dõi',
     items: [
       {
         id: 'dashboard',
-        label: 'Tổng quan',
+        label: 'Trang chủ',
         path: '/dashboard',
         icon: LayoutDashboard,
         permission: 'case:view'
       },
       {
-        id: 'map',
-        label: 'Bản đồ',
-        path: '/map',
-        icon: Map,
-        permission: 'case:view'
-      },
-      {
         id: 'reports',
-        label: 'Phản ánh',
+        label: 'Phản ánh môi trường',
         path: '/reports',
         icon: FileText,
         permission: 'report:view'
       },
       {
+        id: 'map',
+        label: 'Bản đồ môi trường',
+        path: '/map',
+        icon: Map,
+        permission: 'case:view'
+      },
+      {
         id: 'following',
-        label: 'Theo dõi',
+        label: 'Theo dõi của tôi',
         path: '/following',
         icon: Bookmark,
         permission: 'case:follow'
-      },
+      }
+    ]
+  },
+  {
+    id: 'community_network',
+    title: 'Mạng lưới cộng đồng',
+    items: [
       {
         id: 'communities',
-        label: 'Cộng đồng',
+        label: 'Hoạt động & CLB',
         path: '/communities',
         icon: Users,
         permission: 'community:view'
       },
       {
         id: 'tasks',
-        label: 'Nhiệm vụ',
+        label: 'Nhiệm vụ giám sát',
         path: '/tasks',
         icon: CheckSquare,
         permission: 'task:view'
       },
+      {
+        id: 'contributions',
+        label: 'Hành trình đóng góp',
+        path: '/contributions',
+        icon: Award,
+        permission: 'contribution:view'
+      }
+    ]
+  },
+  {
+    id: 'personal',
+    title: 'Cá nhân',
+    items: [
       {
         id: 'notifications',
         label: 'Thông báo',
@@ -89,15 +108,8 @@ export const NAVIGATION_CONFIG: NavSectionConfig[] = [
         permission: 'notification:view'
       },
       {
-        id: 'credits',
-        label: 'Tín chỉ thanh niên',
-        path: '/credits',
-        icon: Award,
-        permission: 'contribution:view'
-      },
-      {
         id: 'profile',
-        label: 'Hồ sơ',
+        label: 'Hồ sơ cá nhân',
         path: '/profile',
         icon: User,
         permission: 'profile:manage'
@@ -111,7 +123,7 @@ export const NAVIGATION_CONFIG: NavSectionConfig[] = [
     items: [
       {
         id: 'moderator_inbox',
-        label: 'Hộp thư xác minh',
+        label: 'Hộp thư thẩm định',
         path: '/moderator/inbox',
         icon: FileCheck,
         permission: 'moderator:inbox'
@@ -153,7 +165,7 @@ export const NAVIGATION_CONFIG: NavSectionConfig[] = [
       },
       {
         id: 'admin_users',
-        label: 'Người dùng',
+        label: 'Quản lý người dùng',
         path: '/admin/users',
         icon: Users,
         permission: 'admin:users'

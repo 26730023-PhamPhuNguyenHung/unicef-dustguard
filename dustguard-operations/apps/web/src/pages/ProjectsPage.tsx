@@ -29,11 +29,11 @@ export const ProjectsPage: React.FC = () => {
   const [name, setName] = useState('');
   const [code, setCode] = useState('');
   const [address, setAddress] = useState('');
-  const [district, setDistrict] = useState('Cầu Giấy');
+  const [district, setDistrict] = useState('Láng Thượng');
   const [contractorId, setContractorId] = useState('');
   const [ownerName, setOwnerName] = useState('');
-  const [latitude, setLatitude] = useState(21.0285);
-  const [longitude, setLongitude] = useState(105.8542);
+  const [latitude, setLatitude] = useState(21.0205);
+  const [longitude, setLongitude] = useState(105.8078);
   const [status, setStatus] = useState<'PLANNING' | 'ACTIVE' | 'SUSPENDED' | 'COMPLETED'>('ACTIVE');
   const [notes, setNotes] = useState('');
 
@@ -62,7 +62,7 @@ export const ProjectsPage: React.FC = () => {
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !address.trim() || !district.trim()) {
-      error('Thiếu thông tin bắt buộc', 'Vui lòng nhập đầy đủ tên công trình, địa chỉ và quận/huyện.');
+      error('Thiếu thông tin bắt buộc', 'Vui lòng nhập đầy đủ tên công trình, địa chỉ và phường/xã.');
       return;
     }
 
@@ -179,7 +179,7 @@ export const ProjectsPage: React.FC = () => {
               <thead>
                 <tr className="border-b border-slate-200 bg-slate-50/75 text-slate-700 font-semibold">
                   <th className="py-2.5 px-3">Mã / Tên công trình</th>
-                  <th className="py-2.5 px-3">Địa chỉ & Quận</th>
+                  <th className="py-2.5 px-3">Địa chỉ & Phường/Xã</th>
                   <th className="py-2.5 px-3">Nhà thầu thi công</th>
                   <th className="py-2.5 px-3">Chủ đầu tư</th>
                   <th className="py-2.5 px-3">Trạng thái</th>
@@ -302,13 +302,13 @@ export const ProjectsPage: React.FC = () => {
                     value={address}
                     onChange={e => setAddress(e.target.value)}
                     className="w-full px-3 py-1.5 border border-slate-300 rounded-lg text-xs outline-none focus:ring-1 focus:ring-dustguard-red"
-                    placeholder="Số 123 đường Xuân Thủy"
+                    placeholder="Số 62 Nguyễn Chí Thanh"
                   />
                 </div>
 
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Quận / Huyện *
+                    Phường / Xã *
                   </label>
                   <input
                     type="text"
@@ -316,7 +316,7 @@ export const ProjectsPage: React.FC = () => {
                     value={district}
                     onChange={e => setDistrict(e.target.value)}
                     className="w-full px-3 py-1.5 border border-slate-300 rounded-lg text-xs outline-none focus:ring-1 focus:ring-dustguard-red"
-                    placeholder="Cầu Giấy"
+                    placeholder="Láng Thượng"
                   />
                 </div>
               </div>

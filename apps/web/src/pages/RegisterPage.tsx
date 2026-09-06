@@ -12,8 +12,8 @@ export const RegisterPage: React.FC = () => {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [district, setDistrict] = useState('Quận 7');
-  const [ward, setWard] = useState('Tân Phú');
+  const [district, setDistrict] = useState('Láng Thượng');
+  const [ward, setWard] = useState('Láng Thượng');
 
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -117,14 +117,13 @@ export const RegisterPage: React.FC = () => {
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <label className="block text-xs font-bold uppercase tracking-wider text-content-sub">
-                Quận / Huyện
+                Tỉnh / Thành phố
               </label>
               <input
                 type="text"
-                value={district}
-                onChange={(e) => setDistrict(e.target.value)}
-                placeholder="Quận 7"
-                className="w-full px-3.5 py-2 rounded-xl border border-border-subtle text-xs bg-white focus:border-primary focus:outline-none"
+                readOnly
+                value="Hà Nội"
+                className="w-full px-3.5 py-2 rounded-xl border border-border-subtle text-xs bg-stone-100 text-stone-700 cursor-not-allowed font-medium"
               />
             </div>
             <div className="space-y-1.5">
@@ -134,8 +133,11 @@ export const RegisterPage: React.FC = () => {
               <input
                 type="text"
                 value={ward}
-                onChange={(e) => setWard(e.target.value)}
-                placeholder="Tân Phú"
+                onChange={(e) => {
+                  setWard(e.target.value);
+                  setDistrict(e.target.value);
+                }}
+                placeholder="Láng Thượng"
                 className="w-full px-3.5 py-2 rounded-xl border border-border-subtle text-xs bg-white focus:border-primary focus:outline-none"
               />
             </div>

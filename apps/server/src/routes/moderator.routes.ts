@@ -84,7 +84,7 @@ router.post('/reports/:id/verify', (req: AuthRequest, res: Response): void => {
       address: report.address,
       ward: report.ward,
       district: report.district,
-      city: report.city || 'TP. Hồ Chí Minh',
+      city: report.city || 'Hà Nội',
       status: 'confirmed_signal',
       // Bug đã vá: `priority` không được kiểm tra trước khi ghi vào cột có ràng buộc
       // CHECK(priority IN ('normal','attention','urgent')) - giá trị rác sẽ ném lỗi CSDL 500.
@@ -168,12 +168,12 @@ router.post('/cases', (req: AuthRequest, res: Response): void => {
     title,
     summary: summary || '',
     category: category || 'dust',
-    latitude: latitude || 10.7769,
-    longitude: longitude || 106.7009,
+    latitude: latitude || 21.0205,
+    longitude: longitude || 105.8078,
     address,
-    ward: ward || '',
-    district,
-    city: city || 'TP. Hồ Chí Minh',
+    ward: ward || 'Láng Thượng',
+    district: district || 'Hà Nội',
+    city: city || 'Hà Nội',
     status: 'confirmed_signal',
     priority: ['normal', 'attention', 'urgent'].includes(priority) ? priority : 'normal',
     createdBy: req.user!.id

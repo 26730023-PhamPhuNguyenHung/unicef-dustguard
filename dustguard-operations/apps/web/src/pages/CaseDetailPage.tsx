@@ -464,14 +464,16 @@ export const CaseDetailPage: React.FC = () => {
           </span>
         </div>
         <div className="flex items-center gap-2 relative">
-          <Button
-            variant="secondary"
-            size="sm"
-            icon={<User className="w-3.5 h-3.5" />}
-            onClick={handleOpenAssignModal}
-          >
-            Phân công
-          </Button>
+          {can('case:assign') && (
+            <Button
+              variant="secondary"
+              size="sm"
+              icon={<User className="w-3.5 h-3.5" />}
+              onClick={handleOpenAssignModal}
+            >
+              Phân công
+            </Button>
+          )}
           <Button
             variant="secondary"
             size="sm"
@@ -561,7 +563,7 @@ export const CaseDetailPage: React.FC = () => {
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold uppercase tracking-wider text-dustguard-red font-mono">
-                BƯỚC TIẾP THEO (NEXT ACTION)
+                BƯỚC TIẾP THEO KHUYẾN NGHỊ
               </span>
               <span className="text-xs font-bold text-slate-900">• {nextActionData.title}</span>
             </div>
@@ -569,29 +571,27 @@ export const CaseDetailPage: React.FC = () => {
             {nextActionData.blockingIssues && nextActionData.blockingIssues.length > 0 && (
               <div className="flex flex-wrap items-center gap-2 pt-1 text-[11px] text-amber-800">
                 <AlertTriangle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                <span>Vấn đề cần hoàn tất: {nextActionData.blockingIssues.join('; ')}</span>
+                <span>Yếu tố cần hoàn tất:</span>
+                {nextActionData.blockingIssues.map((issue: string, idx: number) => (
+                  <span key={idx} className="bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded text-[10px] font-medium">
+                    {issue}
+                  </span>
+                ))}
               </div>
             )}
           </div>
-          <div className="flex items-center gap-2 shrink-0">
-            {nextActionData.route && (
-              <Link to={nextActionData.route}>
-                <Button variant="primary" size="sm">
-                  {nextActionData.title}
-                </Button>
-              </Link>
-            )}
+          <div className="shrink-0">
             <Button
-              variant="secondary"
+              variant="outline"
               size="sm"
+              icon={<FileText className="w-3.5 h-3.5" />}
               onClick={() => {
                 const token = localStorage.getItem('dustguard_token');
                 const url = resolveApiUrl(`/api/cases/${currentCase.id}/decision-pack${token ? `?token=${encodeURIComponent(token)}` : ''}`);
                 window.open(url, '_blank');
               }}
-              icon={<FileText className="w-3.5 h-3.5" />}
             >
-              Xuất Decision Pack
+              Xuất Hồ sơ Quyết định
             </Button>
           </div>
         </div>
@@ -614,7 +614,7 @@ export const CaseDetailPage: React.FC = () => {
           <div className="lg:col-span-2 space-y-6">
             <div className="civic-card p-5 space-y-3">
               <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider">
-                Tóm tắt vụ việc (Case Summary)
+                Tóm tắt vụ việc
               </h3>
               <p className="text-sm text-slate-700 leading-relaxed">
                 {currentCase.description}
@@ -637,7 +637,7 @@ export const CaseDetailPage: React.FC = () => {
                 <div className="flex items-center gap-2">
                   <Shield className="w-5 h-5 text-dustguard-teal" />
                   <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider">
-                    Thẩm tra Pháp lý (Legal Intelligence)
+                    Ý kiến Thẩm tra Pháp lý
                   </h3>
                 </div>
                 <div className="flex items-center gap-2">
@@ -651,7 +651,7 @@ export const CaseDetailPage: React.FC = () => {
                   </Button>
                   <Link to={`/cases/${currentCase.id}/legal`}>
                     <Button variant="outline" size="sm" className="text-xs h-7">
-                      Mở Legal Workspace
+                      Không gian Pháp lý
                     </Button>
                   </Link>
                 </div>
@@ -1150,7 +1150,7 @@ export const CaseDetailPage: React.FC = () => {
             <div>
               <div className="flex items-center gap-2">
                 <FolderCheck className="w-5 h-5 text-dustguard-teal" />
-                <h3 className="text-base font-bold text-slate-900">Hồ Sơ Nghiệp Vụ Vụ Việc (Case Dossier & Decision Pack)</h3>
+                <h3 className="text-base font-bold text-slate-900">Hồ Sơ Nghiệp Vụ Vụ Việc Toàn Diện</h3>
               </div>
               <p className="text-xs text-slate-500 mt-0.5">Tập hợp toàn bộ chứng cứ pháp lý, biên bản hiện trường và tiến trình xử lý vụ việc</p>
             </div>
@@ -1173,7 +1173,7 @@ export const CaseDetailPage: React.FC = () => {
                   window.open(url, '_blank');
                 }}
               >
-                Tải Decision Pack JSON
+                Tải Hồ Sơ Dữ Liệu JSON
               </Button>
             </div>
           </div>

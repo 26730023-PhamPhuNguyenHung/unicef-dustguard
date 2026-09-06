@@ -56,7 +56,9 @@ export const LegalDocDetailPage: React.FC = () => {
         </div>
         <div>
           <span className="text-slate-400 block">Trạng thái áp dụng:</span>
-          <span className="font-bold text-emerald-700">{doc.status}</span>
+          <span className="font-bold text-emerald-700">
+            {doc.status === 'ACTIVE' ? 'Đang có hiệu lực' : doc.status === 'EXPIRED' ? 'Hết hiệu lực' : doc.status}
+          </span>
         </div>
       </div>
 

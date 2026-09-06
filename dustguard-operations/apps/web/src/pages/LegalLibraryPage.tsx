@@ -49,11 +49,11 @@ export const LegalLibraryPage: React.FC = () => {
       <div>
         <h1 className="text-2xl font-bold text-slate-900">Thư viện Quy phạm Pháp luật Môi trường</h1>
         <p className="text-sm text-slate-600">
-          Tra cứu toàn văn điều khoản, khung xử phạt vi phạm hành chính và quy chuẩn chất lượng không khí bằng công cụ FTS5 Engine
+          Tra cứu toàn văn điều khoản, khung xử phạt vi phạm hành chính và quy chuẩn chất lượng không khí
         </p>
       </div>
 
-      {/* FTS Search Bar */}
+      {/* Legal Search Bar */}
       <div className="civic-card p-4">
         <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
@@ -67,7 +67,7 @@ export const LegalLibraryPage: React.FC = () => {
             />
           </div>
           <Button type="submit" variant="primary" loading={searching}>
-            Tra cứu Toàn văn FTS5
+            Tra cứu Toàn văn
           </Button>
         </form>
       </div>
