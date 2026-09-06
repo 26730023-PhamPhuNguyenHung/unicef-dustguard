@@ -36,7 +36,7 @@ router.get('/reports', (req: AuthRequest, res: Response): void => {
 
 // 2. Xác thực phản ánh (Hỗ trợ: verify_only, link_existing, hoặc create_case)
 router.post('/reports/:id/verify', (req: AuthRequest, res: Response): void => {
-  const report = ReportRepository.findById(req.params.id);
+  const report = ReportRepository.findByIdRaw(req.params.id);
   if (!report) {
     res.status(404).json({ success: false, error: { code: 'NOT_FOUND', message: 'Không tìm thấy phản ánh.' } });
     return;
@@ -181,7 +181,7 @@ router.post('/cases', (req: AuthRequest, res: Response): void => {
     CaseRepository.linkReport(caseId, reportId, req.user!.id);
     ReportRepository.updateStatus(reportId, 'verified', caseId);
 
-    const report = ReportRepository.findById(reportId);
+    const report = ReportRepository.findByIdRaw(reportId);
     if (report) {
       NotificationRepository.create({
         userId: report.reporter_id,
@@ -214,7 +214,7 @@ router.post('/reports/:id/reject', (req: AuthRequest, res: Response): void => {
     return;
   }
 
-  const report = ReportRepository.findById(req.params.id);
+  const report = ReportRepository.findByIdRaw(req.params.id);
   if (!report) {
     res.status(404).json({ success: false, error: { code: 'NOT_FOUND', message: 'Không tìm thấy phản ánh.' } });
     return;
@@ -254,7 +254,7 @@ router.post('/reports/:id/merge', (req: AuthRequest, res: Response): void => {
     return;
   }
 
-  const report = ReportRepository.findById(req.params.id);
+  const report = ReportRepository.findByIdRaw(req.params.id);
   if (!report) {
     res.status(404).json({ success: false, error: { code: 'NOT_FOUND', message: 'Không tìm thấy phản ánh.' } });
     return;
@@ -306,6 +306,20 @@ const handleCaseStatusUpdate = (req: AuthRequest, res: Response): void => {
   const validated = updateCaseStatusSchema.safeParse(rawBody);
   if (!validated.success) {
     res.status(400).json({ success: false, error: { code: 'VALIDATION_ERROR', message: validated.error.errors[0]?.message } });
+    return;
+  }
+
+  // Bảo vệ Idempotency (Bug P1 - Double Submit): nếu điều phối viên bấm "Chuyển tiếp" /
+  // đổi trạng thái 2 lần liên tiếp thật nhanh trước khi UI kịp khóa nút, request thứ 2 có thể
+  // tới trước khi request đầu hoàn tất và tạo ra 2 mốc timeline + 2 lượt thông báo trùng lặp,
+  // đồng thời gọi bàn giao sang Operations 2 lần. Chặn sớm nếu trạng thái không đổi.
+  const currentCase = sqliteClient.get<any>('SELECT status FROM cases WHERE id = ?', [req.params.id]);
+  if (!currentCase) {
+    res.status(404).json({ success: false, error: { code: 'CASE_NOT_FOUND', message: 'Không tìm thấy vụ việc.' } });
+    return;
+  }
+  if (currentCase.status === validated.data.newStatus) {
+    res.json({ success: true, data: CaseRepository.findById(req.params.id), idempotent: true });
     return;
   }
 

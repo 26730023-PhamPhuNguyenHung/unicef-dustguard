@@ -1,0 +1,199 @@
+[
+  {
+    "screen": "LandingPage", "route": "/, /landing", "role": "public",
+    "primaryCTA": ["Gửi phản ánh (CTA -> /reports/new)", "Xem bản đồ", "Đăng nhập/Đăng ký", "VI/EN language toggle"],
+    "apiUsed": [], "dbTables": [],
+    "status": "WORKING", "issuesFound": [], "fixesApplied": []
+  },
+  {
+    "screen": "LoginPage", "route": "/login", "role": "public",
+    "primaryCTA": ["Đăng nhập Cộng đồng", "Dev role-switch quick buttons", "Đơn vị Xử lý tab", "Đăng ký thành viên link"],
+    "apiUsed": ["POST /auth/login", "POST /auth/dev-switch-role"], "dbTables": ["users", "audit_logs"],
+    "status": "WORKING", "issuesFound": ["dev-switch-role endpoint has zero guard against NODE_ENV=production - low-risk dev convenience left reachable"], "fixesApplied": []
+  },
+  {
+    "screen": "RegisterPage", "route": "/register", "role": "public",
+    "primaryCTA": ["Đăng ký thành viên"],
+    "apiUsed": ["POST /auth/register"], "dbTables": ["users", "audit_logs"],
+    "status": "WORKING", "issuesFound": [], "fixesApplied": []
+  },
+  {
+    "screen": "ForgotPasswordPage", "route": "/forgot-password", "role": "public",
+    "primaryCTA": ["Gửi yêu cầu đặt lại mật khẩu"],
+    "apiUsed": [], "dbTables": [],
+    "status": "UI_ONLY", "issuesFound": ["No backend endpoint exists for password reset - form is presentational only, confirmed no matching /auth/forgot-password or similar route in auth.routes.ts"], "fixesApplied": []
+  },
+  {
+    "screen": "DashboardPage", "route": "/dashboard", "role": "all authenticated + public fallback",
+    "primaryCTA": ["Gửi phản ánh", "Chi tiết (case cards)", "Xem tất cả"],
+    "apiUsed": ["GET /dashboard/community"], "dbTables": ["cases", "reports", "confirmations", "observations"],
+    "status": "WORKING", "issuesFound": [], "fixesApplied": []
+  },
+  {
+    "screen": "MapPage", "route": "/map", "role": "all",
+    "primaryCTA": ["Filter by status/category", "Select case pin -> side panel"],
+    "apiUsed": ["GET /cases"], "dbTables": ["cases", "confirmations", "observations"],
+    "status": "WORKING", "issuesFound": [], "fixesApplied": []
+  },
+  {
+    "screen": "ReportsListPage", "route": "/reports", "role": "all + public",
+    "primaryCTA": ["Filter by status/district/search", "Click report -> detail"],
+    "apiUsed": ["GET /reports"], "dbTables": ["reports", "report_media"],
+    "status": "WORKING", "issuesFound": ["Was returning private/community reports to anonymous visitors - see endpoint fix"], "fixesApplied": ["ReportRepository.list now filters by visibility + viewer identity (P1 privacy fix)"]
+  },
+  {
+    "screen": "CreateReportPage", "route": "/reports/new", "role": "public (anonymous allowed) + citizen",
+    "primaryCTA": ["4-step wizard: category/title/desc -> location (map pin + GPS) -> evidence photo upload -> review & submit", "Duplicate-warning modal (Xem vụ việc / Tôi cũng ghi nhận / Vẫn gửi mới)", "Xóa nháp (clear draft)"],
+    "apiUsed": ["GET /reports/check-duplicate", "POST /reports", "POST /reports/:id/media", "POST /cases/:id/confirm"], "dbTables": ["reports", "report_media", "confirmations"],
+    "status": "WORKING", "issuesFound": [
+      "P1 broken contract: check-duplicate used mismatched query param names (latitude/longitude vs lat/lon) and mismatched response field names (hasPossibleDuplicate/nearbyCase vs hasDuplicate/possibleDuplicates) - the duplicate-warning modal never fired for any user, ever.",
+      "Draft auto-save (localStorage) was not owner-scoped - a draft typed by one logged-in user could be silently loaded into the form for a different user who later logs in on the same browser/device."
+    ],
+    "fixesApplied": [
+      "reports.routes.ts GET /check-duplicate now accepts both param-name variants and returns both field-name variants. Verified end-to-end via curl AND via agent-browser (modal now visibly renders with real nearby-case data at the same coordinates known to have duplicates).",
+      "draftStorage.ts loadDraft() now takes an optional currentOwner and refuses to return a draft saved by a different owner; CreateReportPage now passes user?.id (or 'guest') as both the save-time owner and the load-time currentOwner."
+    ]
+  },
+  {
+    "screen": "ReportDetailPage", "route": "/reports/:id", "role": "all + public (subject to visibility)",
+    "primaryCTA": ["View report evidence/media", "Link to related case if verified"],
+    "apiUsed": ["GET /reports/:id"], "dbTables": ["reports", "report_media"],
+    "status": "WORKING", "issuesFound": ["Was reachable for ANY report id regardless of visibility (P1 privacy) - see endpoint fix"], "fixesApplied": ["Now returns 403 FORBIDDEN for a community/private report viewed by someone who isn't the owner/moderator/admin. Verified via curl with 3 identities (owner=200, moderator=200, other citizen=403, anonymous=403)."]
+  },
+  {
+    "screen": "CaseDetailPage", "route": "/cases/:id", "role": "all + public",
+    "primaryCTA": ["Tôi cũng ghi nhận (confirm)", "Lưu (save/follow)", "Bổ sung quan sát (-> SubmitObservationPage)", "Tabs: Tổng quan/Bằng chứng/Diễn biến", "CitizenFeedbackSection (rate resolution)"],
+    "apiUsed": ["GET /cases/:id", "GET /cases/:id/observations", "POST/DELETE /cases/:id/confirm", "POST/DELETE /cases/:id/save", "GET/POST /cases/:id/feedback"], "dbTables": ["cases", "case_updates", "confirmations", "saved_cases", "observations", "case_feedback"],
+    "status": "WORKING", "issuesFound": [
+      "P0: page read `res.case` from the GET /cases/:id response, but the backend returns the case object at the TOP LEVEL of `data` with no `case` wrapper. Result: caseData was always undefined and the page unconditionally rendered 'Không tìm thấy vụ việc' for every case, for every role - confirmed live via agent-browser before the fix. This is the single most-linked page in the whole app (every 'Chi tiết' button across Dashboard/Map/Reports/Community/Notifications routes here), so this was effectively a full outage of case browsing."
+    ],
+    "fixesApplied": [
+      "CaseDetailPage.tsx now reads `res.case || res` (and similarly unwraps confirmationCount/isConfirmedByMe/isSavedByMe with the real field names returned by CaseRepository.findById). Verified live via agent-browser: page now renders full case content, map, timeline (6 entries), and feedback section for the same case id that previously 404'd."
+    ]
+  },
+  {
+    "screen": "SubmitObservationPage", "route": "/cases/:id/observe", "role": "permission observation:create (member+)",
+    "primaryCTA": ["Select observation type", "Comment", "Upload field photos", "Gửi quan sát"],
+    "apiUsed": ["GET /cases/:id", "POST /cases/:id/observations", "POST /cases/:id/observations/:obsId/media"], "dbTables": ["observations", "observation_media", "case_updates"],
+    "status": "WORKING", "issuesFound": [
+      "P0 silent failure: the photo-upload call hit a route that did not exist on the backend (404), and the failure was swallowed by a bare .catch(console.warn) - the citizen was told 'Đã ghi nhận quan sát hiện trường của bạn thành công!' while every attached evidence photo was silently discarded."
+    ],
+    "fixesApplied": [
+      "Added POST /api/cases/:id/observations/:obsId/media to cases.routes.ts (multer upload + ObservationRepository.addMedia, mirroring the existing report-media upload pattern). Verified end-to-end with a real multipart PNG upload: row landed in observation_media with correct sha256, path, and survived a fresh DB re-query after the request completed."
+    ]
+  },
+  {
+    "screen": "MyTrackingPage", "route": "/following", "role": "permission case:follow",
+    "primaryCTA": ["Tabs: Đã lưu / Phản ánh của tôi / Đóng góp"],
+    "apiUsed": ["GET /me/saved", "GET /me/reports", "GET /me/contributions"], "dbTables": ["saved_cases", "reports", "user_contributions"],
+    "status": "WORKING", "issuesFound": ["Đóng góp tab always empty: read a non-existent `res.contributions` field instead of the real `res.timeline`"], "fixesApplied": ["Now reads res.timeline (with a res.contributions fallback)."]
+  },
+  {
+    "screen": "CommunitiesPage", "route": "/communities", "role": "all",
+    "primaryCTA": ["Tham gia/Rời nhóm"],
+    "apiUsed": ["GET /communities", "POST/POST /communities/:id/join|leave"], "dbTables": ["communities", "community_members"],
+    "status": "WORKING", "issuesFound": [], "fixesApplied": []
+  },
+  {
+    "screen": "CommunityDetailPage", "route": "/communities/:slug", "role": "all",
+    "primaryCTA": ["Tham gia/Rời nhóm", "Đăng bài cập nhật"],
+    "apiUsed": ["GET /communities/:slug", "GET/POST /communities/:id/posts", "POST /communities/:id/join|leave"], "dbTables": ["communities", "community_members", "posts"],
+    "status": "WORKING", "issuesFound": ["Comment feature (GET/POST /communities/posts/:postId/comments) exists on the backend but has no UI anywhere in this page - orphan endpoints, not a regression, just unbuilt"], "fixesApplied": []
+  },
+  {
+    "screen": "TasksPage", "route": "/tasks", "role": "permission task:view (member+)",
+    "primaryCTA": ["Nhận nhiệm vụ (claim)", "Nộp kết quả xác minh (submit)"],
+    "apiUsed": ["GET /tasks", "POST /tasks/:id/claim", "POST /tasks/:id/submit"], "dbTables": ["verification_tasks", "task_submissions"],
+    "status": "WORKING", "issuesFound": [], "fixesApplied": []
+  },
+  {
+    "screen": "NotificationsPage", "route": "/notifications", "role": "permission notification:view",
+    "primaryCTA": ["Đánh dấu đã đọc (single)", "Đánh dấu tất cả đã đọc"],
+    "apiUsed": ["GET /notifications", "PATCH /notifications/:id/read", "POST /notifications/read-all"], "dbTables": ["notifications"],
+    "status": "WORKING", "issuesFound": [], "fixesApplied": []
+  },
+  {
+    "screen": "ContributionsPage", "route": "/contributions", "role": "permission contribution:view (member+)",
+    "primaryCTA": ["Xem dòng thời gian đóng góp"],
+    "apiUsed": ["GET /me/contributions"], "dbTables": ["user_contributions", "reports", "observations", "confirmations", "task_submissions"],
+    "status": "WORKING", "issuesFound": ["P1 broken contract: read a non-existent `res.contributions` field instead of the real `res.timeline` - page always showed 'no contributions yet' regardless of actual history"], "fixesApplied": ["Now reads res.timeline. Verified against citizen@dustguard.local (real non-empty history) at the API level."]
+  },
+  {
+    "screen": "YouthCreditsPage", "route": "/credits, /youth/credits", "role": "permission contribution:view (member+)",
+    "primaryCTA": ["Xem tổng tín chỉ", "In chứng nhận (certificate modal)"],
+    "apiUsed": ["GET /me/contributions"], "dbTables": ["user_contributions", "reports", "observations", "confirmations", "task_submissions"],
+    "status": "WORKING", "issuesFound": ["P1 broken contract: called a non-existent path '/contributions' (always 404) AND read the wrong response field - every user always saw 0 credits"], "fixesApplied": ["Now calls the real '/me/contributions' path and reads res.timeline."]
+  },
+  {
+    "screen": "ProfilePage", "route": "/profile", "role": "permission profile:manage",
+    "primaryCTA": ["Lưu hồ sơ (save profile)", "Đăng xuất"],
+    "apiUsed": ["PATCH /me/profile"], "dbTables": ["users"],
+    "status": "WORKING", "issuesFound": ["P1 broken contract: called PATCH /auth/profile which does not exist (404) - profile editing was completely non-functional for every user", "password_hash was leaking in the update response"], "fixesApplied": ["Changed call to PATCH /me/profile (verified 200 + persisted fields via curl); UserRepository.updateProfile now strips password_hash from its return value."]
+  },
+  {
+    "screen": "ForbiddenPage", "route": "fallback for permission-denied routes", "role": "all",
+    "primaryCTA": ["Về trang chủ"],
+    "apiUsed": [], "dbTables": [],
+    "status": "WORKING", "issuesFound": [], "fixesApplied": []
+  },
+  {
+    "screen": "VerificationInboxPage", "route": "/moderator/inbox, /moderator/verification", "role": "moderator/admin",
+    "primaryCTA": ["Click report -> VerificationDetailPage"],
+    "apiUsed": ["GET /moderator/reports"], "dbTables": ["reports", "users"],
+    "status": "WORKING", "issuesFound": [], "fixesApplied": []
+  },
+  {
+    "screen": "VerificationDetailPage", "route": "/moderator/verification/:id", "role": "moderator/admin",
+    "primaryCTA": ["Xác thực (verify_only)", "Tạo vụ việc (create_case)", "Liên kết vụ việc có sẵn (link_existing)", "Gộp (merge)", "Từ chối (reject, requires reason)"],
+    "apiUsed": ["GET /reports/:id", "GET /cases", "POST /moderator/reports/:id/verify", "POST /moderator/cases", "POST /moderator/reports/:id/merge", "POST /moderator/reports/:id/reject"], "dbTables": ["reports", "cases", "case_reports", "notifications", "audit_logs"],
+    "status": "WORKING", "issuesFound": [], "fixesApplied": []
+  },
+  {
+    "screen": "CaseCoordinationPage", "route": "/moderator/cases", "role": "moderator/admin",
+    "primaryCTA": ["Đổi trạng thái vụ việc (Kanban-style status update, includes 'Chuyển tiếp'/forward to Operations)"],
+    "apiUsed": ["GET /cases", "PATCH /moderator/cases/:id/status"], "dbTables": ["cases", "case_updates", "notifications", "saved_cases", "audit_logs"],
+    "status": "WORKING", "issuesFound": ["P1 idempotency: rapid double-submit of a status change (e.g. double-clicking 'Chuyển tiếp' before the button disabled) created duplicate timeline entries + duplicate notifications for every follower, and could trigger the Operations handoff webhook twice"], "fixesApplied": ["Added a same-status short-circuit in moderator.routes.ts. Verified by firing 2 concurrent forward requests at a fresh test case: exactly 1 case_updates row, 1 notification, 1 case row (reproduced 2/2/1 before the fix, confirmed 1/1/1 after)."]
+  },
+  {
+    "screen": "ModerationQueuePage", "route": "/moderator/content", "role": "moderator/admin",
+    "primaryCTA": ["Bỏ qua (dismiss)", "Xử lý (action: hide/delete)"],
+    "apiUsed": ["GET /moderator/content", "POST /moderator/content/:id/action"], "dbTables": ["content_reports"],
+    "status": "UI_ONLY", "issuesFound": ["content_reports table is permanently empty - there is no UI anywhere in the app that lets a citizen flag a post/comment, so this working queue+action mechanism has no real data to ever act on. The queue and its actions are correctly wired to the DB (verified by reading the code), but cannot be exercised end-to-end with real data because the upstream 'report this content' feature was never built."], "fixesApplied": []
+  },
+  {
+    "screen": "ModeratorDashboardPage", "route": "/moderator/dashboard", "role": "moderator/admin",
+    "primaryCTA": ["View coordination stats"],
+    "apiUsed": ["GET /dashboard/moderator"], "dbTables": ["reports", "cases", "verification_tasks"],
+    "status": "WORKING", "issuesFound": [], "fixesApplied": []
+  },
+  {
+    "screen": "AdminOverviewPage", "route": "/admin/overview", "role": "admin",
+    "primaryCTA": ["View system stats + build/version panel"],
+    "apiUsed": ["GET /admin/stats", "GET /admin/system-status"], "dbTables": ["users", "cases", "reports", "audit_logs"],
+    "status": "WORKING", "issuesFound": ["system-status endpoint returns mostly hardcoded/static build metadata (not a bug, just informational)"], "fixesApplied": []
+  },
+  {
+    "screen": "AdminUsersPage", "route": "/admin/users", "role": "admin",
+    "primaryCTA": ["Đổi vai trò (change role)", "Khóa/Kích hoạt tài khoản (suspend/reactivate)"],
+    "apiUsed": ["GET /admin/users", "PATCH /admin/users/:id/role", "PATCH /admin/users/:id/status"], "dbTables": ["users", "audit_logs"],
+    "status": "WORKING", "issuesFound": ["P1 security: role/status change responses leaked the target user's bcrypt password_hash to the admin's browser"], "fixesApplied": ["UserRepository.sanitize() strips password_hash before these responses are sent. Verified via curl: response no longer contains password_hash."]
+  },
+  {
+    "screen": "AdminAuditPage", "route": "/admin/audit", "role": "admin",
+    "primaryCTA": ["Filter by action type"],
+    "apiUsed": ["GET /admin/audit"], "dbTables": ["audit_logs", "users"],
+    "status": "WORKING", "issuesFound": [], "fixesApplied": []
+  },
+  {
+    "screen": "ContractorPortalPage", "route": "/contractor, /contractor/portal, /contractor/actions, /contractor/access/:token", "role": "public (contractor, no account system)",
+    "primaryCTA": ["Search by contractor name/tax-id/phone", "Click action -> ContractorRemediationPage"],
+    "apiUsed": ["GET /contractor/dashboard"], "dbTables": ["N/A - proxies to Side B (Operations) over HTTP, no direct Side A DB table"],
+    "status": "WORKING", "issuesFound": ["No real per-contractor access control - any visitor can browse any contractor's action list by searching their name. This is a deliberate design tradeoff (contractors have no login/account), but is worth the product owner's explicit sign-off as an accepted risk rather than an assumed one."], "fixesApplied": []
+  },
+  {
+    "screen": "ContractorRemediationPage", "route": "/contractor/actions/:id, /contractor/remediation/:id", "role": "public (contractor)",
+    "primaryCTA": ["Nộp báo cáo khắc phục (submit remediation with description + evidence + geofence check)"],
+    "apiUsed": ["GET /contractor/actions/:id", "POST /contractor/actions/:id/remediation"], "dbTables": ["N/A - proxies to Side B (Operations)"],
+    "status": "WORKING", "issuesFound": ["Same access-control caveat as ContractorPortalPage; the 50m geofence check silently no-ops (geofencePassed stays true) whenever site coordinates are missing, rather than blocking submission - worth a product decision on whether that's the intended fallback."], "fixesApplied": []
+  }
+]

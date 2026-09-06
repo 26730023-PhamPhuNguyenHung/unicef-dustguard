@@ -27,6 +27,15 @@ export class UserRepository {
     return sqliteClient.get('SELECT * FROM users WHERE id = ?', [id]);
   }
 
+  // Loại bỏ password_hash trước khi trả dữ liệu người dùng ra ngoài API (Bug P1 - Rò rỉ mật khẩu
+  // băm): updateRole/updateStatus/updateProfile trước đây trả thẳng kết quả findById() (SELECT *)
+  // khiến password_hash bị lộ trong response JSON cho client (admin panel, trang hồ sơ cá nhân...).
+  static sanitize(user: any): any {
+    if (!user) return user;
+    const { password_hash, ...safe } = user;
+    return safe;
+  }
+
   static create(data: {
     id: string;
     email: string;
@@ -83,13 +92,13 @@ export class UserRepository {
   static updateRole(id: string, role: string) {
     const now = new Date().toISOString();
     sqliteClient.run('UPDATE users SET role = ?, updated_at = ? WHERE id = ?', [role, now, id]);
-    return this.findById(id);
+    return this.sanitize(this.findById(id));
   }
 
   static updateStatus(id: string, status: string) {
     const now = new Date().toISOString();
     sqliteClient.run('UPDATE users SET status = ?, updated_at = ? WHERE id = ?', [status, now, id]);
-    return this.findById(id);
+    return this.sanitize(this.findById(id));
   }
 
   static updateProfile(id: string, data: { fullName?: string; district?: string; ward?: string; bio?: string; displayIdentity?: string }) {
@@ -104,7 +113,7 @@ export class UserRepository {
           updated_at = ?
       WHERE id = ?
     `, [data.fullName || null, data.district || null, data.ward || null, data.bio || null, data.displayIdentity || null, now, id]);
-    return this.findById(id);
+    return this.sanitize(this.findById(id));
   }
 }
 
@@ -193,7 +202,23 @@ export class ReportRepository {
     ]);
   }
 
-  static findById(id: string) {
+  // Kiểm tra quyền xem một report dựa trên visibility (Mục vá lỗ hổng riêng tư P1):
+  // - public: ai cũng xem được
+  // - community: chỉ người dùng đã đăng nhập (thành viên cộng đồng trở lên)
+  // - private: chỉ chủ sở hữu hoặc điều phối viên/quản trị viên
+  static canView(rep: { reporter_id: string; visibility: string }, currentUserId?: string, currentUserRole?: string): boolean {
+    const visibility = rep.visibility || 'public';
+    if (visibility === 'public') return true;
+    if (!currentUserId) return false;
+    if (currentUserId === rep.reporter_id) return true;
+    if (currentUserRole === 'moderator' || currentUserRole === 'admin') return true;
+    if (visibility === 'community') return true; // bất kỳ ai đã đăng nhập
+    return false; // private và không phải chủ sở hữu / điều phối viên
+  }
+
+  // Truy vấn nội bộ không kiểm tra quyền riêng tư - dùng cho các thao tác ghi (upload media,
+  // xác thực/từ chối bởi điều phối viên...) chứ KHÔNG dùng cho endpoint đọc công khai.
+  static findByIdRaw(id: string): any {
     const rep = sqliteClient.get(`
       SELECT r.*, u.full_name as reporterName, u.display_identity as reporterDisplayIdentity
       FROM reports r
@@ -209,6 +234,19 @@ export class ReportRepository {
     };
   }
 
+  // Truy vấn có kiểm tra quyền riêng tư (visibility) - dùng cho các endpoint đọc công khai.
+  // Trả về null nếu không tồn tại, chuỗi 'FORBIDDEN' nếu tồn tại nhưng không có quyền xem.
+  static findById(id: string, currentUserId?: string, currentUserRole?: string): any {
+    const rep = this.findByIdRaw(id);
+    if (!rep) return null;
+
+    if (!this.canView(rep, currentUserId, currentUserRole)) {
+      return 'FORBIDDEN';
+    }
+
+    return rep;
+  }
+
   static list(params: {
     status?: string;
     category?: string;
@@ -217,6 +255,8 @@ export class ReportRepository {
     reporterId?: string;
     limit?: number;
     offset?: number;
+    currentUserId?: string;
+    currentUserRole?: string;
   }) {
     let sql = `
       SELECT r.*, u.full_name as reporterName, u.display_identity as reporterDisplayIdentity,
@@ -246,6 +286,17 @@ export class ReportRepository {
       sql += ' AND (r.title LIKE ? OR r.address LIKE ? OR r.report_code LIKE ?)';
       args.push(`%${params.search}%`, `%${params.search}%`, `%${params.search}%`);
     }
+
+    // Lọc theo quyền riêng tư: ẩn 'private' của người khác, và 'community' với khách vãng lai
+    if (params.currentUserRole !== 'moderator' && params.currentUserRole !== 'admin') {
+      if (params.currentUserId) {
+        sql += ` AND (r.visibility = 'public' OR r.reporter_id = ? OR r.visibility = 'community')`;
+        args.push(params.currentUserId);
+      } else {
+        sql += ` AND (r.visibility = 'public' OR r.visibility IS NULL)`;
+      }
+    }
+
     sql += ' ORDER BY r.created_at DESC';
     if (params.limit) {
       sql += ' LIMIT ?';

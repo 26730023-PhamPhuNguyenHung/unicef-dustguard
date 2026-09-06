@@ -26,9 +26,12 @@ export const YouthCreditsPage: React.FC = () => {
 
   useEffect(() => {
     // Tải danh sách phản ánh & đóng góp của người dùng từ API
-    apiRequest<any>('/contributions')
+    // Bug P1 - Broken Contract (đã vá): trước đây gọi '/contributions' (không tồn tại trên backend,
+    // luôn 404) và đọc field `res.contributions` (thực tế backend trả về `res.timeline`) khiến
+    // trang Tín chỉ Thanh niên luôn hiển thị 0 tín chỉ cho mọi người dùng.
+    apiRequest<any>('/me/contributions')
       .then((res) => {
-        const contributions = Array.isArray(res) ? res : res.contributions || [];
+        const contributions = Array.isArray(res) ? res : res.timeline || res.contributions || [];
         // Map sang định dạng tính toán
         const mapped = contributions.map((c: any) => ({
           id: c.id,

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { apiRequest } from '../../api/client.js';
 import { useAuth } from '../../context/AuthContext.js';
+import { useToast } from '../../context/ToastContext.js';
 import { MessageSquare, Star, ThumbsUp, AlertTriangle, CheckCircle2, Send } from 'lucide-react';
 
 interface CitizenFeedbackSectionProps {
@@ -13,6 +14,7 @@ export const CitizenFeedbackSection: React.FC<CitizenFeedbackSectionProps> = ({
   isClosedOrResolved,
 }) => {
   const { user } = useAuth();
+  const { success: toastSuccess, error: toastError } = useToast();
   const [feedbacks, setFeedbacks] = useState<any[]>([]);
   const [rating, setRating] = useState<number>(5);
   const [satisfactionLevel, setSatisfactionLevel] = useState<'SATISFIED' | 'NEUTRAL' | 'UNSATISFIED'>('SATISFIED');
@@ -38,7 +40,7 @@ export const CitizenFeedbackSection: React.FC<CitizenFeedbackSectionProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) {
-      alert('Vui lòng đăng nhập để gửi đánh giá.');
+      toastError('Yêu cầu đăng nhập', 'Vui lòng đăng nhập để gửi đánh giá.');
       return;
     }
 
@@ -54,6 +56,7 @@ export const CitizenFeedbackSection: React.FC<CitizenFeedbackSectionProps> = ({
         }),
       });
 
+      toastSuccess('Đánh giá thành công', 'Ý kiến của bạn đã được ghi nhận vào hồ sơ vụ việc.');
       setSubmitMessage('Đã gửi đánh giá thành công. Ý kiến của bạn đã được ghi nhận vào hồ sơ vụ việc.');
       setHasSubmitted(true);
 
@@ -61,7 +64,7 @@ export const CitizenFeedbackSection: React.FC<CitizenFeedbackSectionProps> = ({
       const res = await apiRequest<any>(`/cases/${caseId}/feedback`);
       setFeedbacks(res?.data || []);
     } catch (err: any) {
-      alert(err.message || 'Không thể gửi đánh giá.');
+      toastError('Lỗi gửi đánh giá', err.message || 'Không thể gửi đánh giá.');
     } finally {
       setSubmitting(false);
     }

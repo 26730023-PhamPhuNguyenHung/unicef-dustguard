@@ -4,6 +4,7 @@ import { apiRequest } from '../api/client.js';
 import { CaseCard } from '../components/common/CaseCard.js';
 import { LoadingSkeleton } from '../components/common/LoadingSkeleton.js';
 import { EmptyState } from '../components/common/EmptyState.js';
+import { useToast } from '../context/ToastContext.js';
 import {
   Users,
   MapPin,
@@ -18,6 +19,7 @@ import {
 
 export const CommunityDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
+  const { success: toastSuccess, error: toastError } = useToast();
 
   const [community, setCommunity] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
@@ -46,12 +48,14 @@ export const CommunityDetailPage: React.FC = () => {
     try {
       if (community.isMember) {
         await apiRequest(`/communities/${community.id}/leave`, { method: 'POST' });
+        toastSuccess('Cộng đồng', `Bạn đã rời nhóm ${community.name}`);
       } else {
         await apiRequest(`/communities/${community.id}/join`, { method: 'POST' });
+        toastSuccess('Cộng đồng', `Chào mừng bạn gia nhập ${community.name}!`);
       }
       fetchDetail();
     } catch (err: any) {
-      alert(err.message || 'Lỗi tham gia cộng đồng');
+      toastError('Lỗi cập nhật', err.message || 'Lỗi tham gia cộng đồng');
     }
   };
 
@@ -70,9 +74,10 @@ export const CommunityDetailPage: React.FC = () => {
       });
       setPostTitle('');
       setPostContent('');
+      toastSuccess('Đăng tin thành công', 'Cập nhật của bạn đã được chia sẻ tới cộng đồng!');
       fetchDetail();
     } catch (err: any) {
-      alert(err.message || 'Lỗi đăng tin cập nhật');
+      toastError('Lỗi đăng tin', err.message || 'Lỗi đăng tin cập nhật');
     } finally {
       setPosting(false);
     }

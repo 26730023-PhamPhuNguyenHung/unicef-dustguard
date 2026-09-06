@@ -20,8 +20,10 @@ import {
 } from 'lucide-react';
 import { calculateFileSha256 } from '../utils/crypto.js';
 import { evaluateGeofenceBuffer, GeofenceResult } from '../utils/geofence.js';
+import { useToast } from '../context/ToastContext.js';
 
 export const TasksPage: React.FC = () => {
+  const { success: toastSuccess, error: toastError, info: toastInfo } = useToast();
   const [tasks, setTasks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState<'all' | 'open' | 'claimed'>('all');
@@ -53,10 +55,10 @@ export const TasksPage: React.FC = () => {
   const handleClaimTask = async (taskId: string) => {
     try {
       await apiRequest(`/tasks/${taskId}/claim`, { method: 'POST' });
-      alert('Bạn đã nhận nhiệm vụ thành công! Hãy đến hiện trường khi có dịp để kiểm tra.');
+      toastSuccess('Nhận nhiệm vụ thành công', 'Hãy đến hiện trường khi có dịp để kiểm tra và ghi nhận.');
       fetchTasks();
     } catch (err: any) {
-      alert(err.message || 'Lỗi khi nhận nhiệm vụ.');
+      toastError('Lỗi nhận nhiệm vụ', err.message || 'Không thể nhận nhiệm vụ.');
     }
   };
 
@@ -79,7 +81,7 @@ export const TasksPage: React.FC = () => {
 
   const handleGetLocation = () => {
     if (!navigator.geolocation) {
-      alert('Trình duyệt của bạn không hỗ trợ định vị GPS.');
+      toastError('Không hỗ trợ GPS', 'Trình duyệt của bạn không hỗ trợ định vị GPS.');
       return;
     }
     setLocating(true);
@@ -94,13 +96,18 @@ export const TasksPage: React.FC = () => {
             50
           );
           setGeofence(res);
+          if (res.within50m) {
+            toastSuccess('Vị trí hiện trường', `Hợp lệ: Cách vị trí ${res.distanceMeters}m (trong vùng đệm 50m)`);
+          } else {
+            toastInfo('Vị trí hiện trường', `Cách vị trí ${res.distanceMeters}m (>50m). Bạn vẫn có thể nộp kèm giải trình.`);
+          }
         }
         setLocating(false);
       },
       (err) => {
         console.warn('GPS error:', err);
         setLocating(false);
-        alert('Không thể lấy tọa độ GPS. Vui lòng cho phép quyền vị trí trên trình duyệt.');
+        toastError('Lỗi định vị', 'Không thể lấy tọa độ GPS. Vui lòng cho phép quyền vị trí trên trình duyệt.');
       },
       { enableHighAccuracy: true, timeout: 10000 }
     );
@@ -124,7 +131,7 @@ export const TasksPage: React.FC = () => {
           isWithin50m: geofence?.within50m ?? false,
         })
       });
-      alert('Đã gửi kết quả xác minh hiện trường thành công! Giờ tình nguyện đã được ghi nhận.');
+      toastSuccess('Xác minh thành công', 'Đã gửi kết quả xác minh hiện trường thành công! Giờ tình nguyện đã được ghi nhận.');
       setSubmittingTask(null);
       setSubmissionNote('');
       setPhotoPreview(null);
@@ -133,7 +140,7 @@ export const TasksPage: React.FC = () => {
       setGeofence(null);
       fetchTasks();
     } catch (err: any) {
-      alert(err.message || 'Lỗi khi nộp kết quả nhiệm vụ.');
+      toastError('Lỗi nộp kết quả', err.message || 'Lỗi khi nộp kết quả nhiệm vụ.');
     } finally {
       setSubmitting(false);
     }

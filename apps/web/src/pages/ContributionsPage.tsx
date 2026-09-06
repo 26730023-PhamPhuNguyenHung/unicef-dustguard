@@ -9,8 +9,10 @@ export const ContributionsPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Bug P1 - Broken Contract (đã vá): backend trả về field `timeline`, không phải `contributions`,
+    // khiến trang này luôn hiển thị rỗng dù người dùng đã có đóng góp thật trong CSDL.
     apiRequest<any>('/me/contributions')
-      .then((res) => setContributions(Array.isArray(res) ? res : (res.contributions || [])))
+      .then((res) => setContributions(Array.isArray(res) ? res : (res.timeline || res.contributions || [])))
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);

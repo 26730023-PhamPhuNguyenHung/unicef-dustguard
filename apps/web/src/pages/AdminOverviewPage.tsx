@@ -10,17 +10,26 @@ import {
   HardDrive,
   ShieldAlert,
   BarChart2,
-  TrendingUp
+  TrendingUp,
+  Database,
+  Server,
+  GitBranch
 } from 'lucide-react';
 
 export const AdminOverviewPage: React.FC = () => {
   const [statsData, setStatsData] = useState<any | null>(null);
+  const [systemStatus, setSystemStatus] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    apiRequest('/admin/stats')
-      .then(setStatsData)
-      .catch(console.error)
+    Promise.all([
+      apiRequest('/admin/stats').catch(console.error),
+      apiRequest('/admin/system-status').catch(console.error)
+    ])
+      .then(([stats, sys]) => {
+        if (stats) setStatsData(stats);
+        if (sys) setSystemStatus(sys);
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -122,6 +131,86 @@ export const AdminOverviewPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Thông tin Trạng thái Hệ thống & Phiên bản (Mục 45-47) */}
+      {systemStatus && (
+        <div className="bg-surface-card rounded-civic-lg border border-border-subtle p-6 shadow-sm space-y-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-border-subtle">
+            <div>
+              <span className="text-[11px] font-bold uppercase tracking-wider text-primary flex items-center gap-1.5">
+                <Server className="w-3.5 h-3.5" />
+                Trạng thái nền tảng Civic Tech
+              </span>
+              <h3 className="text-lg font-bold text-content-main mt-0.5">
+                {systemStatus.productName} — Phiên bản {systemStatus.productVersion}
+              </h3>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">
+                ● CSDL {systemStatus.database?.status || 'ONLINE'}
+              </span>
+              <span className="text-xs font-mono text-content-sub bg-surface-secondary px-2 py-1 rounded">
+                Build: {systemStatus.buildDate}
+              </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="p-3.5 rounded-lg border border-border-subtle bg-surface-secondary/30 space-y-1">
+              <div className="text-xs font-semibold text-content-sub flex items-center gap-1.5">
+                <Database className="w-3.5 h-3.5 text-primary" />
+                Cơ sở dữ liệu SSOT
+              </div>
+              <div className="text-sm font-bold text-content-main">{systemStatus.database?.type}</div>
+              <div className="text-xs text-content-sub font-mono">{systemStatus.database?.tablesCount} bảng quan hệ chuẩn hóa</div>
+            </div>
+
+            <div className="p-3.5 rounded-lg border border-border-subtle bg-surface-secondary/30 space-y-1">
+              <div className="text-xs font-semibold text-content-sub flex items-center gap-1.5">
+                <GitBranch className="w-3.5 h-3.5 text-primary" />
+                Đồng bộ liên thông Side B
+              </div>
+              <div className="text-sm font-bold text-content-main">Operations Webhook</div>
+              <div className="text-xs text-content-sub font-mono">{systemStatus.crossSideSync?.protocol}</div>
+            </div>
+
+            <div className="p-3.5 rounded-lg border border-border-subtle bg-surface-secondary/30 space-y-1">
+              <div className="text-xs font-semibold text-content-sub flex items-center gap-1.5">
+                <Server className="w-3.5 h-3.5 text-primary" />
+                Phiên bản cấu trúc (Schema)
+              </div>
+              <div className="text-sm font-bold text-content-main">Schema v{systemStatus.schemaVersion}</div>
+              <div className="text-xs text-content-sub font-mono">Di chuyển lần cuối: {systemStatus.lastMigration?.substring(0, 10)}</div>
+            </div>
+          </div>
+
+          {/* Changelog */}
+          {systemStatus.changelog && systemStatus.changelog.length > 0 && (
+            <div className="pt-2">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-content-sub mb-3">
+                Lịch sử phiên bản phát hành (Changelog)
+              </h4>
+              <div className="space-y-2">
+                {systemStatus.changelog.map((log: any, idx: number) => (
+                  <div key={idx} className="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-lg border border-border-subtle bg-surface-secondary/20 text-xs">
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono font-bold text-primary px-2 py-0.5 rounded bg-primary/10">
+                        {log.version}
+                      </span>
+                      <span className="font-semibold text-content-main">{log.note}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-content-sub mt-1 sm:mt-0 font-mono">
+                      <span>{log.type}</span>
+                      <span>•</span>
+                      <span>{log.date}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

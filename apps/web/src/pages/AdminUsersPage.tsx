@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { apiRequest } from '../api/client.js';
 import { LoadingSkeleton } from '../components/common/LoadingSkeleton.js';
 import { EmptyState } from '../components/common/EmptyState.js';
+import { useToast } from '../context/ToastContext.js';
 import { UserRole } from '@dustguard/shared';
 import {
   Users,
@@ -15,6 +16,7 @@ import {
 } from 'lucide-react';
 
 export const AdminUsersPage: React.FC = () => {
+  const { success: toastSuccess, error: toastError } = useToast();
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -44,10 +46,10 @@ export const AdminUsersPage: React.FC = () => {
         method: 'PATCH',
         body: JSON.stringify({ role: newRole })
       });
-      alert('Đã cập nhật vai trò người dùng thành công!');
+      toastSuccess('Cập nhật vai trò', 'Đã cập nhật vai trò người dùng thành công!');
       fetchUsers();
     } catch (err: any) {
-      alert(err.message || 'Lỗi cập nhật vai trò.');
+      toastError('Lỗi cập nhật vai trò', err.message || 'Lỗi cập nhật vai trò.');
     }
   };
 
@@ -57,10 +59,10 @@ export const AdminUsersPage: React.FC = () => {
         method: 'PATCH',
         body: JSON.stringify({ status: newStatus })
       });
-      alert('Đã cập nhật trạng thái tài khoản thành công!');
+      toastSuccess('Cập nhật trạng thái', 'Đã cập nhật trạng thái tài khoản thành công!');
       fetchUsers();
     } catch (err: any) {
-      alert(err.message || 'Lỗi cập nhật trạng thái.');
+      toastError('Lỗi cập nhật trạng thái', err.message || 'Lỗi cập nhật trạng thái.');
     }
   };
 

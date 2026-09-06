@@ -4,6 +4,9 @@ import { apiRequest } from '../api/client.js';
 import { LeafletMap } from '../components/common/LeafletMap.js';
 import { calculateFileSha256 } from '../utils/crypto.js';
 import { CATEGORY_LABELS, SEVERITY_LABELS } from '@dustguard/shared';
+import { useToast } from '../context/ToastContext.js';
+import { useAuth } from '../context/AuthContext.js';
+import { saveDraft, loadDraft, clearDraft } from '../utils/draftStorage.js';
 import {
   FileText,
   MapPin,
@@ -29,6 +32,8 @@ interface UploadedMediaItem {
 
 export const CreateReportPage: React.FC = () => {
   const navigate = useNavigate();
+  const { toast, success, error, info } = useToast();
+  const { user, isAuthenticated } = useAuth();
 
   // Wizard step: 1 -> 4, 5 là success
   const [step, setStep] = useState<number>(1);
@@ -59,15 +64,73 @@ export const CreateReportPage: React.FC = () => {
   const [visibility, setVisibility] = useState<'public' | 'community' | 'private'>('public');
   const [createdReportCode, setCreatedReportCode] = useState<string | null>(null);
   const [createdReportId, setCreatedReportId] = useState<string | null>(null);
+  const [draftSavedAt, setDraftSavedAt] = useState<string | null>(null);
 
   // Duplicate Warning Modal
   const [duplicateModalOpen, setDuplicateModalOpen] = useState(false);
   const [nearbyCase, setNearbyCase] = useState<any | null>(null);
 
+  // Khôi phục bản nháp từ localStorage khi mở trang (với TTL, kiểm tra tính hợp lệ & owner-scoping
+  // để tránh rò rỉ bản nháp giữa các tài khoản dùng chung một thiết bị/trình duyệt)
+  React.useEffect(() => {
+    const draftOwner = user?.id || 'guest';
+    const draftRes = loadDraft<any>('dustguard_draft_citizen_report', draftOwner);
+    if (draftRes && draftRes.data) {
+      const d = draftRes.data;
+      if (d.title) setTitle(d.title);
+      if (d.description) setDescription(d.description);
+      if (d.category) setCategory(d.category);
+      if (d.severityObservation) setSeverityObservation(d.severityObservation);
+      if (d.address) setAddress(d.address);
+      if (d.district) setDistrict(d.district);
+      if (d.ward) setWard(d.ward);
+      if (d.latitude) setLatitude(d.latitude);
+      if (d.longitude) setLongitude(d.longitude);
+      if (d.visibility) setVisibility(d.visibility);
+      if (draftRes.updatedAt) setDraftSavedAt(new Date(draftRes.updatedAt).toLocaleTimeString('vi-VN'));
+    }
+  }, [user?.id]);
+
+  // Tự động lưu bản nháp sau mỗi thay đổi
+  React.useEffect(() => {
+    if (step <= 4 && (title || description || address)) {
+      const timer = setTimeout(() => {
+        const draft = {
+          title,
+          description,
+          category,
+          severityObservation,
+          address,
+          district,
+          ward,
+          latitude,
+          longitude,
+          visibility,
+        };
+        saveDraft('dustguard_draft_citizen_report', draft, {
+          schema: 'citizen_report_draft',
+          version: '1.0',
+          ttlMs: 7 * 24 * 60 * 60 * 1000,
+          owner: user?.id || 'guest',
+        });
+        setDraftSavedAt(new Date().toLocaleTimeString('vi-VN'));
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [step, title, description, category, severityObservation, address, district, ward, latitude, longitude, visibility]);
+
+  const handleClearDraft = () => {
+    clearDraft('dustguard_draft_citizen_report');
+    setTitle('');
+    setDescription('');
+    setAddress('');
+    setDraftSavedAt(null);
+  };
+
   // Lấy vị trí GPS hiện tại
   const handleGetCurrentLocation = () => {
     if (!navigator.geolocation) {
-      alert('Trình duyệt của bạn không hỗ trợ định vị GPS.');
+      error('Không hỗ trợ GPS', 'Trình duyệt của bạn không hỗ trợ định vị GPS.');
       return;
     }
     navigator.geolocation.getCurrentPosition(
@@ -77,10 +140,11 @@ export const CreateReportPage: React.FC = () => {
         setLatitude(lat);
         setLongitude(lng);
         checkNearbyDuplicates(lat, lng);
+        success('Đã lấy tọa độ GPS', `${lat.toFixed(4)}, ${lng.toFixed(4)}`);
       },
       (err) => {
         console.warn('Không lấy được GPS:', err.message);
-        alert('Không thể truy cập GPS. Bạn hãy nhấp vào bản đồ để ghim vị trí.');
+        info('Vị trí GPS', 'Không thể truy cập GPS tự động. Bạn hãy nhấp vào bản đồ để ghim vị trí.');
       },
       { enableHighAccuracy: true, timeout: 8000 }
     );
@@ -181,6 +245,8 @@ export const CreateReportPage: React.FC = () => {
         });
       }
 
+      clearDraft('dustguard_draft_citizen_report');
+      setDraftSavedAt(null);
       setCreatedReportId(repId);
       setCreatedReportCode(repCode);
       setStep(5); // Bước hoàn thành
@@ -201,14 +267,62 @@ export const CreateReportPage: React.FC = () => {
               <h1 className="text-xl sm:text-2xl font-extrabold text-content-main">
                 Gửi phản ánh môi trường
               </h1>
-              <p className="text-xs sm:text-sm text-content-sub mt-1">
-                Tín hiệu của bạn giúp cộng đồng cùng xác minh và thúc đẩy đơn vị xử lý.
-              </p>
+              <div className="flex items-center gap-3 mt-1">
+                <p className="text-xs sm:text-sm text-content-sub">
+                  Tín hiệu của bạn giúp cộng đồng cùng xác minh và thúc đẩy đơn vị xử lý.
+                </p>
+                {draftSavedAt && (
+                  <span className="inline-flex items-center gap-1 text-xs text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                    <ShieldCheck className="w-3 h-3 text-emerald-600" />
+                    Đã lưu bản nháp lúc {draftSavedAt}
+                  </span>
+                )}
+              </div>
             </div>
-            <span className="text-xs font-bold text-primary px-3 py-1 bg-primary-light rounded-full">
-              Bước {step}/4
-            </span>
+            <div className="flex items-center gap-2">
+              {draftSavedAt && (
+                <button
+                  type="button"
+                  onClick={handleClearDraft}
+                  className="text-xs text-stone-500 hover:text-red-600 underline font-medium"
+                  title="Xóa bản nháp trên thiết bị này"
+                >
+                  Xóa nháp
+                </button>
+              )}
+              <span className="text-xs font-bold text-primary px-3 py-1 bg-primary-light rounded-full">
+                Bước {step}/4
+              </span>
+            </div>
           </div>
+
+          {/* Banner tình trạng danh tính */}
+          {!isAuthenticated ? (
+            <div className="mb-4 p-3.5 rounded-xl bg-amber-50/90 border border-amber-200 text-xs sm:text-sm text-stone-800 flex items-start gap-3 shadow-xs">
+              <div className="p-1.5 rounded-lg bg-amber-200/60 text-amber-900 shrink-0 mt-0.5">
+                <FileText className="w-4 h-4" />
+              </div>
+              <div className="flex-1 text-xs sm:text-sm leading-relaxed">
+                <span className="font-bold text-stone-900">Gửi phản ánh nhanh không cần đăng nhập:</span> Bạn đang gửi tín hiệu cộng đồng ẩn danh. 
+                Nếu bạn là Tình nguyện viên / Đoàn viên muốn nhận điểm rèn luyện thanh niên,{' '}
+                <Link to="/login?redirect=/reports/new" className="font-bold text-primary underline hover:text-primary-dark">
+                  Đăng nhập tại đây
+                </Link>.
+              </div>
+            </div>
+          ) : (
+            <div className="mb-4 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs sm:text-sm text-emerald-950 flex items-center justify-between shadow-xs">
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>
+                  Đang gửi với tư cách: <strong className="font-bold">{user?.fullName || user?.email}</strong> ({user?.role === 'citizen' ? 'Công dân' : user?.role})
+                </span>
+              </div>
+              <span className="text-[11px] font-bold text-emerald-800 bg-emerald-100/80 px-2.5 py-0.5 rounded-full">
+                Tích lũy rèn luyện
+              </span>
+            </div>
+          )}
 
           {/* Stepper Progress Bar */}
           <div className="grid grid-cols-4 gap-2">
@@ -770,10 +884,10 @@ export const CreateReportPage: React.FC = () => {
                 onClick={async () => {
                   try {
                     await apiRequest(`/cases/${nearbyCase.id}/confirm`, { method: 'POST' });
-                    alert('Bạn đã xác nhận cùng ghi nhận vụ việc này!');
+                    success('Đã xác nhận', 'Bạn đã xác nhận cùng ghi nhận vụ việc này!');
                     navigate(`/cases/${nearbyCase.id}`);
                   } catch (e: any) {
-                    alert(e.message || 'Lỗi xác nhận');
+                    error('Lỗi xác nhận', e.message || 'Không thể gửi xác nhận.');
                   }
                 }}
                 className="text-center py-2 px-3 rounded-lg bg-primary text-white text-xs font-bold hover:bg-primary-dark transition-colors shadow-xs"

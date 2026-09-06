@@ -1,9 +1,11 @@
 import { Router, Response } from 'express';
 import crypto from 'node:crypto';
+import path from 'path';
 import { CaseRepository, ConfirmationRepository, SavedCaseRepository, ObservationRepository } from '../repositories/index.js';
 import { createObservationSchema } from '@dustguard/shared';
 import { authenticateToken, optionalAuthenticateToken, AuthRequest } from '../middlewares/auth.js';
 import { sqliteClient } from '../db/sqlite-client.js';
+import { uploadMiddleware, computeFileSha256 } from '../utils/upload.js';
 
 const router = Router();
 
@@ -212,6 +214,52 @@ router.post('/:id/observations', authenticateToken, (req: AuthRequest, res: Resp
   });
 });
 
+// 6b. Tải ảnh minh chứng đính kèm cho một quan sát đã tạo (Bug P0 - Broken Contract vá lỗi):
+// SubmitObservationPage.tsx gọi POST /cases/:id/observations/:obsId/media nhưng route này
+// trước đây không tồn tại trên backend -> mọi lần tải ảnh quan sát hiện trường đều thất bại
+// với 404, và vì lỗi bị nuốt trong .catch() phía FE, người dùng vẫn thấy thông báo "Thành công"
+// trong khi ảnh bằng chứng bị mất hoàn toàn. Nay bổ sung route thật để lưu file.
+router.post(
+  '/:id/observations/:obsId/media',
+  authenticateToken,
+  uploadMiddleware.single('file'),
+  (req: AuthRequest, res: Response): void => {
+    const c = CaseRepository.findById(req.params.id);
+    if (!c) {
+      res.status(404).json({ success: false, error: { code: 'CASE_NOT_FOUND', message: 'Không tìm thấy vụ việc.' } });
+      return;
+    }
+
+    if (!req.file) {
+      res.status(400).json({ success: false, error: { code: 'NO_FILE', message: 'Vui lòng chọn file ảnh để tải lên.' } });
+      return;
+    }
+
+    const sha256Hash = (req.body.sha256Hash as string) || computeFileSha256(req.file.path);
+    const relativePath = `/uploads/${path.relative(path.resolve(process.cwd(), 'uploads'), req.file.path).replace(/\\/g, '/')}`;
+
+    const mediaId = `obs_med_${Date.now()}_${crypto.randomUUID().substring(0, 8)}`;
+    ObservationRepository.addMedia({
+      id: mediaId,
+      observationId: req.params.obsId,
+      filePath: relativePath,
+      mimeType: req.file.mimetype,
+      fileSize: req.file.size,
+      sha256Hash
+    });
+
+    res.status(201).json({
+      success: true,
+      data: {
+        id: mediaId,
+        observation_id: req.params.obsId,
+        file_path: relativePath,
+        sha256_hash: sha256Hash
+      }
+    });
+  }
+);
+
 // 7. Gửi đánh giá kết quả giải quyết (Citizen Resolution Feedback Loop)
 router.post('/:id/feedback', authenticateToken, (req: AuthRequest, res: Response): void => {
   const c = CaseRepository.findById(req.params.id);
@@ -224,7 +272,7 @@ router.post('/:id/feedback', authenticateToken, (req: AuthRequest, res: Response
   }
 
   // Khởi tạo bảng feedback nếu chưa tồn tại
-  sqliteClient.run(`
+  sqliteClient.exec(`
     CREATE TABLE IF NOT EXISTS case_feedback (
       id TEXT PRIMARY KEY,
       case_id TEXT NOT NULL,
@@ -235,6 +283,7 @@ router.post('/:id/feedback', authenticateToken, (req: AuthRequest, res: Response
       request_reinspection INTEGER NOT NULL DEFAULT 0,
       created_at TEXT NOT NULL
     );
+    CREATE INDEX IF NOT EXISTS case_feedback_case_idx ON case_feedback(case_id);
   `);
 
   const { rating = 5, comment = '', isSatisfied = true, requestReinspection = false } = req.body;
@@ -267,7 +316,20 @@ router.post('/:id/feedback', authenticateToken, (req: AuthRequest, res: Response
   ]);
 
   // Đồng bộ sang Operations nếu vụ việc đã chuyển tiếp
-  const operationsUrl = process.env.OPERATIONS_API_URL || 'http://localhost:4000';
+  const getOperationsBase = () => {
+    if (process.env.OPERATIONS_BASE_URL) return process.env.OPERATIONS_BASE_URL;
+    if (process.env.OPERATIONS_API_URL) {
+      try {
+        const u = new URL(process.env.OPERATIONS_API_URL);
+        return u.origin;
+      } catch {
+        return process.env.OPERATIONS_API_URL.replace(/\/api\/integrations.*$/, '');
+      }
+    }
+    return 'http://localhost:4000';
+  };
+  const operationsUrl = getOperationsBase();
+
   fetch(`${operationsUrl}/api/integrations/community/feedback`, {
     method: 'POST',
     headers: {
@@ -283,7 +345,9 @@ router.post('/:id/feedback', authenticateToken, (req: AuthRequest, res: Response
       request_reinspection: Boolean(requestReinspection),
       user_name: req.user?.fullName || 'Người dân cộng đồng',
     }),
-  }).catch(() => {});
+  }).catch((err) => {
+    console.warn('[Citizen Feedback Sync Error]', err.message);
+  });
 
   res.status(201).json({
     success: true,
@@ -297,7 +361,7 @@ router.post('/:id/feedback', authenticateToken, (req: AuthRequest, res: Response
 // 8. Lấy danh sách đánh giá của vụ việc
 router.get('/:id/feedback', optionalAuthenticateToken, (req: AuthRequest, res: Response): void => {
   try {
-    sqliteClient.run(`
+    sqliteClient.exec(`
       CREATE TABLE IF NOT EXISTS case_feedback (
         id TEXT PRIMARY KEY,
         case_id TEXT NOT NULL,

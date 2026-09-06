@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext.js';
+import { useToast } from '../context/ToastContext.js';
 import { apiRequest } from '../api/client.js';
 import { User, Mail, MapPin, Shield, Check, Save, LogOut } from 'lucide-react';
 
 export const ProfilePage: React.FC = () => {
   const { user, refreshUser, logout } = useAuth();
+  const { success: toastSuccess, error: toastError } = useToast();
 
   const [fullName, setFullName] = useState(user?.fullName || '');
   const [district, setDistrict] = useState(user?.district || 'Quận 7');
@@ -22,7 +24,7 @@ export const ProfilePage: React.FC = () => {
     setSaving(true);
     setSavedSuccess(false);
     try {
-      await apiRequest('/auth/profile', {
+      await apiRequest('/me/profile', {
         method: 'PATCH',
         body: JSON.stringify({
           fullName,
@@ -34,9 +36,10 @@ export const ProfilePage: React.FC = () => {
       });
       await refreshUser();
       setSavedSuccess(true);
+      toastSuccess('Đã lưu hồ sơ', 'Thông tin hồ sơ của bạn đã được cập nhật thành công.');
       setTimeout(() => setSavedSuccess(false), 3000);
     } catch (err: any) {
-      alert(err.message || 'Lỗi lưu thông tin hồ sơ.');
+      toastError('Lỗi cập nhật hồ sơ', err.message || 'Lỗi lưu thông tin hồ sơ.');
     } finally {
       setSaving(false);
     }

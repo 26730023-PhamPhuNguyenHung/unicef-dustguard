@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { apiRequest } from '../api/client.js';
 import { LoadingSkeleton } from '../components/common/LoadingSkeleton.js';
 import { EmptyState } from '../components/common/EmptyState.js';
+import { useToast } from '../context/ToastContext.js';
 import { Sliders, AlertTriangle, Check, EyeOff, Trash2, Clock } from 'lucide-react';
 
 export const ModerationQueuePage: React.FC = () => {
+  const { success: toastSuccess, error: toastError } = useToast();
   const [reports, setReports] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -26,10 +28,10 @@ export const ModerationQueuePage: React.FC = () => {
         method: 'POST',
         body: JSON.stringify({ action })
       });
-      alert('Đã xử lý nội dung báo cáo thành công!');
+      toastSuccess('Kiểm duyệt hoàn tất', 'Đã xử lý nội dung báo cáo thành công!');
       fetchQueue();
     } catch (err: any) {
-      alert(err.message || 'Lỗi khi xử lý kiểm duyệt.');
+      toastError('Lỗi kiểm duyệt', err.message || 'Lỗi khi xử lý kiểm duyệt.');
     }
   };
 

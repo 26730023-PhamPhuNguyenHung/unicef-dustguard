@@ -7,7 +7,7 @@ const router = Router();
 
 // Phản ánh của tôi
 router.get('/reports', authenticateToken, (req: AuthRequest, res: Response): void => {
-  const myReports = ReportRepository.list({ reporterId: req.user!.id });
+  const myReports = ReportRepository.list({ reporterId: req.user!.id, currentUserId: req.user!.id, currentUserRole: req.user!.role });
   res.json({ success: true, data: myReports });
 });
 

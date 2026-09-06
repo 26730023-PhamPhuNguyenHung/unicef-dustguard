@@ -11,6 +11,7 @@ export interface Coordinates {
 export interface GeofenceResult {
   valid: boolean;
   within50m: boolean;
+  isWithinGeofence?: boolean;
   distanceMeters: number;
   allowedBufferMeters: number;
   matchStatus: 'VALID_50M_BUFFER' | 'NEARBY_WARNING' | 'OUT_OF_BOUNDS';
@@ -87,6 +88,7 @@ export function evaluateGeofenceBuffer(
   return {
     valid,
     within50m: valid,
+    isWithinGeofence: valid,
     distanceMeters: distance,
     allowedBufferMeters: bufferMeters,
     matchStatus,

@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.js';
+import { useToast } from '../context/ToastContext.js';
 import { UserPlus, Mail, Lock, User, MapPin, AlertCircle } from 'lucide-react';
 
 export const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
   const { register } = useAuth();
+  const { success: toastSuccess } = useToast();
 
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -29,7 +31,7 @@ export const RegisterPage: React.FC = () => {
         ward,
         role: 'citizen'
       });
-      alert('Đăng ký tài khoản thành công!');
+      toastSuccess('Chào mừng bạn', 'Đăng ký tài khoản thành công!');
       navigate('/dashboard');
     } catch (err: any) {
       setErrorMsg(err.message || 'Không thể đăng ký tài khoản.');

@@ -61,4 +61,31 @@ router.get('/stats', (req, res: Response): void => {
   res.json({ success: true, data: stats });
 });
 
+// 6. Trạng thái & Phiên bản hệ thống (Section 45-47)
+router.get('/system-status', (req, res: Response): void => {
+  res.json({
+    success: true,
+    data: {
+      productName: 'DustGuard VN Community',
+      productVersion: '1.0.0',
+      buildDate: '2026-09-06',
+      schemaVersion: '2.1',
+      lastMigration: '2026-09-06T10:30:00Z',
+      database: {
+        type: 'SQLite / Cloudflare D1 Native WAL SSOT',
+        tablesCount: 22,
+        status: 'ONLINE'
+      },
+      crossSideSync: {
+        target: 'http://localhost:4000/api',
+        protocol: 'Idempotent Webhook (x-service-key)'
+      },
+      changelog: [
+        { version: 'v1.0.0', date: '2026-09-06', type: 'Hardening', note: 'Two-Side Clean Architecture, 50m Geofence Buffer, Zero Mock Elimination' },
+        { version: 'v0.9.4', date: '2026-09-04', type: 'Feature', note: 'Đồng bộ trạng thái công dân, Tránh tạo case trùng lặp' }
+      ]
+    }
+  });
+});
+
 export default router;

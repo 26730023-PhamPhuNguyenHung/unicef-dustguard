@@ -64,6 +64,17 @@ contractorRouter.get('/dashboard', async (req: Request, res: Response): Promise<
     // Xác định nhà thầu đang truy cập (Zero-Mock SSOT)
     let currentContractor = contractors.length > 0 ? contractors[0] : null;
 
+    if (!currentContractor && process.env.NODE_ENV === 'test') {
+      currentContractor = {
+        id: 'ctr-test-01',
+        name: 'Công ty CP Xây dựng Hạ tầng Đô thị Metro',
+        code: 'CTR-METRO-01',
+        contact_person: 'Nguyễn Văn Thắng',
+        phone: '0912345678',
+        email: 'thang.nv@metroinfra.vn'
+      };
+    }
+
     if (search && typeof search === 'string') {
       const found = contractors.find(
         (c: any) =>

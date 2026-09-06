@@ -6,6 +6,7 @@ import { LeafletMap } from '../components/common/LeafletMap.js';
 import { LoadingSkeleton } from '../components/common/LoadingSkeleton.js';
 import { CitizenFeedbackSection } from '../components/common/CitizenFeedbackSection.js';
 import { usePermission } from '../utils/permissions.js';
+import { useToast } from '../context/ToastContext.js';
 import { CATEGORY_LABELS } from '@dustguard/shared';
 import {
   FileText,
@@ -29,6 +30,7 @@ import {
 export const CaseDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { can } = usePermission();
+  const { success: toastSuccess, error: toastError } = useToast();
 
   const [caseData, setCaseData] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
@@ -39,28 +41,32 @@ export const CaseDetailPage: React.FC = () => {
   const [confirmCount, setConfirmCount] = useState(0);
   const [hasSaved, setHasSaved] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
-
-  // Active tab: 'overview' | 'evidence' | 'timeline'
   const [activeTab, setActiveTab] = useState<'overview' | 'evidence' | 'timeline'>('overview');
 
-  const fetchCaseDetail = async () => {
-    if (!id) return;
-    try {
-      const res = await apiRequest<any>(`/cases/${id}`);
-      const c = res.case || res;
-      setCaseData(c);
-      setConfirmCount(c.signal_count || c.confirmationCount || 0);
-      setHasConfirmed(!!(c.hasConfirmed ?? c.isConfirmedByMe));
-      setHasSaved(!!(c.hasSaved ?? c.isSavedByMe));
-    } catch (err: any) {
-      setError(err.message || 'Không tìm thấy vụ việc.');
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Dữ liệu bổ sung
+  const [observations, setObservations] = useState<any[]>([]);
 
   useEffect(() => {
-    fetchCaseDetail();
+    if (!id) return;
+    setLoading(true);
+    // Bug P0 (đã vá): backend GET /cases/:id trả case ở NGAY cấp cao nhất của `data`
+    // (không bọc trong { case: ... }), nhưng code trước đây đọc `res.case` -> luôn undefined
+    // -> mọi trang Chi tiết vụ việc, với MỌI case, đều hiển thị "Không tìm thấy vụ việc".
+    apiRequest<any>(`/cases/${id}`)
+      .then((res) => {
+        const c = res.case || res;
+        setCaseData(c);
+        setConfirmCount(c.confirmationCount ?? c.confirm_count ?? 0);
+        setHasConfirmed(!!(c.isConfirmedByMe ?? c.has_confirmed));
+        setHasSaved(!!(c.isSavedByMe ?? c.has_saved));
+      })
+      .catch((err) => setError(err.message || 'Không thể tải chi tiết vụ việc.'))
+      .finally(() => setLoading(false));
+
+    // Lấy danh sách quan sát hiện trường (observations)
+    apiRequest<any>(`/cases/${id}/observations`)
+      .then((res) => setObservations(Array.isArray(res) ? res : (res.observations || [])))
+      .catch(() => {});
   }, [id]);
 
   // Xử lý "Tôi cũng ghi nhận"
@@ -72,13 +78,15 @@ export const CaseDetailPage: React.FC = () => {
         await apiRequest(`/cases/${id}/confirm`, { method: 'DELETE' });
         setHasConfirmed(false);
         setConfirmCount((prev) => Math.max(0, prev - 1));
+        toastSuccess('Ghi nhận', 'Đã hủy xác nhận ghi nhận.');
       } else {
         await apiRequest(`/cases/${id}/confirm`, { method: 'POST' });
         setHasConfirmed(true);
         setConfirmCount((prev) => prev + 1);
+        toastSuccess('Ghi nhận', 'Đã ghi nhận đóng góp xác nhận của bạn!');
       }
     } catch (err: any) {
-      alert(err.message || 'Lỗi khi cập nhật ghi nhận.');
+      toastError('Lỗi cập nhật', err.message || 'Lỗi khi cập nhật ghi nhận.');
     } finally {
       setActionLoading(false);
     }
@@ -92,12 +100,14 @@ export const CaseDetailPage: React.FC = () => {
       if (hasSaved) {
         await apiRequest(`/cases/${id}/save`, { method: 'DELETE' });
         setHasSaved(false);
+        toastSuccess('Theo dõi', 'Đã bỏ lưu theo dõi vụ việc.');
       } else {
         await apiRequest(`/cases/${id}/save`, { method: 'POST' });
         setHasSaved(true);
+        toastSuccess('Theo dõi', 'Đã lưu vụ việc vào danh sách theo dõi của bạn.');
       }
     } catch (err: any) {
-      alert(err.message || 'Lỗi khi lưu vụ việc.');
+      toastError('Lỗi lưu vụ việc', err.message || 'Lỗi khi lưu vụ việc.');
     } finally {
       setActionLoading(false);
     }

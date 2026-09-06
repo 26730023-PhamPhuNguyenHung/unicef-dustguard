@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom';
 import { apiRequest } from '../api/client.js';
 import { LoadingSkeleton } from '../components/common/LoadingSkeleton.js';
 import { EmptyState } from '../components/common/EmptyState.js';
+import { useToast } from '../context/ToastContext.js';
 import { Users, MapPin, Layers, ArrowRight, Check, Plus } from 'lucide-react';
 
 export const CommunitiesPage: React.FC = () => {
+  const { success: toastSuccess, error: toastError } = useToast();
   const [communities, setCommunities] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -28,12 +30,14 @@ export const CommunitiesPage: React.FC = () => {
     try {
       if (comm.isMember) {
         await apiRequest(`/communities/${comm.id}/leave`, { method: 'POST' });
+        toastSuccess('Cộng đồng', `Bạn đã rời nhóm ${comm.name}`);
       } else {
         await apiRequest(`/communities/${comm.id}/join`, { method: 'POST' });
+        toastSuccess('Cộng đồng', `Chào mừng bạn gia nhập ${comm.name}!`);
       }
       fetchCommunities();
     } catch (err: any) {
-      alert(err.message || 'Lỗi tham gia cộng đồng');
+      toastError('Lỗi cập nhật', err.message || 'Lỗi tham gia cộng đồng');
     }
   };
 

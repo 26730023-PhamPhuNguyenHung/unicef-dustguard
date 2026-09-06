@@ -25,7 +25,9 @@ export const MyTrackingPage: React.FC = () => {
       .then(([savedRes, repRes, contRes]) => {
         setSavedCases(Array.isArray(savedRes) ? savedRes : (savedRes.cases || []));
         setMyReports(Array.isArray(repRes) ? repRes : (repRes.reports || []));
-        setMyContributions(Array.isArray(contRes) ? contRes : (contRes.contributions || []));
+        // Bug P1 - Broken Contract (đã vá): backend /me/contributions trả về field `timeline`,
+        // không phải `contributions`, khiến tab "Đóng góp" luôn trống dù có dữ liệu thật.
+        setMyContributions(Array.isArray(contRes) ? contRes : (contRes.timeline || contRes.contributions || []));
       })
       .finally(() => setLoading(false));
   }, []);

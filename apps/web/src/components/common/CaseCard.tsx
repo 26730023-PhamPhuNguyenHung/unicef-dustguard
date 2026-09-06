@@ -42,21 +42,21 @@ export const CaseCard: React.FC<CaseCardProps> = ({ caseData }) => {
         </div>
       </div>
 
-      <div className="px-5 py-3.5 bg-surface-secondary/60 border-t border-border-subtle flex items-center justify-between text-xs text-content-sub">
-        <div className="flex items-center gap-3.5">
-          <span className="inline-flex items-center gap-1 font-medium text-content-main" title="Số người cùng ghi nhận">
-            <Users className="w-3.5 h-3.5 text-primary" />
+      <div className="px-4 sm:px-5 py-3 bg-surface-secondary/60 border-t border-border-subtle flex items-center justify-between gap-2 text-xs text-content-sub">
+        <div className="flex items-center flex-wrap gap-x-3 gap-y-1 min-w-0">
+          <span className="inline-flex items-center gap-1 font-medium text-content-main whitespace-nowrap" title="Số người cùng ghi nhận">
+            <Users className="w-3.5 h-3.5 text-primary shrink-0" />
             {caseData.confirmationCount || 0} cùng ghi nhận
           </span>
-          <span className="inline-flex items-center gap-1" title="Số quan sát bổ sung">
-            <Eye className="w-3.5 h-3.5 text-content-muted" />
+          <span className="inline-flex items-center gap-1 whitespace-nowrap" title="Số quan sát bổ sung">
+            <Eye className="w-3.5 h-3.5 text-content-muted shrink-0" />
             {caseData.observationCount || 0} quan sát
           </span>
         </div>
 
         <Link
           to={`/cases/${caseData.id}`}
-          className="inline-flex items-center gap-1 font-semibold text-primary hover:text-primary-dark transition-colors py-1"
+          className="shrink-0 inline-flex items-center gap-1 font-bold text-primary hover:text-primary-dark transition-colors py-1 pl-2"
         >
           Chi tiết
           <ArrowRight className="w-3.5 h-3.5" />

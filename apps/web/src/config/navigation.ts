@@ -89,13 +89,6 @@ export const NAVIGATION_CONFIG: NavSectionConfig[] = [
         permission: 'notification:view'
       },
       {
-        id: 'contributions',
-        label: 'Đóng góp',
-        path: '/contributions',
-        icon: Award,
-        permission: 'contribution:view'
-      },
-      {
         id: 'credits',
         label: 'Tín chỉ thanh niên',
         path: '/credits',

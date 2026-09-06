@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext.js';
+import { ToastProvider } from './context/ToastContext.js';
 import { AppShell } from './components/layout/AppShell.js';
 import { ProtectedRoute } from './components/auth/ProtectedRoute.js';
 
@@ -47,7 +48,8 @@ import { ContractorRemediationPage } from './pages/contractor/ContractorRemediat
 export const App: React.FC = () => {
   return (
     <BrowserRouter>
-      <AuthProvider>
+      <ToastProvider>
+        <AuthProvider>
         <Routes>
           {/* Landing Page công chúng độc lập */}
           <Route path="/" element={<LandingPage />} />
@@ -70,16 +72,9 @@ export const App: React.FC = () => {
                   {/* Bản đồ */}
                   <Route path="/map" element={<MapPage />} />
 
-                  {/* Phản ánh (Reports) */}
+                  {/* Phản ánh (Reports) - Cho phép công dân vãng lai gửi nhanh không bắt buộc đăng nhập */}
                   <Route path="/reports" element={<ReportsListPage />} />
-                  <Route
-                    path="/reports/new"
-                    element={
-                      <ProtectedRoute permission="report:create">
-                        <CreateReportPage />
-                      </ProtectedRoute>
-                    }
-                  />
+                  <Route path="/reports/new" element={<CreateReportPage />} />
                   <Route path="/reports/:id" element={<ReportDetailPage />} />
 
                   {/* Vụ việc (Cases) */}
@@ -277,6 +272,7 @@ export const App: React.FC = () => {
           />
         </Routes>
       </AuthProvider>
+      </ToastProvider>
     </BrowserRouter>
   );
 };

@@ -4,6 +4,8 @@ import { apiRequest } from '../../api/client.js';
 import { calculateFileSha256 } from '../../utils/crypto.js';
 import { evaluateGeofenceBuffer, GeofenceResult } from '../../utils/geofence.js';
 import { BeforeAfterComparison } from '../../components/common/BeforeAfterComparison.js';
+import { useToast } from '../../context/ToastContext.js';
+import { saveDraft, loadDraft, clearDraft } from '../../utils/draftStorage.js';
 import {
   ArrowLeft,
   CheckCircle2,
@@ -21,6 +23,7 @@ import {
 export const ContractorRemediationPage: React.FC = () => {
   const { id } = useParams<{ id: string }>(); // actionId
   const navigate = useNavigate();
+  const { success: toastSuccess, error: toastError, info: toastInfo } = useToast();
 
   const [loading, setLoading] = useState(true);
   const [actionData, setActionData] = useState<any>(null);
@@ -32,6 +35,7 @@ export const ContractorRemediationPage: React.FC = () => {
   const [contractorName, setContractorName] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [successSubmitted, setSuccessSubmitted] = useState(false);
+  const [draftSavedAt, setDraftSavedAt] = useState<string | null>(null);
 
   // Photo & Hash states
   const [file, setFile] = useState<File | null>(null);
@@ -54,12 +58,42 @@ export const ContractorRemediationPage: React.FC = () => {
         if (res.action?.responsible_party) {
           setContractorName(res.action.responsible_party);
         }
+
+        // Restore local draft with TTL check
+        if (id) {
+          const draftRes = loadDraft<any>(`dustguard_draft_remediation_${id}`);
+          if (draftRes && draftRes.data) {
+            const d = draftRes.data;
+            if (d.description) setDescription(d.description);
+            if (d.contractorName) setContractorName(d.contractorName);
+            if (draftRes.updatedAt) setDraftSavedAt(new Date(draftRes.updatedAt).toLocaleTimeString('vi-VN'));
+          }
+        }
       })
       .catch((err) => {
         setError(err.message || 'Không thể tải thông tin yêu cầu khắc phục.');
       })
       .finally(() => setLoading(false));
   }, [id]);
+
+  // Auto-save draft
+  useEffect(() => {
+    if (id && (description || contractorName) && !loading && !successSubmitted) {
+      const timer = setTimeout(() => {
+        const draft = {
+          description,
+          contractorName,
+        };
+        saveDraft(`dustguard_draft_remediation_${id}`, draft, {
+          schema: 'remediation_draft',
+          version: '1.0',
+          ttlMs: 7 * 24 * 60 * 60 * 1000,
+        });
+        setDraftSavedAt(new Date().toLocaleTimeString('vi-VN'));
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [id, description, contractorName, loading, successSubmitted]);
 
   // Handle Photo selection & calculate SHA-256 immediately
   const handlePhotoSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,7 +118,7 @@ export const ContractorRemediationPage: React.FC = () => {
   // Get current GPS and evaluate 50m Geofence
   const handleGetLocation = () => {
     if (!navigator.geolocation) {
-      alert('Trình duyệt của bạn không hỗ trợ định vị GPS.');
+      toastError('Không hỗ trợ GPS', 'Trình duyệt của bạn không hỗ trợ định vị GPS.');
       return;
     }
 
@@ -106,10 +140,15 @@ export const ContractorRemediationPage: React.FC = () => {
         const result = evaluateGeofenceBuffer(coords, siteCoords, 50);
         setGeofenceResult(result);
         setGettingLocation(false);
+        if (result.isWithinGeofence) {
+          toastSuccess('Định vị hiện trường', `Hợp lệ: Cách tâm công trường ${result.distanceMeters}m (trong vùng đệm 50m)`);
+        } else {
+          toastInfo('Định vị hiện trường', `Cách tâm công trường ${result.distanceMeters}m (>50m). Vẫn có thể nộp giải trình kèm theo.`);
+        }
       },
       (err) => {
         console.warn('Lỗi định vị:', err);
-        alert('Không thể truy xuất vị trí GPS. Bạn vẫn có thể gửi báo cáo kèm ghi chú vị trí.');
+        toastInfo('Định vị GPS', 'Không thể truy xuất vị trí GPS tự động. Bạn vẫn có thể gửi báo cáo.');
         setGettingLocation(false);
       },
       { enableHighAccuracy: true, timeout: 10000 }
@@ -120,7 +159,7 @@ export const ContractorRemediationPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!description.trim()) {
-      alert('Vui lòng nhập mô tả các biện pháp khắc phục đã thực hiện.');
+      toastError('Thiếu thông tin', 'Vui lòng nhập mô tả các biện pháp khắc phục đã thực hiện.');
       return;
     }
 
@@ -145,9 +184,14 @@ export const ContractorRemediationPage: React.FC = () => {
         }),
       });
 
+      if (id) {
+        clearDraft(`dustguard_draft_remediation_${id}`);
+        setDraftSavedAt(null);
+      }
+      toastSuccess('Nộp thành công', 'Báo cáo khắc phục đã được chuyển tới cơ quan chuyên trách nghiệm thu.');
       setSuccessSubmitted(true);
     } catch (err: any) {
-      alert(err.message || 'Lỗi khi nộp báo cáo khắc phục.');
+      toastError('Lỗi gửi báo cáo', err.message || 'Lỗi khi nộp báo cáo khắc phục.');
     } finally {
       setSubmitting(false);
     }
@@ -214,9 +258,17 @@ export const ContractorRemediationPage: React.FC = () => {
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div>
-          <span className="text-[11px] font-bold text-primary uppercase tracking-wider">
-            Báo cáo Biện pháp Xử lý Ô nhiễm
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] font-bold text-primary uppercase tracking-wider">
+              Báo cáo Biện pháp Xử lý Ô nhiễm
+            </span>
+            {draftSavedAt && (
+              <span className="inline-flex items-center gap-1 text-[11px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                <ShieldCheck className="w-3 h-3 text-emerald-600" />
+                Đã lưu nháp lúc {draftSavedAt}
+              </span>
+            )}
+          </div>
           <h1 className="text-xl sm:text-2xl font-extrabold text-content-main mt-0.5">
             {actionData.title}
           </h1>

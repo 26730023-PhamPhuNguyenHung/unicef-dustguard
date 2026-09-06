@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { apiRequest } from '../api/client.js';
 import { calculateFileSha256 } from '../utils/crypto.js';
 import { OBSERVATION_TYPE_LABELS, ObservationType } from '@dustguard/shared';
+import { useToast } from '../context/ToastContext.js';
 import {
   Camera,
   Upload,
@@ -18,6 +19,7 @@ import {
 export const SubmitObservationPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { success: toastSuccess, error: toastError } = useToast();
 
   const [caseTitle, setCaseTitle] = useState('');
   const [caseAddress, setCaseAddress] = useState('');
@@ -95,9 +97,10 @@ export const SubmitObservationPage: React.FC = () => {
         }).catch((err) => console.warn('Lỗi tải ảnh quan sát:', err));
       }
 
-      alert('Đã ghi nhận quan sát hiện trường của bạn thành công!');
+      toastSuccess('Ghi nhận quan sát', 'Đã ghi nhận quan sát hiện trường của bạn thành công!');
       navigate(`/cases/${id}`);
     } catch (err: any) {
+      toastError('Lỗi gửi quan sát', err.message || 'Không thể gửi quan sát. Vui lòng thử lại.');
       setErrorMsg(err.message || 'Không thể gửi quan sát. Vui lòng thử lại.');
     } finally {
       setSubmitting(false);
