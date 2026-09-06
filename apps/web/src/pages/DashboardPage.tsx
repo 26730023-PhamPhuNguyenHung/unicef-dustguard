@@ -107,11 +107,11 @@ export const DashboardPage: React.FC = () => {
               <span>Chất lượng không khí tức thời</span>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight leading-tight">
-              Không khí quanh bạn <span className="text-[#B51F24]">hôm nay thế nào?</span>
+            <h1 className="text-2xl sm:text-3xl font-black text-content-main tracking-tight leading-tight">
+              Không khí quanh bạn <span className="text-primary">hôm nay thế nào?</span>
             </h1>
 
-            <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
+            <p className="text-xs sm:text-sm text-content-sub font-medium leading-relaxed">
               Gửi ảnh và vị trí để xử lý bụi ô nhiễm. Tín hiệu của bạn bảo vệ sức khỏe cho cả cộng đồng.
             </p>
 
@@ -119,7 +119,7 @@ export const DashboardPage: React.FC = () => {
             <div className="pt-2 flex flex-wrap items-center gap-2.5 sm:gap-3">
               <Link
                 to="/reports/new"
-                className="inline-flex items-center justify-center gap-2 bg-[#B51F24] hover:bg-[#9E1B20] text-white font-extrabold text-xs sm:text-sm px-5 py-3 min-h-[46px] rounded-xl shadow-xs transition-all transform active:scale-95 border border-red-700 whitespace-nowrap"
+                className="inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-hover text-white font-extrabold text-xs sm:text-sm px-5 py-3 min-h-[46px] rounded-civic shadow-xs transition-all transform active:scale-95 whitespace-nowrap"
               >
                 <Camera className="w-4 h-4 shrink-0" />
                 <span className="whitespace-nowrap">Gửi phản ánh</span>
@@ -127,7 +127,7 @@ export const DashboardPage: React.FC = () => {
 
               <Link
                 to="/map"
-                className="inline-flex items-center justify-center gap-2 bg-stone-50 hover:bg-stone-100 text-slate-800 font-bold text-xs sm:text-sm px-4 py-3 min-h-[46px] rounded-xl border border-stone-300 shadow-2xs transition-colors whitespace-nowrap"
+                className="inline-flex items-center justify-center gap-2 bg-surface-secondary hover:bg-stone-200/70 text-content-main font-bold text-xs sm:text-sm px-4 py-3 min-h-[46px] rounded-civic border border-border-subtle shadow-xs transition-colors whitespace-nowrap"
               >
                 <Map className="w-4 h-4 text-[#0D6F64] shrink-0" />
                 <span className="whitespace-nowrap">Xem bản đồ</span>
@@ -135,9 +135,9 @@ export const DashboardPage: React.FC = () => {
 
               <Link
                 to="/reports"
-                className="inline-flex items-center justify-center gap-2 bg-white hover:bg-stone-50 text-slate-700 font-bold text-xs sm:text-sm px-4 py-3 min-h-[46px] rounded-xl border border-stone-300 shadow-2xs transition-colors whitespace-nowrap"
+                className="inline-flex items-center justify-center gap-2 bg-white hover:bg-surface-secondary text-content-main font-bold text-xs sm:text-sm px-4 py-3 min-h-[46px] rounded-civic border border-border-subtle shadow-xs transition-colors whitespace-nowrap"
               >
-                <Search className="w-4 h-4 text-blue-700 shrink-0" />
+                <Search className="w-4 h-4 text-primary shrink-0" />
                 <span className="whitespace-nowrap">Theo dõi ({stats.totalReports})</span>
               </Link>
             </div>

@@ -78,6 +78,7 @@ export const App: React.FC = () => {
                   <Route path="/reports/:id" element={<ReportDetailPage />} />
 
                   {/* Vụ việc (Cases) */}
+                  <Route path="/cases" element={<Navigate to="/reports" replace />} />
                   <Route path="/cases/:id" element={<CaseDetailPage />} />
                   <Route
                     path="/cases/:id/observe"
