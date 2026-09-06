@@ -55,6 +55,33 @@ export const DashboardPage: React.FC = () => {
     source?: string;
   } | null>(null);
 
+  // Tọa độ vị trí người dùng để tính khoảng cách trắc địa thực tế
+  const [userCoords, setUserCoords] = useState<{ latitude: number; longitude: number } | null>({
+    latitude: DEMO_LOCATION.latitude,
+    longitude: DEMO_LOCATION.longitude
+  });
+
+  useEffect(() => {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setUserCoords({
+            latitude: pos.coords.latitude,
+            longitude: pos.coords.longitude
+          });
+        },
+        () => {
+          // Fallback vị trí tham chiếu 62 Nguyễn Chí Thanh
+          setUserCoords({
+            latitude: DEMO_LOCATION.latitude,
+            longitude: DEMO_LOCATION.longitude
+          });
+        },
+        { timeout: 4000, maximumAge: 60000 }
+      );
+    }
+  }, []);
+
   useEffect(() => {
     let active = true;
     setLoading(true);
@@ -127,6 +154,19 @@ export const DashboardPage: React.FC = () => {
   const nearbyCases = data?.nearbyCases || [];
   const recentActivity = data?.recentActivity || [];
 
+  // Helper tính khoảng cách trắc địa thực tế tới trạm đo DG-IOT-001
+  const getDistanceText = () => {
+    const targetLat = iotData?.device?.latitude ?? DEMO_LOCATION.latitude;
+    const targetLng = iotData?.device?.longitude ?? DEMO_LOCATION.longitude;
+    if (!userCoords) return 'Cách bạn ~120m';
+    const meters = calculateDistanceMeters(
+      { latitude: userCoords.latitude, longitude: userCoords.longitude },
+      { latitude: targetLat, longitude: targetLng }
+    );
+    if (meters < 30) return 'Cách bạn ~25m (Tại vị trí)';
+    return `Cách bạn ${formatDistance(meters)}`;
+  };
+
   // Helper chuyển trạng thái sang bước tiến trình tiếng Việt đời thường
   const getProgressStage = (status: string) => {
     const s = (status || '').toLowerCase();
@@ -167,7 +207,7 @@ export const DashboardPage: React.FC = () => {
 
             <div className="inline-flex flex-wrap sm:flex-nowrap items-center gap-1.5 text-xs font-bold text-slate-800 bg-stone-100 px-3 py-1.5 rounded-lg border border-stone-200 max-w-full break-words">
               <MapPin className="w-3.5 h-3.5 text-[#B51F24] shrink-0" />
-              <span>62 Nguyễn Chí Thanh, Hà Nội · Tín hiệu môi trường trong bán kính gần bạn</span>
+              <span>62 Nguyễn Chí Thanh, Hà Nội · <strong className="text-teal-800">{getDistanceText()}</strong> · Tín hiệu môi trường trực tiếp</span>
             </div>
 
             <p className="text-xs sm:text-sm text-content-sub font-medium leading-relaxed">
@@ -248,9 +288,14 @@ export const DashboardPage: React.FC = () => {
                 </div>
 
                 <div className="space-y-1 text-xs text-slate-600">
-                  <div className="flex items-center gap-1.5 font-bold text-slate-900">
-                    <MapPin className="w-3.5 h-3.5 text-[#B51F24] shrink-0" />
-                    <span className="truncate">{iotData.device?.name || 'DustGuard Demo Node'}</span>
+                  <div className="flex items-center justify-between gap-1.5 font-bold text-slate-900">
+                    <div className="flex items-center gap-1.5 truncate">
+                      <MapPin className="w-3.5 h-3.5 text-[#B51F24] shrink-0" />
+                      <span className="truncate">{iotData.device?.name || 'DustGuard Demo Node'}</span>
+                    </div>
+                    <span className="shrink-0 text-[11px] font-black text-teal-800 bg-teal-50 px-2 py-0.5 rounded border border-teal-200">
+                      {getDistanceText()}
+                    </span>
                   </div>
                   <div className="text-[11px] text-slate-500 truncate pl-5">
                     {iotData.device?.locationText || '62 Nguyễn Chí Thanh, Hà Nội'}

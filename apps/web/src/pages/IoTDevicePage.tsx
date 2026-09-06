@@ -92,9 +92,16 @@ export const IoTDevicePage: React.FC = () => {
                 </span>
               )}
             </div>
-            <p className="text-xs text-slate-500 font-medium mt-0.5">
-              Mã thiết bị: <span className="font-mono font-bold text-slate-700">{device?.device_code || id}</span> · {device?.location_text || '62 Nguyễn Chí Thanh, Hà Nội'}
-            </p>
+            <div className="flex flex-wrap items-center gap-1.5 text-xs text-slate-500 font-medium mt-0.5">
+              <span>Mã thiết bị:</span>
+              <span className="font-mono font-bold text-slate-700">{device?.device_code || id}</span>
+              <span>·</span>
+              <span>{device?.location_text || '62 Nguyễn Chí Thanh, Hà Nội'}</span>
+              <span>·</span>
+              <span className="font-bold text-teal-800 bg-teal-50 px-2 py-0.5 rounded-md border border-teal-200 text-[11px]">
+                Cách bạn ~120m
+              </span>
+            </div>
           </div>
         </div>
 

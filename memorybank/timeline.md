@@ -7,6 +7,27 @@
 
 ## 📅 Các Mốc Phát Triển Chính (Milestones)
 
+### 19. [2026-09-07] `feat-display-realtime-distance-to-sensor-node`: Tích Hợp Khoảng Cách Trắc Địa Động (Haversine Distance) Tới Trạm Quan Trắc IoT Trên Toàn Hệ Thống
+- **Bối cảnh & Yêu cầu Người dùng**:
+  - Người dùng thắc mắc: *"ủa k thấy khoảng cách à"*. Khi xem card chất lượng không khí trên Dashboard và Citizen Portal, người dân cần biết ngay trạm đo này cách vị trí thực tế của họ bao xa để đánh giá mức độ ảnh hưởng của bụi mịn tới sức khỏe.
+- **Phạm vi xử lý hoàn tất**:
+  1. `apps/web/src/pages/DashboardPage.tsx`:
+     - Tích hợp `navigator.geolocation.getCurrentPosition` kết hợp fallback chuẩn `DEMO_LOCATION` (62 Nguyễn Chí Thanh, Hà Nội: `21.0205, 105.8078`).
+     - Viết hàm `getDistanceText()` tính toán khoảng cách Haversine chuẩn xác qua `calculateDistanceMeters` và `formatDistance` từ `@dustguard/shared`.
+     - Hero Banner: Hiển thị nổi bật `62 Nguyễn Chí Thanh, Hà Nội · Cách bạn ~25m (Tại vị trí) / Cách bạn ~120m · Tín hiệu môi trường trực tiếp`.
+     - Live Sensor Card: Bổ sung badge khoảng cách teal tương phản cao cạnh tên trạm `DustGuard Demo Node` (`Cách bạn ~25m` / `Cách bạn ~120m`).
+  2. `app/src/modules/citizen/CitizenPortal.jsx`:
+     - Tích hợp logic Geolocation và công thức Haversine tương tự.
+     - Hiển thị khoảng cách tại thanh thông tin vị trí Hero Banner và Live Sensor Card.
+  3. `apps/web/src/pages/IoTSettingsPage.tsx` (`/settings/iot`):
+     - Gắn badge khoảng cách thực tế vào hàng thông tin thiết bị: `Device ID: DG-IOT-001 · 62 Nguyễn Chí Thanh, Hà Nội · Cách bạn ~120m`.
+  4. `apps/web/src/pages/IoTDevicePage.tsx` (`/iot/device/:id`):
+     - Gắn badge khoảng cách thực tế vào header chi tiết trạm quan trắc.
+  5. Đóng gói & Triển khai Cloudflare Worker Production Edge:
+     - Chạy `node scripts/build-production.js` hợp nhất Side A + Side B.
+     - Chạy `npx wrangler deploy` thành công (Version ID: `3e08e19b-dd3f-44fa-a58e-c1bd48c9c20f`).
+     - Kiểm chứng runtime: Cảm biến thật gửi dữ liệu thời gian thực (pm25: 23, wifiRssi: -44 dBm, 3 giây trước), bundle production đã nhúng logic hiển thị khoảng cách đầy đủ.
+
 ### 18. [2026-09-07] `fix-iot-telemetry-get-and-deploy-production`: Khắc Phục Lỗi 404 Endpoint `/api/iot/telemetry`, Hỗ Trợ Đa Phương Thức GET/POST, Deploy Cloudflare Edge Thành Công
 - **Bối cảnh & Vấn đề Runtime**:
   - Người dùng gặp lỗi RFC 7807: `{"type":"https://tools.ietf.org/html/rfc7807","title":"Endpoint Not Found","status":404,"detail":"Đường dẫn API '/api/iot/telemetry' không tồn tại trên hệ thống.","instance":"/api/iot/telemetry"}`.

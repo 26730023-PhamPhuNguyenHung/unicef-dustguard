@@ -3,6 +3,24 @@
 > **Kho lưu trữ kinh nghiệm, bài học kiến trúc và phòng chống lỗi kỹ thuật (Anti-Regression)**  
 > *Cập nhật sau mỗi chu trình phát triển tính năng mới thành công.*
 
+### 15. Trải Nghiệm Định Vị Khoảng Cách Trắc Địa Động (Dynamic Haversine Distance) Cho Mạng Lưới Cảm Biến Civic Tech IoT
+- **Vấn đề thực tế phát sinh**:
+  - Khi xem số liệu chất lượng không khí (PM2.5, PM10) trên Dashboard hoặc Citizen Portal, người dùng đặt câu hỏi tự nhiên: *"ủa k thấy khoảng cách à"*.
+  - Nếu hệ thống chỉ hiển thị địa chỉ hành chính (ví dụ: "62 Nguyễn Chí Thanh, Hà Nội") mà không kèm khoảng cách tới vị trí hiện tại của người dân, người dùng không thể biết trạm đo này đang ở ngay cạnh họ (~25m) hay cách họ 5km. Điều này làm giảm giá trị thực tiễn và tính thuyết phục của số liệu môi trường.
+- **Giải pháp chuẩn hóa triệt để**:
+  1. **Tính toán khoảng cách Haversine động từ vị trí người dùng**:
+     - Sử dụng API chuẩn `navigator.geolocation.getCurrentPosition` để lấy tọa độ thực tế của người dùng, kết hợp fallback an toàn về tọa độ tham chiếu `DEMO_LOCATION` (62 Nguyễn Chí Thanh: `21.0205, 105.8078`).
+     - Áp dụng công thức Haversine tính toán khoảng cách theo mét:
+       - Nếu khoảng cách $\le 30\text{m}$: Hiển thị thân thiện `"Cách bạn ~25m (Tại vị trí)"`.
+       - Nếu khoảng cách $< 1000\text{m}$: Hiển thị `"Cách bạn ~120m"`.
+       - Nếu khoảng cách $\ge 1000\text{m}$: Hiển thị `"Cách bạn ~1.5km"`.
+  2. **Vị trí hiển thị nổi bật, không gây rối mắt**:
+     - *Hero Banner*: Đặt trực tiếp vào thanh vị trí `62 Nguyễn Chí Thanh, Hà Nội · Cách bạn ~120m · Tín hiệu môi trường trực tiếp`.
+     - *Live Sensor Card*: Đặt badge nổi bật màu teal tương phản cao cạnh tên trạm đo (`DustGuard Demo Node`).
+     - *IoT Settings & IoT Device Detail*: Đặt badge khoảng cách trong phần tiêu đề thông tin thiết bị.
+  3. **High Contrast & Responsive**:
+     - Nền badge teal nhạt (`bg-teal-50`), chữ teal đậm (`text-teal-800`), viền rõ nét (`border-teal-200`), đảm bảo dễ đọc dưới ánh sáng mặt trời ngoài hiện trường mà không sử dụng hiệu ứng glassmorphism.
+
 ### 14. Thiết Kế Endpoint Duality (GET/POST) Cho URL Telemetry & Quy Trình Đồng Bộ Deploy Cloudflare Edge
 - **Vấn đề thực tế phát sinh**:
   - Khi thiết kế endpoint nạp dữ liệu IoT (`/api/iot/telemetry`), hệ thống ban đầu chỉ đăng ký method `POST`.

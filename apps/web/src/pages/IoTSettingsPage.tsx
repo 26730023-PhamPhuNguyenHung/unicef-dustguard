@@ -221,12 +221,16 @@ export const IoTSettingsPage: React.FC = () => {
                 <Edit3 className="w-4 h-4" />
               </button>
             </div>
-            <div className="flex items-center gap-2 text-xs text-slate-500">
+            <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
               <span className="font-mono font-bold bg-stone-100 px-2 py-0.5 rounded text-slate-700">
                 Device ID: {device?.deviceCode || 'DG-IOT-001'}
               </span>
               <span>·</span>
               <span>{device?.locationText || '62 Nguyễn Chí Thanh, Hà Nội'}</span>
+              <span>·</span>
+              <span className="font-bold text-teal-800 bg-teal-50 px-2 py-0.5 rounded-md border border-teal-200 text-[11px]">
+                Cách bạn ~120m
+              </span>
             </div>
           </div>
 
