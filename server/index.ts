@@ -124,13 +124,19 @@ export default {
     if (env.ASSETS) {
       // Nhánh Side B (/operations/*)
       if (url.pathname.startsWith('/operations')) {
-        let assetRes = await env.ASSETS.fetch(request);
-        // Nếu không tìm thấy file tĩnh (.js, .css), fallback về /operations/index.html cho SPA
-        if (assetRes.status === 404 || !assetRes.ok) {
-          const fallbackReq = new Request(new URL('/operations/index.html', request.url), request);
-          assetRes = await env.ASSETS.fetch(fallbackReq);
+        const hasFileExt = /\.[a-zA-Z0-9]+$/.test(url.pathname);
+        if (hasFileExt) {
+          let assetRes = await env.ASSETS.fetch(request);
+          if (assetRes.status === 404 || !assetRes.ok) {
+            const fallbackReq = new Request(new URL('/operations/index.html', request.url), request);
+            assetRes = await env.ASSETS.fetch(fallbackReq);
+          }
+          return assetRes;
         }
-        return assetRes;
+
+        // SPA route của Side B (/operations/dashboard, /operations/cases...): Luôn phục vụ /operations/index.html
+        const spaReq = new Request(new URL('/operations/index.html', request.url), request);
+        return env.ASSETS.fetch(spaReq);
       }
 
       // Nhánh Side A (Root / SPA)
