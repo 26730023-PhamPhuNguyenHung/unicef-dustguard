@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { Button } from '../components/common/Button';
 import { Modal } from '../components/common/Modal';
+import { saveDraft, loadDraft, clearDraft } from '../utils/draftStorage';
 import {
   ArrowLeft,
   CheckCircle2,
@@ -61,11 +62,11 @@ export const FieldInspectionPage: React.FC = () => {
       setItems(res.items);
       setInspectionNote(res.inspection.note || '');
 
-      // Check local draft
-      const draftRaw = localStorage.getItem(`dustguard_draft_inspection_${id}`);
-      if (draftRaw) {
-        try {
-          const draft = JSON.parse(draftRaw);
+      // Check local draft with TTL
+      if (id) {
+        const draftRes = loadDraft<any>(`dustguard_draft_inspection_${id}`, user?.id);
+        if (draftRes && draftRes.data) {
+          const draft = draftRes.data;
           if (draft.items && draft.items.length > 0) {
             setItems(draft.items);
             if (draft.inspectionNote) setInspectionNote(draft.inspectionNote);
@@ -75,9 +76,9 @@ export const FieldInspectionPage: React.FC = () => {
             if (draft.pm25Measured) setPm25Measured(draft.pm25Measured);
             if (draft.weatherCondition) setWeatherCondition(draft.weatherCondition);
             if (draft.contractorRep) setContractorRep(draft.contractorRep);
-            if (draft.savedAt) setDraftSavedAt(new Date(draft.savedAt).toLocaleTimeString('vi-VN'));
+            if (draftRes.updatedAt) setDraftSavedAt(new Date(draftRes.updatedAt).toLocaleTimeString('vi-VN'));
           }
-        } catch {}
+        }
       }
     } catch (err: any) {
       error('Lỗi', err.detail);
@@ -86,7 +87,7 @@ export const FieldInspectionPage: React.FC = () => {
     }
   };
 
-  // Auto-save draft to localStorage (Section 13 E)
+  // Auto-save draft to localStorage (Section 13 E & Section 22)
   useEffect(() => {
     if (id && items.length > 0 && !loading) {
       const draft = {
@@ -98,12 +99,16 @@ export const FieldInspectionPage: React.FC = () => {
         pm25Measured,
         weatherCondition,
         contractorRep,
-        savedAt: new Date().toISOString(),
       };
-      localStorage.setItem(`dustguard_draft_inspection_${id}`, JSON.stringify(draft));
+      saveDraft(`dustguard_draft_inspection_${id}`, draft, {
+        schema: 'inspection_draft',
+        version: '1.0',
+        ttlMs: 7 * 24 * 60 * 60 * 1000,
+        owner: user?.id,
+      });
       setDraftSavedAt(new Date().toLocaleTimeString('vi-VN'));
     }
-  }, [id, items, inspectionNote, arrivalTime, arrivalGps, arrivalOverrideReason, pm25Measured, weatherCondition, contractorRep, loading]);
+  }, [id, items, inspectionNote, arrivalTime, arrivalGps, arrivalOverrideReason, pm25Measured, weatherCondition, contractorRep, loading, user?.id]);
 
   const handleGetGps = () => {
     if (!navigator.geolocation) {
@@ -171,7 +176,9 @@ export const FieldInspectionPage: React.FC = () => {
       });
 
       // Clear draft on successful submission
-      localStorage.removeItem(`dustguard_draft_inspection_${id}`);
+      if (id) {
+        clearDraft(`dustguard_draft_inspection_${id}`);
+      }
 
       success('Hoàn thành kiểm tra', 'Biên bản thực địa đã được ghi nhận vào hệ thống');
       navigate(`/inspections/${id}/result`);

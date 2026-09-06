@@ -38,21 +38,32 @@ db.exec('PRAGMA journal_mode = WAL;');
 db.exec('PRAGMA foreign_keys = ON;');
 db.exec('PRAGMA synchronous = NORMAL;');
 
+// node:sqlite's DatabaseSync throws ("Provided value cannot be bound to SQLite
+// parameter N") when a bound parameter is `undefined` — unlike most other
+// sqlite drivers, it does not silently coerce it to NULL. Every route handler
+// in this codebase that does `const { optionalField } = req.body` and passes
+// it straight into a parameterized query (very common with COALESCE(?, col)
+// partial-update patterns) relies on "not provided" meaning NULL, so we
+// normalize undefined -> null once here rather than at every call site.
+function sanitizeParams(params: any[]): any[] {
+  return params.map(p => (p === undefined ? null : p));
+}
+
 export function query<T = any>(sql: string, params: any[] = []): T[] {
   const stmt = db.prepare(sql);
-  return stmt.all(...params) as T[];
+  return stmt.all(...sanitizeParams(params)) as T[];
 }
 
 export function get<T = any>(sql: string, params: any[] = []): T | undefined {
   const stmt = db.prepare(sql);
-  return stmt.get(...params) as T | undefined;
+  return stmt.get(...sanitizeParams(params)) as T | undefined;
 }
 
 export const queryOne = get;
 
 export function run(sql: string, params: any[] = []) {
   const stmt = db.prepare(sql);
-  return stmt.run(...params);
+  return stmt.run(...sanitizeParams(params));
 }
 
 export function exec(sql: string): void {

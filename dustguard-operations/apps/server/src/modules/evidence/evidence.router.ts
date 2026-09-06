@@ -26,9 +26,30 @@ const storage = multer.diskStorage({
   },
 });
 
+const ALLOWED_MIME_TYPES = new Set([
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'image/heic',
+  'image/heif',
+  'video/mp4',
+  'video/quicktime',
+  'video/webm',
+  'application/pdf',
+]);
+
 const upload = multer({
   storage,
   limits: { fileSize: 25 * 1024 * 1024 }, // 25MB max
+  fileFilter: (req, file, cb) => {
+    if (!ALLOWED_MIME_TYPES.has(file.mimetype)) {
+      const err: any = new Error('Định dạng tệp không được hỗ trợ. Chỉ chấp nhận ảnh, video hoặc PDF làm bằng chứng.');
+      err.status = 400;
+      cb(err);
+      return;
+    }
+    cb(null, true);
+  },
 });
 
 export const evidenceRouter = Router();

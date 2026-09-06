@@ -191,11 +191,14 @@ export const AppLayout: React.FC = () => {
               <span>Báo cáo dân cư</span>
             </button>
 
-            {/* Integrated Role Switcher (Compact, Clean, Zero Dev Banner) */}
-            {user && (
+            {/* Integrated Role Switcher — DEV-ONLY convenience.
+                This re-authenticates as another seed account using a well-known
+                demo password, so it must never render in a production build
+                (it would let any logged-in user one-click-escalate to admin). */}
+            {user && import.meta.env.DEV && (
               <div className="relative inline-flex items-center">
                 <select
-                  aria-label="Chuyển đổi vai trò nghiệp vụ"
+                  aria-label="Chuyển đổi vai trò nghiệp vụ (chỉ môi trường phát triển)"
                   value={user.role}
                   onChange={e => switchRole(e.target.value as Role)}
                   className="text-xs font-semibold bg-surface-subtle hover:bg-stone-200/60 text-ink-800 border border-slate-200/90 rounded-md py-1.5 pl-2.5 pr-7 appearance-none cursor-pointer outline-none focus:ring-1 focus:ring-dustguard-red transition-colors"

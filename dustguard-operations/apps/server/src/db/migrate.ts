@@ -54,6 +54,17 @@ export function runMigrations(initSystemConfig = true): void {
       db.exec(`ALTER TABLE human_decisions ADD COLUMN references_json TEXT;`);
       console.log('[Database Migration] Added references_json column to human_decisions table.');
     }
+
+    // Indexes on hot foreign-key/lookup columns that had no index at all
+    // (found during Side B production audit — legal_reviews.case_id in
+    // particular is queried on every case-close attempt).
+    db.exec(`CREATE INDEX IF NOT EXISTS idx_legal_reviews_case ON legal_reviews(case_id);`);
+    db.exec(`CREATE INDEX IF NOT EXISTS idx_legal_analyses_case ON legal_analyses(case_id);`);
+    db.exec(`CREATE INDEX IF NOT EXISTS idx_case_closures_case ON case_closures(case_id);`);
+    db.exec(`CREATE INDEX IF NOT EXISTS idx_remediation_action ON remediation_submissions(corrective_action_id);`);
+    db.exec(`CREATE INDEX IF NOT EXISTS idx_remediation_case ON remediation_submissions(case_id);`);
+    db.exec(`CREATE INDEX IF NOT EXISTS idx_contractors_name ON contractors(name);`);
+    db.exec(`CREATE INDEX IF NOT EXISTS idx_inspection_items_inspection ON inspection_items(inspection_id);`);
   } catch (err: any) {
     console.warn('[Database Migration] Notice on schema evolutions:', err.message);
   }

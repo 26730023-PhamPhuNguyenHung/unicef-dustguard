@@ -1,0 +1,973 @@
+[
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "hasAuth": false,
+    "hasValidation": false,
+    "usedByScreen": [
+      "LoginPage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "GET",
+    "path": "/api/auth/me",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [
+      "ALL (AuthContext bootstrap)"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "POST",
+    "path": "/api/auth/logout",
+    "hasAuth": false,
+    "hasValidation": false,
+    "usedByScreen": [
+      "AppLayout"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "GET",
+    "path": "/api/auth/setup-status",
+    "hasAuth": false,
+    "hasValidation": false,
+    "usedByScreen": [
+      "SetupPage"
+    ],
+    "status": "OK (intentionally public, first-run check)"
+  },
+  {
+    "method": "POST",
+    "path": "/api/auth/bootstrap",
+    "hasAuth": false,
+    "hasValidation": "manual (min length checks)",
+    "usedByScreen": [
+      "SetupPage"
+    ],
+    "status": "OK, gated by setup-status.is_initialized"
+  },
+  {
+    "method": "GET",
+    "path": "/api/dashboard",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [
+      "DashboardPage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "GET",
+    "path": "/api/dashboard/staff",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [],
+    "status": "OK (alias, unused by current SPA)"
+  },
+  {
+    "method": "GET",
+    "path": "/api/dashboard/supervisor",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [
+      "SupervisorWorkloadPage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "GET",
+    "path": "/api/projects",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [
+      "ProjectsPage",
+      "CaseInboxPage",
+      "IotDevicesPage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "GET",
+    "path": "/api/projects/:id",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [],
+    "status": "OK (no direct project detail screen wired)"
+  },
+  {
+    "method": "POST",
+    "path": "/api/projects",
+    "hasAuth": true,
+    "hasValidation": "manual",
+    "usedByScreen": [
+      "ProjectsPage"
+    ],
+    "status": "OK, verified live"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/projects/:id",
+    "hasAuth": true,
+    "hasValidation": "manual",
+    "usedByScreen": [],
+    "status": "OK"
+  },
+  {
+    "method": "GET",
+    "path": "/api/contractors",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [
+      "ContractorsPage",
+      "ProjectsPage"
+    ],
+    "status": "OK, verified live (returns 26 contractors after backfill fix)"
+  },
+  {
+    "method": "GET",
+    "path": "/api/contractors/:id",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [],
+    "status": "OK"
+  },
+  {
+    "method": "POST",
+    "path": "/api/contractors",
+    "hasAuth": true,
+    "hasValidation": "manual",
+    "usedByScreen": [
+      "ContractorsPage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/contractors/:id",
+    "hasAuth": true,
+    "hasValidation": "manual",
+    "usedByScreen": [],
+    "status": "OK"
+  },
+  {
+    "method": "GET",
+    "path": "/api/signals",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [],
+    "status": "OK (no dedicated Signals screen in current nav; feeds cases indirectly)"
+  },
+  {
+    "method": "POST",
+    "path": "/api/signals",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [],
+    "status": "OK"
+  },
+  {
+    "method": "GET",
+    "path": "/api/signals/:id",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [],
+    "status": "OK"
+  },
+  {
+    "method": "GET",
+    "path": "/api/signals/:id/matches",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [],
+    "status": "OK"
+  },
+  {
+    "method": "POST",
+    "path": "/api/signals/:id/link-case",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [],
+    "status": "OK (requireCapability check)"
+  },
+  {
+    "method": "POST",
+    "path": "/api/signals/public-report",
+    "hasAuth": false,
+    "hasValidation": false,
+    "usedByScreen": [],
+    "status": "ORPHAN — no zod validation and no auth; intentionally public citizen-intake style endpoint but not called by any Side B screen found; not exercised this session"
+  },
+  {
+    "method": "POST",
+    "path": "/api/signals/:id/create-case",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [],
+    "status": "OK"
+  },
+  {
+    "method": "GET",
+    "path": "/api/tasks",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [
+      "TasksPage"
+    ],
+    "status": "OK (requireCapability task:view)"
+  },
+  {
+    "method": "POST",
+    "path": "/api/tasks",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [
+      "TasksPage",
+      "CaseDetailPage",
+      "LegalWorkspacePage"
+    ],
+    "status": "OK (requireCapability task:update)"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/tasks/:id",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [
+      "TasksPage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/tasks/:id",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [],
+    "status": "OK, no delete CTA wired in TasksPage UI"
+  },
+  {
+    "method": "GET",
+    "path": "/api/cases",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [
+      "CaseInboxPage",
+      "TasksPage",
+      "IotDeviceDetailPage",
+      "EvidencePage"
+    ],
+    "status": "OK — protected via casesRouter.use(requireAuth) router-level middleware, verified live (401 without token)"
+  },
+  {
+    "method": "GET",
+    "path": "/api/cases/:id",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [
+      "CaseDetailPage",
+      "LegalWorkspacePage",
+      "InspectionPlanPage",
+      "RemediationReviewPage",
+      "ActionNoticeExportPage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "POST",
+    "path": "/api/cases",
+    "hasAuth": true,
+    "hasValidation": "zod (CaseCreateSchema)",
+    "usedByScreen": [
+      "CaseInboxPage"
+    ],
+    "status": "OK, verified live incl. new contractor auto-link fix; no server-side idempotency key (client-side double-submit guard only)"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/cases/:id",
+    "hasAuth": true,
+    "hasValidation": "manual",
+    "usedByScreen": [
+      "CaseDetailPage"
+    ],
+    "status": "FIXED — previously 500'd on any partial update omitting an optional field (node:sqlite rejects undefined bind params); root-caused in db/connection.ts. Verified live."
+  },
+  {
+    "method": "POST",
+    "path": "/api/cases/:id/transition",
+    "hasAuth": true,
+    "hasValidation": "zod (CaseTransitionSchema) + canTransitionCase state machine",
+    "usedByScreen": [
+      "CaseDetailPage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "POST",
+    "path": "/api/cases/:id/assign",
+    "hasAuth": true,
+    "hasValidation": "zod (CaseAssignSchema)",
+    "usedByScreen": [
+      "CaseDetailPage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "POST",
+    "path": "/api/cases/:id/reassign",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [],
+    "status": "OK, no reassign CTA found wired in current CaseDetailPage UI (orphan from FE perspective)"
+  },
+  {
+    "method": "GET",
+    "path": "/api/cases/:id/next-action",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [
+      "CaseDetailPage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "GET",
+    "path": "/api/cases/:id/facts",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [
+      "LegalWorkspacePage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "POST",
+    "path": "/api/cases/:id/analysis",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [],
+    "status": "OK, superseded by /:id/legal/analyze in current UI (legacy alias)"
+  },
+  {
+    "method": "POST",
+    "path": "/api/cases/:id/decisions",
+    "hasAuth": true,
+    "hasValidation": "zod (HumanDecisionSubmitSchema)",
+    "usedByScreen": [
+      "LegalWorkspacePage"
+    ],
+    "status": "OK, writes to human_decisions (append-only)"
+  },
+  {
+    "method": "POST",
+    "path": "/api/cases/:id/missing-facts/create-task",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [
+      "LegalWorkspacePage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "GET",
+    "path": "/api/cases/:id/decision-support",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [
+      "CaseDetailPage (embedded DecisionSupportSection)"
+    ],
+    "status": "OK — verified live returns real computed risk breakdown + evidence-grounded facts, not random/mock data (requirePermission case:view, not requireAuth, but effectively equivalent since permission check requires req.user)"
+  },
+  {
+    "method": "POST",
+    "path": "/api/cases/:id/human-decisions",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [],
+    "status": "OK (requirePermission legal:review) — appears to duplicate /api/cases/:id/decisions; not called by current FE, orphan"
+  },
+  {
+    "method": "GET",
+    "path": "/api/cases/:id/closure-safety-check",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [],
+    "status": "OK (requirePermission case:view), not directly called by FE — closure gate logic is instead re-implemented inline in closures.router.ts POST /:id/close; potential duplication to reconcile"
+  },
+  {
+    "method": "POST",
+    "path": "/api/cases/:id/close",
+    "hasAuth": true,
+    "hasValidation": "zod (CaseClosureSchema)",
+    "usedByScreen": [
+      "CaseDetailPage"
+    ],
+    "status": "OK — verified live, real 4-condition gate (inspections complete, no open actions, no tampered/missing evidence, legal review REVIEWED), double-close rejected"
+  },
+  {
+    "method": "POST",
+    "path": "/api/cases/:id/reopen",
+    "hasAuth": true,
+    "hasValidation": "zod (CaseReopenSchema)",
+    "usedByScreen": [
+      "CaseDetailPage"
+    ],
+    "status": "OK — verified live, clears closed_at, sets status=REOPENED"
+  },
+  {
+    "method": "GET",
+    "path": "/api/legal/search",
+    "hasAuth": false,
+    "hasValidation": false,
+    "usedByScreen": [
+      "LegalLibraryPage",
+      "LegalWorkspacePage"
+    ],
+    "status": "Missing auth — public statutory reference data, low sensitivity, not fixed this session (see side-b-screens.json LegalLibraryPage notes)"
+  },
+  {
+    "method": "GET",
+    "path": "/api/legal/documents",
+    "hasAuth": false,
+    "hasValidation": false,
+    "usedByScreen": [
+      "LegalLibraryPage"
+    ],
+    "status": "Missing auth, same as above"
+  },
+  {
+    "method": "GET",
+    "path": "/api/legal/documents/:id",
+    "hasAuth": false,
+    "hasValidation": false,
+    "usedByScreen": [
+      "LegalDocDetailPage"
+    ],
+    "status": "Missing auth, same as above"
+  },
+  {
+    "method": "GET",
+    "path": "/api/legal/sections/:id",
+    "hasAuth": false,
+    "hasValidation": false,
+    "usedByScreen": [],
+    "status": "Missing auth, same as above; not directly called by current FE"
+  },
+  {
+    "method": "POST",
+    "path": "/api/cases/:id/legal/analyze",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [
+      "LegalWorkspacePage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "GET",
+    "path": "/api/cases/:id/legal/analyses",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [
+      "LegalWorkspacePage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "POST",
+    "path": "/api/cases/:id/legal/review",
+    "hasAuth": true,
+    "hasValidation": "zod (LegalReviewSchema)",
+    "usedByScreen": [
+      "LegalWorkspacePage"
+    ],
+    "status": "OK — verified live, feeds the case-close legal gate condition"
+  },
+  {
+    "method": "POST",
+    "path": "/api/legal/import",
+    "hasAuth": true,
+    "hasValidation": "manual parser",
+    "usedByScreen": [
+      "LegalImportPage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "POST",
+    "path": "/api/legal/documents",
+    "hasAuth": true,
+    "hasValidation": "manual",
+    "usedByScreen": [
+      "LegalImportPage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "GET",
+    "path": "/api/cases/:id/legal/evidence-gaps",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [
+      "CaseDetailPage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "GET",
+    "path": "/api/cases/:id/decision-pack",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [],
+    "status": "OK, dev fallback auth path exists in authMiddleware for this path specifically; not linked from current nav (likely opened via generated export link)"
+  },
+  {
+    "method": "GET",
+    "path": "/api/inspection-templates",
+    "hasAuth": false,
+    "hasValidation": false,
+    "usedByScreen": [
+      "InspectionPlanPage"
+    ],
+    "status": "OK, intentionally public reference data (checklist templates, non-sensitive)"
+  },
+  {
+    "method": "GET",
+    "path": "/api/inspections",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [
+      "InspectionListPage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "GET",
+    "path": "/api/inspections/:id",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [
+      "FieldInspectionPage",
+      "InspectionResultPage",
+      "InspectionExportPage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "POST",
+    "path": "/api/inspections/:id/inspections",
+    "hasAuth": true,
+    "hasValidation": "zod (InspectionCreateSchema)",
+    "usedByScreen": [],
+    "status": "OK, alt mount point of handleCreateInspection"
+  },
+  {
+    "method": "POST",
+    "path": "/api/inspections",
+    "hasAuth": true,
+    "hasValidation": "zod (InspectionCreateSchema)",
+    "usedByScreen": [
+      "InspectionPlanPage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/inspections/:id",
+    "hasAuth": true,
+    "hasValidation": "manual",
+    "usedByScreen": [],
+    "status": "OK, no direct edit CTA found in current FE (orphan)"
+  },
+  {
+    "method": "POST",
+    "path": "/api/inspections/:id/submit",
+    "hasAuth": true,
+    "hasValidation": "manual",
+    "usedByScreen": [
+      "FieldInspectionPage"
+    ],
+    "status": "OK — verified persists inspection_items + inspection_findings"
+  },
+  {
+    "method": "POST",
+    "path": "/api/integrations/community/cases",
+    "hasAuth": true,
+    "hasValidation": "zod (CommunityCaseImportSchema)",
+    "usedByScreen": [
+      "N/A — server-to-server from Side A apps/server/src/utils/handoff.ts"
+    ],
+    "status": "FIXED (cross-side coordinated during this audit): integrationsRouter now applies requireServiceKey (router.use), checking x-service-key against INTEGRATION_SERVICE_KEY; Side A's handoff.ts was updated in parallel to send the matching header. Verified live: request without the header now returns 401 UNAUTHORIZED_SERVICE, request with it succeeds. Idempotency confirmed real (source_reference lookup updates instead of duplicating)."
+  },
+  {
+    "method": "POST",
+    "path": "/api/integrations/community/feedback",
+    "hasAuth": true,
+    "hasValidation": "zod (CommunityFeedbackSchema, added this session)",
+    "usedByScreen": [
+      "N/A — server-to-server from Side A"
+    ],
+    "status": "FIXED: previously had zero input validation and no auth at all — an unauthenticated raw POST could set any case_code to REOPENED. Now requires external_case_id or case_code via a real schema AND requireServiceKey (see /community/cases). Verified live with x-service-key header."
+  },
+  {
+    "method": "GET",
+    "path": "/api/iot/devices",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [
+      "IotDevicesPage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "GET",
+    "path": "/api/iot/alerts",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [
+      "IotDevicesPage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "POST",
+    "path": "/api/iot/devices",
+    "hasAuth": true,
+    "hasValidation": "manual",
+    "usedByScreen": [
+      "IotDevicesPage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "GET",
+    "path": "/api/iot/devices/:id",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [
+      "IotDeviceDetailPage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "POST",
+    "path": "/api/iot/devices/:id/create-case",
+    "hasAuth": true,
+    "hasValidation": "manual",
+    "usedByScreen": [
+      "IotDevicesPage",
+      "IotDeviceDetailPage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "POST",
+    "path": "/api/iot/devices/:id/link-case",
+    "hasAuth": true,
+    "hasValidation": "manual",
+    "usedByScreen": [
+      "IotDeviceDetailPage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "GET",
+    "path": "/api/iot/devices/:id/readings",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [
+      "IotDeviceDetailPage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "POST",
+    "path": "/api/iot/ingest",
+    "hasAuth": false,
+    "hasValidation": "manual (requires sensorCode, pm10, pm25, timestamp, signature)",
+    "usedByScreen": [
+      "N/A — device ingestion channel"
+    ],
+    "status": "OK, has its own payload/signature gate; verified live rejects incomplete payloads with 400"
+  },
+  {
+    "method": "POST",
+    "path": "/api/iot/telemetry",
+    "hasAuth": false,
+    "hasValidation": "manual (same as /ingest)",
+    "usedByScreen": [],
+    "status": "OK, alias of /ingest"
+  },
+  {
+    "method": "GET",
+    "path": "/api/automations/rules",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [
+      "AutomationsPage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "POST",
+    "path": "/api/automations/rules",
+    "hasAuth": true,
+    "hasValidation": "zod",
+    "usedByScreen": [],
+    "status": "OK, no create-rule CTA found in current AutomationsPage UI (orphan from FE, present in API)"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/automations/rules/:id",
+    "hasAuth": true,
+    "hasValidation": "zod",
+    "usedByScreen": [
+      "AutomationsPage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "GET",
+    "path": "/api/automations/runs",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [
+      "AutomationsPage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "GET",
+    "path": "/api/findings",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [],
+    "status": "OK, findings are rendered inline within InspectionResultPage/CaseDetailPage via inspection payload rather than this list endpoint directly (orphan from FE)"
+  },
+  {
+    "method": "POST",
+    "path": "/api/inspections/:id/findings",
+    "hasAuth": true,
+    "hasValidation": "zod",
+    "usedByScreen": [],
+    "status": "OK, findings are currently created as part of POST /inspections/:id/submit rather than this separate endpoint (orphan from FE)"
+  },
+  {
+    "method": "POST",
+    "path": "/api/actions/:id/actions",
+    "hasAuth": true,
+    "hasValidation": "zod (CorrectiveActionCreateSchema)",
+    "usedByScreen": [
+      "CaseDetailPage"
+    ],
+    "status": "OK (mounted at /api/cases/:id/actions in practice)"
+  },
+  {
+    "method": "GET",
+    "path": "/api/actions",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [
+      "ActionsListPage",
+      "RemediationReviewPage",
+      "ActionNoticeExportPage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/actions/:id",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [],
+    "status": "OK, only reachable via /api/actions/:id mount (shadowed at /api/cases/:id by casesRouter's own PATCH /:id) — no direct FE call found (orphan)"
+  },
+  {
+    "method": "POST",
+    "path": "/api/actions/:id/remediation",
+    "hasAuth": true,
+    "hasValidation": "manual",
+    "usedByScreen": [
+      "ActionsListPage"
+    ],
+    "status": "FIXED — was missing requireAuth entirely (open write endpoint); now requires a valid session, verified live (401 unauthenticated, 200 authenticated)"
+  },
+  {
+    "method": "POST",
+    "path": "/api/actions/:id/review",
+    "hasAuth": true,
+    "hasValidation": "zod (RemediationReviewSchema)",
+    "usedByScreen": [
+      "RemediationReviewPage"
+    ],
+    "status": "OK (mounted at /api/remediation/:id/review in practice)"
+  },
+  {
+    "method": "GET",
+    "path": "/api/evidence",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [
+      "EvidencePage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "GET",
+    "path": "/api/cases/:id/evidence",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [
+      "CaseDetailPage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "POST",
+    "path": "/api/evidence/upload",
+    "hasAuth": true,
+    "hasValidation": "FIXED: multer fileFilter MIME allowlist added",
+    "usedByScreen": [
+      "CaseDetailPage",
+      "EvidencePage",
+      "LegalWorkspacePage"
+    ],
+    "status": "FIXED — previously accepted any file type (incl. .html, stored-XSS risk via static /uploads serving); verified live: .html rejected 400, real .png still uploads/hashes/persists"
+  },
+  {
+    "method": "POST",
+    "path": "/api/evidence/:id/verify-hash",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [
+      "EvidencePage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "GET",
+    "path": "/api/reports/overview",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [
+      "ReportsPage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "GET",
+    "path": "/api/search",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [
+      "AppLayout (CommandPalette)"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "GET",
+    "path": "/api/notifications",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [
+      "NotificationsPage",
+      "AppLayout (bell badge)"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "POST",
+    "path": "/api/notifications/:id/read",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [
+      "NotificationsPage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "POST",
+    "path": "/api/notifications/read-all",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [
+      "NotificationsPage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "GET",
+    "path": "/api/admin/users",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [
+      "AdminUsersPage",
+      "TasksPage",
+      "CaseDetailPage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "POST",
+    "path": "/api/admin/users",
+    "hasAuth": true,
+    "hasValidation": "manual",
+    "usedByScreen": [
+      "AdminUsersPage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/admin/users/:id",
+    "hasAuth": true,
+    "hasValidation": "manual",
+    "usedByScreen": [
+      "AdminUsersPage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "GET",
+    "path": "/api/admin/audit",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [
+      "AdminAuditPage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "GET",
+    "path": "/api/admin/configs",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [
+      "AdminSettingsPage"
+    ],
+    "status": "OK"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/admin/configs/:key",
+    "hasAuth": true,
+    "hasValidation": "manual",
+    "usedByScreen": [
+      "AdminSettingsPage"
+    ],
+    "status": "FIXED — previously 500'd whenever description was omitted (the normal case from AdminSettingsPage, which only sends value_json), compounded by a client-side loadConfigs() ReferenceError on the refresh-after-save call. Both fixed and verified live end-to-end."
+  },
+  {
+    "method": "GET",
+    "path": "/api/admin/system-status",
+    "hasAuth": true,
+    "hasValidation": false,
+    "usedByScreen": [
+      "AdminSettingsPage"
+    ],
+    "status": "OK"
+  }
+]

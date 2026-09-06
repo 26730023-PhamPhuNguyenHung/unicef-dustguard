@@ -1,27 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../api/client';
 import { useToast } from '../context/ToastContext';
-import { Settings, Save, ShieldCheck, Database, Cpu, Clock, Bot, AlertCircle } from 'lucide-react';
+import { Settings, Save, ShieldCheck, Database, Cpu, Clock, Bot, AlertCircle, Server, GitBranch } from 'lucide-react';
 import { Button } from '../components/common/Button';
 
 export const AdminSettingsPage: React.FC = () => {
   const { addToast } = useToast();
   const [configs, setConfigs] = useState<any[]>([]);
+  const [systemStatus, setSystemStatus] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [savingKey, setSavingKey] = useState<string | null>(null);
   const [editValues, setEditValues] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    loadConfigs();
+    loadData();
   }, []);
 
-  const loadConfigs = async () => {
+  const loadData = async () => {
     try {
       setLoading(true);
-      const res = await api.admin.configs();
-      setConfigs(res.configs || []);
+      const [configRes, statusRes] = await Promise.all([
+        api.admin.configs().catch(() => ({ configs: [] })),
+        api.admin.systemStatus().catch(() => null)
+      ]);
+      setConfigs(configRes.configs || []);
+      if (statusRes) setSystemStatus(statusRes);
       const initial: Record<string, string> = {};
-      (res.configs || []).forEach((c: any) => {
+      (configRes.configs || []).forEach((c: any) => {
         initial[c.key] = typeof c.value_json === 'string' ? c.value_json : JSON.stringify(c.value_json);
       });
       setEditValues(initial);
@@ -38,7 +43,7 @@ export const AdminSettingsPage: React.FC = () => {
       const val = editValues[key];
       await api.admin.updateConfig(key, { value_json: val });
       addToast(`Đã lưu cấu hình tham số "${key}"`, 'success');
-      loadConfigs();
+      loadData();
     } catch (err: any) {
       addToast(err.detail || 'Không thể cập nhật cấu hình', 'error');
     } finally {
@@ -95,6 +100,86 @@ export const AdminSettingsPage: React.FC = () => {
           ))
         )}
       </div>
+
+      {/* Thông tin Trạng thái Hệ thống & Phiên bản (Mục 45-47) */}
+      {systemStatus && (
+        <div className="civic-card p-6 space-y-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+            <div>
+              <span className="text-[11px] font-bold uppercase tracking-wider text-dustguard-red flex items-center gap-1.5">
+                <Server className="w-3.5 h-3.5" />
+                Trung tâm Chỉ huy Vận hành
+              </span>
+              <h3 className="text-lg font-bold text-slate-900 mt-0.5">
+                {systemStatus.productName} — Phiên bản {systemStatus.productVersion}
+              </h3>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">
+                ● CSDL {systemStatus.database?.status || 'ONLINE'}
+              </span>
+              <span className="text-xs font-mono text-slate-600 bg-slate-100 px-2 py-1 rounded">
+                Build: {systemStatus.buildDate}
+              </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="p-3.5 rounded-lg border border-slate-200 bg-slate-50/50 space-y-1">
+              <div className="text-xs font-semibold text-slate-500 flex items-center gap-1.5">
+                <Database className="w-3.5 h-3.5 text-dustguard-red" />
+                Cơ sở dữ liệu SSOT
+              </div>
+              <div className="text-sm font-bold text-slate-900">{systemStatus.database?.type}</div>
+              <div className="text-xs text-slate-500 font-mono">{systemStatus.database?.tablesCount} bảng quan hệ chuẩn hóa</div>
+            </div>
+
+            <div className="p-3.5 rounded-lg border border-slate-200 bg-slate-50/50 space-y-1">
+              <div className="text-xs font-semibold text-slate-500 flex items-center gap-1.5">
+                <GitBranch className="w-3.5 h-3.5 text-dustguard-red" />
+                Đồng bộ liên thông Side A
+              </div>
+              <div className="text-sm font-bold text-slate-900">Community Webhook</div>
+              <div className="text-xs text-slate-500 font-mono">{systemStatus.crossSideSync?.protocol}</div>
+            </div>
+
+            <div className="p-3.5 rounded-lg border border-slate-200 bg-slate-50/50 space-y-1">
+              <div className="text-xs font-semibold text-slate-500 flex items-center gap-1.5">
+                <Server className="w-3.5 h-3.5 text-dustguard-red" />
+                Phiên bản cấu trúc (Schema)
+              </div>
+              <div className="text-sm font-bold text-slate-900">Schema v{systemStatus.schemaVersion}</div>
+              <div className="text-xs text-slate-500 font-mono">Di chuyển: {systemStatus.lastMigration?.substring(0, 10)}</div>
+            </div>
+          </div>
+
+          {/* Changelog */}
+          {systemStatus.changelog && systemStatus.changelog.length > 0 && (
+            <div className="pt-2">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
+                Lịch sử phiên bản phát hành (Changelog)
+              </h4>
+              <div className="space-y-2">
+                {systemStatus.changelog.map((log: any, idx: number) => (
+                  <div key={idx} className="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-lg border border-slate-200 bg-slate-50/30 text-xs">
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono font-bold text-dustguard-red px-2 py-0.5 rounded bg-red-50">
+                        {log.version}
+                      </span>
+                      <span className="font-semibold text-slate-800">{log.note}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-slate-500 mt-1 sm:mt-0 font-mono">
+                      <span>{log.type}</span>
+                      <span>•</span>
+                      <span>{log.date}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

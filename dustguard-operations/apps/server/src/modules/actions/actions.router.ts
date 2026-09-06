@@ -169,7 +169,7 @@ actionsRouter.patch('/:id', requirePermission('action:update'), (req: AuthReques
 });
 
 // POST /api/actions/:id/remediation - Submit remediation report (Supports Staff and Contractor)
-actionsRouter.post('/:id/remediation', (req: AuthRequest, res, next) => {
+actionsRouter.post('/:id/remediation', requireAuth, (req: AuthRequest, res, next) => {
   try {
     const { id } = req.params;
     const { description, evidence_asset_ids, submitted_by } = req.body;

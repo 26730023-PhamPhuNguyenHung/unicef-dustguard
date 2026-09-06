@@ -22,6 +22,22 @@ export const casesRouter = Router();
 // Toàn bộ các thao tác hồ sơ nghiệp vụ yêu cầu đăng nhập hợp lệ
 casesRouter.use(requireAuth);
 
+// Ensure a normalized contractor row exists for a free-text contractor name,
+// so registries (e.g. /api/contractors) stay in sync with case data instead of
+// leaving contractor_name as an orphaned string with no linked record.
+function ensureContractorId(name?: string | null): string | null {
+  if (!name || !name.trim()) return null;
+  const trimmed = name.trim();
+  const existing = get<{ id: string }>(`SELECT id FROM contractors WHERE name = ?`, [trimmed]);
+  if (existing) return existing.id;
+  const newId = `ctr-${crypto.randomUUID().substring(0, 8)}`;
+  run(
+    `INSERT INTO contractors (id, name, created_at, updated_at) VALUES (?, ?, datetime('now'), datetime('now'))`,
+    [newId, trimmed]
+  );
+  return newId;
+}
+
 // Helper to compute flags and enrich case
 function enrichCase(c: any, currentUserId?: string): Case {
   // Check evidence count
@@ -286,9 +302,12 @@ casesRouter.post('/', requireAuth, (req: AuthRequest, res, next) => {
     const id = `case-${crypto.randomUUID().substring(0, 8)}`;
     
     let contractorName = data.contractor_name;
-    if (!contractorName && data.contractor_id) {
-      const cRow = get<{ name: string }>(`SELECT name FROM contractors WHERE id = ?`, [data.contractor_id]);
+    let contractorId = data.contractor_id || null;
+    if (!contractorName && contractorId) {
+      const cRow = get<{ name: string }>(`SELECT name FROM contractors WHERE id = ?`, [contractorId]);
       if (cRow) contractorName = cRow.name;
+    } else if (contractorName && !contractorId) {
+      contractorId = ensureContractorId(contractorName);
     }
 
     // Generate sequential code DG-2026-OP-XXX
@@ -312,7 +331,7 @@ casesRouter.post('/', requireAuth, (req: AuthRequest, res, next) => {
           data.source,
           data.source_reference || null,
           data.project_id || null,
-          data.contractor_id || null,
+          contractorId,
           contractorName || null,
           data.priority,
         ]
@@ -350,7 +369,11 @@ casesRouter.patch('/:id', requireAuth, (req: AuthRequest, res, next) => {
       return;
     }
 
-    const { title, description, contractor_name, contractor_id, project_id, priority, district, location_text } = req.body;
+    const { title, description, contractor_name, project_id, priority, district, location_text } = req.body;
+    let { contractor_id } = req.body;
+    if (contractor_name && !contractor_id) {
+      contractor_id = ensureContractorId(contractor_name);
+    }
 
     run(
       `UPDATE cases

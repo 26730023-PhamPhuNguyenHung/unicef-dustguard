@@ -245,3 +245,16 @@ export const CommunityCaseImportSchema = z.object({
     .optional()
     .default([]),
 });
+
+// Community Citizen Feedback Schema (cross-side handoff)
+export const CommunityFeedbackSchema = z.object({
+  external_case_id: z.string().optional(),
+  case_code: z.string().optional(),
+  rating: z.number().min(1).max(5).optional(),
+  comment: z.string().optional(),
+  is_satisfied: z.boolean().optional(),
+  request_reinspection: z.boolean().optional(),
+  user_name: z.string().optional(),
+}).refine(data => !!(data.external_case_id || data.case_code), {
+  message: 'external_case_id hoặc case_code là bắt buộc để định danh hồ sơ',
+});

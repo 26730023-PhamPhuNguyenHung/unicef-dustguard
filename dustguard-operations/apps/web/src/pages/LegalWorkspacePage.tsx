@@ -1200,7 +1200,7 @@ export const LegalWorkspacePage: React.FC = () => {
       {/* =================================================================== */}
       <BottomActionBar
         conclusionLevel={analysis?.conclusion_level || 'PRELIMINARY'}
-        confidencePercent={analysis?.completeness_score ? Math.round(analysis.completeness_score * 100) : 0}
+        confidencePercent={analysis?.completeness_score ?? 0}
         secondaryLabel="Yêu cầu xác minh"
         onSecondaryAction={() => {
           setActionModalMode('CREATE_VERIFICATION_TASK');

@@ -1,0 +1,734 @@
+[
+  {
+    "screen": "LoginPage",
+    "route": "/login",
+    "role": "ALL",
+    "primaryCTA": [
+      "Đăng nhập (username/password)"
+    ],
+    "apiUsed": [
+      "POST /api/auth/login",
+      "GET /api/auth/me"
+    ],
+    "dbTables": [
+      "users",
+      "sessions"
+    ],
+    "status": "WORKING",
+    "issuesFound": [],
+    "fixesApplied": []
+  },
+  {
+    "screen": "SetupPage",
+    "route": "/setup",
+    "role": "UNAUTHENTICATED",
+    "primaryCTA": [
+      "Khởi tạo tài khoản quản trị (bootstrap)"
+    ],
+    "apiUsed": [
+      "GET /api/auth/setup-status",
+      "POST /api/auth/bootstrap"
+    ],
+    "dbTables": [
+      "users"
+    ],
+    "status": "WORKING",
+    "issuesFound": [
+      "Route is outside ProtectedRoute (by design, first-run bootstrap) and not in nav — correctly hidden. Server-side /api/auth/bootstrap must be verified to refuse a second bootstrap once is_initialized=true (confirmed present via setup-status gate in SetupPage.tsx) — not independently re-tested against a fresh empty DB this session since seed DB is already initialized."
+    ],
+    "fixesApplied": []
+  },
+  {
+    "screen": "DashboardPage",
+    "route": "/dashboard",
+    "role": "staff/supervisor/legal_reviewer/admin",
+    "primaryCTA": [
+      "Xem tổng quan KPI",
+      "Điều hướng nhanh tới vụ việc"
+    ],
+    "apiUsed": [
+      "GET /api/dashboard"
+    ],
+    "dbTables": [
+      "cases",
+      "corrective_actions",
+      "inspections",
+      "staff_assignments"
+    ],
+    "status": "WORKING",
+    "issuesFound": [],
+    "fixesApplied": []
+  },
+  {
+    "screen": "CaseInboxPage",
+    "route": "/cases",
+    "role": "staff/supervisor/legal_reviewer/admin",
+    "primaryCTA": [
+      "Tạo vụ việc mới",
+      "Lọc theo tab/trạng thái/khu vực",
+      "Mở chi tiết vụ việc"
+    ],
+    "apiUsed": [
+      "GET /api/cases",
+      "POST /api/cases",
+      "GET /api/projects"
+    ],
+    "dbTables": [
+      "cases",
+      "contractors",
+      "projects",
+      "case_timeline",
+      "audit_logs"
+    ],
+    "status": "WORKING",
+    "issuesFound": [
+      "Manual case creation (POST /api/cases) has no server-side idempotency key; double-submit protection is client-side only (Button disabled while `submitting`=true). A raced double network call could create two cases. Community-side intake (POST /api/integrations/community/cases) IS idempotent via source_reference lookup — verified."
+    ],
+    "fixesApplied": [
+      "cases.router.ts: case creation with only a free-text contractor_name now auto-creates/links a real contractors row (ensureContractorId) instead of leaving contractor_name orphaned with no FK."
+    ]
+  },
+  {
+    "screen": "CaseDetailPage",
+    "route": "/cases/:id (+ /evidence,/iot,/inspection,/actions,/timeline sub-routes)",
+    "role": "staff/supervisor/legal_reviewer/admin",
+    "primaryCTA": [
+      "Nhận phân công",
+      "Chuyển trạng thái (transition)",
+      "Tạo yêu cầu khắc phục",
+      "Đóng hồ sơ (4-condition gate)",
+      "Mở lại hồ sơ",
+      "Tải bằng chứng"
+    ],
+    "apiUsed": [
+      "GET /api/cases/:id",
+      "POST /api/cases/:id/assign",
+      "POST /api/cases/:id/transition",
+      "POST /api/cases/:id/close",
+      "POST /api/cases/:id/reopen",
+      "POST /api/cases/:id/actions",
+      "POST /api/evidence/upload",
+      "GET /api/cases/:id/next-action",
+      "GET /api/cases/:id/legal/evidence-gaps"
+    ],
+    "dbTables": [
+      "cases",
+      "case_timeline",
+      "staff_assignments",
+      "corrective_actions",
+      "evidence_assets",
+      "legal_reviews",
+      "inspections",
+      "case_closures",
+      "audit_logs"
+    ],
+    "status": "WORKING",
+    "issuesFound": [
+      "Verified live end-to-end: closure gate genuinely checked 4 real DB conditions (pending inspections, open corrective actions, tampered/missing evidence, legal review REVIEWED) — attempted close on case-024 was correctly rejected with 'closure-legal-incomplete' until a real legal review was submitted, then close succeeded, double-close was rejected, and reopen correctly cleared closed_at and set status=REOPENED. All test mutations reverted after verification.",
+      "SYSTEMIC BUG (found here, fixed at the DB layer): PATCH /api/cases/:id crashed with HTTP 500 (\"Provided value cannot be bound to SQLite parameter 1\") whenever the request omitted an optional field (e.g. editing only priority) — node:sqlite's DatabaseSync rejects undefined bind params, unlike most other sqlite drivers, and this COALESCE(?, col)-style partial-update pattern is used throughout the server. Verified live: PATCH with only {priority:\"HIGH\"} previously 500'd, now succeeds."
+    ],
+    "fixesApplied": [
+      "Root-caused and fixed in db/connection.ts (query/get/run now sanitize undefined -> null before binding) rather than patching each of the ~15+ affected PATCH/POST handlers individually — this repairs the same class of bug across cases, admin users, admin configs, contractors, projects, actions, and any other endpoint using the same optional-field COALESCE pattern."
+    ]
+  },
+  {
+    "screen": "ProjectsPage",
+    "route": "/projects",
+    "role": "staff/supervisor/admin",
+    "primaryCTA": [
+      "Tạo công trình mới",
+      "Xem danh sách công trình"
+    ],
+    "apiUsed": [
+      "GET /api/projects",
+      "POST /api/projects",
+      "GET /api/contractors"
+    ],
+    "dbTables": [
+      "projects",
+      "contractors"
+    ],
+    "status": "WORKING",
+    "issuesFound": [
+      "projects table had 0 rows despite 31 real cases referencing location/contractor data — screen renders an empty registry in the seeded demo. POST /api/projects verified working live (created + cleaned up a test project). No reliable source data exists to backfill real project codes/addresses without fabricating data, so this was left as a seed-data gap, not a code fix (see 'still broken' in final report)."
+    ],
+    "fixesApplied": []
+  },
+  {
+    "screen": "ContractorsPage",
+    "route": "/contractors",
+    "role": "staff/supervisor/admin",
+    "primaryCTA": [
+      "Đăng ký nhà thầu mới",
+      "Xem danh sách + số vụ việc đang mở"
+    ],
+    "apiUsed": [
+      "GET /api/contractors",
+      "POST /api/contractors"
+    ],
+    "dbTables": [
+      "contractors",
+      "projects",
+      "cases"
+    ],
+    "status": "WORKING",
+    "issuesFound": [
+      "contractors table had 0 rows even though 26 distinct contractor names existed as free text on 31 cases (cases.contractor_id was NULL for all of them) — screen rendered a permanently empty registry."
+    ],
+    "fixesApplied": [
+      "One-time backfill: created 26 real contractors rows from existing distinct cases.contractor_name values and linked cases.contractor_id (100% derived from existing data, nothing fabricated). Verified via GET /api/contractors now returns 26 real rows with correct active_cases_count.",
+      "cases.router.ts (create + patch) and integrations.router.ts (community case create + update) now call ensureContractorId() to auto-create/link a contractors row whenever only a free-text contractor_name is supplied, preventing this regressing for new cases going forward. Verified live: a new case created with contractor_name only received a real contractor_id."
+    ]
+  },
+  {
+    "screen": "TasksPage",
+    "route": "/tasks",
+    "role": "staff/supervisor/legal_reviewer/admin",
+    "primaryCTA": [
+      "Tạo nhiệm vụ",
+      "Cập nhật trạng thái nhiệm vụ",
+      "Lọc theo tab (bao gồm LEGAL)"
+    ],
+    "apiUsed": [
+      "GET /api/tasks",
+      "POST /api/tasks",
+      "PATCH /api/tasks/:id",
+      "GET /api/cases",
+      "GET /api/admin/users"
+    ],
+    "dbTables": [
+      "tasks",
+      "cases",
+      "users"
+    ],
+    "status": "WORKING",
+    "issuesFound": [],
+    "fixesApplied": []
+  },
+  {
+    "screen": "InspectionListPage",
+    "route": "/inspections",
+    "role": "staff/supervisor/admin",
+    "primaryCTA": [
+      "Xem danh sách đợt kiểm tra",
+      "Mở kế hoạch/kết quả"
+    ],
+    "apiUsed": [
+      "GET /api/inspections"
+    ],
+    "dbTables": [
+      "inspections",
+      "cases",
+      "users"
+    ],
+    "status": "WORKING",
+    "issuesFound": [],
+    "fixesApplied": []
+  },
+  {
+    "screen": "InspectionPlanPage",
+    "route": "/inspections/new, /cases/:id/inspection/new",
+    "role": "staff/supervisor",
+    "primaryCTA": [
+      "Lập kế hoạch kiểm tra (chọn mẫu QCVN)"
+    ],
+    "apiUsed": [
+      "GET /api/cases/:id",
+      "GET /api/inspection-templates",
+      "POST /api/inspections"
+    ],
+    "dbTables": [
+      "inspections",
+      "inspection_items",
+      "inspection_templates",
+      "inspection_template_items"
+    ],
+    "status": "WORKING",
+    "issuesFound": [],
+    "fixesApplied": []
+  },
+  {
+    "screen": "FieldInspectionPage",
+    "route": "/inspections/:id",
+    "role": "staff",
+    "primaryCTA": [
+      "Ghi nhận GPS hiện trường",
+      "Trả lời checklist QCVN 18",
+      "Nộp biên bản kiểm tra"
+    ],
+    "apiUsed": [
+      "GET /api/inspections/:id",
+      "POST /api/inspections/:id/submit"
+    ],
+    "dbTables": [
+      "inspections",
+      "inspection_items",
+      "inspection_findings",
+      "case_timeline"
+    ],
+    "status": "WORKING",
+    "issuesFound": [
+      "Draft autosave (dustguard_draft_inspection_<id>) stored an 'owner' field but loadDraft() never checked it against the currently logged-in user — on a shared machine, staff B opening the same inspection id would silently see staff A's unsaved draft answers pre-filled.",
+      "GPS is self-reported via HTML5 geolocation and stored as free text inside the inspection note; there is no server-side geofence validation against the case/project site coordinates for staff inspections (acceptable: staff is a trusted actor recording their own arrival, not a party proving compliance the way a contractor remediation submission would be — the true ≤50m-geofence-for-untrusted-submitter feature belongs to Side A/Community's contractor portal, confirmed out of Side B's scope by inspecting tests/contractor-flow.test.js which targets the root apps/server, not dustguard-operations)."
+    ],
+    "fixesApplied": [
+      "draftStorage.ts loadDraft() now accepts an expectedOwner and refuses to surface a draft written by a different user id; FieldInspectionPage now passes the current user's id."
+    ]
+  },
+  {
+    "screen": "InspectionResultPage",
+    "route": "/inspections/:id/result",
+    "role": "staff/supervisor",
+    "primaryCTA": [
+      "Xem kết quả kiểm tra đã nộp"
+    ],
+    "apiUsed": [
+      "GET /api/inspections/:id"
+    ],
+    "dbTables": [
+      "inspections",
+      "inspection_items",
+      "inspection_findings"
+    ],
+    "status": "WORKING",
+    "issuesFound": [],
+    "fixesApplied": []
+  },
+  {
+    "screen": "InspectionExportPage",
+    "route": "/inspections/:id/export",
+    "role": "staff/supervisor",
+    "primaryCTA": [
+      "Xuất biên bản kiểm tra (in/PDF view)"
+    ],
+    "apiUsed": [
+      "GET /api/inspections/:id"
+    ],
+    "dbTables": [
+      "inspections",
+      "inspection_items"
+    ],
+    "status": "WORKING",
+    "issuesFound": [],
+    "fixesApplied": []
+  },
+  {
+    "screen": "ActionsListPage",
+    "route": "/actions",
+    "role": "staff/supervisor/admin",
+    "primaryCTA": [
+      "Nộp báo cáo khắc phục (thay mặt nhà thầu)",
+      "Xem trạng thái xử lý"
+    ],
+    "apiUsed": [
+      "GET /api/actions",
+      "POST /api/actions/:id/remediation"
+    ],
+    "dbTables": [
+      "corrective_actions",
+      "remediation_submissions",
+      "cases"
+    ],
+    "status": "WORKING",
+    "issuesFound": [
+      "POST /api/actions/:id/remediation (also reachable at /api/cases/:id/remediation and /api/remediation/:id/remediation via router re-mounting) had NO auth middleware at all — any unauthenticated network client could POST a remediation submission for any action id and flip the parent case to REMEDIATION status. The frontend calls it while authenticated (Authorization header always attached by api/client.ts), so this was a pure server-side gap, not exercised by the SPA."
+    ],
+    "fixesApplied": [
+      "actions.router.ts: added requireAuth to POST /:id/remediation. Verified live: unauthenticated POST now returns 401; the existing authenticated staff flow (ActionsListPage submit modal) still works unchanged."
+    ]
+  },
+  {
+    "screen": "RemediationReviewPage",
+    "route": "/actions/:id/remediation",
+    "role": "staff/supervisor",
+    "primaryCTA": [
+      "Nghiệm thu (APPROVED/REJECTED/MORE_EVIDENCE_REQUESTED)"
+    ],
+    "apiUsed": [
+      "GET /api/actions",
+      "GET /api/cases/:id",
+      "POST /api/remediation/:id/review"
+    ],
+    "dbTables": [
+      "remediation_submissions",
+      "corrective_actions",
+      "cases",
+      "case_timeline",
+      "audit_logs"
+    ],
+    "status": "WORKING",
+    "issuesFound": [],
+    "fixesApplied": []
+  },
+  {
+    "screen": "ActionNoticeExportPage",
+    "route": "/actions/:id/notice",
+    "role": "staff/supervisor",
+    "primaryCTA": [
+      "Xuất thông báo yêu cầu khắc phục"
+    ],
+    "apiUsed": [
+      "GET /api/actions",
+      "GET /api/cases/:id"
+    ],
+    "dbTables": [
+      "corrective_actions",
+      "cases"
+    ],
+    "status": "WORKING",
+    "issuesFound": [],
+    "fixesApplied": []
+  },
+  {
+    "screen": "IotDevicesPage",
+    "route": "/iot, /iot/devices",
+    "role": "staff/supervisor/admin",
+    "primaryCTA": [
+      "Đăng ký thiết bị",
+      "Xem cảnh báo",
+      "Tạo vụ việc từ cảnh báo IoT"
+    ],
+    "apiUsed": [
+      "GET /api/iot/devices",
+      "GET /api/iot/alerts",
+      "POST /api/iot/devices",
+      "POST /api/iot/devices/:id/create-case",
+      "GET /api/projects"
+    ],
+    "dbTables": [
+      "iot_devices",
+      "iot_events",
+      "iot_readings",
+      "projects"
+    ],
+    "status": "WORKING",
+    "issuesFound": [],
+    "fixesApplied": [],
+    "notes": "DEF-06 re-verified: 'Thử nghiệm Hiện trường (Hardware Pilot)' badge/disclaimer is still present at IotDevicesPage.tsx:170 — not regressed."
+  },
+  {
+    "screen": "IotDeviceDetailPage",
+    "route": "/iot/devices/:id",
+    "role": "staff/supervisor/admin",
+    "primaryCTA": [
+      "Xem lịch sử đo",
+      "Liên kết vụ việc",
+      "Tạo vụ việc mới từ thiết bị"
+    ],
+    "apiUsed": [
+      "GET /api/iot/devices/:id",
+      "GET /api/iot/devices/:id/readings",
+      "POST /api/iot/devices/:id/link-case",
+      "POST /api/iot/devices/:id/create-case",
+      "GET /api/cases"
+    ],
+    "dbTables": [
+      "iot_devices",
+      "iot_readings",
+      "case_signals",
+      "cases"
+    ],
+    "status": "WORKING",
+    "issuesFound": [],
+    "fixesApplied": []
+  },
+  {
+    "screen": "LegalLibraryPage",
+    "route": "/legal, /legal/library, /legal/documents",
+    "role": "staff/supervisor/legal_reviewer/admin",
+    "primaryCTA": [
+      "Tìm kiếm văn bản pháp luật (FTS5)"
+    ],
+    "apiUsed": [
+      "GET /api/legal/documents",
+      "GET /api/legal/search"
+    ],
+    "dbTables": [
+      "legal_documents",
+      "legal_sections",
+      "legal_sections_fts"
+    ],
+    "status": "WORKING",
+    "issuesFound": [
+      "GET /api/legal/search, /api/legal/documents, /api/legal/documents/:id, /api/legal/sections/:id have no requireAuth middleware — reachable by any unauthenticated network client. Left unfixed: content is public Vietnamese statutory reference text (not case-sensitive investigation data), and the SPA route is still behind ProtectedRoute so this is a server hardening gap rather than an exploitable data leak; flagged in endpoints report."
+    ],
+    "fixesApplied": []
+  },
+  {
+    "screen": "LegalDocDetailPage",
+    "route": "/legal/documents/:id",
+    "role": "staff/supervisor/legal_reviewer/admin",
+    "primaryCTA": [
+      "Xem toàn văn điều khoản"
+    ],
+    "apiUsed": [
+      "GET /api/legal/documents/:id"
+    ],
+    "dbTables": [
+      "legal_documents",
+      "legal_sections"
+    ],
+    "status": "WORKING",
+    "issuesFound": [],
+    "fixesApplied": []
+  },
+  {
+    "screen": "LegalImportPage",
+    "route": "/legal/import",
+    "role": "legal_reviewer/admin",
+    "primaryCTA": [
+      "Nhập/phân tích văn bản pháp luật mới"
+    ],
+    "apiUsed": [
+      "POST /api/legal/import",
+      "POST /api/legal/documents"
+    ],
+    "dbTables": [
+      "legal_documents",
+      "legal_sections"
+    ],
+    "status": "WORKING",
+    "issuesFound": [],
+    "fixesApplied": []
+  },
+  {
+    "screen": "LegalWorkspacePage",
+    "route": "/cases/:id/legal",
+    "role": "legal_reviewer/supervisor/admin",
+    "primaryCTA": [
+      "Phân tích đối soát dữ kiện (analyze)",
+      "Ra quyết định (submit decision)",
+      "Yêu cầu xác minh bổ sung"
+    ],
+    "apiUsed": [
+      "GET /api/cases/:id",
+      "GET /api/cases/:id/facts",
+      "POST /api/cases/:id/legal/analyze",
+      "GET /api/cases/:id/legal/analyses",
+      "POST /api/cases/:id/decisions",
+      "POST /api/cases/:id/missing-facts/create-task"
+    ],
+    "dbTables": [
+      "legal_analyses",
+      "human_decisions",
+      "case_timeline",
+      "cases"
+    ],
+    "status": "WORKING",
+    "issuesFound": [
+      "DEF-03 disclaimer re-verified present (line ~358-362: 'Kết quả mang tính chất tham khảo chuyên môn, không thay thế quyết định xử lý vi phạm chính thức').",
+      "REGRESSION FOUND: BottomActionBar's confidencePercent prop was computed as `Math.round(analysis.completeness_score * 100)`, but analysis.completeness_score is already a 0-100 percentage (computed server-side as `Math.round((satisfiedCount/completenessGroups.length)*100)` in analysis.service.ts) and is already rendered directly elsewhere on the same page (line 754: `{analysis.completeness_score ?? 33}%`). The double-multiplication produced values like 7500% on the confidence bar/label at the bottom action bar — a real, currently-live display bug, not fake/random data but a unit-scaling defect left over from the DEF-03 cleanup.",
+      "human_decisions table had 0 rows in the seed DB (feature exists and is wired, simply never exercised by seed data — not a bug)."
+    ],
+    "fixesApplied": [
+      "LegalWorkspacePage.tsx:1203 — changed `confidencePercent={... Math.round(analysis.completeness_score * 100) : 0}` to `confidencePercent={analysis?.completeness_score ?? 0}`. Confirmed completeness_score is already a 0-100 value server-side; BottomActionBar/DecisionModal now display the real percentage instead of an inflated one."
+    ]
+  },
+  {
+    "screen": "EvidencePage",
+    "route": "/evidence",
+    "role": "staff/supervisor/legal_reviewer/admin",
+    "primaryCTA": [
+      "Tải lên bằng chứng",
+      "Xác minh toàn vẹn SHA-256",
+      "Lọc theo vụ việc"
+    ],
+    "apiUsed": [
+      "GET /api/evidence",
+      "POST /api/evidence/upload",
+      "POST /api/evidence/:id/verify-hash",
+      "GET /api/cases"
+    ],
+    "dbTables": [
+      "evidence_assets",
+      "cases"
+    ],
+    "status": "WORKING",
+    "issuesFound": [
+      "Evidence upload had no MIME-type allowlist — multer accepted any file type onto disk, then served it back via `express.static('/uploads')`. Uploading an .html file with a script payload and opening its /uploads/... URL directly would execute as stored content (the endpoint itself returns JSON, but the uploaded file becomes a served static asset with attacker-controlled content-type)."
+    ],
+    "fixesApplied": [
+      "evidence.router.ts: added a multer fileFilter allowlist (JPEG/PNG/WEBP/HEIC/HEIF images, MP4/MOV/WEBM video, PDF), rejecting anything else with 400. Verified live: uploading a .html file is now rejected ('Định dạng tệp không được hỗ trợ...'), while a real .png upload still succeeds, hashes, and persists to evidence_assets (confirmed via DB query, then cleaned up)."
+    ]
+  },
+  {
+    "screen": "ReportsPage",
+    "route": "/reports",
+    "role": "staff/supervisor/admin",
+    "primaryCTA": [
+      "Xem báo cáo vận hành tổng hợp"
+    ],
+    "apiUsed": [
+      "GET /api/reports/overview"
+    ],
+    "dbTables": [
+      "cases",
+      "corrective_actions",
+      "inspections"
+    ],
+    "status": "WORKING",
+    "issuesFound": [],
+    "fixesApplied": []
+  },
+  {
+    "screen": "NotificationsPage",
+    "route": "/notifications",
+    "role": "ALL",
+    "primaryCTA": [
+      "Đánh dấu đã đọc",
+      "Đánh dấu tất cả đã đọc"
+    ],
+    "apiUsed": [
+      "GET /api/notifications",
+      "POST /api/notifications/:id/read",
+      "POST /api/notifications/read-all"
+    ],
+    "dbTables": [
+      "notifications"
+    ],
+    "status": "WORKING",
+    "issuesFound": [],
+    "fixesApplied": []
+  },
+  {
+    "screen": "ProfilePage",
+    "route": "/profile",
+    "role": "ALL",
+    "primaryCTA": [
+      "Đăng xuất"
+    ],
+    "apiUsed": [],
+    "dbTables": [
+      "users"
+    ],
+    "status": "WORKING",
+    "issuesFound": [
+      "Read-only display of the current user from AuthContext plus a logout button — no edit form exists, so there is nothing to be 'UI-only'/broken about; this is intentionally minimal."
+    ],
+    "fixesApplied": []
+  },
+  {
+    "screen": "SupervisorWorkloadPage",
+    "route": "/supervisor/workload",
+    "role": "supervisor/admin",
+    "primaryCTA": [
+      "Xem phân bổ tải việc theo cán bộ"
+    ],
+    "apiUsed": [
+      "GET /api/dashboard"
+    ],
+    "dbTables": [
+      "staff_assignments",
+      "cases",
+      "users"
+    ],
+    "status": "WORKING",
+    "issuesFound": [],
+    "fixesApplied": []
+  },
+  {
+    "screen": "AutomationsPage",
+    "route": "/automations",
+    "role": "supervisor/admin",
+    "primaryCTA": [
+      "Bật/tắt quy tắc tự động hóa",
+      "Xem lịch sử chạy"
+    ],
+    "apiUsed": [
+      "GET /api/automations/rules",
+      "PATCH /api/automations/rules/:id",
+      "GET /api/automations/runs"
+    ],
+    "dbTables": [
+      "automation_rules",
+      "automation_runs"
+    ],
+    "status": "WORKING",
+    "issuesFound": [],
+    "fixesApplied": []
+  },
+  {
+    "screen": "AdminUsersPage",
+    "route": "/admin/users",
+    "role": "admin",
+    "primaryCTA": [
+      "Tạo người dùng",
+      "Cập nhật vai trò/trạng thái"
+    ],
+    "apiUsed": [
+      "GET /api/admin/users",
+      "POST /api/admin/users",
+      "PATCH /api/admin/users/:id"
+    ],
+    "dbTables": [
+      "users"
+    ],
+    "status": "WORKING",
+    "issuesFound": [],
+    "fixesApplied": []
+  },
+  {
+    "screen": "AdminAuditPage",
+    "route": "/admin/audit",
+    "role": "admin",
+    "primaryCTA": [
+      "Xem nhật ký audit hệ thống"
+    ],
+    "apiUsed": [
+      "GET /api/admin/audit"
+    ],
+    "dbTables": [
+      "audit_logs"
+    ],
+    "status": "WORKING",
+    "issuesFound": [],
+    "fixesApplied": []
+  },
+  {
+    "screen": "AdminSettingsPage",
+    "route": "/admin/settings",
+    "role": "admin",
+    "primaryCTA": [
+      "Cập nhật cấu hình hệ thống"
+    ],
+    "apiUsed": [
+      "GET /api/admin/configs",
+      "PATCH /api/admin/configs/:key",
+      "GET /api/admin/system-status"
+    ],
+    "dbTables": [
+      "system_configs"
+    ],
+    "status": "WORKING",
+    "issuesFound": [
+      "Two stacked bugs made \"save configuration\" completely non-functional in production: (1) PATCH /api/admin/configs/:key 500'd whenever description was omitted (same node:sqlite undefined-binding issue as CaseDetailPage), and (2) even if the save had succeeded, the success handler called loadConfigs() which does not exist (real function is loadData) — a ReferenceError that would itself have been swallowed by the outer catch and shown as a misleading \"Không thể cập nhật cấu hình\" error toast on top of a successful save."
+    ],
+    "fixesApplied": [
+      "Fixed the loadConfigs -> loadData typo in AdminSettingsPage.tsx, and the underlying save endpoint via the connection.ts root-cause fix. Verified live end-to-end: PATCH /api/admin/configs/sla_config with no description now returns 200 and the updated row."
+    ]
+  },
+  {
+    "screen": "AppLayout (global nav/header)",
+    "route": "N/A (shell)",
+    "role": "ALL",
+    "primaryCTA": [
+      "Chuyển vai trò (role switcher)",
+      "Command palette (Ctrl+K)",
+      "Public citizen report modal",
+      "Đăng xuất"
+    ],
+    "apiUsed": [
+      "GET /api/notifications"
+    ],
+    "dbTables": [
+      "notifications"
+    ],
+    "status": "BROKEN",
+    "issuesFound": [
+      "SECURITY (P1): the header's role switcher called `login(DEV_ACCOUNTS[role].username, 'password123')` unconditionally for every logged-in user, in every build mode. Any authenticated user (e.g. staff1) could one-click re-authenticate as any other seed role including admin, using a hardcoded demo password baked into the client bundle. This is a real backend re-authentication (not a client-only role relabel), so it worked end-to-end — it only 'worked' because the seed password is the well-known password123, but the control that should gate privilege escalation (knowing another user's real password) was bypassed entirely by a UI dropdown shipped to production."
+    ],
+    "fixesApplied": [
+      "AppLayout.tsx: role switcher now renders only when `import.meta.env.DEV` is true, so a production build (`vite build`) never ships this control; local dev/demo behavior (including this session's judged dev server) is unchanged since DEV stays true there."
+    ]
+  }
+]

@@ -372,28 +372,6 @@ export const api = {
       }),
   },
 
-  admin: {
-    users: () => request<{ users: any[] }>('/api/admin/users'),
-    updateUser: (id: string, data: any) =>
-      request<{ user: any }>(`/api/admin/users/${id}`, {
-        method: 'PATCH',
-        body: JSON.stringify(data),
-      }),
-    audit: (params: Record<string, string | undefined> = {}) => {
-      const sp = new URLSearchParams();
-      Object.entries(params).forEach(([k, v]) => {
-        if (v) sp.append(k, v);
-      });
-      return request<{ logs: any[] }>(`/api/admin/audit?${sp.toString()}`);
-    },
-    configs: () => request<{ configs: any[] }>('/api/admin/configs'),
-    updateConfig: (key: string, data: any) =>
-      request<{ config: any }>(`/api/admin/configs/${key}`, {
-        method: 'PATCH',
-        body: JSON.stringify(data),
-      }),
-  },
-
   reports: {
     overview: (range: string = '30d') =>
       request<{ success: boolean; range: string; data: any }>(`/api/reports/overview?range=${range}`),
@@ -447,6 +425,34 @@ export const api = {
         method: 'PATCH',
         body: JSON.stringify(data),
       }),
+  },
+
+  admin: {
+    users: () => request<{ users: any[] }>('/api/admin/users'),
+    createUser: (data: any) =>
+      request<{ user: any }>('/api/admin/users', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }),
+    updateUser: (id: string, data: any) =>
+      request<{ user: any }>(`/api/admin/users/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify(data),
+      }),
+    audit: (params: Record<string, string | undefined> = {}) => {
+      const sp = new URLSearchParams();
+      Object.entries(params).forEach(([k, v]) => {
+        if (v !== undefined && v !== '') sp.append(k, v);
+      });
+      return request<{ logs: any[] }>(`/api/admin/audit?${sp.toString()}`);
+    },
+    configs: () => request<{ configs: any[] }>('/api/admin/configs'),
+    updateConfig: (key: string, data: any) =>
+      request<{ config: any }>(`/api/admin/configs/${key}`, {
+        method: 'PATCH',
+        body: JSON.stringify(data),
+      }),
+    systemStatus: () => request<any>('/api/admin/system-status'),
   },
 };
 

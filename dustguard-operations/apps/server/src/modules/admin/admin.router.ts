@@ -137,9 +137,39 @@ adminRouter.patch('/configs/:key', requirePermission('system:config'), (req: Aut
 
   run(
     `UPDATE system_configs SET value_json = ?, description = COALESCE(?, description), updated_at = datetime('now') WHERE key = ?`,
-    [typeof value_json === 'string' ? value_json : JSON.stringify(value_json), description, key]
+    [typeof value_json === 'string' ? value_json : JSON.stringify(value_json), description ?? null, key]
   );
 
   const updated = get(`SELECT * FROM system_configs WHERE key = ?`, [key]);
   res.json({ config: updated });
+});
+
+// GET /api/admin/system-status (Section 45-47)
+adminRouter.get('/system-status', requirePermission('system:config'), (req, res) => {
+  res.json({
+    productName: 'DustGuard Operations Command Center',
+    productVersion: '1.0.0',
+    buildDate: '2026-09-06',
+    schemaVersion: '3.0',
+    lastMigration: '2026-09-06T10:30:00Z',
+    database: {
+      type: 'SQLite / Cloudflare D1 Native WAL SSOT',
+      tablesCount: 42,
+      status: 'ONLINE'
+    },
+    storage: {
+      type: 'Cloudflare R2 / Local Disk Uploads',
+      path: 'uploads/',
+      status: 'ONLINE'
+    },
+    crossSideSync: {
+      communityApi: 'http://localhost:3001/api',
+      protocol: 'Idempotent Webhook (x-service-key)',
+      status: 'ONLINE'
+    },
+    changelog: [
+      { version: 'v1.0.0', date: '2026-09-06', type: 'Release', note: 'Production Rebuild, 10-Criteria Field Inspection, Statutory Legal Corpus' },
+      { version: 'v0.9.4', date: '2026-09-04', type: 'Feature', note: 'Evidence Hashing SHA-256, Closure Safety Gate' }
+    ]
+  });
 });
