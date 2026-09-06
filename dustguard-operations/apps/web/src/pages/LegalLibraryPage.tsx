@@ -49,7 +49,7 @@ export const LegalLibraryPage: React.FC = () => {
       <div>
         <h1 className="text-2xl font-bold text-slate-900">Thư viện Quy phạm Pháp luật Môi trường</h1>
         <p className="text-sm text-slate-600">
-          Tra cứu toàn văn điều khoản, khung xử phạt vi phạm hành chính và quy chuẩn chất lượng không khí bằng SQLite FTS5
+          Tra cứu toàn văn điều khoản, khung xử phạt vi phạm hành chính và quy chuẩn chất lượng không khí bằng công cụ FTS5 Engine
         </p>
       </div>
 

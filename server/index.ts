@@ -102,6 +102,15 @@ export default {
   async fetch(request: Request, env: any, ctx: any) {
     const url = new URL(request.url);
 
+    // 0. Chuyển hướng Chuẩn tắc (Canonical Auth Redirect): /operations/login -> /login?side=operations
+    if (url.pathname === '/operations/login' || url.pathname === '/operations/login/') {
+      const returnTo = url.searchParams.get('returnTo');
+      const target = returnTo
+        ? `/login?side=operations&returnTo=${encodeURIComponent(returnTo)}`
+        : '/login?side=operations';
+      return Response.redirect(new URL(target, request.url), 302);
+    }
+
     // 1. Nếu là yêu cầu API hoặc Uploads -> Hono xử lý
     if (
       url.pathname.startsWith('/api') ||

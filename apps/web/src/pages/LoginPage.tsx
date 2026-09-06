@@ -1,50 +1,179 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.js';
 import { resolveCommunityHome } from '../utils/auth-redirect.js';
-import { LogIn, Mail, Lock, AlertCircle, ArrowRight, Shield, Building2, ExternalLink } from 'lucide-react';
+import { getDefaultRoute, CANONICAL_ROUTES } from '../config/routes.js';
+import { LogIn, Mail, Lock, User, AlertCircle, Shield, Building2, CheckCircle2, Sparkles } from 'lucide-react';
 import { OPERATIONS_APP_URL } from '../config/constants';
 
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, user: currentUser } = useAuth();
+  const { login: loginCommunity } = useAuth();
 
-  const [activeSide, setActiveSide] = useState<'community' | 'professional'>('community');
-  const [email, setEmail] = useState('');
+  // Đọc query parameters và location state
+  const queryParams = new URLSearchParams(location.search);
+  const initialSide = queryParams.get('side') === 'operations' ? 'professional' : 'community';
+  const requestedPath = (location.state as any)?.from?.pathname || queryParams.get('returnTo') || null;
+
+  const [activeSide, setActiveSide] = useState<'community' | 'professional'>(initialSide);
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  // Trang mà người dùng đã yêu cầu trước khi bị chặn vào /login
-  const requestedPath = (location.state as any)?.from?.pathname || null;
+  // Chế độ demo: Chỉ kích hoạt khi URL có ?demo=1, hoặc môi trường dev, hoặc localStorage
+  const [demoMode, setDemoMode] = useState<boolean>(() => {
+    return (
+      import.meta.env.DEV ||
+      queryParams.has('demo') ||
+      localStorage.getItem('dg_demo_mode') === 'true'
+    );
+  });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // Tự động chuyển tab nếu URL thay đổi
+  useEffect(() => {
+    const side = new URLSearchParams(location.search).get('side');
+    if (side === 'operations') {
+      setActiveSide('professional');
+    }
+  }, [location.search]);
+
+  // Reset form khi chuyển tab
+  const handleTabChange = (side: 'community' | 'professional') => {
+    setActiveSide(side);
+    setErrorMsg(null);
+    setIdentifier('');
+    setPassword('');
+  };
+
+  // Đăng nhập Phía Cộng đồng
+  const handleCommunitySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setErrorMsg(null);
     try {
-      const loggedInUser = await login(email, password);
+      const loggedInUser = await loginCommunity(identifier, password);
       const target = resolveCommunityHome(loggedInUser, requestedPath);
       navigate(target, { replace: true });
     } catch (err: any) {
-      setErrorMsg(err.message || 'Đăng nhập không thành công.');
+      setErrorMsg(err.message || 'Email hoặc mật khẩu không chính xác.');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleQuickLogin = async (demoEmail: string) => {
-    setEmail(demoEmail);
+  // Đăng nhập Phía Đơn vị Xử lý (Operations)
+  const handleOperationsSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setErrorMsg(null);
+
+    try {
+      const opsUrl = import.meta.env.PROD
+        ? '/api/operations/auth/login'
+        : (import.meta.env.VITE_OPERATIONS_API_URL || 'http://localhost:3002/api/auth/login');
+
+      let response = await fetch(opsUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: identifier.trim(), password })
+      });
+
+      // Fallback cho local dev nếu proxy khác cổng
+      if (response.status === 404 && !import.meta.env.PROD) {
+        response = await fetch('http://localhost:3002/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: identifier.trim(), password })
+        });
+      }
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.detail || data.title || 'Tên đăng nhập hoặc mật khẩu không chính xác.');
+      }
+
+      if (!data.token) {
+        throw new Error('Máy chủ không trả về mã xác thực phiên.');
+      }
+
+      // Lưu token vào localStorage (dùng chung domain với Side B)
+      localStorage.setItem('dustguard_token', data.token);
+
+      // Phân giải trang đích chuẩn tắc cho vai trò
+      const targetPath = getDefaultRoute(data.user?.role, 'operations', requestedPath);
+
+      // Điều hướng trực tiếp sang Side B
+      if (import.meta.env.PROD) {
+        window.location.href = targetPath;
+      } else {
+        window.location.href = `${OPERATIONS_APP_URL}${targetPath.replace(/^\/operations/, '')}`;
+      }
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Đăng nhập vào Phía Đơn vị Xử lý thất bại.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Nạp tài khoản trải nghiệm nhanh (Chỉ dùng trong Demo Mode)
+  const handleQuickLoginCommunity = async (demoEmail: string) => {
+    setIdentifier(demoEmail);
     setPassword('DustGuard123!');
     setLoading(true);
     setErrorMsg(null);
     try {
-      const loggedInUser = await login(demoEmail, 'DustGuard123!');
+      const loggedInUser = await loginCommunity(demoEmail, 'DustGuard123!');
       const target = resolveCommunityHome(loggedInUser, requestedPath);
       navigate(target, { replace: true });
     } catch (err: any) {
-      setErrorMsg(err.message || 'Đăng nhập demo không thành công.');
+      setErrorMsg(err.message || 'Đăng nhập trải nghiệm thất bại.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleQuickLoginOperations = async (demoUsername: string) => {
+    setIdentifier(demoUsername);
+    setPassword('password123');
+    setLoading(true);
+    setErrorMsg(null);
+    try {
+      const opsUrl = import.meta.env.PROD
+        ? '/api/operations/auth/login'
+        : (import.meta.env.VITE_OPERATIONS_API_URL || 'http://localhost:3002/api/auth/login');
+
+      let response = await fetch(opsUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: demoUsername, password: 'password123' })
+      });
+
+      if (response.status === 404 && !import.meta.env.PROD) {
+        response = await fetch('http://localhost:3002/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: demoUsername, password: 'password123' })
+        });
+      }
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.detail || data.title || 'Đăng nhập mẫu thất bại.');
+      }
+
+      localStorage.setItem('dustguard_token', data.token);
+      const targetPath = getDefaultRoute(data.user?.role, 'operations', requestedPath);
+
+      if (import.meta.env.PROD) {
+        window.location.href = targetPath;
+      } else {
+        window.location.href = `${OPERATIONS_APP_URL}${targetPath.replace(/^\/operations/, '')}`;
+      }
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Đăng nhập mẫu thất bại.');
     } finally {
       setLoading(false);
     }
@@ -54,7 +183,7 @@ export const LoginPage: React.FC = () => {
     <div className="min-h-[85vh] flex items-center justify-center py-10 px-4 bg-[#FBF9F5]">
       <div className="bg-surface-card rounded-civic-lg border border-border-subtle p-7 sm:p-9 max-w-md w-full shadow-sm space-y-6">
         
-        {/* Brand */}
+        {/* Header Thương hiệu Canonical */}
         <div className="text-center space-y-1.5">
           <div className="w-11 h-11 rounded-2xl bg-primary text-white flex items-center justify-center font-bold text-xl mx-auto shadow-sm">
             <Shield className="w-6 h-6 fill-white/20" />
@@ -67,49 +196,57 @@ export const LoginPage: React.FC = () => {
           </p>
         </div>
 
-        {/* 2-Side Selector Tabs (Không hỏi 5 role) */}
+        {/* Bộ chuyển đổi 2 phía chuẩn tắc */}
         <div className="grid grid-cols-2 p-1 bg-surface-secondary/70 rounded-xl border border-border-subtle text-xs font-bold">
           <button
             type="button"
-            onClick={() => setActiveSide('community')}
-            className={`py-2 px-3 rounded-lg transition-all text-center flex items-center justify-center gap-1.5 ${
+            id="tab-community"
+            onClick={() => handleTabChange('community')}
+            className={`py-2.5 px-3 rounded-lg transition-all text-center flex items-center justify-center gap-1.5 touch-target ${
               activeSide === 'community'
-                ? 'bg-white text-primary shadow-xs'
+                ? 'bg-white text-primary shadow-xs border border-primary/20 font-bold'
                 : 'text-content-sub hover:text-content-main'
             }`}
           >
+            <Shield className="w-3.5 h-3.5 shrink-0" />
             <span>Phía Cộng đồng</span>
           </button>
           <button
             type="button"
-            onClick={() => setActiveSide('professional')}
-            className={`py-2 px-3 rounded-lg transition-all text-center flex items-center justify-center gap-1.5 ${
+            id="tab-operations"
+            onClick={() => handleTabChange('professional')}
+            className={`py-2.5 px-3 rounded-lg transition-all text-center flex items-center justify-center gap-1.5 touch-target ${
               activeSide === 'professional'
-                ? 'bg-white text-[#0369A1] shadow-xs'
+                ? 'bg-white text-[#0D6F64] shadow-xs border border-[#0D6F64]/30 font-bold'
                 : 'text-content-sub hover:text-content-main'
             }`}
           >
+            <Building2 className="w-3.5 h-3.5 shrink-0" />
             <span>Đơn vị Xử lý</span>
           </button>
         </div>
 
-        {/* SIDE A: PHÍA CỘNG ĐỒNG */}
+        {/* Thông báo lỗi nếu có */}
+        {errorMsg && (
+          <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-xs text-primary flex items-start gap-2.5" role="alert">
+            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+            <span>{errorMsg}</span>
+          </div>
+        )}
+
+        {/* Cảnh báo trang yêu cầu xác thực */}
+        {requestedPath && (
+          <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-800">
+            Vui lòng đăng nhập để tiếp tục truy cập: <code className="font-bold">{requestedPath}</code>
+          </div>
+        )}
+
+        {/* ================================================================= */}
+        {/* PHÍA CỘNG ĐỒNG: FORM ĐĂNG NHẬP                                     */}
+        {/* ================================================================= */}
         {activeSide === 'community' ? (
           <div className="space-y-5">
-            {errorMsg && (
-              <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-xs text-primary flex items-start gap-2.5">
-                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-                <span>{errorMsg}</span>
-              </div>
-            )}
-
-            {requestedPath && (
-              <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-800">
-                Vui lòng đăng nhập để tiếp tục truy cập: <code className="font-bold">{requestedPath}</code>
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleCommunitySubmit} className="space-y-4">
               <div className="space-y-1.5">
                 <label className="block text-xs font-bold uppercase tracking-wider text-content-sub">
                   Địa chỉ Email *
@@ -119,10 +256,11 @@ export const LoginPage: React.FC = () => {
                   <input
                     type="email"
                     required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    id="input-community-email"
+                    value={identifier}
+                    onChange={(e) => setIdentifier(e.target.value)}
                     placeholder="citizen@dustguard.local"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border-subtle text-xs sm:text-sm bg-white focus:border-primary focus:outline-none"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border-subtle text-xs sm:text-sm bg-white text-slate-900 focus:border-primary focus:outline-none"
                   />
                 </div>
               </div>
@@ -144,60 +282,72 @@ export const LoginPage: React.FC = () => {
                   <input
                     type="password"
                     required
+                    id="input-community-password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border-subtle text-xs sm:text-sm bg-white focus:border-primary focus:outline-none"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border-subtle text-xs sm:text-sm bg-white text-slate-900 focus:border-primary focus:outline-none"
                   />
                 </div>
               </div>
 
               <button
                 type="submit"
-                disabled={loading || !email.trim() || !password.trim()}
-                className="w-full py-2.5 rounded-xl bg-primary text-white font-bold text-sm shadow-sm hover:bg-primary-dark transition-all disabled:opacity-50 active:scale-95 flex items-center justify-center gap-2"
+                id="btn-community-login"
+                disabled={loading || !identifier.trim() || !password.trim()}
+                className="w-full py-3 rounded-xl bg-primary text-white font-bold text-sm shadow-sm hover:bg-primary-dark transition-all disabled:opacity-50 active:scale-95 flex items-center justify-center gap-2 touch-target"
               >
                 {loading ? 'Đang xác thực...' : 'Đăng nhập Cộng đồng'}
                 <LogIn className="w-4 h-4" />
               </button>
             </form>
 
-            {/* Quick Login Accounts */}
-            <div className="pt-3 border-t border-border-subtle space-y-2">
-              <div className="text-[10px] font-bold text-content-sub text-center uppercase tracking-wider">
-                Tài khoản trải nghiệm nhanh (Cộng đồng)
+            {/* Quick Demo Accounts - Chỉ xuất hiện khi demoMode được kích hoạt */}
+            {demoMode && (
+              <div className="pt-3 border-t border-border-subtle space-y-2 bg-slate-50/50 p-3 rounded-xl border">
+                <div className="flex items-center justify-between text-[10px] font-bold text-content-sub uppercase tracking-wider">
+                  <span className="flex items-center gap-1 text-primary">
+                    <Sparkles className="w-3 h-3" />
+                    Tài khoản trình diễn (Cộng đồng)
+                  </span>
+                  <span className="text-[10px] lowercase text-slate-500 font-normal">nhấn để đăng nhập ngay</span>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <button
+                    type="button"
+                    onClick={() => handleQuickLoginCommunity('citizen@dustguard.local')}
+                    className="p-2 rounded-lg border border-border-subtle bg-white hover:bg-red-50 font-semibold text-content-main text-left hover:border-primary/40 transition-colors shadow-2xs"
+                  >
+                    <div className="font-bold text-slate-900">Người dân</div>
+                    <div className="text-[10px] text-slate-500">Citizen</div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleQuickLoginCommunity('member@dustguard.local')}
+                    className="p-2 rounded-lg border border-border-subtle bg-white hover:bg-red-50 font-semibold text-content-main text-left hover:border-primary/40 transition-colors shadow-2xs"
+                  >
+                    <div className="font-bold text-slate-900">Thanh niên CLB</div>
+                    <div className="text-[10px] text-slate-500">Member</div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleQuickLoginCommunity('moderator@dustguard.local')}
+                    className="p-2 rounded-lg border border-border-subtle bg-white hover:bg-red-50 font-semibold text-content-main text-left hover:border-primary/40 transition-colors shadow-2xs"
+                  >
+                    <div className="font-bold text-slate-900">Điều phối viên</div>
+                    <div className="text-[10px] text-slate-500">Moderator</div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleQuickLoginCommunity('admin@dustguard.local')}
+                    className="p-2 rounded-lg border border-border-subtle bg-white hover:bg-red-50 font-semibold text-content-main text-left hover:border-primary/40 transition-colors shadow-2xs"
+                  >
+                    <div className="font-bold text-slate-900">Quản trị Cộng đồng</div>
+                    <div className="text-[10px] text-slate-500">Admin</div>
+                  </button>
+                </div>
               </div>
-              <div className="grid grid-cols-2 gap-2 text-xs">
-                <button
-                  type="button"
-                  onClick={() => handleQuickLogin('citizen@dustguard.local')}
-                  className="p-2 rounded-lg border border-border-subtle bg-surface-secondary/60 hover:bg-surface-secondary font-semibold text-content-main text-center hover:border-primary/40 transition-colors"
-                >
-                  Người dân (Citizen)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleQuickLogin('member@dustguard.local')}
-                  className="p-2 rounded-lg border border-border-subtle bg-surface-secondary/60 hover:bg-surface-secondary font-semibold text-content-main text-center hover:border-primary/40 transition-colors"
-                >
-                  Thanh niên CLB (Member)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleQuickLogin('moderator@dustguard.local')}
-                  className="p-2 rounded-lg border border-border-subtle bg-surface-secondary/60 hover:bg-surface-secondary font-semibold text-content-main text-center hover:border-primary/40 transition-colors"
-                >
-                  Điều phối viên (Moderator)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleQuickLogin('admin@dustguard.local')}
-                  className="p-2 rounded-lg border border-border-subtle bg-surface-secondary/60 hover:bg-surface-secondary font-semibold text-content-main text-center hover:border-primary/40 transition-colors"
-                >
-                  Quản trị Cộng đồng
-                </button>
-              </div>
-            </div>
+            )}
 
             <div className="text-center text-xs text-content-sub pt-1">
               Chưa có tài khoản?{' '}
@@ -207,40 +357,139 @@ export const LoginPage: React.FC = () => {
             </div>
           </div>
         ) : (
-          /* SIDE B: PHÍA CHUYÊN TRÁCH / CƠ QUAN XỬ LÝ */
-          <div className="space-y-5 text-center">
-            <div className="p-4 rounded-2xl bg-sky-50 border border-sky-100 space-y-2 text-left">
-              <div className="flex items-center gap-2 text-[#0369A1] font-bold text-sm">
-                <Building2 className="w-4 h-4" />
-                <span>Không gian Nghiệp vụ Chuyên trách</span>
+          /* ================================================================= */
+          /* PHÍA ĐƠN VỊ XỬ LÝ: FORM ĐĂNG NHẬP TRỰC TIẾP                       */
+          /* ================================================================= */
+          <div className="space-y-5">
+            <div className="p-3.5 rounded-xl bg-teal-50/70 border border-teal-200/80 text-left space-y-1">
+              <div className="flex items-center gap-1.5 text-[#0D6F64] font-bold text-xs">
+                <Building2 className="w-4 h-4 shrink-0" />
+                <span>Cổng Tác chiến Đơn vị Xử lý</span>
               </div>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Khu vực dành riêng cho Cán bộ thanh tra môi trường, Giám sát viên, Chuyên viên pháp lý và Đại diện đơn vị thi công xử lý hồ sơ.
+              <p className="text-[11px] text-slate-600 leading-relaxed">
+                Dành cho Cán bộ thanh tra hiện trường, Lãnh đạo điều phối, Chuyên viên pháp chế và Quản trị viên vận hành.
               </p>
-              <ul className="text-[11px] text-slate-600 space-y-1 pt-1 list-disc pl-4 font-medium">
-                <li>Tiếp nhận & điều phối hồ sơ từ cộng đồng</li>
-                <li>Checklist thanh tra 10 tiêu chuẩn QCVN 18</li>
-                <li>Trí tuệ Pháp lý FTS5 & Giám sát khắc phục</li>
-              </ul>
             </div>
 
-            <a
-              href={`${OPERATIONS_APP_URL}/login`}
-              className="w-full py-3 rounded-xl bg-[#0369A1] hover:bg-[#0284C7] text-white font-bold text-sm shadow-sm transition-all flex items-center justify-center gap-2"
-            >
-              <span>Chuyển sang Cổng Điều hành (Operations)</span>
-              <ExternalLink className="w-4 h-4" />
-            </a>
+            <form onSubmit={handleOperationsSubmit} className="space-y-4">
+              <div className="space-y-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-content-sub">
+                  Tên đăng nhập hoặc Email *
+                </label>
+                <div className="relative">
+                  <User className="w-4 h-4 text-content-muted absolute left-3.5 top-3" />
+                  <input
+                    type="text"
+                    required
+                    id="input-operations-username"
+                    value={identifier}
+                    onChange={(e) => setIdentifier(e.target.value)}
+                    placeholder="staff1, supervisor1, legal1..."
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border-subtle text-xs sm:text-sm bg-white text-slate-900 focus:border-[#0D6F64] focus:outline-none"
+                  />
+                </div>
+              </div>
 
-            <div className="text-[11px] text-content-sub">
-              {import.meta.env.PROD ? (
-                <>Đường dẫn cổng vận hành: <code className="font-mono font-bold text-[#0369A1]">/operations</code></>
-              ) : (
-                <>Mã cổng vận hành nội bộ: <code className="font-mono font-bold text-[#0369A1]">Port 3002</code></>
-              )}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-content-sub">
+                    Mật khẩu *
+                  </label>
+                </div>
+                <div className="relative">
+                  <Lock className="w-4 h-4 text-content-muted absolute left-3.5 top-3" />
+                  <input
+                    type="password"
+                    required
+                    id="input-operations-password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border-subtle text-xs sm:text-sm bg-white text-slate-900 focus:border-[#0D6F64] focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                id="btn-operations-login"
+                disabled={loading || !identifier.trim() || !password.trim()}
+                className="w-full py-3 rounded-xl bg-[#0D6F64] text-white font-bold text-sm shadow-sm hover:bg-[#0B5C53] transition-all disabled:opacity-50 active:scale-95 flex items-center justify-center gap-2 touch-target"
+              >
+                {loading ? 'Đang xác thực nghiệp vụ...' : 'Đăng nhập Đơn vị Xử lý'}
+                <LogIn className="w-4 h-4" />
+              </button>
+            </form>
+
+            {/* Quick Demo Accounts for Operations - Chỉ xuất hiện khi demoMode được kích hoạt */}
+            {demoMode && (
+              <div className="pt-3 border-t border-border-subtle space-y-2 bg-slate-50/50 p-3 rounded-xl border">
+                <div className="flex items-center justify-between text-[10px] font-bold text-content-sub uppercase tracking-wider">
+                  <span className="flex items-center gap-1 text-[#0D6F64]">
+                    <Sparkles className="w-3 h-3" />
+                    Tài khoản trình diễn (Đơn vị Xử lý)
+                  </span>
+                  <span className="text-[10px] lowercase text-slate-500 font-normal">nhấn để đăng nhập ngay</span>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <button
+                    type="button"
+                    onClick={() => handleQuickLoginOperations('staff1')}
+                    className="p-2 rounded-lg border border-border-subtle bg-white hover:bg-teal-50 font-semibold text-content-main text-left hover:border-[#0D6F64]/40 transition-colors shadow-2xs"
+                  >
+                    <div className="font-bold text-slate-900">staff1</div>
+                    <div className="text-[10px] text-slate-500">Cán bộ Hiện trường</div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleQuickLoginOperations('supervisor1')}
+                    className="p-2 rounded-lg border border-border-subtle bg-white hover:bg-teal-50 font-semibold text-content-main text-left hover:border-[#0D6F64]/40 transition-colors shadow-2xs"
+                  >
+                    <div className="font-bold text-slate-900">supervisor1</div>
+                    <div className="text-[10px] text-slate-500">Lãnh đạo Điều phối</div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleQuickLoginOperations('legal1')}
+                    className="p-2 rounded-lg border border-border-subtle bg-white hover:bg-teal-50 font-semibold text-content-main text-left hover:border-[#0D6F64]/40 transition-colors shadow-2xs"
+                  >
+                    <div className="font-bold text-slate-900">legal1</div>
+                    <div className="text-[10px] text-slate-500">Chuyên viên Pháp chế</div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleQuickLoginOperations('admin')}
+                    className="p-2 rounded-lg border border-border-subtle bg-white hover:bg-teal-50 font-semibold text-content-main text-left hover:border-[#0D6F64]/40 transition-colors shadow-2xs"
+                  >
+                    <div className="font-bold text-slate-900">admin</div>
+                    <div className="text-[10px] text-slate-500">Quản trị Vận hành</div>
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <div className="text-center text-xs text-content-sub pt-1">
+              Cần cấp tài khoản chuyên trách?{' '}
+              <span className="font-semibold text-slate-700">Liên hệ Quản trị viên cơ quan</span>
             </div>
           </div>
         )}
+
+        {/* Tùy chọn chuyển đổi Chế độ Trình diễn (Demo Mode Toggle) */}
+        <div className="pt-2 text-center border-t border-border-subtle/60">
+          <button
+            type="button"
+            onClick={() => {
+              const next = !demoMode;
+              setDemoMode(next);
+              if (next) localStorage.setItem('dg_demo_mode', 'true');
+              else localStorage.removeItem('dg_demo_mode');
+            }}
+            className="text-[11px] text-content-sub hover:text-content-main underline transition-colors"
+          >
+            {demoMode ? 'Ẩn tài khoản trình diễn' : 'Hiển thị tài khoản trình diễn (Ban Giám khảo)'}
+          </button>
+        </div>
 
       </div>
     </div>

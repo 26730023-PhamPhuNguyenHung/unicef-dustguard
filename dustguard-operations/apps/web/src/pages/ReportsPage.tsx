@@ -85,7 +85,7 @@ export const ReportsPage: React.FC = () => {
           <div className="flex items-center gap-3">
             <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Báo cáo & Phân tích Vận hành</h1>
             <span className="px-2.5 py-0.5 text-xs font-bold bg-dustguard-teal/10 text-dustguard-teal border border-dustguard-teal/20 rounded-full">
-              Dữ liệu Thực tế SQLite SSOT
+              Dữ liệu Thời gian thực SSOT
             </span>
           </div>
           <p className="text-sm text-slate-600 mt-1">

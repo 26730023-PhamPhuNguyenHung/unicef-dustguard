@@ -1,0 +1,2266 @@
+{
+  "timestamp": "2026-09-06T07:02:35.856Z",
+  "total_matrix_entries": 226,
+  "matrix": [
+    {
+      "path": "/",
+      "side": "public",
+      "type": "FRONTEND ROUTE",
+      "component": "LandingPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/",
+      "action": "KEEP",
+      "source": "apps/web/src/App.tsx:55"
+    },
+    {
+      "path": "/landing",
+      "side": "public",
+      "type": "FRONTEND ROUTE",
+      "component": "LandingPage",
+      "duplicateOf": "/",
+      "canonicalRoute": "/",
+      "action": "REDIRECT",
+      "source": "apps/web/src/App.tsx:56"
+    },
+    {
+      "path": "/login",
+      "side": "public",
+      "type": "AUTH ROUTE",
+      "component": "LoginPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/login",
+      "action": "KEEP",
+      "source": "apps/web/src/App.tsx:59"
+    },
+    {
+      "path": "/register",
+      "side": "public",
+      "type": "AUTH ROUTE",
+      "component": "RegisterPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/register",
+      "action": "KEEP",
+      "source": "apps/web/src/App.tsx:60"
+    },
+    {
+      "path": "/forgot-password",
+      "side": "public",
+      "type": "AUTH ROUTE",
+      "component": "ForgotPasswordPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/forgot-password",
+      "action": "KEEP",
+      "source": "apps/web/src/App.tsx:61"
+    },
+    {
+      "path": "/*",
+      "side": "community",
+      "type": "FRONTEND ROUTE",
+      "component": "AppShell",
+      "duplicateOf": null,
+      "canonicalRoute": "/*",
+      "action": "KEEP",
+      "source": "apps/web/src/App.tsx:64"
+    },
+    {
+      "path": "/dashboard",
+      "side": "community",
+      "type": "FRONTEND ROUTE",
+      "component": "DashboardPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "KEEP",
+      "source": "apps/web/src/App.tsx:70"
+    },
+    {
+      "path": "/map",
+      "side": "community",
+      "type": "FRONTEND ROUTE",
+      "component": "MapPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/map",
+      "action": "KEEP",
+      "source": "apps/web/src/App.tsx:73"
+    },
+    {
+      "path": "/reports",
+      "side": "community",
+      "type": "FRONTEND ROUTE",
+      "component": "ReportsListPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/reports",
+      "action": "KEEP",
+      "source": "apps/web/src/App.tsx:76"
+    },
+    {
+      "path": "/reports/new",
+      "side": "community",
+      "type": "FRONTEND ROUTE",
+      "component": "CreateReportPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/reports/new",
+      "action": "KEEP",
+      "source": "apps/web/src/App.tsx:77"
+    },
+    {
+      "path": "/reports/:id",
+      "side": "community",
+      "type": "FRONTEND ROUTE",
+      "component": "ReportDetailPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/reports/:id",
+      "action": "KEEP",
+      "source": "apps/web/src/App.tsx:78"
+    },
+    {
+      "path": "/cases/:id",
+      "side": "community",
+      "type": "FRONTEND ROUTE",
+      "component": "CaseDetailPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/cases/:id",
+      "action": "KEEP",
+      "source": "apps/web/src/App.tsx:81"
+    },
+    {
+      "path": "/cases/:id/observe",
+      "side": "community",
+      "type": "FRONTEND ROUTE",
+      "component": "SubmitObservationPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/cases/:id/observe",
+      "action": "KEEP",
+      "source": "apps/web/src/App.tsx:82"
+    },
+    {
+      "path": "/following",
+      "side": "community",
+      "type": "FRONTEND ROUTE",
+      "component": "MyTrackingPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/following",
+      "action": "KEEP",
+      "source": "apps/web/src/App.tsx:92"
+    },
+    {
+      "path": "/communities",
+      "side": "community",
+      "type": "FRONTEND ROUTE",
+      "component": "CommunitiesPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/communities",
+      "action": "KEEP",
+      "source": "apps/web/src/App.tsx:102"
+    },
+    {
+      "path": "/communities/:slug",
+      "side": "community",
+      "type": "FRONTEND ROUTE",
+      "component": "CommunityDetailPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/communities/:slug",
+      "action": "KEEP",
+      "source": "apps/web/src/App.tsx:103"
+    },
+    {
+      "path": "/tasks",
+      "side": "community",
+      "type": "FRONTEND ROUTE",
+      "component": "TasksPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/tasks",
+      "action": "KEEP",
+      "source": "apps/web/src/App.tsx:106"
+    },
+    {
+      "path": "/notifications",
+      "side": "community",
+      "type": "FRONTEND ROUTE",
+      "component": "NotificationsPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/notifications",
+      "action": "KEEP",
+      "source": "apps/web/src/App.tsx:116"
+    },
+    {
+      "path": "/contributions",
+      "side": "community",
+      "type": "FRONTEND ROUTE",
+      "component": "ContributionsPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/contributions",
+      "action": "KEEP",
+      "source": "apps/web/src/App.tsx:126"
+    },
+    {
+      "path": "/credits",
+      "side": "community",
+      "type": "FRONTEND ROUTE",
+      "component": "YouthCreditsPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/credits",
+      "action": "KEEP",
+      "source": "apps/web/src/App.tsx:136"
+    },
+    {
+      "path": "/youth/credits",
+      "side": "community",
+      "type": "FRONTEND ROUTE",
+      "component": "YouthCreditsPage",
+      "duplicateOf": "/credits",
+      "canonicalRoute": "/credits",
+      "action": "REDIRECT",
+      "source": "apps/web/src/App.tsx:144"
+    },
+    {
+      "path": "/profile",
+      "side": "community",
+      "type": "FRONTEND ROUTE",
+      "component": "ProfilePage",
+      "duplicateOf": null,
+      "canonicalRoute": "/profile",
+      "action": "KEEP",
+      "source": "apps/web/src/App.tsx:154"
+    },
+    {
+      "path": "/moderator",
+      "side": "moderator",
+      "type": "REDIRECT",
+      "component": "Navigate(to=/moderator/dashboard)",
+      "duplicateOf": null,
+      "canonicalRoute": "/moderator/dashboard",
+      "action": "REDIRECT",
+      "source": "apps/web/src/App.tsx:164"
+    },
+    {
+      "path": "/moderator/inbox",
+      "side": "moderator",
+      "type": "FRONTEND ROUTE",
+      "component": "VerificationInboxPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/moderator/inbox",
+      "action": "KEEP",
+      "source": "apps/web/src/App.tsx:165"
+    },
+    {
+      "path": "/moderator/verification",
+      "side": "moderator",
+      "type": "FRONTEND ROUTE",
+      "component": "VerificationInboxPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/moderator/verification",
+      "action": "KEEP",
+      "source": "apps/web/src/App.tsx:173"
+    },
+    {
+      "path": "/moderator/verification/:id",
+      "side": "moderator",
+      "type": "FRONTEND ROUTE",
+      "component": "VerificationDetailPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/moderator/verification/:id",
+      "action": "KEEP",
+      "source": "apps/web/src/App.tsx:181"
+    },
+    {
+      "path": "/moderator/cases",
+      "side": "moderator",
+      "type": "FRONTEND ROUTE",
+      "component": "CaseCoordinationPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/moderator/cases",
+      "action": "KEEP",
+      "source": "apps/web/src/App.tsx:189"
+    },
+    {
+      "path": "/moderator/content",
+      "side": "moderator",
+      "type": "FRONTEND ROUTE",
+      "component": "ModerationQueuePage",
+      "duplicateOf": null,
+      "canonicalRoute": "/moderator/content",
+      "action": "KEEP",
+      "source": "apps/web/src/App.tsx:197"
+    },
+    {
+      "path": "/moderator/dashboard",
+      "side": "moderator",
+      "type": "FRONTEND ROUTE",
+      "component": "ModeratorDashboardPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/moderator/dashboard",
+      "action": "KEEP",
+      "source": "apps/web/src/App.tsx:205"
+    },
+    {
+      "path": "/admin",
+      "side": "admin",
+      "type": "REDIRECT",
+      "component": "Navigate(to=/admin/overview)",
+      "duplicateOf": null,
+      "canonicalRoute": "/admin/overview",
+      "action": "REDIRECT",
+      "source": "apps/web/src/App.tsx:215"
+    },
+    {
+      "path": "/admin/overview",
+      "side": "admin",
+      "type": "FRONTEND ROUTE",
+      "component": "AdminOverviewPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/admin/overview",
+      "action": "KEEP",
+      "source": "apps/web/src/App.tsx:216"
+    },
+    {
+      "path": "/admin/users",
+      "side": "admin",
+      "type": "FRONTEND ROUTE",
+      "component": "AdminUsersPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/admin/users",
+      "action": "KEEP",
+      "source": "apps/web/src/App.tsx:224"
+    },
+    {
+      "path": "/admin/audit",
+      "side": "admin",
+      "type": "FRONTEND ROUTE",
+      "component": "AdminAuditPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/admin/audit",
+      "action": "KEEP",
+      "source": "apps/web/src/App.tsx:232"
+    },
+    {
+      "path": "/citizen/reports",
+      "side": "community",
+      "type": "REDIRECT",
+      "component": "Navigate(to=/reports)",
+      "duplicateOf": null,
+      "canonicalRoute": "/reports",
+      "action": "REDIRECT",
+      "source": "apps/web/src/App.tsx:242"
+    },
+    {
+      "path": "/citizen/report/new",
+      "side": "community",
+      "type": "REDIRECT",
+      "component": "Navigate(to=/reports/new)",
+      "duplicateOf": null,
+      "canonicalRoute": "/reports/new",
+      "action": "REDIRECT",
+      "source": "apps/web/src/App.tsx:243"
+    },
+    {
+      "path": "/citizen/report",
+      "side": "community",
+      "type": "REDIRECT",
+      "component": "Navigate(to=/reports/new)",
+      "duplicateOf": null,
+      "canonicalRoute": "/reports/new",
+      "action": "REDIRECT",
+      "source": "apps/web/src/App.tsx:244"
+    },
+    {
+      "path": "/citizen/track",
+      "side": "community",
+      "type": "REDIRECT",
+      "component": "Navigate(to=/reports)",
+      "duplicateOf": null,
+      "canonicalRoute": "/reports",
+      "action": "REDIRECT",
+      "source": "apps/web/src/App.tsx:245"
+    },
+    {
+      "path": "/citizen/map",
+      "side": "community",
+      "type": "REDIRECT",
+      "component": "Navigate(to=/map)",
+      "duplicateOf": null,
+      "canonicalRoute": "/map",
+      "action": "REDIRECT",
+      "source": "apps/web/src/App.tsx:246"
+    },
+    {
+      "path": "/citizen/profile",
+      "side": "community",
+      "type": "REDIRECT",
+      "component": "Navigate(to=/profile)",
+      "duplicateOf": null,
+      "canonicalRoute": "/profile",
+      "action": "REDIRECT",
+      "source": "apps/web/src/App.tsx:247"
+    },
+    {
+      "path": "/citizen/*",
+      "side": "community",
+      "type": "REDIRECT",
+      "component": "Navigate(to=/dashboard)",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "REDIRECT",
+      "source": "apps/web/src/App.tsx:248"
+    },
+    {
+      "path": "/community/tasks",
+      "side": "community",
+      "type": "REDIRECT",
+      "component": "Navigate(to=/tasks)",
+      "duplicateOf": null,
+      "canonicalRoute": "/tasks",
+      "action": "REDIRECT",
+      "source": "apps/web/src/App.tsx:250"
+    },
+    {
+      "path": "/community/contributions",
+      "side": "community",
+      "type": "REDIRECT",
+      "component": "Navigate(to=/contributions)",
+      "duplicateOf": null,
+      "canonicalRoute": "/contributions",
+      "action": "REDIRECT",
+      "source": "apps/web/src/App.tsx:251"
+    },
+    {
+      "path": "/community/clubs",
+      "side": "community",
+      "type": "REDIRECT",
+      "component": "Navigate(to=/communities)",
+      "duplicateOf": null,
+      "canonicalRoute": "/communities",
+      "action": "REDIRECT",
+      "source": "apps/web/src/App.tsx:252"
+    },
+    {
+      "path": "/community/*",
+      "side": "community",
+      "type": "REDIRECT",
+      "component": "Navigate(to=/communities)",
+      "duplicateOf": null,
+      "canonicalRoute": "/communities",
+      "action": "REDIRECT",
+      "source": "apps/web/src/App.tsx:253"
+    },
+    {
+      "path": "/staff/*",
+      "side": "community",
+      "type": "REDIRECT",
+      "component": "Navigate(to=/dashboard)",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "REDIRECT",
+      "source": "apps/web/src/App.tsx:255"
+    },
+    {
+      "path": "/contractor",
+      "side": "contractor",
+      "type": "FRONTEND ROUTE",
+      "component": "ContractorPortalPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/contractor",
+      "action": "KEEP",
+      "source": "apps/web/src/App.tsx:258"
+    },
+    {
+      "path": "/contractor/portal",
+      "side": "contractor",
+      "type": "FRONTEND ROUTE",
+      "component": "ContractorPortalPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/contractor/portal",
+      "action": "KEEP",
+      "source": "apps/web/src/App.tsx:259"
+    },
+    {
+      "path": "/contractor/actions",
+      "side": "contractor",
+      "type": "FRONTEND ROUTE",
+      "component": "ContractorPortalPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/contractor/actions",
+      "action": "KEEP",
+      "source": "apps/web/src/App.tsx:260"
+    },
+    {
+      "path": "/contractor/actions/:id",
+      "side": "contractor",
+      "type": "FRONTEND ROUTE",
+      "component": "ContractorRemediationPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/contractor/actions/:id",
+      "action": "KEEP",
+      "source": "apps/web/src/App.tsx:261"
+    },
+    {
+      "path": "/contractor/remediation/:id",
+      "side": "contractor",
+      "type": "FRONTEND ROUTE",
+      "component": "ContractorRemediationPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/contractor/remediation/:id",
+      "action": "KEEP",
+      "source": "apps/web/src/App.tsx:262"
+    },
+    {
+      "path": "/contractor/access/:token",
+      "side": "contractor",
+      "type": "FRONTEND ROUTE",
+      "component": "ContractorPortalPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/contractor/access/:token",
+      "action": "KEEP",
+      "source": "apps/web/src/App.tsx:263"
+    },
+    {
+      "path": "/executive/*",
+      "side": "community",
+      "type": "REDIRECT",
+      "component": "Navigate(to=/dashboard)",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "REDIRECT",
+      "source": "apps/web/src/App.tsx:265"
+    },
+    {
+      "path": "*",
+      "side": "community",
+      "type": "REDIRECT",
+      "component": "Navigate(to=/dashboard)",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "REDIRECT",
+      "source": "apps/web/src/App.tsx:268"
+    },
+    {
+      "path": "/operations/login",
+      "side": "operations",
+      "type": "AUTH ROUTE",
+      "component": "LoginPage",
+      "duplicateOf": "/login",
+      "canonicalRoute": "/login?side=operations",
+      "action": "MERGE",
+      "source": "dustguard-operations/apps/web/src/App.tsx:64"
+    },
+    {
+      "path": "/operations/setup",
+      "side": "operations",
+      "type": "FRONTEND ROUTE",
+      "component": "SetupPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/setup",
+      "action": "KEEP",
+      "source": "dustguard-operations/apps/web/src/App.tsx:65"
+    },
+    {
+      "path": "/operations",
+      "side": "operations",
+      "type": "FRONTEND ROUTE",
+      "component": "ProtectedRoute",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations",
+      "action": "KEEP",
+      "source": "dustguard-operations/apps/web/src/App.tsx:67"
+    },
+    {
+      "path": "/operations",
+      "side": "operations",
+      "type": "REDIRECT",
+      "component": "Navigate(to=/dashboard)",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/dashboard",
+      "action": "REDIRECT",
+      "source": "dustguard-operations/apps/web/src/App.tsx:75"
+    },
+    {
+      "path": "/operations/dashboard",
+      "side": "operations",
+      "type": "FRONTEND ROUTE",
+      "component": "DashboardPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/dashboard",
+      "action": "KEEP",
+      "source": "dustguard-operations/apps/web/src/App.tsx:76"
+    },
+    {
+      "path": "/operations/projects",
+      "side": "operations",
+      "type": "FRONTEND ROUTE",
+      "component": "ProjectsPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/projects",
+      "action": "KEEP",
+      "source": "dustguard-operations/apps/web/src/App.tsx:79"
+    },
+    {
+      "path": "/operations/contractors",
+      "side": "operations",
+      "type": "FRONTEND ROUTE",
+      "component": "ContractorsPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/contractors",
+      "action": "KEEP",
+      "source": "dustguard-operations/apps/web/src/App.tsx:80"
+    },
+    {
+      "path": "/operations/tasks",
+      "side": "operations",
+      "type": "FRONTEND ROUTE",
+      "component": "TasksPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/tasks",
+      "action": "KEEP",
+      "source": "dustguard-operations/apps/web/src/App.tsx:83"
+    },
+    {
+      "path": "/operations/cases",
+      "side": "operations",
+      "type": "FRONTEND ROUTE",
+      "component": "CaseInboxPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/cases",
+      "action": "KEEP",
+      "source": "dustguard-operations/apps/web/src/App.tsx:86"
+    },
+    {
+      "path": "/operations/cases/:id",
+      "side": "operations",
+      "type": "FRONTEND ROUTE",
+      "component": "CaseDetailPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/cases/:id",
+      "action": "KEEP",
+      "source": "dustguard-operations/apps/web/src/App.tsx:87"
+    },
+    {
+      "path": "/operations/cases/:id/evidence",
+      "side": "operations",
+      "type": "FRONTEND ROUTE",
+      "component": "CaseDetailPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/cases/:id/evidence",
+      "action": "KEEP",
+      "source": "dustguard-operations/apps/web/src/App.tsx:88"
+    },
+    {
+      "path": "/operations/cases/:id/iot",
+      "side": "operations",
+      "type": "FRONTEND ROUTE",
+      "component": "CaseDetailPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/cases/:id/iot",
+      "action": "KEEP",
+      "source": "dustguard-operations/apps/web/src/App.tsx:89"
+    },
+    {
+      "path": "/operations/cases/:id/inspection",
+      "side": "operations",
+      "type": "FRONTEND ROUTE",
+      "component": "CaseDetailPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/cases/:id/inspection",
+      "action": "KEEP",
+      "source": "dustguard-operations/apps/web/src/App.tsx:90"
+    },
+    {
+      "path": "/operations/cases/:id/actions",
+      "side": "operations",
+      "type": "FRONTEND ROUTE",
+      "component": "CaseDetailPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/cases/:id/actions",
+      "action": "KEEP",
+      "source": "dustguard-operations/apps/web/src/App.tsx:91"
+    },
+    {
+      "path": "/operations/cases/:id/timeline",
+      "side": "operations",
+      "type": "FRONTEND ROUTE",
+      "component": "CaseDetailPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/cases/:id/timeline",
+      "action": "KEEP",
+      "source": "dustguard-operations/apps/web/src/App.tsx:92"
+    },
+    {
+      "path": "/operations/cases/:id/legal",
+      "side": "operations",
+      "type": "FRONTEND ROUTE",
+      "component": "LegalWorkspacePage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/cases/:id/legal",
+      "action": "KEEP",
+      "source": "dustguard-operations/apps/web/src/App.tsx:93"
+    },
+    {
+      "path": "/operations/cases/:id/inspection/new",
+      "side": "operations",
+      "type": "FRONTEND ROUTE",
+      "component": "InspectionPlanPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/cases/:id/inspection/new",
+      "action": "KEEP",
+      "source": "dustguard-operations/apps/web/src/App.tsx:94"
+    },
+    {
+      "path": "/operations/legal",
+      "side": "operations",
+      "type": "REDIRECT",
+      "component": "Navigate(to=/legal/library)",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/legal/library",
+      "action": "REDIRECT",
+      "source": "dustguard-operations/apps/web/src/App.tsx:97"
+    },
+    {
+      "path": "/operations/legal/library",
+      "side": "operations",
+      "type": "FRONTEND ROUTE",
+      "component": "LegalLibraryPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/legal/library",
+      "action": "KEEP",
+      "source": "dustguard-operations/apps/web/src/App.tsx:98"
+    },
+    {
+      "path": "/operations/legal/documents",
+      "side": "operations",
+      "type": "FRONTEND ROUTE",
+      "component": "LegalLibraryPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/legal/documents",
+      "action": "KEEP",
+      "source": "dustguard-operations/apps/web/src/App.tsx:99"
+    },
+    {
+      "path": "/operations/legal/import",
+      "side": "operations",
+      "type": "FRONTEND ROUTE",
+      "component": "LegalImportPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/legal/import",
+      "action": "KEEP",
+      "source": "dustguard-operations/apps/web/src/App.tsx:100"
+    },
+    {
+      "path": "/operations/legal/documents/:id",
+      "side": "operations",
+      "type": "FRONTEND ROUTE",
+      "component": "LegalDocDetailPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/legal/documents/:id",
+      "action": "KEEP",
+      "source": "dustguard-operations/apps/web/src/App.tsx:101"
+    },
+    {
+      "path": "/operations/inspections",
+      "side": "operations",
+      "type": "FRONTEND ROUTE",
+      "component": "InspectionListPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/inspections",
+      "action": "KEEP",
+      "source": "dustguard-operations/apps/web/src/App.tsx:104"
+    },
+    {
+      "path": "/operations/inspections/new",
+      "side": "operations",
+      "type": "FRONTEND ROUTE",
+      "component": "InspectionPlanPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/inspections/new",
+      "action": "KEEP",
+      "source": "dustguard-operations/apps/web/src/App.tsx:105"
+    },
+    {
+      "path": "/operations/inspections/:id",
+      "side": "operations",
+      "type": "FRONTEND ROUTE",
+      "component": "FieldInspectionPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/inspections/:id",
+      "action": "KEEP",
+      "source": "dustguard-operations/apps/web/src/App.tsx:106"
+    },
+    {
+      "path": "/operations/inspections/:id/result",
+      "side": "operations",
+      "type": "FRONTEND ROUTE",
+      "component": "InspectionResultPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/inspections/:id/result",
+      "action": "KEEP",
+      "source": "dustguard-operations/apps/web/src/App.tsx:107"
+    },
+    {
+      "path": "/operations/inspections/:id/export",
+      "side": "operations",
+      "type": "FRONTEND ROUTE",
+      "component": "InspectionExportPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/inspections/:id/export",
+      "action": "KEEP",
+      "source": "dustguard-operations/apps/web/src/App.tsx:108"
+    },
+    {
+      "path": "/operations/actions",
+      "side": "operations",
+      "type": "FRONTEND ROUTE",
+      "component": "ActionsListPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/actions",
+      "action": "KEEP",
+      "source": "dustguard-operations/apps/web/src/App.tsx:111"
+    },
+    {
+      "path": "/operations/actions/:id/remediation",
+      "side": "operations",
+      "type": "FRONTEND ROUTE",
+      "component": "RemediationReviewPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/actions/:id/remediation",
+      "action": "KEEP",
+      "source": "dustguard-operations/apps/web/src/App.tsx:112"
+    },
+    {
+      "path": "/operations/actions/:id/notice",
+      "side": "operations",
+      "type": "FRONTEND ROUTE",
+      "component": "ActionNoticeExportPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/actions/:id/notice",
+      "action": "KEEP",
+      "source": "dustguard-operations/apps/web/src/App.tsx:113"
+    },
+    {
+      "path": "/operations/iot",
+      "side": "operations",
+      "type": "FRONTEND ROUTE",
+      "component": "IotDevicesPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/iot",
+      "action": "KEEP",
+      "source": "dustguard-operations/apps/web/src/App.tsx:116"
+    },
+    {
+      "path": "/operations/iot/devices",
+      "side": "operations",
+      "type": "FRONTEND ROUTE",
+      "component": "IotDevicesPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/iot/devices",
+      "action": "KEEP",
+      "source": "dustguard-operations/apps/web/src/App.tsx:117"
+    },
+    {
+      "path": "/operations/iot/devices/:id",
+      "side": "operations",
+      "type": "FRONTEND ROUTE",
+      "component": "IotDeviceDetailPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/iot/devices/:id",
+      "action": "KEEP",
+      "source": "dustguard-operations/apps/web/src/App.tsx:118"
+    },
+    {
+      "path": "/operations/automations",
+      "side": "operations",
+      "type": "FRONTEND ROUTE",
+      "component": "AutomationsPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/automations",
+      "action": "KEEP",
+      "source": "dustguard-operations/apps/web/src/App.tsx:121"
+    },
+    {
+      "path": "/operations/evidence",
+      "side": "operations",
+      "type": "FRONTEND ROUTE",
+      "component": "EvidencePage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/evidence",
+      "action": "KEEP",
+      "source": "dustguard-operations/apps/web/src/App.tsx:124"
+    },
+    {
+      "path": "/operations/reports",
+      "side": "operations",
+      "type": "FRONTEND ROUTE",
+      "component": "ReportsPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/reports",
+      "action": "KEEP",
+      "source": "dustguard-operations/apps/web/src/App.tsx:127"
+    },
+    {
+      "path": "/operations/notifications",
+      "side": "operations",
+      "type": "FRONTEND ROUTE",
+      "component": "NotificationsPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/notifications",
+      "action": "KEEP",
+      "source": "dustguard-operations/apps/web/src/App.tsx:130"
+    },
+    {
+      "path": "/operations/profile",
+      "side": "operations",
+      "type": "FRONTEND ROUTE",
+      "component": "ProfilePage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/profile",
+      "action": "KEEP",
+      "source": "dustguard-operations/apps/web/src/App.tsx:131"
+    },
+    {
+      "path": "/operations/supervisor/workload",
+      "side": "operations",
+      "type": "FRONTEND ROUTE",
+      "component": "SupervisorWorkloadPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/supervisor/workload",
+      "action": "KEEP",
+      "source": "dustguard-operations/apps/web/src/App.tsx:132"
+    },
+    {
+      "path": "/operations/admin/users",
+      "side": "operations",
+      "type": "FRONTEND ROUTE",
+      "component": "AdminUsersPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/admin/users",
+      "action": "KEEP",
+      "source": "dustguard-operations/apps/web/src/App.tsx:133"
+    },
+    {
+      "path": "/operations/admin/audit",
+      "side": "operations",
+      "type": "FRONTEND ROUTE",
+      "component": "AdminAuditPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/admin/audit",
+      "action": "KEEP",
+      "source": "dustguard-operations/apps/web/src/App.tsx:134"
+    },
+    {
+      "path": "/operations/admin/settings",
+      "side": "operations",
+      "type": "FRONTEND ROUTE",
+      "component": "AdminSettingsPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/admin/settings",
+      "action": "KEEP",
+      "source": "dustguard-operations/apps/web/src/App.tsx:135"
+    },
+    {
+      "path": "/operations/*",
+      "side": "operations",
+      "type": "REDIRECT",
+      "component": "Navigate(to=/dashboard)",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations/dashboard",
+      "action": "REDIRECT",
+      "source": "dustguard-operations/apps/web/src/App.tsx:137"
+    },
+    {
+      "path": "/citizen/citizen",
+      "side": "citizen",
+      "type": "LEGACY ROUTE",
+      "component": "CitizenLayout",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/citizen/routes.jsx:13"
+    },
+    {
+      "path": "/citizen",
+      "side": "citizen",
+      "type": "LEGACY ROUTE",
+      "component": "CitizenHomePage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/citizen/routes.jsx:14"
+    },
+    {
+      "path": "/citizen/dashboard",
+      "side": "citizen",
+      "type": "LEGACY ROUTE",
+      "component": "Navigate(to=/citizen)",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/citizen/routes.jsx:15"
+    },
+    {
+      "path": "/citizen/report/new",
+      "side": "citizen",
+      "type": "LEGACY ROUTE",
+      "component": "ReportNewPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/citizen/routes.jsx:18"
+    },
+    {
+      "path": "/citizen/report/confirm/:id",
+      "side": "citizen",
+      "type": "LEGACY ROUTE",
+      "component": "ReportConfirmPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/citizen/routes.jsx:19"
+    },
+    {
+      "path": "/citizen/report/success",
+      "side": "citizen",
+      "type": "LEGACY ROUTE",
+      "component": "ReportConfirmPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/citizen/routes.jsx:20"
+    },
+    {
+      "path": "/citizen/report",
+      "side": "citizen",
+      "type": "LEGACY ROUTE",
+      "component": "Navigate(to=/citizen/report/new)",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/citizen/routes.jsx:21"
+    },
+    {
+      "path": "/citizen/reports",
+      "side": "citizen",
+      "type": "LEGACY ROUTE",
+      "component": "ReportsListPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/citizen/routes.jsx:24"
+    },
+    {
+      "path": "/citizen/reports/:id",
+      "side": "citizen",
+      "type": "LEGACY ROUTE",
+      "component": "ReportDetailPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/citizen/routes.jsx:25"
+    },
+    {
+      "path": "/citizen/track",
+      "side": "citizen",
+      "type": "LEGACY ROUTE",
+      "component": "Navigate(to=/citizen/reports)",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/citizen/routes.jsx:26"
+    },
+    {
+      "path": "/citizen/track/:id",
+      "side": "citizen",
+      "type": "LEGACY ROUTE",
+      "component": "Navigate(to=/citizen/reports)",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/citizen/routes.jsx:27"
+    },
+    {
+      "path": "/citizen/profile",
+      "side": "citizen",
+      "type": "LEGACY ROUTE",
+      "component": "CitizenProfilePage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/citizen/routes.jsx:30"
+    },
+    {
+      "path": "/citizen/nearby",
+      "side": "citizen",
+      "type": "LEGACY ROUTE",
+      "component": "Navigate(to=/citizen)",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/citizen/routes.jsx:33"
+    },
+    {
+      "path": "/citizen/map",
+      "side": "citizen",
+      "type": "LEGACY ROUTE",
+      "component": "Navigate(to=/map)",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/citizen/routes.jsx:34"
+    },
+    {
+      "path": "/citizen/missions",
+      "side": "citizen",
+      "type": "LEGACY ROUTE",
+      "component": "Navigate(to=/citizen/reports)",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/citizen/routes.jsx:35"
+    },
+    {
+      "path": "/citizen/credits",
+      "side": "citizen",
+      "type": "LEGACY ROUTE",
+      "component": "Navigate(to=/citizen/profile)",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/citizen/routes.jsx:36"
+    },
+    {
+      "path": "/citizen/campaigns",
+      "side": "citizen",
+      "type": "LEGACY ROUTE",
+      "component": "Navigate(to=/citizen)",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/citizen/routes.jsx:37"
+    },
+    {
+      "path": "/staff/staff",
+      "side": "staff",
+      "type": "LEGACY ROUTE",
+      "component": "StaffLayout",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/staff/routes.jsx:33"
+    },
+    {
+      "path": "/staff",
+      "side": "staff",
+      "type": "LEGACY ROUTE",
+      "component": "StaffTodayPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/staff/routes.jsx:35"
+    },
+    {
+      "path": "/staff/today",
+      "side": "staff",
+      "type": "LEGACY ROUTE",
+      "component": "StaffTodayPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/staff/routes.jsx:36"
+    },
+    {
+      "path": "/staff/dashboard",
+      "side": "staff",
+      "type": "LEGACY ROUTE",
+      "component": "StaffDashboardPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/staff/routes.jsx:37"
+    },
+    {
+      "path": "/staff/tasks",
+      "side": "staff",
+      "type": "LEGACY ROUTE",
+      "component": "TasksListPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/staff/routes.jsx:40"
+    },
+    {
+      "path": "/staff/tasks/:id",
+      "side": "staff",
+      "type": "LEGACY ROUTE",
+      "component": "TaskDetailPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/staff/routes.jsx:43"
+    },
+    {
+      "path": "/staff/tasks/:id/checklist",
+      "side": "staff",
+      "type": "LEGACY ROUTE",
+      "component": "FieldChecklistPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/staff/routes.jsx:46"
+    },
+    {
+      "path": "/staff/tasks/:id/evidence",
+      "side": "staff",
+      "type": "LEGACY ROUTE",
+      "component": "FieldEvidencePage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/staff/routes.jsx:49"
+    },
+    {
+      "path": "/staff/tasks/:id/conclusion",
+      "side": "staff",
+      "type": "LEGACY ROUTE",
+      "component": "FieldConclusionPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/staff/routes.jsx:52"
+    },
+    {
+      "path": "/staff/sites",
+      "side": "staff",
+      "type": "LEGACY ROUTE",
+      "component": "SitesListPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/staff/routes.jsx:55"
+    },
+    {
+      "path": "/staff/sites/:id",
+      "side": "staff",
+      "type": "LEGACY ROUTE",
+      "component": "SiteDetailPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/staff/routes.jsx:56"
+    },
+    {
+      "path": "/staff/sites/:id/:tab",
+      "side": "staff",
+      "type": "LEGACY ROUTE",
+      "component": "SiteDetailPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/staff/routes.jsx:57"
+    },
+    {
+      "path": "/staff/cases",
+      "side": "staff",
+      "type": "LEGACY ROUTE",
+      "component": "CasesListPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/staff/routes.jsx:60"
+    },
+    {
+      "path": "/staff/cases/:id",
+      "side": "staff",
+      "type": "LEGACY ROUTE",
+      "component": "CaseDetailPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/staff/routes.jsx:61"
+    },
+    {
+      "path": "/staff/monitoring",
+      "side": "staff",
+      "type": "LEGACY ROUTE",
+      "component": "StaffMonitoringPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/staff/routes.jsx:64"
+    },
+    {
+      "path": "/staff/alerts",
+      "side": "staff",
+      "type": "LEGACY ROUTE",
+      "component": "StaffAlertsPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/staff/routes.jsx:65"
+    },
+    {
+      "path": "/staff/reports",
+      "side": "staff",
+      "type": "LEGACY ROUTE",
+      "component": "StaffReportsPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/staff/routes.jsx:68"
+    },
+    {
+      "path": "/staff/documents",
+      "side": "staff",
+      "type": "LEGACY ROUTE",
+      "component": "DocumentsListPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/staff/routes.jsx:71"
+    },
+    {
+      "path": "/staff/templates",
+      "side": "staff",
+      "type": "LEGACY ROUTE",
+      "component": "TemplatesGalleryPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/staff/routes.jsx:72"
+    },
+    {
+      "path": "/staff/policy",
+      "side": "staff",
+      "type": "LEGACY ROUTE",
+      "component": "PolicyIntelligencePage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/staff/routes.jsx:73"
+    },
+    {
+      "path": "/staff/profile",
+      "side": "staff",
+      "type": "LEGACY ROUTE",
+      "component": "StaffProfilePage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/staff/routes.jsx:76"
+    },
+    {
+      "path": "/staff/notifications",
+      "side": "staff",
+      "type": "LEGACY ROUTE",
+      "component": "StaffNotificationsPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/staff/routes.jsx:77"
+    },
+    {
+      "path": "/staff/settings",
+      "side": "staff",
+      "type": "LEGACY ROUTE",
+      "component": "StaffSettingsPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/staff/routes.jsx:78"
+    },
+    {
+      "path": "/staff/activity",
+      "side": "staff",
+      "type": "LEGACY ROUTE",
+      "component": "StaffActivityPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/staff/routes.jsx:79"
+    },
+    {
+      "path": "/staff/help",
+      "side": "staff",
+      "type": "LEGACY ROUTE",
+      "component": "StaffHelpPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/staff/routes.jsx:80"
+    },
+    {
+      "path": "/staff/operations",
+      "side": "staff",
+      "type": "LEGACY ROUTE",
+      "component": "Navigate(to=/staff)",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/staff/routes.jsx:83"
+    },
+    {
+      "path": "/staff/map",
+      "side": "staff",
+      "type": "LEGACY ROUTE",
+      "component": "Navigate(to=/staff/sites)",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/staff/routes.jsx:84"
+    },
+    {
+      "path": "/staff/ai",
+      "side": "staff",
+      "type": "LEGACY ROUTE",
+      "component": "Navigate(to=/staff/cases)",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/staff/routes.jsx:85"
+    },
+    {
+      "path": "/staff/complaints",
+      "side": "staff",
+      "type": "LEGACY ROUTE",
+      "component": "Navigate(to=/staff/cases)",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/staff/routes.jsx:86"
+    },
+    {
+      "path": "/staff/inspections",
+      "side": "staff",
+      "type": "LEGACY ROUTE",
+      "component": "Navigate(to=/staff/tasks)",
+      "duplicateOf": null,
+      "canonicalRoute": "/operations",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/staff/routes.jsx:87"
+    },
+    {
+      "path": "/contractor/contractor",
+      "side": "contractor",
+      "type": "LEGACY ROUTE",
+      "component": "ContractorLayout",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/contractor/routes.jsx:13"
+    },
+    {
+      "path": "/contractor",
+      "side": "contractor",
+      "type": "LEGACY ROUTE",
+      "component": "ContractorDashboardPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/contractor/routes.jsx:15"
+    },
+    {
+      "path": "/contractor/dashboard",
+      "side": "contractor",
+      "type": "LEGACY ROUTE",
+      "component": "Navigate(to=/contractor)",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/contractor/routes.jsx:16"
+    },
+    {
+      "path": "/contractor/sites",
+      "side": "contractor",
+      "type": "LEGACY ROUTE",
+      "component": "ContractorSitesPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/contractor/routes.jsx:19"
+    },
+    {
+      "path": "/contractor/tasks",
+      "side": "contractor",
+      "type": "LEGACY ROUTE",
+      "component": "ContractorTasksPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/contractor/routes.jsx:22"
+    },
+    {
+      "path": "/contractor/tasks/:id",
+      "side": "contractor",
+      "type": "LEGACY ROUTE",
+      "component": "ContractorTasksPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/contractor/routes.jsx:23"
+    },
+    {
+      "path": "/contractor/actions",
+      "side": "contractor",
+      "type": "LEGACY ROUTE",
+      "component": "Navigate(to=/contractor/tasks)",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/contractor/routes.jsx:24"
+    },
+    {
+      "path": "/contractor/actions/:id",
+      "side": "contractor",
+      "type": "LEGACY ROUTE",
+      "component": "Navigate(to=/contractor/tasks)",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/contractor/routes.jsx:25"
+    },
+    {
+      "path": "/contractor/compliance",
+      "side": "contractor",
+      "type": "LEGACY ROUTE",
+      "component": "ContractorCompliancePage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/contractor/routes.jsx:28"
+    },
+    {
+      "path": "/contractor/history",
+      "side": "contractor",
+      "type": "LEGACY ROUTE",
+      "component": "ContractorCompliancePage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/contractor/routes.jsx:29"
+    },
+    {
+      "path": "/contractor/cases",
+      "side": "contractor",
+      "type": "LEGACY ROUTE",
+      "component": "ContractorCasesPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/contractor/routes.jsx:32"
+    },
+    {
+      "path": "/contractor/projects",
+      "side": "contractor",
+      "type": "LEGACY ROUTE",
+      "component": "Navigate(to=/contractor/cases)",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/contractor/routes.jsx:33"
+    },
+    {
+      "path": "/contractor/reports",
+      "side": "contractor",
+      "type": "LEGACY ROUTE",
+      "component": "ContractorReportsPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/contractor/routes.jsx:34"
+    },
+    {
+      "path": "/contractor/portal",
+      "side": "contractor",
+      "type": "LEGACY ROUTE",
+      "component": "Navigate(to=/contractor/tasks)",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/contractor/routes.jsx:37"
+    },
+    {
+      "path": "/contractor/evidence",
+      "side": "contractor",
+      "type": "LEGACY ROUTE",
+      "component": "Navigate(to=/contractor/tasks)",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/contractor/routes.jsx:38"
+    },
+    {
+      "path": "/contractor/notifications",
+      "side": "contractor",
+      "type": "LEGACY ROUTE",
+      "component": "Navigate(to=/contractor/tasks)",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/contractor/routes.jsx:39"
+    },
+    {
+      "path": "/admin/admin",
+      "side": "admin",
+      "type": "LEGACY ROUTE",
+      "component": "AdminLayout",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/admin/routes.jsx:16"
+    },
+    {
+      "path": "/admin",
+      "side": "admin",
+      "type": "LEGACY ROUTE",
+      "component": "AdminDashboardPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/admin/routes.jsx:17"
+    },
+    {
+      "path": "/admin/dashboard",
+      "side": "admin",
+      "type": "LEGACY ROUTE",
+      "component": "Navigate(to=/admin)",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/admin/routes.jsx:18"
+    },
+    {
+      "path": "/admin/dispatch",
+      "side": "admin",
+      "type": "LEGACY ROUTE",
+      "component": "AdminDispatchPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/admin/routes.jsx:21"
+    },
+    {
+      "path": "/admin/dispatch/assign",
+      "side": "admin",
+      "type": "LEGACY ROUTE",
+      "component": "StaffAssignmentPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/admin/routes.jsx:22"
+    },
+    {
+      "path": "/admin/assignment",
+      "side": "admin",
+      "type": "LEGACY ROUTE",
+      "component": "StaffAssignmentPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/admin/routes.jsx:23"
+    },
+    {
+      "path": "/admin/cases",
+      "side": "admin",
+      "type": "LEGACY ROUTE",
+      "component": "CasesListPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/admin/routes.jsx:26"
+    },
+    {
+      "path": "/admin/cases/:id",
+      "side": "admin",
+      "type": "LEGACY ROUTE",
+      "component": "CaseDetailPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/admin/routes.jsx:27"
+    },
+    {
+      "path": "/admin/users",
+      "side": "admin",
+      "type": "LEGACY ROUTE",
+      "component": "UsersPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/admin/routes.jsx:30"
+    },
+    {
+      "path": "/admin/sites",
+      "side": "admin",
+      "type": "LEGACY ROUTE",
+      "component": "SitesListPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/admin/routes.jsx:33"
+    },
+    {
+      "path": "/admin/sites/:id",
+      "side": "admin",
+      "type": "LEGACY ROUTE",
+      "component": "SiteDetailPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/admin/routes.jsx:34"
+    },
+    {
+      "path": "/admin/sites/:id/:tab",
+      "side": "admin",
+      "type": "LEGACY ROUTE",
+      "component": "SiteDetailPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/admin/routes.jsx:35"
+    },
+    {
+      "path": "/admin/settings",
+      "side": "admin",
+      "type": "LEGACY ROUTE",
+      "component": "SettingsPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/admin/routes.jsx:38"
+    },
+    {
+      "path": "/admin/complaints",
+      "side": "admin",
+      "type": "LEGACY ROUTE",
+      "component": "Navigate(to=/admin/dispatch)",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/admin/routes.jsx:41"
+    },
+    {
+      "path": "/admin/system",
+      "side": "admin",
+      "type": "LEGACY ROUTE",
+      "component": "Navigate(to=/admin/settings)",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/admin/routes.jsx:42"
+    },
+    {
+      "path": "/admin/data-management",
+      "side": "admin",
+      "type": "LEGACY ROUTE",
+      "component": "Navigate(to=/admin/settings)",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/admin/routes.jsx:43"
+    },
+    {
+      "path": "/admin/standalone",
+      "side": "admin",
+      "type": "LEGACY ROUTE",
+      "component": "Navigate(to=/admin)",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/admin/routes.jsx:44"
+    },
+    {
+      "path": "/community/community",
+      "side": "community",
+      "type": "LEGACY ROUTE",
+      "component": "CommunityLayout",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/community/routes.jsx:13"
+    },
+    {
+      "path": "/community",
+      "side": "community",
+      "type": "LEGACY ROUTE",
+      "component": "CommunityHomePage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/community/routes.jsx:15"
+    },
+    {
+      "path": "/community/home",
+      "side": "community",
+      "type": "LEGACY ROUTE",
+      "component": "Navigate(to=/community)",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/community/routes.jsx:16"
+    },
+    {
+      "path": "/community/discover",
+      "side": "community",
+      "type": "LEGACY ROUTE",
+      "component": "Navigate(to=/community)",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/community/routes.jsx:17"
+    },
+    {
+      "path": "/community/observations",
+      "side": "community",
+      "type": "LEGACY ROUTE",
+      "component": "Navigate(to=/community/observe)",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/community/routes.jsx:18"
+    },
+    {
+      "path": "/community/cases",
+      "side": "community",
+      "type": "LEGACY ROUTE",
+      "component": "Navigate(to=/community)",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/community/routes.jsx:19"
+    },
+    {
+      "path": "/community/actions",
+      "side": "community",
+      "type": "LEGACY ROUTE",
+      "component": "Navigate(to=/community/missions)",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/community/routes.jsx:20"
+    },
+    {
+      "path": "/community/follow-ups",
+      "side": "community",
+      "type": "LEGACY ROUTE",
+      "component": "Navigate(to=/community/observe)",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/community/routes.jsx:21"
+    },
+    {
+      "path": "/community/map",
+      "side": "community",
+      "type": "LEGACY ROUTE",
+      "component": "CommunityMapPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/community/routes.jsx:24"
+    },
+    {
+      "path": "/community/missions",
+      "side": "community",
+      "type": "LEGACY ROUTE",
+      "component": "CommunityMissionsPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/community/routes.jsx:27"
+    },
+    {
+      "path": "/community/observe",
+      "side": "community",
+      "type": "LEGACY ROUTE",
+      "component": "CommunityObservePage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/community/routes.jsx:30"
+    },
+    {
+      "path": "/community/credits",
+      "side": "community",
+      "type": "LEGACY ROUTE",
+      "component": "CommunityCreditsPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/community/routes.jsx:33"
+    },
+    {
+      "path": "/community/impact",
+      "side": "community",
+      "type": "LEGACY ROUTE",
+      "component": "CommunityImpactPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/community/routes.jsx:36"
+    },
+    {
+      "path": "/executive/executive",
+      "side": "executive",
+      "type": "LEGACY ROUTE",
+      "component": "ExecutiveLayout",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/executive/routes.jsx:12"
+    },
+    {
+      "path": "/executive",
+      "side": "executive",
+      "type": "LEGACY ROUTE",
+      "component": "ExecutiveDashboardPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/executive/routes.jsx:13"
+    },
+    {
+      "path": "/executive/dashboard",
+      "side": "executive",
+      "type": "LEGACY ROUTE",
+      "component": "Navigate(to=/executive)",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/executive/routes.jsx:14"
+    },
+    {
+      "path": "/executive/approvals",
+      "side": "executive",
+      "type": "LEGACY ROUTE",
+      "component": "ExecutiveApprovals",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/executive/routes.jsx:15"
+    },
+    {
+      "path": "/executive/reports",
+      "side": "executive",
+      "type": "LEGACY ROUTE",
+      "component": "ExecutiveReports",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/executive/routes.jsx:16"
+    },
+    {
+      "path": "/executive/heatmap",
+      "side": "executive",
+      "type": "LEGACY ROUTE",
+      "component": "ExecutiveHeatmap",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/executive/routes.jsx:17"
+    },
+    {
+      "path": "/executive/cases",
+      "side": "executive",
+      "type": "LEGACY ROUTE",
+      "component": "ExecutiveCases",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/executive/routes.jsx:18"
+    },
+    {
+      "path": "/executive/map",
+      "side": "executive",
+      "type": "LEGACY ROUTE",
+      "component": "Navigate(to=/executive/heatmap)",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/executive/routes.jsx:19"
+    },
+    {
+      "path": "/",
+      "side": "public",
+      "type": "LEGACY ROUTE",
+      "component": "LandingPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/public/routes.jsx:16"
+    },
+    {
+      "path": "/landing",
+      "side": "public",
+      "type": "LEGACY ROUTE",
+      "component": "Navigate(to=/)",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/public/routes.jsx:17"
+    },
+    {
+      "path": "/demo",
+      "side": "public",
+      "type": "LEGACY ROUTE",
+      "component": "DemoHub",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/public/routes.jsx:18"
+    },
+    {
+      "path": "/demo/iot",
+      "side": "public",
+      "type": "LEGACY ROUTE",
+      "component": "IoTDemo",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/public/routes.jsx:19"
+    },
+    {
+      "path": "/demo/accounts",
+      "side": "public",
+      "type": "LEGACY ROUTE",
+      "component": "Navigate(to=/demo)",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/public/routes.jsx:20"
+    },
+    {
+      "path": "/youth",
+      "side": "public",
+      "type": "LEGACY ROUTE",
+      "component": "YouthCredits",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/public/routes.jsx:21"
+    },
+    {
+      "path": "/youth/credits",
+      "side": "public",
+      "type": "LEGACY ROUTE",
+      "component": "YouthCredits",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/public/routes.jsx:22"
+    },
+    {
+      "path": "/youth/leaderboard",
+      "side": "public",
+      "type": "LEGACY ROUTE",
+      "component": "YouthCredits",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/public/routes.jsx:23"
+    },
+    {
+      "path": "/certificate",
+      "side": "public",
+      "type": "LEGACY ROUTE",
+      "component": "YouthCertificate",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/public/routes.jsx:24"
+    },
+    {
+      "path": "/certificate/:id",
+      "side": "public",
+      "type": "LEGACY ROUTE",
+      "component": "YouthCertificate",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/public/routes.jsx:25"
+    },
+    {
+      "path": "/verify-cert/:id",
+      "side": "public",
+      "type": "LEGACY ROUTE",
+      "component": "YouthCertificate",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/public/routes.jsx:26"
+    },
+    {
+      "path": "/track/:id",
+      "side": "public",
+      "type": "LEGACY ROUTE",
+      "component": "Navigate(to=/citizen/reports)",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/public/routes.jsx:27"
+    },
+    {
+      "path": "/map",
+      "side": "public",
+      "type": "LEGACY ROUTE",
+      "component": "CitizenMap",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/public/routes.jsx:28"
+    },
+    {
+      "path": "/guide",
+      "side": "public",
+      "type": "LEGACY ROUTE",
+      "component": "SensorGuide",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/public/routes.jsx:29"
+    },
+    {
+      "path": "/docs/sensor-guide",
+      "side": "public",
+      "type": "LEGACY ROUTE",
+      "component": "Navigate(to=/guide)",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/public/routes.jsx:30"
+    },
+    {
+      "path": "/login",
+      "side": "public",
+      "type": "LEGACY ROUTE",
+      "component": "Login",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/public/routes.jsx:31"
+    },
+    {
+      "path": "/register",
+      "side": "public",
+      "type": "LEGACY ROUTE",
+      "component": "Login",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/public/routes.jsx:32"
+    },
+    {
+      "path": "/*",
+      "side": "public",
+      "type": "LEGACY ROUTE",
+      "component": "NotFound",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/apps/public/routes.jsx:33"
+    },
+    {
+      "path": "/documents",
+      "side": "public",
+      "type": "LEGACY ROUTE",
+      "component": "DocumentsListPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/app/router.jsx:49"
+    },
+    {
+      "path": "/documents/templates",
+      "side": "public",
+      "type": "LEGACY ROUTE",
+      "component": "TemplatesGalleryPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/app/router.jsx:50"
+    },
+    {
+      "path": "/templates",
+      "side": "public",
+      "type": "LEGACY ROUTE",
+      "component": "TemplatesGalleryPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/app/router.jsx:51"
+    },
+    {
+      "path": "/documents/new",
+      "side": "public",
+      "type": "LEGACY ROUTE",
+      "component": "DocumentEditorPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/app/router.jsx:52"
+    },
+    {
+      "path": "/documents/:id/edit",
+      "side": "public",
+      "type": "LEGACY ROUTE",
+      "component": "DocumentEditorPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/app/router.jsx:53"
+    },
+    {
+      "path": "/documents/editor/:id",
+      "side": "public",
+      "type": "LEGACY ROUTE",
+      "component": "DocumentEditorPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/app/router.jsx:54"
+    },
+    {
+      "path": "/documents/:id/preview",
+      "side": "public",
+      "type": "LEGACY ROUTE",
+      "component": "DocumentPreviewPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/app/router.jsx:55"
+    },
+    {
+      "path": "/documents/preview/:id",
+      "side": "public",
+      "type": "LEGACY ROUTE",
+      "component": "DocumentPreviewPage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/app/router.jsx:56"
+    },
+    {
+      "path": "/policy",
+      "side": "public",
+      "type": "LEGACY ROUTE",
+      "component": "PolicyIntelligencePage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/app/router.jsx:59"
+    },
+    {
+      "path": "/policy/intelligence",
+      "side": "public",
+      "type": "LEGACY ROUTE",
+      "component": "PolicyIntelligencePage",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/app/router.jsx:60"
+    },
+    {
+      "path": "/app/*",
+      "side": "public",
+      "type": "LEGACY ROUTE",
+      "component": "Navigate(to=/staff)",
+      "duplicateOf": null,
+      "canonicalRoute": "/dashboard",
+      "action": "RETIRED (ISOLATED IN APP/)",
+      "source": "app/src/app/router.jsx:63"
+    }
+  ]
+}

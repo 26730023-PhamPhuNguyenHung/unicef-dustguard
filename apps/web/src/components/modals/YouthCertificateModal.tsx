@@ -100,7 +100,7 @@ export const YouthCertificateModal: React.FC<YouthCertificateModalProps> = ({
               <p className="font-mono font-bold text-content-main text-[11px]">Mã tra cứu: {certificateCode}</p>
               <p className="text-[11px] text-content-muted">Ngày cấp: {issueDate}</p>
               <p className="text-[10px] text-content-muted max-w-xs">
-                Mã định danh được ký số và lưu trữ bất biến trên hệ thống SQLite SSOT của DustGuard VN.
+                Mã định danh được ký số và lưu trữ bất biến trên hệ thống SSOT của DustGuard VN.
               </p>
             </div>
 

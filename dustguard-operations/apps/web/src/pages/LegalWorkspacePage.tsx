@@ -1003,7 +1003,7 @@ export const LegalWorkspacePage: React.FC = () => {
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-ink-800 flex items-center gap-1.5">
                       <BookOpen className="w-4 h-4 text-dustguard-red" />
-                      <span>Tra cứu pháp quy toàn văn (SQLite FTS5)</span>
+                      <span>Tra cứu pháp quy toàn văn (FTS5 Engine)</span>
                     </span>
                     <span className="text-[10px] text-ink-400 font-mono">BM25 RANKED</span>
                   </div>
