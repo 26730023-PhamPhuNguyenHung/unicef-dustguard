@@ -328,9 +328,46 @@ export function runMigrations(): void {
     );
     CREATE INDEX IF NOT EXISTS audit_created_at_idx ON audit_logs(created_at);
     CREATE INDEX IF NOT EXISTS audit_actor_idx ON audit_logs(actor_id);
+
+    -- 22. Case Feedback (Đánh giá nghiệm thu của công dân) - trước đây được tạo runtime/ad-hoc
+    -- trực tiếp trong cases.routes.ts, nay chuyển về đây làm nguồn định nghĩa schema duy nhất.
+    -- Ràng buộc UNIQUE(case_id, user_id) đảm bảo mỗi người dùng chỉ có đúng 1 đánh giá cho 1 vụ
+    -- việc (route ghi bằng UPSERT - INSERT ... ON CONFLICT ... DO UPDATE).
+    CREATE TABLE IF NOT EXISTS case_feedback (
+      id TEXT PRIMARY KEY,
+      case_id TEXT NOT NULL REFERENCES cases(id) ON DELETE CASCADE,
+      user_id TEXT NOT NULL REFERENCES users(id),
+      rating INTEGER NOT NULL,
+      comment TEXT,
+      is_satisfied INTEGER NOT NULL,
+      request_reinspection INTEGER NOT NULL DEFAULT 0,
+      created_at TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS case_feedback_case_idx ON case_feedback(case_id);
+    CREATE UNIQUE INDEX IF NOT EXISTS case_feedback_unique ON case_feedback(case_id, user_id);
+
+    -- Chỉ mục bổ sung cho các cột khóa ngoại (FK) chưa có index, phát hiện qua rà soát đầy đủ
+    -- (mỗi FK nên có ít nhất 1 index để tránh full table scan khi JOIN/lookup theo cột đó).
+    CREATE INDEX IF NOT EXISTS cases_created_by_idx ON cases(created_by);
+    CREATE INDEX IF NOT EXISTS report_media_uploaded_by_idx ON report_media(uploaded_by);
+    CREATE INDEX IF NOT EXISTS case_reports_report_idx ON case_reports(report_id);
+    CREATE INDEX IF NOT EXISTS case_reports_linked_by_idx ON case_reports(linked_by);
+    CREATE INDEX IF NOT EXISTS confirmations_user_idx ON confirmations(user_id);
+    CREATE INDEX IF NOT EXISTS saved_cases_user_idx ON saved_cases(user_id);
+    CREATE INDEX IF NOT EXISTS case_updates_created_by_idx ON case_updates(created_by);
+    CREATE INDEX IF NOT EXISTS tasks_case_idx ON verification_tasks(case_id);
+    CREATE INDEX IF NOT EXISTS tasks_created_by_idx ON verification_tasks(created_by);
+    CREATE INDEX IF NOT EXISTS task_submissions_user_idx ON task_submissions(user_id);
+    CREATE INDEX IF NOT EXISTS communities_created_by_idx ON communities(created_by);
+    CREATE INDEX IF NOT EXISTS posts_author_idx ON posts(author_id);
+    CREATE INDEX IF NOT EXISTS posts_case_idx ON posts(case_id);
+    CREATE INDEX IF NOT EXISTS comments_user_idx ON comments(user_id);
+    CREATE INDEX IF NOT EXISTS content_reports_reporter_idx ON content_reports(reporter_id);
+    CREATE INDEX IF NOT EXISTS content_reports_reviewed_by_idx ON content_reports(reviewed_by);
+    CREATE INDEX IF NOT EXISTS case_feedback_user_idx ON case_feedback(user_id);
   `);
 
-  console.log('✅ Khởi tạo thành công toàn bộ 21 bảng và chỉ mục SQLite!');
+  console.log('✅ Khởi tạo thành công toàn bộ 22 bảng và chỉ mục SQLite!');
 }
 
 // Cho phép chạy trực tiếp từ CLI

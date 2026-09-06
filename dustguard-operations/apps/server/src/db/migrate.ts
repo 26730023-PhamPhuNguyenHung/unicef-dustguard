@@ -65,6 +65,16 @@ export function runMigrations(initSystemConfig = true): void {
     db.exec(`CREATE INDEX IF NOT EXISTS idx_remediation_case ON remediation_submissions(case_id);`);
     db.exec(`CREATE INDEX IF NOT EXISTS idx_contractors_name ON contractors(name);`);
     db.exec(`CREATE INDEX IF NOT EXISTS idx_inspection_items_inspection ON inspection_items(inspection_id);`);
+
+    // Older demo seeds accidentally persisted SQLite expressions such as
+    // "datetime('now', '+1 days')" as plain text. They are not dates and
+    // cause the task queue to render "Invalid Date". Repair only those known
+    // malformed values, preserving every genuine due date.
+    db.exec(`
+      UPDATE tasks
+      SET due_at = datetime(COALESCE(created_at, 'now'), '+1 day')
+      WHERE due_at LIKE 'datetime(%'
+    `);
   } catch (err: any) {
     console.warn('[Database Migration] Notice on schema evolutions:', err.message);
   }

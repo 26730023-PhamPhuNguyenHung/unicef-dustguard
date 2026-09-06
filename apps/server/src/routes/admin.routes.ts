@@ -1,6 +1,7 @@
 import { Router, Response } from 'express';
 import { UserRepository, AuditRepository, DashboardRepository } from '../repositories/index.js';
 import { authenticateToken, requireRole, AuthRequest } from '../middlewares/auth.js';
+import { adminChangeRoleSchema, adminChangeStatusSchema } from '@dustguard/shared';
 
 const router = Router();
 
@@ -18,7 +19,17 @@ router.get('/users', (req, res: Response): void => {
 
 // 2. Đổi role người dùng
 router.patch('/users/:id/role', (req: AuthRequest, res: Response): void => {
-  const { role } = req.body;
+  // Bug đã vá: trước đây không kiểm tra `role` có nằm trong enum hợp lệ hay không - giá trị rác
+  // sẽ vi phạm ràng buộc CHECK ở bảng users và ném lỗi CSDL 500 khó hiểu thay vì 400 rõ ràng.
+  const validated = adminChangeRoleSchema.safeParse(req.body);
+  if (!validated.success) {
+    res.status(400).json({
+      success: false,
+      error: { code: 'VALIDATION_ERROR', message: validated.error.errors[0]?.message || 'Vai trò không hợp lệ.' }
+    });
+    return;
+  }
+  const { role } = validated.data;
   const updated = UserRepository.updateRole(req.params.id, role);
   AuditRepository.log({
     actorId: req.user!.id,
@@ -33,7 +44,15 @@ router.patch('/users/:id/role', (req: AuthRequest, res: Response): void => {
 
 // 3. Tạm khóa / Kích hoạt tài khoản
 router.patch('/users/:id/status', (req: AuthRequest, res: Response): void => {
-  const { status } = req.body;
+  const validated = adminChangeStatusSchema.safeParse(req.body);
+  if (!validated.success) {
+    res.status(400).json({
+      success: false,
+      error: { code: 'VALIDATION_ERROR', message: validated.error.errors[0]?.message || 'Trạng thái không hợp lệ.' }
+    });
+    return;
+  }
+  const { status } = validated.data;
   const updated = UserRepository.updateStatus(req.params.id, status);
   AuditRepository.log({
     actorId: req.user!.id,

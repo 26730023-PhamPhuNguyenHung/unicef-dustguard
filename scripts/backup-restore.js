@@ -162,9 +162,9 @@ export function performRestore(backupPath) {
     }
 
     // Tạo thư mục cha nếu chưa có
-    const targetDir = path.dirname(dbInfo.sourcePath);
-    if (!fs.existsSync(targetDir)) {
-      fs.mkdirSync(targetDir, { recursive: true });
+    const dbParentDir = path.dirname(dbInfo.sourcePath);
+    if (!fs.existsSync(dbParentDir)) {
+      fs.mkdirSync(dbParentDir, { recursive: true });
     }
 
     fs.copyFileSync(backupFile, dbInfo.sourcePath);

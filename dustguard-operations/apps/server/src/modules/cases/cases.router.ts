@@ -8,6 +8,7 @@ import {
   CaseTransitionSchema,
   CaseAssignSchema,
   HumanDecisionSubmitSchema,
+  MissingFactTaskCreateSchema,
   canTransitionCase,
   Case,
   CaseStatus,
@@ -988,11 +989,7 @@ casesRouter.post('/:id/decisions', requireAuth, (req: AuthRequest, res, next) =>
 casesRouter.post('/:id/missing-facts/create-task', requireAuth, (req: AuthRequest, res, next) => {
   try {
     const { id } = req.params;
-    const { fact, reason_needed, recommended_verification_action, priority = 'NORMAL' } = req.body;
-    if (!fact) {
-      res.status(400).json({ error: 'Nội dung dữ kiện cần xác minh không được để trống' });
-      return;
-    }
+    const { fact, reason_needed, recommended_verification_action, priority } = MissingFactTaskCreateSchema.parse(req.body);
 
     const taskId = `task-mf-${crypto.randomUUID().substring(0, 8)}`;
     const dueDays = priority === 'URGENT' ? 1 : 2;

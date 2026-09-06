@@ -258,3 +258,94 @@ export const CommunityFeedbackSchema = z.object({
 }).refine(data => !!(data.external_case_id || data.case_code), {
   message: 'external_case_id hoặc case_code là bắt buộc để định danh hồ sơ',
 });
+
+// Signals (field-reported / IoT-adjacent observations that may become cases)
+export const SignalCreateSchema = z.object({
+  source_type: z.enum(['STAFF', 'COMMUNITY', 'IOT', 'IMPORT']).default('STAFF'),
+  external_source_id: z.string().optional(),
+  signal_type: z.string().min(1, 'Loại tín hiệu không được để trống'),
+  title: z.string().min(3, 'Tiêu đề tối thiểu 3 ký tự'),
+  description: z.string().optional().default(''),
+  location_text: z.string().min(3, 'Địa điểm không được để trống'),
+  latitude: z.number(),
+  longitude: z.number(),
+  observed_at: z.string().optional(),
+  payload_json: z.string().optional(),
+});
+
+// Public citizen report intake — no auth, so this is the only gate on what
+// reaches the signals table from the open internet; kept intentionally strict.
+export const PublicReportSchema = z.object({
+  title: z.string().min(3, 'Vui lòng nhập tiêu đề phản ánh (tối thiểu 3 ký tự)').max(300),
+  description: z.string().max(5000).optional().default(''),
+  location_text: z.string().min(3, 'Vui lòng nhập địa điểm phản ánh').max(500),
+  latitude: z.number().min(-90).max(90).optional().default(10.7769),
+  longitude: z.number().min(-180).max(180).optional().default(106.7009),
+  project_id: z.string().optional(),
+  reporter_name: z.string().max(200).optional().default('Người dân'),
+  reporter_phone: z.string().max(30).optional(),
+  photos: z.array(z.string()).max(20).optional().default([]),
+});
+
+export const SignalLinkCaseSchema = z.object({
+  case_id: z.string().min(1, 'case_id là bắt buộc'),
+  notes: z.string().optional().default(''),
+});
+
+export const SignalCreateCaseSchema = z.object({
+  priority: z.enum(['LOW', 'NORMAL', 'HIGH', 'URGENT']).default('NORMAL'),
+  assigned_staff_id: z.string().optional(),
+  project_id: z.string().optional(),
+  contractor_id: z.string().optional(),
+  contractor_name: z.string().optional(),
+});
+
+// Tasks
+export const TaskCreateSchema = z.object({
+  case_id: z.string().optional(),
+  title: z.string().min(3, 'Tiêu đề nhiệm vụ tối thiểu 3 ký tự'),
+  description: z.string().optional().default(''),
+  task_type: z.string().optional().default('GENERAL'),
+  source: z.string().optional().default('MANUAL'),
+  source_entity_type: z.string().optional(),
+  source_entity_id: z.string().optional(),
+  assigned_to: z.string().optional(),
+  priority: z.enum(['LOW', 'NORMAL', 'HIGH', 'URGENT']).default('NORMAL'),
+  due_at: z.string().optional(),
+});
+
+export const TaskUpdateSchema = z.object({
+  status: z.string().optional(),
+  priority: z.enum(['LOW', 'NORMAL', 'HIGH', 'URGENT']).optional(),
+  due_at: z.string().optional(),
+  assigned_to: z.string().nullable().optional(),
+  title: z.string().min(3).optional(),
+  description: z.string().optional(),
+  task_type: z.string().optional(),
+});
+
+// Decision Support — missing-fact follow-up task
+export const MissingFactTaskCreateSchema = z.object({
+  fact: z.string().min(1, 'Nội dung dữ kiện cần xác minh không được để trống'),
+  reason_needed: z.string().optional(),
+  recommended_verification_action: z.string().optional(),
+  priority: z.enum(['NORMAL', 'URGENT']).default('NORMAL'),
+});
+
+// Decision Support — append-only human decision record (distinct shape from
+// HumanDecisionSubmitSchema, which is the /cases/:id/decisions variant)
+export const HumanDecisionRecordSchema = z.object({
+  decisionType: z.string().min(1, 'decisionType là bắt buộc'),
+  reason: z.string().min(3, 'Lý do / căn cứ tối thiểu 3 ký tự'),
+  references: z.array(z.any()).optional(),
+  supersedesDecisionId: z.string().optional(),
+});
+
+// Corrective Actions — partial update
+export const CorrectiveActionUpdateSchema = z.object({
+  status: z.enum(['OPEN', 'IN_PROGRESS', 'SUBMITTED', 'VERIFIED', 'REJECTED', 'CLOSED']).optional(),
+  title: z.string().min(3).optional(),
+  description: z.string().min(5).optional(),
+  responsible_party: z.string().min(2).optional(),
+  due_at: z.string().optional(),
+});

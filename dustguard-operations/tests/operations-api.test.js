@@ -622,12 +622,14 @@ test('31. Community Import Idempotency: Duplicate imports update without duplica
 
   const firstImport = await req('/api/integrations/community/cases', {
     method: 'POST',
+    headers: { 'x-service-key': process.env.INTEGRATION_SERVICE_KEY || 'dustguard-internal-2026' },
     body: JSON.stringify(payload),
   });
   assert.equal(firstImport.status, 200);
 
   const secondImport = await req('/api/integrations/community/cases', {
     method: 'POST',
+    headers: { 'x-service-key': process.env.INTEGRATION_SERVICE_KEY || 'dustguard-internal-2026' },
     body: JSON.stringify(payload),
   });
   assert.equal(secondImport.status, 200);

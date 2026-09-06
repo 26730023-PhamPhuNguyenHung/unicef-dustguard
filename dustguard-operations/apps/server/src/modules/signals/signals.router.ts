@@ -3,6 +3,7 @@ import crypto from 'node:crypto';
 import { query, queryOne, run, transaction } from '../../db/connection.js';
 import { requireAuth, AuthRequest } from '../../middleware/auth.js';
 import { requireCapability } from '../../middleware/rbac.js';
+import { SignalCreateSchema, PublicReportSchema, SignalLinkCaseSchema, SignalCreateCaseSchema } from '../../shared.js';
 
 export const signalsRouter = Router();
 
@@ -59,39 +60,35 @@ signalsRouter.get('/', requireAuth, (req: Request, res: Response) => {
 });
 
 // 2. Create Signal
-signalsRouter.post('/', requireAuth, (req: Request, res: Response) => {
-  const {
-    source_type = 'STAFF',
-    external_source_id,
-    signal_type,
-    title,
-    description = '',
-    location_text,
-    latitude,
-    longitude,
-    observed_at,
-    payload_json,
-  } = req.body;
+signalsRouter.post('/', requireAuth, (req: Request, res: Response, next) => {
+  try {
+    const {
+      source_type,
+      external_source_id,
+      signal_type,
+      title,
+      description,
+      location_text,
+      latitude,
+      longitude,
+      observed_at,
+      payload_json,
+    } = SignalCreateSchema.parse(req.body);
 
-  if (!signal_type || !title || !location_text || latitude === undefined || longitude === undefined) {
-    res.status(400).json({
-      success: false,
-      error: { code: 'VALIDATION_ERROR', message: 'Loại tín hiệu, tiêu đề, địa điểm và tọa độ là bắt buộc' },
-    });
-    return;
+    const id = `sig-${Date.now()}-${crypto.randomUUID().substring(0, 6)}`;
+    const observedAtStr = observed_at || new Date().toISOString();
+
+    run(
+      `INSERT INTO signals (id, source_type, external_source_id, signal_type, title, description, location_text, latitude, longitude, observed_at, received_at, payload_json, integrity_status, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), ?, 'VALID', datetime('now'))`,
+      [id, source_type, external_source_id || null, signal_type, title, description, location_text, latitude, longitude, observedAtStr, payload_json || null]
+    );
+
+    const created = queryOne<any>(`SELECT * FROM signals WHERE id = ?`, [id]);
+    res.status(201).json({ success: true, data: created });
+  } catch (err) {
+    next(err);
   }
-
-  const id = `sig-${Date.now()}`;
-  const observedAtStr = observed_at || new Date().toISOString();
-
-  run(
-    `INSERT INTO signals (id, source_type, external_source_id, signal_type, title, description, location_text, latitude, longitude, observed_at, received_at, payload_json, integrity_status, created_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), ?, 'VALID', datetime('now'))`,
-    [id, source_type, external_source_id || null, signal_type, title, description, location_text, latitude, longitude, observedAtStr, payload_json || null]
-  );
-
-  const created = queryOne<any>(`SELECT * FROM signals WHERE id = ?`, [id]);
-  res.status(201).json({ success: true, data: created });
 });
 
 // 3. Get Signal Detail
@@ -199,14 +196,10 @@ signalsRouter.get('/:id/matches', requireAuth, (req: Request, res: Response) => 
 });
 
 // 5. Link Signal to Case
-signalsRouter.post('/:id/link-case', requireAuth, requireCapability('case:update'), (req: AuthRequest, res: Response) => {
+signalsRouter.post('/:id/link-case', requireAuth, requireCapability('case:update'), (req: AuthRequest, res: Response, next) => {
+ try {
   const { id } = req.params;
-  const { case_id, notes = '' } = req.body;
-
-  if (!case_id) {
-    res.status(400).json({ success: false, error: { code: 'VALIDATION_ERROR', message: 'case_id là bắt buộc' } });
-    return;
-  }
+  const { case_id, notes } = SignalLinkCaseSchema.parse(req.body);
 
   const signal = queryOne<any>(`SELECT * FROM signals WHERE id = ?`, [id]);
   const caseRecord = queryOne<any>(`SELECT * FROM cases WHERE id = ?`, [case_id]);
@@ -258,31 +251,27 @@ signalsRouter.post('/:id/link-case', requireAuth, requireCapability('case:update
       signal_id: id,
     },
   });
+ } catch (err) {
+   next(err);
+ }
 });
 
 // 6. Public Community Report Submission (No auth required)
-signalsRouter.post('/public-report', (req: Request, res: Response) => {
+signalsRouter.post('/public-report', (req: Request, res: Response, next) => {
+ try {
   const {
     title,
-    description = '',
+    description,
     location_text,
-    latitude = 10.7769,
-    longitude = 106.7009,
+    latitude,
+    longitude,
     project_id,
-    reporter_name = 'Người dân',
+    reporter_name,
     reporter_phone,
-    photos = [],
-  } = req.body;
+    photos,
+  } = PublicReportSchema.parse(req.body);
 
-  if (!title || !location_text) {
-    res.status(400).json({
-      success: false,
-      error: { code: 'VALIDATION_ERROR', message: 'Tiêu đề và địa điểm phản ánh là bắt buộc' },
-    });
-    return;
-  }
-
-  const signalId = `sig-pub-${Date.now()}`;
+  const signalId = `sig-pub-${Date.now()}-${crypto.randomUUID().substring(0, 6)}`;
   const payload = {
     reporter_name,
     reporter_phone,
@@ -299,8 +288,8 @@ signalsRouter.post('/public-report', (req: Request, res: Response) => {
       title,
       description,
       location_text,
-      Number(latitude) || 10.7769,
-      Number(longitude) || 106.7009,
+      latitude,
+      longitude,
       JSON.stringify(payload),
     ]
   );
@@ -312,10 +301,14 @@ signalsRouter.post('/public-report', (req: Request, res: Response) => {
     data: created,
     signal: created,
   });
+ } catch (err) {
+   next(err);
+ }
 });
 
 // 7. Triage Signal into an Official Case
-signalsRouter.post('/:id/create-case', requireAuth, (req: AuthRequest, res: Response) => {
+signalsRouter.post('/:id/create-case', requireAuth, (req: AuthRequest, res: Response, next) => {
+ try {
   const { id } = req.params;
   const signal = queryOne<any>(`SELECT * FROM signals WHERE id = ?`, [id]);
 
@@ -338,7 +331,7 @@ signalsRouter.post('/:id/create-case', requireAuth, (req: AuthRequest, res: Resp
     }
   }
 
-  const { priority = 'NORMAL', assigned_staff_id, project_id, contractor_id, contractor_name } = req.body;
+  const { priority, assigned_staff_id, project_id, contractor_id, contractor_name } = SignalCreateCaseSchema.parse(req.body ?? {});
 
   const countRow = queryOne<{ c: number }>(`SELECT count(*) as c FROM cases`);
   const nextNum = (countRow?.c || 0) + 1;
@@ -408,5 +401,8 @@ signalsRouter.post('/:id/create-case', requireAuth, (req: AuthRequest, res: Resp
     message: `Tiếp nhận phản ánh thành công! Đã tạo vụ việc ${case_code}.`,
     case: createdCase,
   });
+ } catch (err) {
+   next(err);
+ }
 });
 

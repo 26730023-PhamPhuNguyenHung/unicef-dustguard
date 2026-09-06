@@ -1115,7 +1115,7 @@ export function seedDatabase() {
         assigned_to: 'usr-staff-1',
         status: 'OPEN',
         priority: 'HIGH',
-        due_at: "datetime('now', '+1 days')",
+        due_at: new Date(Date.now() + 86400000).toISOString(),
       },
       {
         id: 'task-002',
@@ -1128,7 +1128,7 @@ export function seedDatabase() {
         assigned_to: 'usr-staff-1',
         status: 'OPEN',
         priority: 'URGENT',
-        due_at: "datetime('now', '+0 days')",
+        due_at: new Date().toISOString(),
       },
       {
         id: 'task-003',
@@ -1141,7 +1141,7 @@ export function seedDatabase() {
         assigned_to: 'usr-staff-1',
         status: 'OPEN',
         priority: 'NORMAL',
-        due_at: "datetime('now', '+2 days')",
+        due_at: new Date(Date.now() + 2 * 86400000).toISOString(),
       },
       {
         id: 'task-004',
@@ -1154,7 +1154,7 @@ export function seedDatabase() {
         assigned_to: 'usr-legal-1',
         status: 'OPEN',
         priority: 'HIGH',
-        due_at: "datetime('now', '+1 days')",
+        due_at: new Date(Date.now() + 86400000).toISOString(),
       },
       {
         id: 'task-005',
@@ -1167,7 +1167,7 @@ export function seedDatabase() {
         assigned_to: 'usr-staff-7',
         status: 'OPEN',
         priority: 'HIGH',
-        due_at: "datetime('now', '+0 days')",
+        due_at: new Date().toISOString(),
       },
     ];
 

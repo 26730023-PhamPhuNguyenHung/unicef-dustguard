@@ -499,7 +499,7 @@ export const TasksPage: React.FC = () => {
 
                     {/* Metadata line: Due Date, Assignee, Linked Case */}
                     <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-slate-500 pt-1">
-                      {t.due_at && (
+                      {t.due_at && !Number.isNaN(new Date(t.due_at).getTime()) && (
                         <span className={`flex items-center gap-1 font-medium ${t.is_overdue ? 'text-rose-700 font-bold' : 'text-slate-600'}`}>
                           <Clock className="w-3.5 h-3.5" />
                           Hạn: {new Date(t.due_at).toLocaleDateString('vi-VN')}

@@ -2,7 +2,7 @@ import { Router, Response } from 'express';
 import crypto from 'node:crypto';
 import path from 'path';
 import { CaseRepository, ConfirmationRepository, SavedCaseRepository, ObservationRepository } from '../repositories/index.js';
-import { createObservationSchema } from '@dustguard/shared';
+import { createObservationSchema, caseFeedbackSchema } from '@dustguard/shared';
 import { authenticateToken, optionalAuthenticateToken, AuthRequest } from '../middlewares/auth.js';
 import { sqliteClient } from '../db/sqlite-client.js';
 import { uploadMiddleware, computeFileSha256 } from '../utils/upload.js';
@@ -271,32 +271,39 @@ router.post('/:id/feedback', authenticateToken, (req: AuthRequest, res: Response
     return;
   }
 
-  // Khởi tạo bảng feedback nếu chưa tồn tại
-  sqliteClient.exec(`
-    CREATE TABLE IF NOT EXISTS case_feedback (
-      id TEXT PRIMARY KEY,
-      case_id TEXT NOT NULL,
-      user_id TEXT NOT NULL,
-      rating INTEGER NOT NULL,
-      comment TEXT,
-      is_satisfied INTEGER NOT NULL,
-      request_reinspection INTEGER NOT NULL DEFAULT 0,
-      created_at TEXT NOT NULL
-    );
-    CREATE INDEX IF NOT EXISTS case_feedback_case_idx ON case_feedback(case_id);
-  `);
+  // Validate input (Bug đã vá: trước đây không có kiểm tra kiểu/khoảng giá trị nào - rating có
+  // thể là số âm/thập phân/ngoài 1-5, comment không giới hạn độ dài)
+  const validated = caseFeedbackSchema.safeParse(req.body);
+  if (!validated.success) {
+    res.status(400).json({
+      success: false,
+      error: { code: 'VALIDATION_ERROR', message: validated.error.errors[0]?.message || 'Dữ liệu đánh giá không hợp lệ.' }
+    });
+    return;
+  }
+  const { rating, comment, isSatisfied, requestReinspection } = validated.data;
 
-  const { rating = 5, comment = '', isSatisfied = true, requestReinspection = false } = req.body;
-  const feedbackId = `fb_${Date.now()}_${crypto.randomUUID().substring(0, 8)}`;
+  // Bug đã vá (duplicate rows): trước đây không có gì ngăn 1 người dùng gửi nhiều đánh giá cho
+  // cùng 1 vụ việc (đã tái hiện: 2 request liên tiếp tạo 2 dòng case_feedback trùng case+user).
+  // Nay dùng UPSERT dựa trên ràng buộc UNIQUE(case_id, user_id) ở migrate.ts: gửi lại đánh giá
+  // sẽ CẬP NHẬT đánh giá cũ thay vì tạo thêm dòng mới.
+  const existing = sqliteClient.get<any>('SELECT id FROM case_feedback WHERE case_id = ? AND user_id = ?', [c.id, req.user!.id]);
+  const feedbackId = existing?.id || `fb_${Date.now()}_${crypto.randomUUID().substring(0, 8)}`;
 
   sqliteClient.run(`
     INSERT INTO case_feedback (id, case_id, user_id, rating, comment, is_satisfied, request_reinspection, created_at)
     VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))
+    ON CONFLICT(case_id, user_id) DO UPDATE SET
+      rating = excluded.rating,
+      comment = excluded.comment,
+      is_satisfied = excluded.is_satisfied,
+      request_reinspection = excluded.request_reinspection,
+      created_at = datetime('now')
   `, [
     feedbackId,
     c.id,
     req.user!.id,
-    Number(rating),
+    rating,
     comment,
     isSatisfied ? 1 : 0,
     requestReinspection ? 1 : 0
@@ -361,19 +368,8 @@ router.post('/:id/feedback', authenticateToken, (req: AuthRequest, res: Response
 // 8. Lấy danh sách đánh giá của vụ việc
 router.get('/:id/feedback', optionalAuthenticateToken, (req: AuthRequest, res: Response): void => {
   try {
-    sqliteClient.exec(`
-      CREATE TABLE IF NOT EXISTS case_feedback (
-        id TEXT PRIMARY KEY,
-        case_id TEXT NOT NULL,
-        user_id TEXT NOT NULL,
-        rating INTEGER NOT NULL,
-        comment TEXT,
-        is_satisfied INTEGER NOT NULL,
-        request_reinspection INTEGER NOT NULL DEFAULT 0,
-        created_at TEXT NOT NULL
-      );
-    `);
-
+    // case_feedback nay được định nghĩa chính thức trong db/migrate.ts (chạy khi server khởi
+    // động) - không cần CREATE TABLE IF NOT EXISTS ad-hoc ở đây nữa.
     const feedbacks = sqliteClient.all(`
       SELECT f.*, u.full_name as user_name
       FROM case_feedback f

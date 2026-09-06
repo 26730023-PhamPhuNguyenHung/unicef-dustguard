@@ -5,6 +5,7 @@ import { AuthRequest, requireAuth } from '../../middleware/auth.js';
 import { requirePermission } from '../../middleware/rbac.js';
 import {
   CorrectiveActionCreateSchema,
+  CorrectiveActionUpdateSchema,
   RemediationSubmitSchema,
   RemediationReviewSchema,
   CorrectiveAction,
@@ -141,7 +142,7 @@ actionsRouter.post('/:id/actions', requirePermission('action:create'), (req: Aut
 actionsRouter.patch('/:id', requirePermission('action:update'), (req: AuthRequest, res, next) => {
   try {
     const { id } = req.params;
-    const { status, title, description, responsible_party, due_at } = req.body;
+    const { status, title, description, responsible_party, due_at } = CorrectiveActionUpdateSchema.parse(req.body);
 
     const action = get(`SELECT * FROM corrective_actions WHERE id = ?`, [id]);
     if (!action) {

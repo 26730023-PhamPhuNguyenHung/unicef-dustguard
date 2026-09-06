@@ -105,3 +105,30 @@ export const createPostSchema = z.object({
 export const createCommentSchema = z.object({
   content: z.string().min(2, 'Bình luận tối thiểu 2 ký tự').max(500, 'Tối đa 500 ký tự')
 });
+
+export const caseFeedbackSchema = z.object({
+  rating: z.number().int('Đánh giá phải là số nguyên').min(1, 'Đánh giá tối thiểu 1 sao').max(5, 'Đánh giá tối đa 5 sao').default(5),
+  comment: z.string().max(1000, 'Nhận xét tối đa 1000 ký tự').optional().default(''),
+  isSatisfied: z.boolean().default(true),
+  requestReinspection: z.boolean().default(false)
+});
+
+export const updateProfileSchema = z.object({
+  fullName: z.string().min(2, 'Họ tên tối thiểu 2 ký tự').max(100, 'Họ tên tối đa 100 ký tự').optional(),
+  district: z.string().max(100).optional(),
+  ward: z.string().max(100).optional(),
+  bio: z.string().max(500, 'Tiểu sử tối đa 500 ký tự').optional(),
+  displayIdentity: z.enum(['name', 'anonymous']).optional()
+});
+
+export const adminChangeRoleSchema = z.object({
+  role: z.enum(['citizen', 'community_member', 'moderator', 'admin'], { errorMap: () => ({ message: 'Vai trò không hợp lệ.' }) })
+});
+
+export const adminChangeStatusSchema = z.object({
+  status: z.enum(['active', 'suspended', 'deleted'], { errorMap: () => ({ message: 'Trạng thái không hợp lệ.' }) })
+});
+
+export const moderatorContentActionSchema = z.object({
+  action: z.enum(['dismiss', 'hide', 'delete'], { errorMap: () => ({ message: 'Hành động kiểm duyệt không hợp lệ.' }) })
+});

@@ -3,6 +3,7 @@ import crypto from 'node:crypto';
 import { query, queryOne, run } from '../../db/connection.js';
 import { requireAuth } from '../../middleware/auth.js';
 import { requireCapability } from '../../middleware/rbac.js';
+import { TaskCreateSchema, TaskUpdateSchema } from '../../shared.js';
 
 export const tasksRouter = Router();
 
@@ -150,27 +151,20 @@ tasksRouter.get('/', requireAuth, requireCapability('task:view'), (req: Request,
 });
 
 // 2. Create Task
-tasksRouter.post('/', requireAuth, requireCapability('task:update'), (req: Request, res: Response) => {
+tasksRouter.post('/', requireAuth, requireCapability('task:update'), (req: Request, res: Response, next) => {
+ try {
   const {
     case_id,
     title,
-    description = '',
-    task_type = 'GENERAL',
-    source = 'MANUAL',
+    description,
+    task_type,
+    source,
     source_entity_type,
     source_entity_id,
     assigned_to,
-    priority = 'NORMAL',
+    priority,
     due_at,
-  } = req.body;
-
-  if (!title) {
-    res.status(400).json({
-      success: false,
-      error: { code: 'VALIDATION_ERROR', message: 'Tiêu đề nhiệm vụ là bắt buộc' },
-    });
-    return;
-  }
+  } = TaskCreateSchema.parse(req.body);
 
   const id = `task-${Date.now()}-${crypto.randomUUID().substring(0, 6)}`;
   const finalDueAt = due_at || new Date(Date.now() + 2 * 86400000).toISOString();
@@ -223,10 +217,14 @@ tasksRouter.post('/', requireAuth, requireCapability('task:update'), (req: Reque
     task: created,
     data: created,
   });
+ } catch (err) {
+   next(err);
+ }
 });
 
 // 3. Update Task (Status, Assignee, Priority, Details)
-tasksRouter.patch('/:id', requireAuth, requireCapability('task:update'), (req: Request, res: Response) => {
+tasksRouter.patch('/:id', requireAuth, requireCapability('task:update'), (req: Request, res: Response, next) => {
+ try {
   const { id } = req.params;
   const task = queryOne<any>(`SELECT * FROM tasks WHERE id = ?`, [id]);
   if (!task) {
@@ -234,7 +232,7 @@ tasksRouter.patch('/:id', requireAuth, requireCapability('task:update'), (req: R
     return;
   }
 
-  const { status, priority, due_at, assigned_to, title, description, task_type } = req.body;
+  const { status, priority, due_at, assigned_to, title, description, task_type } = TaskUpdateSchema.parse(req.body);
 
   let newStatus = task.status;
   if (status) {
@@ -302,6 +300,9 @@ tasksRouter.patch('/:id', requireAuth, requireCapability('task:update'), (req: R
     task: formatted,
     data: formatted,
   });
+ } catch (err) {
+   next(err);
+ }
 });
 
 // 4. Delete / Cancel Task

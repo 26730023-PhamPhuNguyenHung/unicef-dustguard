@@ -2,6 +2,7 @@ import { Router, Response } from 'express';
 import { ReportRepository, SavedCaseRepository, UserRepository } from '../repositories/index.js';
 import { sqliteClient } from '../db/sqlite-client.js';
 import { authenticateToken, AuthRequest } from '../middlewares/auth.js';
+import { updateProfileSchema } from '@dustguard/shared';
 
 const router = Router();
 
@@ -48,7 +49,18 @@ router.get('/contributions', authenticateToken, (req: AuthRequest, res: Response
 
 // Cập nhật thông tin và quyền riêng tư (chế độ hiển thị ẩn danh 'anonymous')
 router.patch('/profile', authenticateToken, (req: AuthRequest, res: Response): void => {
-  const { fullName, district, ward, bio, displayIdentity } = req.body;
+  // Bug đã vá: trước đây không có validation nào - bio/fullName không giới hạn độ dài, và
+  // displayIdentity có thể bị set thành 1 chuỗi tùy ý bất chấp ràng buộc CHECK('name','anonymous')
+  // ở CSDL, khiến request bị lỗi CSDL 500 khó hiểu thay vì lỗi 400 rõ ràng.
+  const validated = updateProfileSchema.safeParse(req.body);
+  if (!validated.success) {
+    res.status(400).json({
+      success: false,
+      error: { code: 'VALIDATION_ERROR', message: validated.error.errors[0]?.message || 'Dữ liệu hồ sơ không hợp lệ.' }
+    });
+    return;
+  }
+  const { fullName, district, ward, bio, displayIdentity } = validated.data;
   const updated = UserRepository.updateProfile(req.user!.id, {
     fullName,
     district,

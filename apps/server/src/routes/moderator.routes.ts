@@ -2,7 +2,7 @@ import { Router, Response } from 'express';
 import crypto from 'node:crypto';
 import { ReportRepository, CaseRepository, AuditRepository, NotificationRepository } from '../repositories/index.js';
 import { sqliteClient } from '../db/sqlite-client.js';
-import { updateCaseStatusSchema, moderatorRejectReportSchema } from '@dustguard/shared';
+import { updateCaseStatusSchema, moderatorRejectReportSchema, moderatorContentActionSchema } from '@dustguard/shared';
 import { authenticateToken, requireRole, AuthRequest } from '../middlewares/auth.js';
 import { forwardCaseToOperations } from '../utils/handoff.js';
 
@@ -86,7 +86,9 @@ router.post('/reports/:id/verify', (req: AuthRequest, res: Response): void => {
       district: report.district,
       city: report.city || 'TP. Hồ Chí Minh',
       status: 'confirmed_signal',
-      priority: priority || 'normal',
+      // Bug đã vá: `priority` không được kiểm tra trước khi ghi vào cột có ràng buộc
+      // CHECK(priority IN ('normal','attention','urgent')) - giá trị rác sẽ ném lỗi CSDL 500.
+      priority: ['normal', 'attention', 'urgent'].includes(priority) ? priority : 'normal',
       createdBy: req.user!.id
     });
 
@@ -173,7 +175,7 @@ router.post('/cases', (req: AuthRequest, res: Response): void => {
     district,
     city: city || 'TP. Hồ Chí Minh',
     status: 'confirmed_signal',
-    priority: priority || 'normal',
+    priority: ['normal', 'attention', 'urgent'].includes(priority) ? priority : 'normal',
     createdBy: req.user!.id
   });
 
@@ -392,7 +394,17 @@ router.get('/content', (req, res: Response): void => {
 
 // 7. Xử lý báo cáo nội dung
 router.post('/content/:id/action', (req: AuthRequest, res: Response): void => {
-  const { action } = req.body; // 'dismiss' | 'hide' | 'delete'
+  // Bug đã vá: trước đây không kiểm tra `action` có nằm trong enum hợp lệ không - giá trị rác
+  // sẽ rơi vào nhánh else và bị coi như 'actioned' một cách âm thầm, không có phản hồi lỗi rõ ràng.
+  const validated = moderatorContentActionSchema.safeParse(req.body);
+  if (!validated.success) {
+    res.status(400).json({
+      success: false,
+      error: { code: 'VALIDATION_ERROR', message: validated.error.errors[0]?.message || 'Hành động không hợp lệ.' }
+    });
+    return;
+  }
+  const { action } = validated.data;
   const now = new Date().toISOString();
 
   if (action === 'dismiss') {

@@ -4,6 +4,17 @@ Tất cả các thay đổi đáng chú ý của dự án **DustGuard VN** đư�
 
 ---
 
+## [1.1.3] - 2026-09-06 (Hiệu đính tài liệu Backup/Recovery — loại bỏ overclaim Cloudflare, kiểm chứng thực tế bằng chạy code)
+
+### Fixed (P1 - lỗi mã nguồn phát hiện khi kiểm chứng thực tế)
+- `scripts/backup-restore.js`: hàm `performRestore()` khai báo `const targetDir` trùng tên với tham số `targetDir` đã tồn tại trong cùng scope khối lệnh, gây `ReferenceError: Cannot access 'targetDir' before initialization` — lệnh `restore` CLI **luôn crash ngay lập tức** trước khi vá, bất kể snapshot hợp lệ hay không. Đã đổi tên biến nội bộ thành `dbParentDir`. Xác nhận sống: `node scripts/backup-restore.js restore <snapshot>` nay chạy được, khôi phục tệp `.db` chính thành công và khớp SHA-256 100% với bản sao lưu.
+
+### Fixed (Tài liệu — sai lệch overclaim đã bị phát hiện qua kiểm chứng thực tế, không phải suy đoán)
+- `docs/operations/BACKUP_AND_RECOVERY.md`: tài liệu v1.0.0 nêu RPO < 1 giờ / RTO < 5 phút và mô tả "Cloudflare R2 Bucket `dustguard-backups-vault` với Object Lock" đang bảo vệ production — **cả hai đều sai**. Rà soát toàn bộ `apps/` + `dustguard-operations/` xác nhận không có bất kỳ wrangler config/D1Database/R2Bucket binding/CI-CD deploy workflow/Dockerfile nào, và không có bằng chứng môi trường production nào được triển khai cho kiến trúc 2-side hiện hành — toàn bộ vận hành hiện tại là local/dev. Viết lại tài liệu (v2.0.0) với: (1) thời gian backup/restore đo thực tế trên 2 CSDL thật (~160ms backup, ~130-140ms restore sau khi vá lỗi trên), kết quả kiểm thử tự động PASS 5/5 và kiểm định chống giả mạo (tamper detection) PASS; (2) khai báo rõ ràng "chưa có môi trường production" thay vì mô tả SLA cho hạ tầng không tồn tại; (3) ghi nhận khoảng trống thực tế: thư mục `uploads/` (bằng chứng ảnh/PDF) hiện **không** được script sao lưu, và lệnh restore cần dừng server trước trên Windows để tránh lỗi khóa tệp `-wal`/`-shm`; (4) làm rõ Cloudflare D1/R2/Workers là hệ thống legacy độc lập tại `app/` (theo `docs/audit/06-LEGACY-DISPOSITION-PLAN.md`), không thuộc phạm vi backup của kiến trúc hiện hành, và không có roadmap đã phê duyệt để di dời sang Cloudflare.
+- `README.md`: dòng mở đầu tuyên bố kiến trúc "100% Cloudflare Native Serverless Monolith" cho toàn bộ sản phẩm, nhưng thực tế mô tả này chỉ đúng với bản demo gốc đã ngưng phát triển tại `app/` — kiến trúc `apps/` + `dustguard-operations/` đang phát triển thực tế là Express + Node.js + SQLite cục bộ, không có kết nối Cloudflare nào. Đã bổ sung dòng làm rõ kiến trúc thực tế đang phát triển ngay bên dưới, và chú thích tương tự tại mục "Chi Phí Hạ Tầng Pilot Gần Bằng 0" (claim chi phí Cloudflare Free Tier chỉ áp dụng cho `app/`, không áp dụng cho hệ thống đang phát triển vì chưa triển khai production).
+
+---
+
 ## [1.1.2] - 2026-09-06 (Side B Operations Runtime Audit — chỉ sửa lỗi đã tái kiểm chứng bằng code chạy thật + truy vấn CSDL)
 
 ### Fixed (P1 - hỏng luồng thao tác chỉnh sửa/cập nhật, sau khi kiểm chứng)

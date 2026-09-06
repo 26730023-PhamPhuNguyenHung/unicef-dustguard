@@ -6,6 +6,7 @@ import { DecisionSupportService } from './decisionSupport.service.js';
 import { CaseStateMachine } from './lifecycle/stateMachine.js';
 import { ClosureSafetyGate } from './closure/closureSafetyGate.js';
 import { get, run, query } from '../../db/connection.js';
+import { HumanDecisionRecordSchema } from '../../shared.js';
 
 export const decisionSupportRouter = Router();
 
@@ -45,15 +46,7 @@ decisionSupportRouter.post(
     try {
       const caseId = req.params.id;
       const user = req.user!;
-      const { decisionType, reason, references, supersedesDecisionId } = req.body;
-
-      if (!decisionType || !reason) {
-        res.status(400).json({
-          error: 'VALIDATION_ERROR',
-          message: 'Vui lòng cung cấp loại quyết định (decisionType) và lý do / căn cứ (reason).',
-        });
-        return;
-      }
+      const { decisionType, reason, references, supersedesDecisionId } = HumanDecisionRecordSchema.parse(req.body);
 
       const targetCase = get<any>(`SELECT id, case_code FROM cases WHERE id = ?`, [caseId]);
       if (!targetCase) {
@@ -111,6 +104,13 @@ decisionSupportRouter.post(
         createdAt: now,
       });
     } catch (err: any) {
+      if (err?.name === 'ZodError') {
+        res.status(400).json({
+          error: 'VALIDATION_ERROR',
+          message: err.errors?.map((e: any) => `${e.path.join('.')}: ${e.message}`).join('; ') || 'Dữ liệu không hợp lệ',
+        });
+        return;
+      }
       res.status(500).json({ error: 'INTERNAL_ERROR', message: err.message });
     }
   }

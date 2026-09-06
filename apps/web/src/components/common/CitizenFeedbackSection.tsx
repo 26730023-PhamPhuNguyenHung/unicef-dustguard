@@ -28,7 +28,11 @@ export const CitizenFeedbackSection: React.FC<CitizenFeedbackSectionProps> = ({
     if (!caseId) return;
     apiRequest<any>(`/cases/${caseId}/feedback`)
       .then((res) => {
-        const list = Array.isArray(res?.data) ? res.data : [];
+        // Bug (đã vá): apiRequest() đã tự giải nén field `data` ở tầng client, nên `res` ở đây
+        // CHÍNH LÀ mảng feedback - đọc thêm `res?.data` lần nữa luôn ra undefined, khiến danh
+        // sách đánh giá không bao giờ hiển thị và cờ "đã gửi đánh giá" (hasSubmitted) không bao
+        // giờ kích hoạt, cho phép 1 người dùng gửi nhiều đánh giá trùng lặp cho cùng 1 vụ việc.
+        const list = Array.isArray(res) ? res : (Array.isArray(res?.data) ? res.data : []);
         setFeedbacks(list);
         if (user && list.some((f: any) => f.user_id === user.id)) {
           setHasSubmitted(true);
@@ -62,7 +66,7 @@ export const CitizenFeedbackSection: React.FC<CitizenFeedbackSectionProps> = ({
 
       // Tải lại danh sách feedback
       const res = await apiRequest<any>(`/cases/${caseId}/feedback`);
-      setFeedbacks(res?.data || []);
+      setFeedbacks(Array.isArray(res) ? res : (res?.data || []));
     } catch (err: any) {
       toastError('Lỗi gửi đánh giá', err.message || 'Không thể gửi đánh giá.');
     } finally {

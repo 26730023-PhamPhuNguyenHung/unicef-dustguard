@@ -3,7 +3,8 @@
 > **DustGuard VN là nền tảng Environmental Intelligence & Decision Support phục vụ Civic Action — Giúp cộng đồng ghi nhận, đối chứng và theo dõi các vấn đề môi trường bằng dữ liệu có cấu trúc, đồng thời hỗ trợ chuyển những trường hợp phù hợp tới các kênh xử lý hiện hữu.**  
 > *(Bụi công trình và chất lượng không khí quanh trường học/khu dân cư là bài toán đầu tiên để kiểm chứng mô hình, trước khi mở rộng thành nền tảng trí tuệ môi trường và hành động xanh cho thanh thiếu niên và cộng đồng).*
 >
-> **Kiến trúc**: 100% Cloudflare Native Serverless Monolith (Hono + Cloudflare Worker + Cloudflare D1 SQLite + Cloudflare R2 Storage + React 19).
+> **Kiến trúc (bản demo gốc `app/`, đã ngưng phát triển — xem `docs/audit/06-LEGACY-DISPOSITION-PLAN.md`)**: 100% Cloudflare Native Serverless Monolith (Hono + Cloudflare Worker + Cloudflare D1 SQLite + Cloudflare R2 Storage + React 19).
+> **Kiến trúc thực tế đang phát triển (`apps/` + `dustguard-operations/`)**: Express + Node.js + SQLite cục bộ (`node:sqlite`), React 19 (Vite). **Không có** kết nối Cloudflare Worker/D1/R2 nào trong kiến trúc này — xem `docs/operations/BACKUP_AND_RECOVERY.md` Mục 6 để biết chi tiết đã kiểm chứng.
 
 ---
 
@@ -108,7 +109,7 @@
    - Nền kem `#FDFBF7`, chữ mực in `#231B14`, dấu mộc đỏ `#9F241F`, xanh ngọc `#0D6F64`.
    - Nút bấm tối thiểu **44px x 44px**, hiển thị rõ ngoài trời nắng trên màn hình điện thoại 360px - 430px.
 6. **Chi Phí Hạ Tầng Pilot Vận Hành Gần Bằng 0**:
-   - Chi phí hạ tầng pilot có thể gần bằng 0 trong hạn mức miễn phí hiện tại của Cloudflare (Workers + D1 + R2 + Static Assets).
+   - Chi phí hạ tầng pilot có thể gần bằng 0 trong hạn mức miễn phí hiện tại của Cloudflare (Workers + D1 + R2 + Static Assets) — **áp dụng cho kiến trúc demo gốc `app/`**; kiến trúc `apps/` + `dustguard-operations/` đang phát triển hiện chạy Node.js/Express + SQLite cục bộ, chưa có ước tính chi phí hạ tầng cloud vì chưa triển khai production.
    - Ghi nhận minh bạch khả năng phát sinh chi phí thực tế khi mở rộng: tên miền tùy chỉnh (~$10–$25/năm), dịch vụ email giao dịch và dung lượng mở rộng khi scale vượt Free Tier.
 
 ---
