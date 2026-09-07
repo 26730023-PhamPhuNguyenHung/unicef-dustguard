@@ -87,12 +87,12 @@ export const ReportsListPage: React.FC = () => {
             placeholder="Tìm theo tiêu đề, địa chỉ hoặc mã phản ánh..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 rounded-lg bg-surface-card border border-border-subtle text-xs sm:text-sm text-content-main placeholder:text-content-muted focus:outline-none focus:border-primary shadow-sm"
+            className="w-full pl-10 pr-4 py-2.5 min-h-[44px] rounded-lg bg-surface-card border border-border-subtle text-xs sm:text-sm text-content-main placeholder:text-content-muted focus:outline-none focus:border-primary shadow-sm"
           />
         </form>
 
         <div className="flex items-center gap-2 w-full sm:w-auto">
-          <div className="flex items-center gap-1.5 bg-surface-card border border-border-subtle px-3 py-2 rounded-lg shadow-sm text-xs w-full sm:w-auto">
+          <div className="flex items-center gap-1.5 bg-surface-card border border-border-subtle px-3 py-2.5 min-h-[44px] rounded-lg shadow-sm text-xs w-full sm:w-auto">
             <Filter className="w-3.5 h-3.5 text-content-sub" />
             <select
               value={district}

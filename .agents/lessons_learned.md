@@ -3,6 +3,46 @@
 > **Kho lưu trữ kinh nghiệm, bài học kiến trúc và phòng chống lỗi kỹ thuật (Anti-Regression)**  
 > *Cập nhật sau mỗi chu trình phát triển tính năng mới thành công.*
 
+### 19. Kiểm Định Rendered UI Đa Viewport Từ Màn Hình Cực Nhỏ (320px) Đến Desktop (1366px): Chống Tràn Ngang Header, Pointer Intercept Do Chữ Tràn Thẻ Card & Chuẩn Hóa Touch Target Cho Nút Toggle/Input
+- **Vấn đề thực tế phát sinh**:
+  1. *Tràn ngang Header 11px trên 320x568 (iPhone SE 1st gen)*: Khi màn hình co về 320px, Header của `AppShell.tsx` chứa Logo (~100px), Menu (44px), Bell (40px) và nút "Gửi phản ánh" (~122px), tổng chiều rộng 331px vượt quá 320px, gây tràn ngang 11px.
+  2. *Lỗi Pointer Event Intercept trên lưới Demo Card ở 320px*: Khi đặt 2 cột demo card trên 320px (chiều rộng khả dụng chỉ ~90px mỗi card), chuỗi email dài `citizen@dustguard.local` (~138px) bị tràn ra ngoài biên card bên trái và đè lên card bên phải, khiến thao tác click vào card thứ 2 chặn sự kiện con trỏ.
+  3. *Touch Target < 44px trên mobile*: Ô tìm kiếm trong `ReportsListPage.tsx` có chiều cao chỉ 34px (`py-2`), và nút ẩn/hiện mật khẩu dạng eye icon có kích thước 36x36px.
+- **Giải pháp chuẩn hóa triệt để**:
+  1. **Responsive Header CTA trên màn hình < 360px**:
+     - Nút CTA chuyển sang `<PlusCircle className="w-4 h-4" />` với kích thước `min-w-[40px] min-h-[40px]`, ẩn chữ bằng `<span className="hidden min-[360px]:inline">Gửi phản ánh</span>`, tiết kiệm 65px và triệt tiêu 100% tràn ngang trên 320px.
+  2. **Chống tràn chữ Demo Card bằng `min-w-0` & Single-Column Mobile Card**:
+     - Thêm `min-w-0` và `truncate` cho toàn bộ các text element bên trong thẻ card.
+     - Chuyển layout demo card sang danh sách 1 cột tiện dụng trên mobile với `min-h-[64px]` (vượt xa chuẩn 44px touch target).
+  3. **Chuẩn hóa Touch Target $\ge 44\text{px}$ cho Form Elements**:
+     - Nâng cấp ô input và bộ lọc lên `min-h-[44px] py-2.5`.
+     - Nâng cấp eye icon toggle mật khẩu lên `min-h-[44px] min-w-[44px] p-2`.
+  4. **Automated QA Verification Harness (`scripts/qa-rendered-ui-audit.js`)**:
+     - Tạo harness tự động kiểm tra 105 tiêu chí qua 5 viewports (320x568, 390x844, 430x932, 768x1024, 1366x768) với kết quả 100/100 PASS, 0 console error, 0 network error, 0 overflow, 0 glassmorphism, 0 touch anomaly.
+
+### 18. Kiểm Định Khả Năng Tiếp Cận (WCAG AA) & Tiện Dụng (A11y Hardening): Focus Visible, Nhãn Ngữ Nghĩa & Touch Target Thực Tế
+- **Vấn đề thực tế phát sinh**:
+  1. *Lệch độ tương phản màu sắc*: Màu xám nhạt `stone-500` (`#78716C`) trên nền trắng chỉ đạt tỉ lệ tương phản 4.35:1 (vi phạm chuẩn WCAG AA tối thiểu 4.5:1 cho body text); `text-ink-400` trên nền trắng chỉ đạt 2.9:1.
+  2. *Mất viền bàn phím (Focus Trap/Invisible Outline)*: Việc lạm dụng `focus:outline-none` mà không bù đắp `focus-visible` khiến người dùng bàn phím (Tab/Shift+Tab) không thấy con trỏ đang nằm ở đâu.
+  3. *Điều khiển phi ngữ nghĩa*: Thẻ `<div>` gắn `onClick` để xem chi tiết vụ việc (`ReportsListPage.jsx`) hoàn toàn vô hình đối với Screen Reader và không thể kích hoạt bằng bàn phím.
+  4. *Rủi ro cảm ứng màn hình di động (Touch Target Hazard)*: Các nút xóa ảnh thumbnail kích thước chỉ $16 \times 16$px hoặc $24 \times 24$px khiến người dùng ngón tay to thao tác ngoài trời dễ bấm trượt hoặc bấm nhầm.
+  5. *Thiếu liên kết ARIA cho Form & Modal*: Thông báo lỗi không được liên kết với ô nhập liệu bằng `aria-describedby`; Modal thiếu `role="dialog"` và `aria-labelledby`, làm mất ngữ cảnh hỗ trợ người khiếm thị.
+- **Giải pháp chuẩn hóa triệt để**:
+  1. **Độ tương phản cao & Zero Glassmorphism**:
+     - Nâng cấp toàn bộ text phụ lên tối thiểu `#57534E` (tỉ lệ > 6:1) hoặc `text-ink-600`.
+     - Tuyệt đối loại bỏ `bg-white/70`, `bg-white/80` để dùng nền đặc `#FFFFFF` hoặc `#FDFBF7` (Đảm bảo Rule 1).
+  2. **Chuẩn hóa Focus-Visible nhất quán**:
+     - Áp dụng `focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-seal-600` (hoặc `focus-visible:outline-[#0D6F64]` / `focus-visible:outline-[#15803d]`) cho 100% input, button, select, textarea, thẻ tương tác.
+  3. **Ngữ nghĩa Hỗ trợ Toàn diện (Semantics & ARIA)**:
+     - Biến thẻ `<div>` tương tác thành `role="button"`, `tabIndex={0}`, xử lý cả `Enter` và `Space` trong `onKeyDown`.
+     - Nhóm lựa chọn 1 đáp án (loại vi phạm, mức độ nghiêm trọng, tình trạng quan sát, đánh giá hài lòng) luôn dùng `role="radiogroup"` với `role="radio"` và `aria-checked={boolean}`.
+     - Mọi modal đều có `role="dialog"`, `aria-modal="true"`, `aria-labelledby` trỏ đến tiêu đề, và nút đóng có `aria-label="Đóng..."`.
+     - Ô nhập liệu luôn có nhãn kết nối qua cặp `htmlFor` và `id`.
+  4. **Kỹ thuật Touch Target >= 44x44px Cho Mobile**:
+     - Với các nút nhỏ như icon xóa ảnh trên thumbnail $56 \times 56$px: Thiết kế nút bọc ngoài có padding và kích thước `min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer z-10`, bên trong hiển thị badge trực quan $24 \times 24$px. Người dùng bấm dễ dàng mà không làm che khuất thumbnail.
+  5. **Bảo vệ bằng Automated Test Suite**:
+     - Duy trì file kiểm thử `app/tests/accessibility-audit-verification.test.js` kiểm tra tự động 7 tiêu chí WCAG AA trên mã nguồn JSX.
+
 ### 17. Xác Thực Production (Zero-Mock SSOT), Cạm Bẫy Nội Suy Chuỗi PowerShell Cho Password Hash & Trải Nghiệm Demo Autofill Văn Minh
 - **Vấn đề thực tế phát sinh**:
   1. *Lỗi Đăng nhập Demo trên Production*: Tại tab "Đơn vị Xử lý", click các tài khoản demo như `staff1` trả về lỗi *"Tên đăng nhập hoặc mật khẩu chưa đúng."*. Nguyên nhân do frontend gửi mật khẩu cũ `Password123!` trong khi CSDL production lưu `password123`.

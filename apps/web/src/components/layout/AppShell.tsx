@@ -324,10 +324,12 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
             <div className="lg:hidden shrink-0">
               <Link
                 to="/reports/new"
-                className="px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-civic bg-primary text-white text-xs font-bold inline-flex items-center gap-1.5 shadow-xs active:scale-95 min-h-[38px] whitespace-nowrap shrink-0"
+                className="p-2 sm:px-3.5 sm:py-2 rounded-civic bg-primary text-white text-xs font-bold inline-flex items-center justify-center gap-1.5 shadow-xs active:scale-95 min-h-[40px] min-w-[40px] whitespace-nowrap shrink-0"
+                aria-label="Gửi phản ánh"
+                title="Gửi phản ánh"
               >
                 <PlusCircle className="w-4 h-4 shrink-0" />
-                <span className="whitespace-nowrap">Gửi phản ánh</span>
+                <span className="hidden min-[360px]:inline whitespace-nowrap">Gửi phản ánh</span>
               </Link>
             </div>
           </div>

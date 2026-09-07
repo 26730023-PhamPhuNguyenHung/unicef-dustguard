@@ -3,8 +3,62 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.js';
 import { resolveCommunityHome } from '../utils/auth-redirect.js';
 import { getDefaultRoute, CANONICAL_ROUTES } from '../config/routes.js';
-import { LogIn, Mail, Lock, User, AlertCircle, Shield, Building2, CheckCircle2, Sparkles } from 'lucide-react';
+import { LogIn, Mail, Lock, User, AlertCircle, Shield, Building2, CheckCircle2, Sparkles, Eye, EyeOff, Loader2, Check } from 'lucide-react';
 import { OPERATIONS_APP_URL } from '../config/constants';
+
+const COMMUNITY_DEMO_ACCOUNTS = [
+  {
+    name: 'Nguyễn Văn Dân',
+    roleLabel: 'Người dân',
+    email: 'citizen@dustguard.local',
+    initials: 'VD'
+  },
+  {
+    name: 'Trần Thị Tình Nguyện',
+    roleLabel: 'Thành viên CLB',
+    email: 'member@dustguard.local',
+    initials: 'TN'
+  },
+  {
+    name: 'Lê Hoàng Điều Phối',
+    roleLabel: 'Điều phối viên',
+    email: 'moderator@dustguard.local',
+    initials: 'ĐP'
+  },
+  {
+    name: 'Phạm Quản Trị',
+    roleLabel: 'Quản trị cộng đồng',
+    email: 'admin@dustguard.local',
+    initials: 'QT'
+  }
+];
+
+const OPERATIONS_DEMO_ACCOUNTS = [
+  {
+    name: 'Nguyễn Minh Anh',
+    roleLabel: 'Cán bộ hiện trường',
+    username: 'canbo.hientruong',
+    initials: 'MA'
+  },
+  {
+    name: 'Trần Quốc Minh',
+    roleLabel: 'Lãnh đạo điều phối',
+    username: 'lanhdao.dieuphoi',
+    initials: 'QM'
+  },
+  {
+    name: 'Lê Thanh Hà',
+    roleLabel: 'Chuyên viên pháp chế',
+    username: 'chuyenvien.phapche',
+    initials: 'TH'
+  },
+  {
+    name: 'Quản trị DustGuard',
+    roleLabel: 'Quản trị vận hành',
+    username: 'quantri.dustguard',
+    initials: 'DG'
+  }
+];
 
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -19,6 +73,7 @@ export const LoginPage: React.FC = () => {
   const [activeSide, setActiveSide] = useState<'community' | 'professional'>(initialSide);
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
@@ -172,49 +227,53 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-[85vh] flex items-center justify-center py-10 px-4 bg-page">
-      <div className="bg-surface-card rounded-civic-lg border border-border-subtle p-7 sm:p-9 max-w-md w-full shadow-sm space-y-6">
+    <div className="min-h-[85vh] sm:min-h-screen flex items-center justify-center py-6 sm:py-12 px-4 sm:px-6 bg-page pb-safe">
+      <div className="bg-surface-card rounded-2xl border border-border-subtle p-4 sm:p-8 max-w-[480px] w-full shadow-sm space-y-5">
         
         {/* Header Thương hiệu Canonical */}
         <div className="text-center space-y-1.5">
-          <div className="w-11 h-11 rounded-2xl bg-primary text-white flex items-center justify-center font-bold text-xl mx-auto shadow-sm">
+          <div className="w-11 h-11 rounded-2xl bg-primary text-white flex items-center justify-center font-bold text-xl mx-auto shadow-xs">
             <Shield className="w-6 h-6 fill-white/20" />
           </div>
-          <h1 className="text-2xl font-extrabold text-content-main tracking-tight">
+          <h1 className="text-xl sm:text-2xl font-extrabold text-content-main tracking-tight">
             Đăng nhập DustGuard VN
           </h1>
-          <p className="text-xs text-content-sub">
+          <p className="text-xs text-content-sub text-pretty">
             Một nền tảng · Hai phía đồng hành vì đô thị sạch bụi
           </p>
         </div>
 
         {/* Bộ chuyển đổi 2 phía chuẩn tắc */}
-        <div className="grid grid-cols-2 p-1 bg-surface-secondary/70 rounded-xl border border-border-subtle text-xs font-bold">
+        <div role="tablist" aria-label="Chọn cổng đăng nhập" className="grid grid-cols-2 p-1 bg-surface-secondary/80 rounded-xl border border-border-subtle text-xs font-bold gap-1">
           <button
             type="button"
+            role="tab"
             id="tab-community"
+            aria-selected={activeSide === 'community'}
             onClick={() => handleTabChange('community')}
-            className={`py-2.5 px-3 rounded-lg transition-all text-center flex items-center justify-center gap-1.5 touch-target ${
+            className={`py-2.5 px-3 rounded-lg transition-all text-center flex items-center justify-center gap-1.5 min-h-[44px] cursor-pointer ${
               activeSide === 'community'
                 ? 'bg-white text-primary shadow-xs border border-primary/20 font-bold'
                 : 'text-content-sub hover:text-content-main'
             }`}
           >
-            <Shield className="w-3.5 h-3.5 shrink-0" />
-            <span>Phía Cộng đồng</span>
+            <Shield className="w-4 h-4 shrink-0" />
+            <span className="whitespace-nowrap">Phía Cộng đồng</span>
           </button>
           <button
             type="button"
+            role="tab"
             id="tab-operations"
+            aria-selected={activeSide === 'professional'}
             onClick={() => handleTabChange('professional')}
-            className={`py-2.5 px-3 rounded-lg transition-all text-center flex items-center justify-center gap-1.5 touch-target ${
+            className={`py-2.5 px-3 rounded-lg transition-all text-center flex items-center justify-center gap-1.5 min-h-[44px] cursor-pointer ${
               activeSide === 'professional'
                 ? 'bg-white text-teal shadow-xs border border-teal/30 font-bold'
                 : 'text-content-sub hover:text-content-main'
             }`}
           >
-            <Building2 className="w-3.5 h-3.5 shrink-0" />
-            <span>Đơn vị Xử lý</span>
+            <Building2 className="w-4 h-4 shrink-0" />
+            <span className="whitespace-nowrap">Đơn vị Xử lý</span>
           </button>
         </div>
 
@@ -222,7 +281,7 @@ export const LoginPage: React.FC = () => {
         {errorMsg && (
           <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-xs text-primary flex items-start gap-2.5" role="alert">
             <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-            <span>{errorMsg}</span>
+            <span className="leading-snug">{errorMsg}</span>
           </div>
         )}
 
@@ -240,46 +299,64 @@ export const LoginPage: React.FC = () => {
           <div className="space-y-5">
             <form onSubmit={handleCommunitySubmit} className="space-y-4">
               <div className="space-y-1.5">
-                <label className="block text-xs font-bold uppercase tracking-wider text-content-sub">
+                <label htmlFor="input-community-email" className="block text-xs font-bold uppercase tracking-wider text-content-sub">
                   Địa chỉ Email *
                 </label>
                 <div className="relative">
-                  <Mail className="w-4 h-4 text-content-muted absolute left-3.5 top-3" />
+                  <Mail className="w-4 h-4 text-content-muted absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                   <input
                     type="email"
                     required
                     id="input-community-email"
                     value={identifier}
-                    onChange={(e) => setIdentifier(e.target.value)}
+                    onChange={(e) => {
+                      setIdentifier(e.target.value);
+                      if (errorMsg) setErrorMsg(null);
+                    }}
                     placeholder="citizen@dustguard.local"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border-subtle text-xs sm:text-sm bg-white text-slate-900 focus:border-primary focus:outline-none"
+                    className={`w-full pl-10 pr-4 h-11 min-h-[44px] rounded-xl border text-base sm:text-sm bg-white text-slate-900 focus:outline-none transition-all ${
+                      errorMsg ? 'border-red-300 focus:border-primary focus:ring-2 focus:ring-primary/20' : 'border-border-subtle focus:border-primary focus:ring-2 focus:ring-primary/15'
+                    }`}
                   />
                 </div>
               </div>
 
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <label className="block text-xs font-bold uppercase tracking-wider text-content-sub">
+                  <label htmlFor="input-community-password" className="block text-xs font-bold uppercase tracking-wider text-content-sub">
                     Mật khẩu *
                   </label>
                   <Link
                     to="/forgot-password"
-                    className="text-xs font-semibold text-primary hover:underline"
+                    className="text-xs font-semibold text-primary hover:underline min-h-[36px] inline-flex items-center -my-1 py-1"
                   >
                     Quên mật khẩu?
                   </Link>
                 </div>
                 <div className="relative">
-                  <Lock className="w-4 h-4 text-content-muted absolute left-3.5 top-3" />
+                  <Lock className="w-4 h-4 text-content-muted absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                   <input
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     required
                     id="input-community-password"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      if (errorMsg) setErrorMsg(null);
+                    }}
                     placeholder="••••••••"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border-subtle text-xs sm:text-sm bg-white text-slate-900 focus:border-primary focus:outline-none"
+                    className={`w-full pl-10 pr-11 h-11 min-h-[44px] rounded-xl border text-base sm:text-sm bg-white text-slate-900 focus:outline-none transition-all ${
+                      errorMsg ? 'border-red-300 focus:border-primary focus:ring-2 focus:ring-primary/20' : 'border-border-subtle focus:border-primary focus:ring-2 focus:ring-primary/15'
+                    }`}
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-1.5 top-1/2 -translate-y-1/2 p-2 text-content-muted hover:text-content-main rounded-lg min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
+                    aria-label={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
                 </div>
               </div>
 
@@ -287,86 +364,103 @@ export const LoginPage: React.FC = () => {
                 type="submit"
                 id="btn-community-login"
                 disabled={loading || !identifier.trim() || !password.trim()}
-                className="w-full py-3 rounded-xl bg-primary text-white font-bold text-sm shadow-sm hover:bg-primary-dark transition-all disabled:opacity-50 active:scale-95 flex items-center justify-center gap-2 touch-target"
+                className="w-full h-12 min-h-[48px] rounded-xl bg-primary hover:bg-primary-dark text-white font-bold text-sm shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer"
               >
-                {loading ? 'Đang đăng nhập...' : 'Đăng nhập Cộng đồng'}
-                <LogIn className="w-4 h-4" />
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Đang đăng nhập...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Đăng nhập Cộng đồng</span>
+                    <LogIn className="w-4 h-4" />
+                  </>
+                )}
               </button>
             </form>
 
             {/* Quick Experience Accounts - Hoạt động trực tiếp với CSDL D1 */}
             {demoMode && (
-              <div className="pt-3 border-t border-border-subtle space-y-2.5 bg-stone-50/70 p-3 rounded-xl border border-stone-200/80">
-                <div className="flex items-center justify-between text-[10px] font-bold text-content-sub uppercase tracking-wider">
+              <div className="pt-3 border-t border-border-subtle space-y-2.5 bg-stone-50/80 p-3 sm:p-3.5 rounded-xl border border-stone-200/80">
+                <div className="flex items-center justify-between text-[11px] font-bold text-content-sub uppercase tracking-wider">
                   <span className="flex items-center gap-1.5 text-primary">
-                    <Sparkles className="w-3 h-3" />
+                    <Sparkles className="w-3.5 h-3.5 shrink-0" />
                     Tài khoản trải nghiệm
                   </span>
-                  <span className="text-[10px] lowercase text-stone-500 font-normal">nhấn để điền thông tin</span>
+                  <span className="text-[10px] lowercase text-stone-500 font-normal">chạm để điền thông tin</span>
                 </div>
-                <div className="grid grid-cols-2 gap-2 text-xs">
-                  <button
-                    type="button"
-                    onClick={() => handleSelectCommunityCard('citizen@dustguard.local')}
-                    className={`p-2.5 rounded-lg border text-left transition-all shadow-2xs touch-target ${
-                      identifier === 'citizen@dustguard.local'
-                        ? 'bg-red-50 border-primary text-primary font-bold ring-1 ring-primary'
-                        : 'border-border-subtle bg-white hover:bg-red-50 text-content-main hover:border-primary/40'
-                    }`}
-                  >
-                    <div className="font-extrabold text-sm text-slate-900 leading-tight">Nguyễn Văn Dân</div>
-                    <div className="text-[11px] font-semibold text-primary mt-0.5">Người dân</div>
-                    <div className="text-[10px] text-slate-500 font-mono mt-0.5">citizen@dustguard.local</div>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleSelectCommunityCard('member@dustguard.local')}
-                    className={`p-2.5 rounded-lg border text-left transition-all shadow-2xs touch-target ${
-                      identifier === 'member@dustguard.local'
-                        ? 'bg-red-50 border-primary text-primary font-bold ring-1 ring-primary'
-                        : 'border-border-subtle bg-white hover:bg-red-50 text-content-main hover:border-primary/40'
-                    }`}
-                  >
-                    <div className="font-extrabold text-sm text-slate-900 leading-tight">Trần Thị Tình Nguyện</div>
-                    <div className="text-[11px] font-semibold text-primary mt-0.5">Thanh niên CLB</div>
-                    <div className="text-[10px] text-slate-500 font-mono mt-0.5">member@dustguard.local</div>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleSelectCommunityCard('moderator@dustguard.local')}
-                    className={`p-2.5 rounded-lg border text-left transition-all shadow-2xs touch-target ${
-                      identifier === 'moderator@dustguard.local'
-                        ? 'bg-red-50 border-primary text-primary font-bold ring-1 ring-primary'
-                        : 'border-border-subtle bg-white hover:bg-red-50 text-content-main hover:border-primary/40'
-                    }`}
-                  >
-                    <div className="font-extrabold text-sm text-slate-900 leading-tight">Lê Hoàng Điều Phối</div>
-                    <div className="text-[11px] font-semibold text-primary mt-0.5">Điều phối viên</div>
-                    <div className="text-[10px] text-slate-500 font-mono mt-0.5">moderator@dustguard.local</div>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleSelectCommunityCard('admin@dustguard.local')}
-                    className={`p-2.5 rounded-lg border text-left transition-all shadow-2xs touch-target ${
-                      identifier === 'admin@dustguard.local'
-                        ? 'bg-red-50 border-primary text-primary font-bold ring-1 ring-primary'
-                        : 'border-border-subtle bg-white hover:bg-red-50 text-content-main hover:border-primary/40'
-                    }`}
-                  >
-                    <div className="font-extrabold text-sm text-slate-900 leading-tight">Phạm Quản Trị</div>
-                    <div className="text-[11px] font-semibold text-primary mt-0.5">Quản trị Cộng đồng</div>
-                    <div className="text-[10px] text-slate-500 font-mono mt-0.5">admin@dustguard.local</div>
-                  </button>
+
+                {/* ONE COLUMN ON MOBILE, CLEAN LIST */}
+                <div className="flex flex-col gap-2">
+                  {COMMUNITY_DEMO_ACCOUNTS.map((acc) => {
+                    const isSelected = identifier === acc.email;
+                    return (
+                      <div
+                        key={acc.email}
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => handleSelectCommunityCard(acc.email)}
+                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleSelectCommunityCard(acc.email); }}
+                        className={`w-full min-h-[64px] p-2.5 sm:p-3 rounded-xl border transition-all text-left flex items-center justify-between gap-3 cursor-pointer ${
+                          isSelected
+                            ? 'bg-red-50/90 border-primary ring-2 ring-primary/25 shadow-2xs'
+                            : 'bg-white hover:bg-stone-50 border-border-subtle hover:border-primary/40'
+                        }`}
+                      >
+                        {/* Avatar Badge */}
+                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-xs shrink-0 ${
+                          isSelected ? 'bg-primary text-white shadow-xs' : 'bg-stone-100 text-slate-700'
+                        }`}>
+                          {acc.initials}
+                        </div>
+
+                        {/* Information: Name, Role Badge, Email */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <span className="font-extrabold text-xs sm:text-sm text-slate-900 truncate">
+                              {acc.name}
+                            </span>
+                            <span className={`px-2 py-0.5 rounded text-[10px] font-bold shrink-0 ${
+                              isSelected
+                                ? 'bg-primary text-white'
+                                : 'bg-red-50 text-primary border border-red-100'
+                            }`}>
+                              {acc.roleLabel}
+                            </span>
+                          </div>
+                          <div className="text-[11px] text-slate-500 font-mono truncate max-w-full mt-0.5">
+                            {acc.email}
+                          </div>
+                        </div>
+
+                        {/* Action Button Indicator */}
+                        <div className="shrink-0">
+                          {isSelected ? (
+                            <span className="h-8 px-2.5 bg-primary text-white text-xs font-bold rounded-lg flex items-center gap-1 shadow-2xs">
+                              <Check className="w-3.5 h-3.5" />
+                              <span className="hidden sm:inline">Đã chọn</span>
+                            </span>
+                          ) : (
+                            <span className="h-8 px-2.5 bg-stone-100 hover:bg-stone-200 text-slate-700 text-xs font-semibold rounded-lg flex items-center justify-center border border-border-subtle">
+                              Chọn
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
-                <div className="text-center text-[11px] text-slate-500 pt-0.5">
-                  Mật khẩu trải nghiệm: <code className="font-mono font-bold text-slate-700 bg-stone-200/70 px-1.5 py-0.5 rounded">DustGuard@2026</code>
+
+                <div className="text-center text-[11px] text-slate-500 pt-1">
+                  Mật khẩu trải nghiệm: <code className="font-mono font-bold text-slate-700 bg-stone-200/80 px-1.5 py-0.5 rounded">DustGuard@2026</code>
                 </div>
               </div>
             )}
 
             <div className="text-center text-xs text-content-sub pt-1">
               Chưa có tài khoản?{' '}
-              <Link to="/register" className="font-bold text-primary hover:underline">
+              <Link to="/register" className="font-bold text-primary hover:underline min-h-[36px] inline-flex items-center">
                 Đăng ký thành viên
               </Link>
             </div>
@@ -381,47 +475,65 @@ export const LoginPage: React.FC = () => {
                 <Building2 className="w-4 h-4 shrink-0" />
                 <span>Cổng Tác chiến Đơn vị Xử lý</span>
               </div>
-              <p className="text-[11px] text-slate-600 leading-relaxed">
+              <p className="text-[11px] text-slate-600 leading-relaxed text-pretty">
                 Dành cho Cán bộ thanh tra hiện trường, Lãnh đạo điều phối, Chuyên viên pháp chế và Quản trị viên vận hành.
               </p>
             </div>
 
             <form onSubmit={handleOperationsSubmit} className="space-y-4">
               <div className="space-y-1.5">
-                <label className="block text-xs font-bold uppercase tracking-wider text-content-sub">
+                <label htmlFor="input-operations-username" className="block text-xs font-bold uppercase tracking-wider text-content-sub">
                   Tên đăng nhập hoặc Email *
                 </label>
                 <div className="relative">
-                  <User className="w-4 h-4 text-content-muted absolute left-3.5 top-3" />
+                  <User className="w-4 h-4 text-content-muted absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                   <input
                     type="text"
                     required
                     id="input-operations-username"
                     value={identifier}
-                    onChange={(e) => setIdentifier(e.target.value)}
+                    onChange={(e) => {
+                      setIdentifier(e.target.value);
+                      if (errorMsg) setErrorMsg(null);
+                    }}
                     placeholder="canbo.hientruong, lanhdao.dieuphoi..."
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border-subtle text-xs sm:text-sm bg-white text-slate-900 focus:border-teal focus:outline-none"
+                    className={`w-full pl-10 pr-4 h-11 min-h-[44px] rounded-xl border text-base sm:text-sm bg-white text-slate-900 focus:outline-none transition-all ${
+                      errorMsg ? 'border-red-300 focus:border-teal focus:ring-2 focus:ring-teal/20' : 'border-border-subtle focus:border-teal focus:ring-2 focus:ring-teal/15'
+                    }`}
                   />
                 </div>
               </div>
 
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <label className="block text-xs font-bold uppercase tracking-wider text-content-sub">
+                  <label htmlFor="input-operations-password" className="block text-xs font-bold uppercase tracking-wider text-content-sub">
                     Mật khẩu *
                   </label>
                 </div>
                 <div className="relative">
-                  <Lock className="w-4 h-4 text-content-muted absolute left-3.5 top-3" />
+                  <Lock className="w-4 h-4 text-content-muted absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                   <input
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     required
                     id="input-operations-password"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      if (errorMsg) setErrorMsg(null);
+                    }}
                     placeholder="••••••••"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border-subtle text-xs sm:text-sm bg-white text-slate-900 focus:border-teal focus:outline-none"
+                    className={`w-full pl-10 pr-11 h-11 min-h-[44px] rounded-xl border text-base sm:text-sm bg-white text-slate-900 focus:outline-none transition-all ${
+                      errorMsg ? 'border-red-300 focus:border-teal focus:ring-2 focus:ring-teal/20' : 'border-border-subtle focus:border-teal focus:ring-2 focus:ring-teal/15'
+                    }`}
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-1.5 top-1/2 -translate-y-1/2 p-2 text-content-muted hover:text-content-main rounded-lg min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
+                    aria-label={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
                 </div>
               </div>
 
@@ -429,82 +541,96 @@ export const LoginPage: React.FC = () => {
                 type="submit"
                 id="btn-operations-login"
                 disabled={loading || !identifier.trim() || !password.trim()}
-                className="w-full py-3 rounded-xl bg-teal text-white font-bold text-sm shadow-sm hover:bg-teal-hover transition-all disabled:opacity-50 active:scale-95 flex items-center justify-center gap-2 touch-target"
+                className="w-full h-12 min-h-[48px] rounded-xl bg-teal hover:bg-teal-hover text-white font-bold text-sm shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer"
               >
-                {loading ? 'Đang đăng nhập...' : 'Đăng nhập Đơn vị Xử lý'}
-                <LogIn className="w-4 h-4" />
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Đang đăng nhập...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Đăng nhập Đơn vị Xử lý</span>
+                    <LogIn className="w-4 h-4" />
+                  </>
+                )}
               </button>
             </form>
 
             {/* Quick Demo Accounts for Operations */}
             {demoMode && (
-              <div className="pt-3 border-t border-border-subtle space-y-2.5 bg-stone-50/70 p-3 rounded-xl border border-stone-200/80">
-                <div className="flex items-center justify-between text-[10px] font-bold text-content-sub uppercase tracking-wider">
+              <div className="pt-3 border-t border-border-subtle space-y-2.5 bg-stone-50/80 p-3 sm:p-3.5 rounded-xl border border-stone-200/80">
+                <div className="flex items-center justify-between text-[11px] font-bold text-content-sub uppercase tracking-wider">
                   <span className="flex items-center gap-1.5 text-teal">
-                    <Sparkles className="w-3 h-3" />
+                    <Sparkles className="w-3.5 h-3.5 shrink-0" />
                     Tài khoản trải nghiệm
                   </span>
                   <span className="text-[10px] lowercase text-stone-500 font-normal">nhấn để điền thông tin</span>
                 </div>
-                <div className="grid grid-cols-2 gap-2 text-xs">
-                  <button
-                    type="button"
-                    onClick={() => handleSelectOperationsCard('canbo.hientruong')}
-                    className={`p-2.5 rounded-lg border text-left transition-all shadow-2xs touch-target ${
-                      identifier === 'canbo.hientruong'
-                        ? 'bg-teal-50 border-teal text-teal-900 font-bold ring-1 ring-teal'
-                        : 'border-border-subtle bg-white hover:bg-teal-soft text-content-main hover:border-teal/40'
-                    }`}
-                  >
-                    <div className="font-extrabold text-sm text-slate-900 leading-tight">Nguyễn Minh Anh</div>
-                    <div className="text-[11px] font-semibold text-teal mt-0.5">Cán bộ hiện trường</div>
-                    <div className="text-[10px] text-slate-500 font-mono mt-0.5">@canbo.hientruong</div>
-                  </button>
 
-                  <button
-                    type="button"
-                    onClick={() => handleSelectOperationsCard('lanhdao.dieuphoi')}
-                    className={`p-2.5 rounded-lg border text-left transition-all shadow-2xs touch-target ${
-                      identifier === 'lanhdao.dieuphoi'
-                        ? 'bg-teal-50 border-teal text-teal-900 font-bold ring-1 ring-teal'
-                        : 'border-border-subtle bg-white hover:bg-teal-soft text-content-main hover:border-teal/40'
-                    }`}
-                  >
-                    <div className="font-extrabold text-sm text-slate-900 leading-tight">Trần Quốc Minh</div>
-                    <div className="text-[11px] font-semibold text-teal mt-0.5">Lãnh đạo điều phối</div>
-                    <div className="text-[10px] text-slate-500 font-mono mt-0.5">@lanhdao.dieuphoi</div>
-                  </button>
+                {/* ONE COLUMN ON MOBILE, CLEAN LIST */}
+                <div className="flex flex-col gap-2">
+                  {OPERATIONS_DEMO_ACCOUNTS.map((acc) => {
+                    const isSelected = identifier === acc.username;
+                    return (
+                      <div
+                        key={acc.username}
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => handleSelectOperationsCard(acc.username)}
+                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleSelectOperationsCard(acc.username); }}
+                        className={`w-full min-h-[64px] p-2.5 sm:p-3 rounded-xl border transition-all text-left flex items-center justify-between gap-3 cursor-pointer ${
+                          isSelected
+                            ? 'bg-teal-50/90 border-teal ring-2 ring-teal/25 shadow-2xs'
+                            : 'bg-white hover:bg-stone-50 border-border-subtle hover:border-teal/40'
+                        }`}
+                      >
+                        {/* Avatar Badge */}
+                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-xs shrink-0 ${
+                          isSelected ? 'bg-teal text-white shadow-xs' : 'bg-stone-100 text-slate-700'
+                        }`}>
+                          {acc.initials}
+                        </div>
 
-                  <button
-                    type="button"
-                    onClick={() => handleSelectOperationsCard('chuyenvien.phapche')}
-                    className={`p-2.5 rounded-lg border text-left transition-all shadow-2xs touch-target ${
-                      identifier === 'chuyenvien.phapche'
-                        ? 'bg-teal-50 border-teal text-teal-900 font-bold ring-1 ring-teal'
-                        : 'border-border-subtle bg-white hover:bg-teal-soft text-content-main hover:border-teal/40'
-                    }`}
-                  >
-                    <div className="font-extrabold text-sm text-slate-900 leading-tight">Lê Thanh Hà</div>
-                    <div className="text-[11px] font-semibold text-teal mt-0.5">Chuyên viên pháp chế</div>
-                    <div className="text-[10px] text-slate-500 font-mono mt-0.5">@chuyenvien.phapche</div>
-                  </button>
+                        {/* Information: Name, Role Badge, Username */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <span className="font-extrabold text-xs sm:text-sm text-slate-900 truncate">
+                              {acc.name}
+                            </span>
+                            <span className={`px-2 py-0.5 rounded text-[10px] font-bold shrink-0 ${
+                              isSelected
+                                ? 'bg-teal text-white'
+                                : 'bg-teal-soft text-teal border border-teal-border'
+                            }`}>
+                              {acc.roleLabel}
+                            </span>
+                          </div>
+                          <div className="text-[11px] text-slate-500 font-mono truncate max-w-full mt-0.5">
+                            @{acc.username}
+                          </div>
+                        </div>
 
-                  <button
-                    type="button"
-                    onClick={() => handleSelectOperationsCard('quantri.dustguard')}
-                    className={`p-2.5 rounded-lg border text-left transition-all shadow-2xs touch-target ${
-                      identifier === 'quantri.dustguard'
-                        ? 'bg-teal-50 border-teal text-teal-900 font-bold ring-1 ring-teal'
-                        : 'border-border-subtle bg-white hover:bg-teal-soft text-content-main hover:border-teal/40'
-                    }`}
-                  >
-                    <div className="font-extrabold text-sm text-slate-900 leading-tight">Quản trị DustGuard</div>
-                    <div className="text-[11px] font-semibold text-teal mt-0.5">Quản trị vận hành</div>
-                    <div className="text-[10px] text-slate-500 font-mono mt-0.5">@quantri.dustguard</div>
-                  </button>
+                        {/* Action Button Indicator */}
+                        <div className="shrink-0">
+                          {isSelected ? (
+                            <span className="h-8 px-2.5 bg-teal text-white text-xs font-bold rounded-lg flex items-center gap-1 shadow-2xs">
+                              <Check className="w-3.5 h-3.5" />
+                              <span className="hidden sm:inline">Đã chọn</span>
+                            </span>
+                          ) : (
+                            <span className="h-8 px-2.5 bg-stone-100 hover:bg-stone-200 text-slate-700 text-xs font-semibold rounded-lg flex items-center justify-center border border-border-subtle">
+                              Chọn
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
-                <div className="text-center text-[11px] text-slate-500 pt-0.5">
-                  Mật khẩu trải nghiệm: <code className="font-mono font-bold text-slate-700 bg-stone-200/70 px-1.5 py-0.5 rounded">DustGuard@2026</code>
+
+                <div className="text-center text-[11px] text-slate-500 pt-1">
+                  Mật khẩu trải nghiệm: <code className="font-mono font-bold text-slate-700 bg-stone-200/80 px-1.5 py-0.5 rounded">DustGuard@2026</code>
                 </div>
               </div>
             )}

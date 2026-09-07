@@ -7,6 +7,53 @@
 
 ## 📅 Các Mốc Phát Triển Chính (Milestones)
 
+### 23. [2026-09-07] `qa-audit-rendered-ui-multi-viewport`: Kiểm Định Độc Lập UI Thực Tế Qua Agent Browser & Playwright Trên 5 Viewports Mục Tiêu (320x568 đến 1366x768)
+- **Bối cảnh & Yêu cầu Cốt lõi**:
+  - Thực hiện kiểm định giao diện thực tế (Rendered UI QA Audit) trên 5 kích thước màn hình: `320x568`, `390x844`, `430x932`, `768x1024`, `1366x768`.
+  - Kiểm tra toàn diện 4 tuyến trọng yếu: `/login` (Cộng đồng + Đơn vị Xử lý + 8 tài khoản demo), `/reports`, `/reports/new`, `/cases`.
+  - Rà soát nghiêm ngặt 5 tiêu chí: 0 console errors, 0 network failures, 0 horizontal overflow, touch target $\ge 44\text{px}$, visual balance (zero glassmorphism, tương phản cao, sáng màu).
+- **Phát hiện & Xử lý triệt để**:
+  1. *Lỗi tràn ngang 11px trên 320x568*: Khắc phục trong `AppShell.tsx` bằng cách chuyển nhãn text nút "Gửi phản ánh" thành `<span className="hidden min-[360px]:inline">`, giữ icon CTA với kích thước chạm chuẩn 40x40px.
+  2. *Lỗi pointer-event intercept do chữ tràn thẻ card ở 320px*: Khắc phục bằng cấu trúc danh sách thẻ 1 cột tiện dụng trên mobile, `min-h-[64px]`, `min-w-0` và `truncate`.
+  3. *Lỗi touch target < 44px*: Nâng cấp ô tìm kiếm trong `ReportsListPage.tsx` lên `min-h-[44px] py-2.5` và nút toggle mật khẩu lên `min-h-[44px] min-w-[44px] p-2`.
+- **Kết quả Kiểm định**:
+  - Chạy toàn diện bộ test harness `scripts/qa-rendered-ui-audit.js`: 105/105 checks PASS (100%), 0 console error, 0 network error, 0 horizontal overflow, 0 glassmorphism, 0 touch target anomalies. Lưu báo cáo tại `artifacts/qa-audit-results.json` và `artifacts/ui-anomalies.json`.
+
+### 22. [2026-09-07] `audit-a11y-wcag-usability-hardening`: Kiểm Định Toàn Diện Khả Năng Tiếp Cận (WCAG AA) & Tiện Dụng, Nâng Cấp Focus Visible, Label ARIA, Semantic Radiogroups, Touch Target >= 44px
+- **Bối cảnh & Yêu cầu Cốt lõi**:
+  - Rà soát toàn bộ hệ thống DustGuard VN theo 7 tiêu chí WCAG AA & Usability:
+    1. Độ tương phản màu sắc (WCAG AA >= 4.5:1 text thường, >= 3:1 text lớn/badges). Tuyệt đối zero glassmorphism (Rule 1).
+    2. Viền `focus-visible` cho điều hướng hoàn toàn bằng bàn phím.
+    3. Nhãn truy cập (`aria-label`, cặp `htmlFor` / `id`).
+    4. Điều khiển ngữ nghĩa (`role="button"` với Enter/Space, `role="radiogroup"` / `role="radio"`).
+    5. Vùng chạm cảm ứng Touch Target $\ge 44 \times 44$px cho thao tác ngón tay di động.
+    6. Thông báo lỗi liên kết qua `aria-describedby` hoặc `role="alert"` / `aria-live`.
+    7. Trạng thái chờ và vô hiệu hóa (`aria-busy`, `aria-hidden` trên icon trang trí).
+- **Phạm vi xử lý hoàn tất**:
+  1. **LoginPage & Auth Ecosystem (`LoginForm.jsx`, `PasswordField.jsx`, `DemoAccessModal.jsx`, `AuthBrandPanel.jsx`, `Login.jsx`)**:
+     - Thay thế màu mờ nhạt: Nâng cấp `#78716C` (stone-500, ratio 4.35:1) lên `#57534E` (> 6:1 PASS); nâng `text-ink-400` lên `text-ink-600`.
+     - Xóa triệt để glassmorphism `bg-white/70` và `bg-white/80` thành nền đặc `#FFFFFF`.
+     - Thêm `focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-seal-600` cho mọi input, button.
+     - `PasswordField`: Bổ sung `aria-invalid`, `aria-describedby`, `lang`, `aria-hidden="true"` trên SVG.
+     - `LoginForm`: Liên kết lỗi `aria-describedby="auth-error-alert"`, `id="auth-error-alert"`, `aria-busy={loading}` trên form và button.
+     - Toast đăng nhập: Thêm `role="status"` và `aria-live="polite"`.
+  2. **Citizen Portal & Flow (`ReportsListPage.jsx`, `ReportNewPage.jsx`, `ReportDetailPage.jsx`)**:
+     - `ReportsListPage`: Biến thẻ `<div>` có `onClick` thành phần tử có `role="button"`, `tabIndex={0}`, sự kiện `onKeyDown` (Enter/Space), `aria-label`, và `focus-visible`.
+     - `ReportNewPage`: Bổ sung `role="radiogroup"` và `role="radio"` cho chọn loại ô nhiễm và mức độ nghiêm trọng; chuẩn hóa cặp `htmlFor`/`id` cho địa chỉ và mô tả; nâng cấp nút xóa ảnh thumbnail thành touch target $\ge 44 \times 44$px kèm `aria-label`.
+     - `ReportDetailPage`: Chuyển 3 thẻ cảm xúc đánh giá thành `role="radiogroup"` / `role="radio"`; chuẩn hóa `htmlFor="eval-note-textarea"` / `id`; nút xóa ảnh thumbnail $\ge 44 \times 44$px; `role="status"` trên thông báo thành công.
+  3. **Community & Staff Flow (`CommunityObservePage.jsx`, `StaffDashboardPage.jsx`, `MobileInspectionModal.jsx`)**:
+     - `CommunityObservePage`: Radiogroup cho tình trạng quan sát, `htmlFor`/`id` cho địa chỉ & ghi chú, `aria-busy`.
+     - `StaffDashboardPage`: Cả 3 Modals (Tạo hồ sơ, Giao việc, Photo lightbox) đều được gắn `role="dialog"`, `aria-modal="true"`, `aria-labelledby`, `aria-label` cho nút đóng, và đầy đủ `htmlFor`/`id` cho các trường form.
+     - `MobileInspectionModal`: Gắn `role="dialog"`, `aria-labelledby`, `role="radiogroup"`, `aria-label` đóng, `role="alert"`.
+  4. **Core UI Primitives & Layout (`Modal.jsx`, `StatusBadge.jsx`, `Input.jsx`, `Tabs.jsx`, `LandingHeader.jsx`)**:
+     - `Modal`: Dialog container liên kết `aria-labelledby` và `aria-describedby`.
+     - `StatusBadge`: `LoadingState` có `role="status"` / `aria-live="polite"`, `ErrorState` có `role="alert"` / `aria-live="assertive"`.
+     - `Input`: Nâng cấp focus ring mờ 20% thành `focus-visible:outline-2 focus-visible:outline-offset-2`.
+     - `LandingHeader`: `aria-label` cho nav, `aria-expanded` và `aria-controls` cho mobile menu button, `min-h-[44px]`.
+- **Kiểm thử tự động & Nghiệm thu**:
+  - Tạo mới bộ kiểm thử tự động hợp đồng A11y: `app/tests/accessibility-audit-verification.test.js` (4/4 test suites PASS 100%).
+  - Chạy toàn bộ Quick Gate `npm --prefix app run verify:quick`: PASS 100% (248 domain tests + 43 UI smoke tests, 0 regressions).
+
 ### 21. [2026-09-07] `fix-production-auth-zero-mock-ssot-hardening`: Khắc Phục Dứt Điểm Lỗi Đăng Nhập Production, Chuẩn Hóa Bộ Tài Khoản Demo Chuyên Nghiệp & Đồng Bộ D1 SSOT
 - **Bối cảnh & Vấn đề Runtime**:
   - Tại trang production `https://dustguard.phamphunguyenhung.com/login`, tab "Đơn vị Xử lý", người dùng bấm vào các thẻ demo như `staff1` bị báo lỗi: *"Tên đăng nhập hoặc mật khẩu chưa đúng."* gây gián đoạn luồng trải nghiệm demo.
