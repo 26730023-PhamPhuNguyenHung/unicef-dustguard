@@ -7,6 +7,54 @@
 
 ## 📅 Các Mốc Phát Triển Chính (Milestones)
 
+### 21. [2026-09-07] `fix-production-auth-zero-mock-ssot-hardening`: Khắc Phục Dứt Điểm Lỗi Đăng Nhập Production, Chuẩn Hóa Bộ Tài Khoản Demo Chuyên Nghiệp & Đồng Bộ D1 SSOT
+- **Bối cảnh & Vấn đề Runtime**:
+  - Tại trang production `https://dustguard.phamphunguyenhung.com/login`, tab "Đơn vị Xử lý", người dùng bấm vào các thẻ demo như `staff1` bị báo lỗi: *"Tên đăng nhập hoặc mật khẩu chưa đúng."* gây gián đoạn luồng trải nghiệm demo.
+- **Nguyên nhân gốc rễ (Root Causes)**:
+  1. *Lệch mật khẩu demo*: Card login gửi mật khẩu cũ `Password123!` (có ký tự viết hoa và chấm than) trong khi dữ liệu hash trong DB production lưu `password123`.
+  2. *PowerShell string expansion*: Script seed SQL trước đây khi chạy trong môi trường PowerShell nội suy chuỗi `"..."` đã nuốt biến `$2b$10$...` của chuỗi bcrypt hash thành chuỗi rỗng.
+  3. *Thiếu case-insensitivity & email lookup*: API backend chưa chuẩn hóa `LOWER(username) = LOWER(?)` hoặc `LOWER(email) = LOWER(?)`.
+  4. *Rogue Auto-login*: File `AuthContext.tsx` của Side B tự động kích hoạt `login('staff1', 'password123')` ngầm gây xung đột token và tràn request 401.
+- **Phạm vi xử lý hoàn tất**:
+  1. **Chuẩn hóa bộ 4 tài khoản Demo chuyên nghiệp**:
+     - `canbo.hientruong` (Nguyễn Minh Anh) — Vai trò: Cán bộ hiện trường (`staff`). Email: `canbo.hientruong@dustguard.vn`.
+     - `lanhdao.dieuphoi` (Trần Quốc Minh) — Vai trò: Lãnh đạo điều phối (`supervisor`). Email: `lanhdao.dieuphoi@dustguard.vn`.
+     - `chuyenvien.phapche` (Lê Thanh Hà) — Vai trò: Chuyên viên pháp chế (`legal_reviewer`). Email: `chuyenvien.phapche@dustguard.vn`.
+     - `quantri.dustguard` (Quản trị DustGuard) — Vai trò: Quản trị vận hành (`admin`). Email: `quantri.dustguard@dustguard.vn`.
+     - Mật khẩu thống nhất chuẩn: `DustGuard@2026` (lưu bcrypt hash `$2b$10$...` an toàn trong CSDL D1). Giữ alias `admin` để duy trì tương thích.
+  2. **Trải nghiệm Autofill văn minh (Zero Mis-click)**:
+     - Click vào card demo chỉ điền thông tin (autofill `username` và `password`), xóa lỗi cũ và focus nút submit; **tuyệt đối không tự động submit ngầm**.
+     - Bổ sung chỉ dẫn: *"Mật khẩu trải nghiệm: DustGuard@2026"*.
+  3. **Backend & D1 SSOT Hardening**:
+     - `server/operations.ts`: Bổ sung `LOWER(username) = LOWER(?) OR LOWER(email) = LOWER(?)`, trả về cả `full_name` và `name`, phân biệt mã lỗi RFC 7807 (401, 403, 500), kiểm tra trạng thái active.
+     - `server/community.ts`: Tương tự chuẩn hóa normalize đầu vào, kiểm soát cách ly 2 cổng (trả 403 `WRONG_PORTAL_SIDE` khi tài khoản Ops đăng nhập cổng Dân).
+     - `scripts/seed-production-demo-accounts.js`: Seed trực tiếp và idempotent vào Cloudflare D1 Remote (`ad40205a-ec4b-40f3-8ab2-c2e7b9e78699`) với bcrypt hash chuẩn, kèm dữ liệu vụ việc và lịch trình kiểm tra thực tế.
+  4. **Triển khai & Kiểm thử tự động**:
+     - Build hợp nhất Side A + Side B: `npm run build:prod` PASS.
+     - Deploy Cloudflare Worker Production: Version `b1af0118-9ccf-4e5a-bfcb-26e5aae3abcf`.
+     - Chạy bộ kiểm thử tự động `tests/auth-production-matrix.test.js`: 14/14 tests PASS (AUTH-01 đến AUTH-13).
+     - Kiểm thử E2E trực tiếp trên production qua Agent Browser & Playwright đa viewport (`1440x900`, `390x844`): Đăng nhập, redirect, render dashboard có dữ liệu thật, F5 giữ session và đăng xuất hoạt động 100%.
+
+### 20. [2026-09-07] `feat-core-experience-pipeline-and-case-workspace`: Chuẩn Hóa Toàn Diện Core Pipeline 8 Bước, Phân Biệt Observation & Case, Case Workspace 6 Sections, Bàn Làm Việc 4 Câu Hỏi, Xử Lý Triệt Để Ảnh Vỡ Bằng SafeImage
+- **Bối cảnh & Yêu cầu Cốt lõi**:
+  - Tái định vị sản phẩm: *"DustGuard là lớp xử lý phía sau phản ánh môi trường, biến một tín hiệu rời rạc thành một vụ việc có thể hành động và theo dõi xuyên suốt."*
+  - Không để các tính năng tồn tại thành module rời rạc; chuẩn hóa theo chuỗi liên tục 8 bước: `Signal/Observation → Evidence → Structured Case → Prioritization → Assignment → Processing → Follow-up → Result/Closure`.
+  - Phía người dân (Side A): Gửi phản ánh $\rightarrow$ màn hình *"Phản ánh của bạn đang được xử lý"* với timeline 6 nấc minh bạch; phân biệt rạch ròi Observation (tín hiệu ban đầu) và Case (hồ sơ theo dõi: *"Đã tạo hồ sơ theo dõi"*, không dùng wording cơ quan hành chính hay vi phạm); khắc phục dứt điểm ảnh lỗi bằng `SafeImage` (thông báo *"Chưa có hình ảnh minh chứng"* thay vì hiện icon ảnh vỡ).
+  - Case Workspace (Side A & B): Thiết kế chuẩn 6 Sections tác nghiệp thực tế (Tín hiệu ban đầu, Bằng chứng số & IoT, Đánh giá ưu tiên/Risk Score, Phân công tiếp nhận, Tiến trình xử lý, Kết quả nghiệm thu).
+  - Bàn làm việc cán bộ (Side B): Trả lời trực diện 4 câu hỏi tác nghiệp; bảng Case với Dominant Next Action CTA rõ ràng theo từng trạng thái.
+  - Runtime D1 SSOT: Tự động tạo `cases`, `ops_cases`, `ops_case_timeline`, `case_reports` khi người dân gửi phản ánh; đồng bộ trạng thái 2 chiều giữa Side A và Side B.
+- **Phạm vi xử lý hoàn tất**:
+  1. `apps/web/src/components/common/SafeImage.tsx` & `dustguard-operations/apps/web/src/components/common/SafeImage.tsx`: Khắc phục dứt điểm ảnh vỡ/hỏng bằng UI fallback văn minh *"Chưa có hình ảnh minh chứng"*.
+  2. `apps/web/src/components/common/ProcessingTimeline.tsx`: Component hiển thị tiến trình 6 nấc minh bạch cho công dân.
+  3. `apps/web/src/pages/ReportDetailPage.tsx`: Nhúng `SafeImage` xử lý lỗi ảnh vỡ tại `rep_4f6a4e7538fc4438`, tích hợp `ProcessingTimeline`, hiển thị rõ *"Đã tạo hồ sơ theo dõi"*.
+  4. `apps/web/src/pages/CreateReportPage.tsx`: Bước 5 chuyển thành màn hình *"Phản ánh của bạn đang được xử lý"* kèm timeline.
+  5. `apps/web/src/pages/CaseDetailPage.tsx`: Tái thiết kế toàn diện chuẩn 6 Section tác nghiệp.
+  6. `dustguard-operations/apps/web/src/pages/DashboardPage.tsx`: 4 Dominant Action Cards trả lời 4 câu hỏi cốt lõi và mapping `getNextActionInfo` chuẩn.
+  7. `dustguard-operations/apps/web/src/pages/CaseInboxPage.tsx`: Tabs bộ lọc nghiệp vụ và nút Next Action Dominant CTA.
+  8. `server/community.ts` & `server/operations.ts`: Tự động tạo hồ sơ vụ việc khi công dân gửi phản ánh, đồng bộ trạng thái 2 chiều trên Cloudflare D1.
+  9. `scripts/seed-showcase-pipeline.js`: Seed 6 Case thực tế tương ứng 6 giai đoạn vào Remote D1 Cloudflare Edge.
+  10. Triển khai Production Cloudflare Edge Worker và nghiệm thu E2E tự động qua Playwright (6/6 tests PASS 100%).
+
 ### 19. [2026-09-07] `feat-display-realtime-distance-to-sensor-node`: Tích Hợp Khoảng Cách Trắc Địa Động (Haversine Distance) Tới Trạm Quan Trắc IoT Trên Toàn Hệ Thống
 - **Bối cảnh & Yêu cầu Người dùng**:
   - Người dùng thắc mắc: *"ủa k thấy khoảng cách à"*. Khi xem card chất lượng không khí trên Dashboard và Citizen Portal, người dân cần biết ngay trạm đo này cách vị trí thực tế của họ bao xa để đánh giá mức độ ảnh hưởng của bụi mịn tới sức khỏe.

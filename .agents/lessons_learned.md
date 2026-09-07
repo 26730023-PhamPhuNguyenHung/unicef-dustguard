@@ -3,6 +3,55 @@
 > **Kho lưu trữ kinh nghiệm, bài học kiến trúc và phòng chống lỗi kỹ thuật (Anti-Regression)**  
 > *Cập nhật sau mỗi chu trình phát triển tính năng mới thành công.*
 
+### 17. Xác Thực Production (Zero-Mock SSOT), Cạm Bẫy Nội Suy Chuỗi PowerShell Cho Password Hash & Trải Nghiệm Demo Autofill Văn Minh
+- **Vấn đề thực tế phát sinh**:
+  1. *Lỗi Đăng nhập Demo trên Production*: Tại tab "Đơn vị Xử lý", click các tài khoản demo như `staff1` trả về lỗi *"Tên đăng nhập hoặc mật khẩu chưa đúng."*. Nguyên nhân do frontend gửi mật khẩu cũ `Password123!` trong khi CSDL production lưu `password123`.
+  2. *Cạm bẫy PowerShell String Expansion*: Khi viết script thực thi SQL trên Windows PowerShell, nếu chuỗi hash bcrypt (ví dụ: `$2b$10$...`) được nhúng trong cặp dấu nháy kép `""`, PowerShell tự động coi `$2b`, `$10` là các biến môi trường rỗng và xóa trắng chúng, khiến password hash trong CSDL bị hỏng hoàn toàn.
+  3. *Thiếu Case-Insensitivity & Tìm kiếm Email*: API backend trước đây chỉ so sánh chính xác chuỗi `username = ?`, dẫn đến việc người dùng nhập chữ hoa (`CANBO.HIENTRUONG`), thừa khoảng trắng hoặc nhập email đều bị từ chối 401.
+  4. *Rogue Auto-login*: `AuthContext.tsx` tự động gọi ngầm `login('staff1', 'password123')` khi khởi tạo trang, gây tràn request 401 và ghi đè token phiên làm việc thật.
+- **Giải pháp chuẩn hóa triệt để**:
+  1. **Tuyệt đối không nhúng chuỗi Hash trực tiếp vào PowerShell String**:
+     - Khi chạy lệnh SQL nạp tài khoản, luôn sinh file `.sql` thông qua Node.js (`fs.writeFileSync`) với UTF-8 encoding và gọi `wrangler d1 execute <DB> --file=<file>.sql`.
+  2. **Chuẩn hóa bộ tài khoản Demo chuyên nghiệp**:
+     - `canbo.hientruong` (Nguyễn Minh Anh - Cán bộ hiện trường)
+     - `lanhdao.dieuphoi` (Trần Quốc Minh - Lãnh đạo điều phối)
+     - `chuyenvien.phapche` (Lê Thanh Hà - Chuyên viên pháp chế)
+     - `quantri.dustguard` (Quản trị DustGuard - Quản trị vận hành)
+     - Mật khẩu thống nhất: `DustGuard@2026`. Giữ alias `admin` để bảo đảm tương thích hệ thống.
+  3. **Trải nghiệm Autofill văn minh (Zero Mis-click)**:
+     - Nhấn vào card demo chỉ thực hiện autofill vào ô input, xóa thông báo lỗi cũ và focus vào nút bấm đăng nhập. Tuyệt đối không auto-submit ngầm để người dùng kiểm soát hành động.
+  4. **Backend Normalization & RFC 7807 Error Code Isolation**:
+     - So sánh không phân biệt hoa thường: `LOWER(username) = LOWER(?) OR LOWER(email) = LOWER(?)`.
+     - Phân định rõ 401 (sai credential), 403 (sai cổng hoặc tài khoản bị khóa), 500 (lỗi máy chủ) kèm thông điệp tiếng Việt dễ hiểu.
+     - Kiểm tra cách ly 2 cổng: Tài khoản nghiệp vụ đăng nhập vào cổng cộng đồng sẽ nhận 403 `WRONG_PORTAL_SIDE`.
+
+### 16. Kiến Trúc Pipeline 8 Bước Xuyên Suốt, Phân Biệt Observation & Case, Case Workspace 6 Sections & Fallback Xử Lý Triệt Để Ảnh Vỡ Bằng SafeImage
+- **Vấn đề thực tế phát sinh**:
+  1. *Định vị rời rạc*: Hệ thống ban đầu có nhiều dashboard và tính năng độc lập, khiến người dùng cảm giác như các module tách biệt chứ không nhìn thấy rõ một quy trình nghiệp vụ biến một phản ánh môi trường thành vụ việc có thể hành động và theo dõi.
+  2. *Nhầm lẫn Observation & Case*: Ghi nhận ban đầu (Observation/Report) bị gọi nhầm thành "vi phạm" hoặc "kết luận hành chính", tạo cảm giác tiêu cực và không đúng tính chất Civic Tech độc lập.
+  3. *Lỗi ảnh vỡ (Broken Images)*: Khi người dùng hoặc hệ thống lưu link ảnh bị 404/hỏng (như `rep_4f6a4e7538fc4438`), trình duyệt hiển thị icon ảnh vỡ xộc xệch, gây mất thẩm mỹ nghiêm trọng.
+  4. *Màn hình sau submit thiếu minh bạch*: Gửi phản ánh xong chỉ hiện "Gửi thành công" làm người dân không biết chuyện gì sẽ xảy ra tiếp theo.
+  5. *Bàn làm việc cán bộ bị quá tải bởi vanity metrics*: Không trả lời trực tiếp 4 câu hỏi thực tế hàng ngày mà nhân viên cần biết.
+- **Giải pháp chuẩn hóa triệt để**:
+  1. **Thống nhất Core Pipeline 8 bước**: `Signal/Observation → Evidence → Structured Case → Prioritization → Assignment → Processing → Follow-up → Result/Closure`. Toàn bộ routing, state machine và UI labels đều phản ánh chuỗi này.
+  2. **SafeImage Component - Khắc phục vĩnh viễn icon ảnh vỡ**:
+     - Tạo component `SafeImage.tsx` tự động bắt sự kiện `onError` của thẻ `<img>` và kiểm tra URL rỗng/placeholder giả lập.
+     - Khi ảnh lỗi: Tự động render hộp thông tin nhẹ nhàng, viền nét đứt thanh lịch với thông điệp: *"Chưa có hình ảnh minh chứng - Phản ánh này chưa kèm hình ảnh thực địa hoặc hình ảnh đang được đồng bộ"*.
+     - TUYỆT ĐỐI KHÔNG hiện icon ảnh vỡ hỏng của trình duyệt.
+  3. **Màn hình "Phản ánh của bạn đang được xử lý"**:
+     - Sau khi submit, chuyển người dùng ngay vào màn hình xử lý minh bạch kèm `ProcessingTimeline` gồm 6 nấc: `Đã ghi nhận` → `Đang chuẩn hóa thông tin` → `Đang xem xét` → `Đã chuyển xử lý` → `Đang cập nhật` → `Đã có kết quả`.
+     - Phân định rõ: *"Đã tạo hồ sơ theo dõi"*, không dùng wording cơ quan hành chính hay vi phạm.
+  4. **Case Workspace 6 Sections Tác Nghiệp Thực Tế**:
+     - Section 1: Tín hiệu ban đầu (nguồn, mô tả, ảnh, vị trí).
+     - Section 2: Bằng chứng số & IoT (minh chứng, timestamp, SHA-256 integrity, trạng thái đủ/cần bổ sung).
+     - Section 3: Đánh giá ưu tiên (Dust Risk Score & giải thích các yếu tố, không xem như phán quyết pháp lý).
+     - Section 4: Phân công & Trách nhiệm (cán bộ phụ trách, hạn xử lý SLA 48h, trạng thái tiếp nhận).
+     - Section 5: Tiến trình xử lý (timeline chi tiết, người thực hiện, thời gian, ghi chú hiện trường).
+     - Section 6: Kết quả & Nghiệm thu (minh chứng đối chứng sau xử lý, ngày hoàn tất, đóng/mở lại).
+  5. **Bàn Làm Việc Cán Bộ 4 Câu Hỏi & Next Action Dominant CTA**:
+     - Thay thế các widget rườm rà bằng 4 thẻ chỉ số tác nghiệp trả lời trực diện: Tín hiệu mới cần xem, Vụ việc cần ưu tiên trước, Chưa có người phụ trách, Đang chậm/cần cập nhật.
+     - Trên từng vụ việc: Có nút bấm Next Action rõ ràng theo trạng thái (`Xem tín hiệu`, `Kiểm tra bằng chứng`, `Phân công`, `Bắt đầu xử lý`, `Cập nhật tiến độ`, `Xác nhận kết quả`, `Xem lịch sử`), người dùng không phải tự đoán bước kế tiếp.
+
 ### 15. Trải Nghiệm Định Vị Khoảng Cách Trắc Địa Động (Dynamic Haversine Distance) Cho Mạng Lưới Cảm Biến Civic Tech IoT
 - **Vấn đề thực tế phát sinh**:
   - Khi xem số liệu chất lượng không khí (PM2.5, PM10) trên Dashboard hoặc Citizen Portal, người dùng đặt câu hỏi tự nhiên: *"ủa k thấy khoảng cách à"*.

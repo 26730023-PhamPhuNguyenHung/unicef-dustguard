@@ -1,0 +1,3742 @@
+{
+  "hardcodedWidths": [
+    {
+      "file": "app/src/apps/admin/pages/dashboard/AdminDashboardPage.jsx",
+      "line": 279,
+      "type": "tailwind-arbitrary-px",
+      "value": "min-w-[560px]",
+      "px": 560,
+      "snippet": "<table className=\"w-full text-left text-xs border-collapse min-w-[560px]\">",
+      "recommendation": "min-w-0 or w-full with sm:min-w-[560px]"
+    },
+    {
+      "file": "app/src/apps/admin/pages/users/UsersPage.jsx",
+      "line": 224,
+      "type": "tailwind-arbitrary-px",
+      "value": "min-w-[720px]",
+      "px": 720,
+      "snippet": "<table className=\"w-full text-left text-xs text-[#1C1917] border-collapse min-w-[720px]\">",
+      "recommendation": "min-w-0 or w-full with sm:min-w-[720px]"
+    },
+    {
+      "file": "app/src/apps/citizen/layout/CitizenLayout.jsx",
+      "line": 68,
+      "type": "fixed-tailwind-width",
+      "value": "w-64",
+      "snippet": "<aside className=\"hidden md:flex flex-col w-64 bg-white border-r border-[#E5E7EB] shrink-0 sticky top-0 h-screen z-30 p-5 justify-between select-none\">",
+      "recommendation": "Use 'w-full sm:w-64' or flex-1 min-w-0"
+    },
+    {
+      "file": "app/src/apps/contractor/pages/reports/ContractorReportsPage.jsx",
+      "line": 185,
+      "type": "tailwind-arbitrary-px",
+      "value": "min-w-[640px]",
+      "px": 640,
+      "snippet": "<table className=\"w-full text-left text-xs border-collapse min-w-[640px]\">",
+      "recommendation": "min-w-0 or w-full with sm:min-w-[640px]"
+    },
+    {
+      "file": "app/src/apps/staff/pages/alerts/StaffAlertsPage.jsx",
+      "line": 353,
+      "type": "tailwind-arbitrary-px",
+      "value": "min-w-[240px]",
+      "px": 240,
+      "snippet": "<div className=\"relative flex-1 min-w-[240px]\">",
+      "recommendation": "min-w-0 or w-full with sm:min-w-[240px]"
+    },
+    {
+      "file": "app/src/apps/staff/pages/alerts/StaffAlertsPage.jsx",
+      "line": 511,
+      "type": "tailwind-arbitrary-px",
+      "value": "w-[310px]",
+      "px": 310,
+      "snippet": "{/* RIGHT COLUMN: 25% Priority Panel (Fixed 310px on Desktop xl:w-[310px]) */}",
+      "recommendation": "w-full max-w-[310px] or clamp()"
+    },
+    {
+      "file": "app/src/apps/staff/pages/alerts/StaffAlertsPage.jsx",
+      "line": 512,
+      "type": "tailwind-arbitrary-px",
+      "value": "w-[310px]",
+      "px": 310,
+      "snippet": "<div className=\"w-full xl:w-[310px] shrink-0 space-y-4\">",
+      "recommendation": "w-full max-w-[310px] or clamp()"
+    },
+    {
+      "file": "app/src/apps/staff/pages/cases/CasesListPage.jsx",
+      "line": 378,
+      "type": "tailwind-arbitrary-px",
+      "value": "w-[310px]",
+      "px": 310,
+      "snippet": "{/* 4. Main Body: 75% Table + 25% Priority Panel (xl:w-[310px] Responsive Layout) */}",
+      "recommendation": "w-full max-w-[310px] or clamp()"
+    },
+    {
+      "file": "app/src/apps/staff/pages/cases/CasesListPage.jsx",
+      "line": 386,
+      "type": "tailwind-arbitrary-px",
+      "value": "min-w-[240px]",
+      "px": 240,
+      "snippet": "<div className=\"relative flex-1 min-w-[240px]\">",
+      "recommendation": "min-w-0 or w-full with sm:min-w-[240px]"
+    },
+    {
+      "file": "app/src/apps/staff/pages/cases/CasesListPage.jsx",
+      "line": 551,
+      "type": "tailwind-arbitrary-px",
+      "value": "w-[310px]",
+      "px": 310,
+      "snippet": "{/* Right Column: Priority Panel \"Ưu tiên hôm nay\" (Mockup 6 Fixed xl:w-[310px]) */}",
+      "recommendation": "w-full max-w-[310px] or clamp()"
+    },
+    {
+      "file": "app/src/apps/staff/pages/cases/CasesListPage.jsx",
+      "line": 552,
+      "type": "tailwind-arbitrary-px",
+      "value": "w-[310px]",
+      "px": 310,
+      "snippet": "<div className=\"w-full xl:w-[310px] xl:shrink-0 bg-white border border-[#161313]/10 rounded-3xl p-5 shadow-2xs space-y-4\">",
+      "recommendation": "w-full max-w-[310px] or clamp()"
+    },
+    {
+      "file": "app/src/apps/staff/pages/monitoring/StaffMonitoringPage.jsx",
+      "line": 860,
+      "type": "tailwind-arbitrary-px",
+      "value": "min-w-[240px]",
+      "px": 240,
+      "snippet": "<div className=\"relative flex-1 min-w-[240px]\">",
+      "recommendation": "min-w-0 or w-full with sm:min-w-[240px]"
+    },
+    {
+      "file": "app/src/apps/staff/pages/notifications/StaffNotificationsPage.jsx",
+      "line": 292,
+      "type": "tailwind-arbitrary-px",
+      "value": "w-[310px]",
+      "px": 310,
+      "snippet": "<div className=\"w-full xl:w-[310px] xl:shrink-0 bg-white border border-[#E7E5E4] rounded-2xl p-4 shadow-2xs space-y-3.5\">",
+      "recommendation": "w-full max-w-[310px] or clamp()"
+    },
+    {
+      "file": "app/src/apps/staff/pages/sites/SitesListPage.jsx",
+      "line": 303,
+      "type": "tailwind-arbitrary-px",
+      "value": "min-w-[240px]",
+      "px": 240,
+      "snippet": "<div className=\"relative flex-1 min-w-[240px]\">",
+      "recommendation": "min-w-0 or w-full with sm:min-w-[240px]"
+    },
+    {
+      "file": "app/src/apps/staff/pages/sites/SitesListPage.jsx",
+      "line": 452,
+      "type": "tailwind-arbitrary-px",
+      "value": "w-[310px]",
+      "px": 310,
+      "snippet": "{/* Right: Cần chú ý Panel (xl:w-[310px] 14-inch layout) */}",
+      "recommendation": "w-full max-w-[310px] or clamp()"
+    },
+    {
+      "file": "app/src/apps/staff/pages/sites/SitesListPage.jsx",
+      "line": 453,
+      "type": "tailwind-arbitrary-px",
+      "value": "w-[310px]",
+      "px": 310,
+      "snippet": "<div className=\"w-full xl:w-[310px] shrink-0 space-y-4\">",
+      "recommendation": "w-full max-w-[310px] or clamp()"
+    },
+    {
+      "file": "app/src/apps/staff/pages/tasks/TasksListPage.jsx",
+      "line": 559,
+      "type": "tailwind-arbitrary-px",
+      "value": "w-[310px]",
+      "px": 310,
+      "snippet": "<div className=\"w-full xl:w-[310px] xl:shrink-0 bg-white border border-[#E7E5E4] rounded-2xl p-4 shadow-2xs space-y-3.5\">",
+      "recommendation": "w-full max-w-[310px] or clamp()"
+    },
+    {
+      "file": "app/src/components/checklist/InspectionReviewTable.jsx",
+      "line": 16,
+      "type": "tailwind-arbitrary-px",
+      "value": "min-w-[640px]",
+      "px": 640,
+      "snippet": "<table className=\"w-full text-xs border-collapse min-w-[640px] table-fixed\">",
+      "recommendation": "min-w-0 or w-full with sm:min-w-[640px]"
+    },
+    {
+      "file": "app/src/components/common/UnifiedDataTable.jsx",
+      "line": 89,
+      "type": "tailwind-arbitrary-px",
+      "value": "min-w-[600px]",
+      "px": 600,
+      "snippet": "<table className=\"w-full text-left border-collapse min-w-[600px]\">",
+      "recommendation": "min-w-0 or w-full with sm:min-w-[600px]"
+    },
+    {
+      "file": "app/src/components/DocumentEditor/DataBindingsPanel.jsx",
+      "line": 79,
+      "type": "tailwind-arbitrary-px",
+      "value": "w-[290px]",
+      "px": 290,
+      "snippet": "<aside className=\"flex h-full w-[290px] shrink-0 flex-col border-l border-ink-200 bg-white select-none print:hidden font-sans\">",
+      "recommendation": "w-full max-w-[290px] or clamp()"
+    },
+    {
+      "file": "app/src/components/DocumentEditor/DocumentOutline.jsx",
+      "line": 59,
+      "type": "tailwind-arbitrary-px",
+      "value": "w-[270px]",
+      "px": 270,
+      "snippet": "<aside className=\"flex h-full w-[270px] shrink-0 flex-col border-r border-ink-200 bg-white select-none print:hidden font-sans\">",
+      "recommendation": "w-full max-w-[270px] or clamp()"
+    },
+    {
+      "file": "app/src/components/DocumentEditor/extensions/MergeFieldNode.js",
+      "line": 59,
+      "type": "fixed-tailwind-width",
+      "value": "w-64",
+      "snippet": "className: 'absolute left-0 bottom-full mb-1.5 z-50 w-64 p-2.5 rounded-lg bg-ink-900 text-cream-50 text-xs shadow-xl border border-ink-700 pointer-events-none animate-in fade-in zoom-in-95 duration-100 font-sans'",
+      "recommendation": "Use 'w-full sm:w-64' or flex-1 min-w-0"
+    },
+    {
+      "file": "app/src/components/DocumentEditor/RevisionHistoryModal.jsx",
+      "line": 73,
+      "type": "tailwind-arbitrary-px",
+      "value": "w-[300px]",
+      "px": 300,
+      "snippet": "<div className=\"w-[300px] border-r border-ink-200 bg-cream-50/30 p-3 overflow-y-auto space-y-2\">",
+      "recommendation": "w-full max-w-[300px] or clamp()"
+    },
+    {
+      "file": "app/src/components/executive/AuditTrailModal.jsx",
+      "line": 99,
+      "type": "tailwind-arbitrary-px",
+      "value": "min-w-[240px]",
+      "px": 240,
+      "snippet": "<div className=\"flex flex-wrap items-center gap-2 flex-1 min-w-[240px]\">",
+      "recommendation": "min-w-0 or w-full with sm:min-w-[240px]"
+    },
+    {
+      "file": "app/src/components/executive/AuditTrailModal.jsx",
+      "line": 147,
+      "type": "tailwind-arbitrary-px",
+      "value": "min-w-[700px]",
+      "px": 700,
+      "snippet": "<table className=\"w-full text-left border-collapse text-xs min-w-[700px]\">",
+      "recommendation": "min-w-0 or w-full with sm:min-w-[700px]"
+    },
+    {
+      "file": "app/src/components/landing/motion/DustGuardTrace.jsx",
+      "line": 54,
+      "type": "tailwind-arbitrary-px",
+      "value": "w-[240px]",
+      "px": 240,
+      "snippet": "className=\"w-[240px] h-[90px] overflow-visible\"",
+      "recommendation": "w-full max-w-[240px] or clamp()"
+    },
+    {
+      "file": "app/src/components/PolicyIntelligence/Phase2ChecklistMapping.jsx",
+      "line": 68,
+      "type": "tailwind-arbitrary-px",
+      "value": "min-w-[700px]",
+      "px": 700,
+      "snippet": "<table className=\"data-table w-full min-w-[700px]\">",
+      "recommendation": "min-w-0 or w-full with sm:min-w-[700px]"
+    },
+    {
+      "file": "app/src/components/site-detail/SiteCasesTab.jsx",
+      "line": 434,
+      "type": "tailwind-arbitrary-px",
+      "value": "min-w-[640px]",
+      "px": 640,
+      "snippet": "<div className=\"flex items-center gap-1.5 text-[9px] font-bold text-ink-400 min-w-[640px] py-1\">",
+      "recommendation": "min-w-0 or w-full with sm:min-w-[640px]"
+    },
+    {
+      "file": "app/src/components/site-detail/SiteMonitoringTab.jsx",
+      "line": 83,
+      "type": "tailwind-arbitrary-px",
+      "value": "min-w-[450px]",
+      "px": 450,
+      "snippet": "<svg className=\"w-full min-w-[450px]\" height={height} viewBox={`0 0 ${width} ${height}`}>",
+      "recommendation": "min-w-0 or w-full with sm:min-w-[450px]"
+    },
+    {
+      "file": "app/src/components/StaffAI/DocInsight.jsx",
+      "line": 343,
+      "type": "tailwind-arbitrary-px",
+      "value": "w-[360px]",
+      "px": 360,
+      "snippet": "<aside className=\"w-full lg:w-[360px] xl:w-[400px] flex-shrink-0 flex flex-col gap-6\">",
+      "recommendation": "w-full max-w-[360px] or clamp()"
+    },
+    {
+      "file": "app/src/components/StaffAI/DocInsight.jsx",
+      "line": 343,
+      "type": "tailwind-arbitrary-px",
+      "value": "w-[400px]",
+      "px": 400,
+      "snippet": "<aside className=\"w-full lg:w-[360px] xl:w-[400px] flex-shrink-0 flex flex-col gap-6\">",
+      "recommendation": "w-full max-w-[400px] or clamp()"
+    },
+    {
+      "file": "app/src/components/StaffAI/ViolationCaseBuilder.jsx",
+      "line": 280,
+      "type": "tailwind-arbitrary-px",
+      "value": "w-[260px]",
+      "px": 260,
+      "snippet": "<aside className=\"w-full lg:w-[260px] xl:w-[280px] 2xl:w-[320px] flex-shrink-0 flex flex-col gap-6\">",
+      "recommendation": "w-full max-w-[260px] or clamp()"
+    },
+    {
+      "file": "app/src/components/StaffAI/ViolationCaseBuilder.jsx",
+      "line": 280,
+      "type": "tailwind-arbitrary-px",
+      "value": "w-[280px]",
+      "px": 280,
+      "snippet": "<aside className=\"w-full lg:w-[260px] xl:w-[280px] 2xl:w-[320px] flex-shrink-0 flex flex-col gap-6\">",
+      "recommendation": "w-full max-w-[280px] or clamp()"
+    },
+    {
+      "file": "app/src/components/StaffAI/ViolationCaseBuilder.jsx",
+      "line": 280,
+      "type": "tailwind-arbitrary-px",
+      "value": "w-[320px]",
+      "px": 320,
+      "snippet": "<aside className=\"w-full lg:w-[260px] xl:w-[280px] 2xl:w-[320px] flex-shrink-0 flex flex-col gap-6\">",
+      "recommendation": "w-full max-w-[320px] or clamp()"
+    },
+    {
+      "file": "app/src/modules/auth/components/AuthBrandPanel.jsx",
+      "line": 8,
+      "type": "fixed-tailwind-width",
+      "value": "w-96",
+      "snippet": "className=\"absolute -top-24 -left-24 w-96 h-96 rounded-full bg-gradient-to-br from-seal-100/50 via-cream-200/30 to-transparent blur-2xl pointer-events-none\"",
+      "recommendation": "Use 'w-full sm:w-96' or flex-1 min-w-0"
+    },
+    {
+      "file": "app/src/modules/auth/components/AuthBrandPanel.jsx",
+      "line": 12,
+      "type": "fixed-tailwind-width",
+      "value": "w-96",
+      "snippet": "className=\"absolute -bottom-24 -right-24 w-96 h-96 rounded-full bg-gradient-to-tl from-seal-50/70 via-accent-50/30 to-transparent blur-2xl pointer-events-none\"",
+      "recommendation": "Use 'w-full sm:w-96' or flex-1 min-w-0"
+    },
+    {
+      "file": "app/src/modules/citizen/CitizenPortal.jsx",
+      "line": 295,
+      "type": "tailwind-arbitrary-px",
+      "value": "min-w-[300px]",
+      "px": 300,
+      "snippet": "<div className=\"shrink-0 p-5 rounded-2xl bg-cream-50 border border-[#E7DFD3] space-y-3 w-full lg:w-auto lg:min-w-[300px]\">",
+      "recommendation": "min-w-0 or w-full with sm:min-w-[300px]"
+    },
+    {
+      "file": "app/src/modules/citizen/CitizenSidebar.jsx",
+      "line": 81,
+      "type": "tailwind-arbitrary-px",
+      "value": "w-[260px]",
+      "px": 260,
+      "snippet": "className={`fixed lg:static top-0 left-0 bottom-0 z-50 flex flex-col h-full w-[260px] bg-white border-r border-ink-900/10 shadow-xs transition-transform duration-200 ease-in-out select-none shrink-0 ${",
+      "recommendation": "w-full max-w-[260px] or clamp()"
+    },
+    {
+      "file": "app/src/modules/citizen/CitizenTopbar.jsx",
+      "line": 130,
+      "type": "fixed-tailwind-width",
+      "value": "w-64",
+      "snippet": "<div className=\"absolute right-0 mt-2 w-64 bg-white rounded-2xl border border-ink-900/15 shadow-elevation z-50 py-2 animate-in fade-in zoom-in-95 duration-150\">",
+      "recommendation": "Use 'w-full sm:w-64' or flex-1 min-w-0"
+    },
+    {
+      "file": "app/src/modules/citizen/CitizenTrack.jsx",
+      "line": 797,
+      "type": "tailwind-arbitrary-px",
+      "value": "min-w-[240px]",
+      "px": 240,
+      "snippet": "<div className=\"relative flex-1 min-w-[240px]\">",
+      "recommendation": "min-w-0 or w-full with sm:min-w-[240px]"
+    },
+    {
+      "file": "app/src/modules/community/CommunityImpact.jsx",
+      "line": 467,
+      "type": "tailwind-arbitrary-px",
+      "value": "min-w-[280px]",
+      "px": 280,
+      "snippet": "<div className=\"bg-cream-50 rounded-2xl border border-ink-900/10 p-4 sm:p-5 space-y-3 min-w-0 sm:min-w-[280px]\">",
+      "recommendation": "min-w-0 or w-full with sm:min-w-[280px]"
+    },
+    {
+      "file": "app/src/modules/contractor/ContractorLayout.jsx",
+      "line": 162,
+      "type": "fixed-tailwind-width",
+      "value": "w-64",
+      "snippet": "className={`fixed top-0 bottom-0 left-0 z-50 w-64 bg-white border-r border-ink-900/10 flex flex-col justify-between transition-transform duration-200 ease-in-out lg:static lg:translate-x-0 ${",
+      "recommendation": "Use 'w-full sm:w-64' or flex-1 min-w-0"
+    },
+    {
+      "file": "app/src/modules/staff/components/RegulationAssistantModal.jsx",
+      "line": 213,
+      "type": "tailwind-arbitrary-px",
+      "value": "min-w-[540px]",
+      "px": 540,
+      "snippet": "<table className=\"w-full text-left border-collapse min-w-[540px]\">",
+      "recommendation": "min-w-0 or w-full with sm:min-w-[540px]"
+    },
+    {
+      "file": "app/src/modules/staff/components/StaffPrimitives.jsx",
+      "line": 311,
+      "type": "fixed-tailwind-width",
+      "value": "w-64",
+      "snippet": "<div className=\"h-8 bg-cream-200/80 rounded-xl w-64 dark:bg-gray-800\"></div>",
+      "recommendation": "Use 'w-full sm:w-64' or flex-1 min-w-0"
+    },
+    {
+      "file": "app/src/modules/staff/StaffDashboard.jsx",
+      "line": 747,
+      "type": "tailwind-arbitrary-px",
+      "value": "min-w-[240px]",
+      "px": 240,
+      "snippet": "<th scope=\"col\" className=\"px-3.5 py-2.5 min-w-[240px]\">Công trình / Vụ việc</th>",
+      "recommendation": "min-w-0 or w-full with sm:min-w-[240px]"
+    },
+    {
+      "file": "app/src/modules/staff/StaffSites.jsx",
+      "line": 739,
+      "type": "tailwind-arbitrary-px",
+      "value": "min-w-[920px]",
+      "px": 920,
+      "snippet": "<table className=\"w-full text-xs text-left min-w-[920px]\">",
+      "recommendation": "min-w-0 or w-full with sm:min-w-[920px]"
+    },
+    {
+      "file": "app/src/shared/components/PageTemplate.jsx",
+      "line": 210,
+      "type": "tailwind-arbitrary-px",
+      "value": "min-w-[240px]",
+      "px": 240,
+      "snippet": "<div className=\"relative min-w-[240px] sm:w-72\">",
+      "recommendation": "min-w-0 or w-full with sm:min-w-[240px]"
+    },
+    {
+      "file": "app/src/shared/components/ui/Timeline.jsx",
+      "line": 18,
+      "type": "tailwind-arbitrary-px",
+      "value": "min-w-[500px]",
+      "px": 500,
+      "snippet": "<div className=\"flex items-center min-w-[500px] justify-between\">",
+      "recommendation": "min-w-0 or w-full with sm:min-w-[500px]"
+    },
+    {
+      "file": "app/src/shared/layouts/DashboardLayout.jsx",
+      "line": 150,
+      "type": "fixed-tailwind-width",
+      "value": "w-72",
+      "snippet": "className={`fixed inset-y-0 left-0 z-50 flex w-72 flex-col bg-white border-r border-cream-200 duration-300 ease-in-out lg:static lg:translate-x-0 ${",
+      "recommendation": "Use 'w-full sm:w-72' or flex-1 min-w-0"
+    }
+  ],
+  "fixedGrids": [
+    {
+      "file": "app/src/apps/admin/pages/dispatch/AdminDispatchPage.jsx",
+      "line": 371,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-3",
+      "snippet": "<div className=\"grid grid-cols-2 gap-3\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/apps/admin/pages/settings/SettingsPage.jsx",
+      "line": 555,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4",
+      "snippet": "<div className=\"grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/apps/admin/pages/settings/SettingsPage.jsx",
+      "line": 738,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-3",
+      "snippet": "<div className=\"grid grid-cols-2 gap-3\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/apps/citizen/pages/report-new/ReportNewPage.jsx",
+      "line": 481,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 sm:grid-cols-4 gap-2.5",
+      "snippet": "<div className=\"grid grid-cols-2 sm:grid-cols-4 gap-2.5\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/apps/citizen/pages/report-new/ReportNewPage.jsx",
+      "line": 508,
+      "value": "grid-cols-3",
+      "allClasses": "grid grid-cols-3 gap-2.5",
+      "snippet": "<div className=\"grid grid-cols-3 gap-2.5\">",
+      "recommendation": "Change 'grid-cols-3' to 'grid-cols-1 sm:grid-cols-3' (or md:grid-cols-3)"
+    },
+    {
+      "file": "app/src/apps/citizen/pages/reports/ReportDetailPage.jsx",
+      "line": 436,
+      "value": "grid-cols-3",
+      "allClasses": "grid grid-cols-3 gap-3",
+      "snippet": "<div className=\"grid grid-cols-3 gap-3\">",
+      "recommendation": "Change 'grid-cols-3' to 'grid-cols-1 sm:grid-cols-3' (or md:grid-cols-3)"
+    },
+    {
+      "file": "app/src/apps/community/pages/home/CommunityHomePage.jsx",
+      "line": 96,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4",
+      "snippet": "<div className=\"grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/apps/community/pages/impact/CommunityImpactPage.jsx",
+      "line": 77,
+      "value": "grid-cols-2",
+      "allClasses": "bg-white border border-[#E7E5E4] rounded-3xl p-6 shadow-xs grid grid-cols-2 md:grid-cols-4 gap-4 text-center",
+      "snippet": "<div className=\"bg-white border border-[#E7E5E4] rounded-3xl p-6 shadow-xs grid grid-cols-2 md:grid-cols-4 gap-4 text-center\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/apps/community/pages/impact/CommunityImpactPage.jsx",
+      "line": 133,
+      "value": "grid-cols-3",
+      "allClasses": "grid grid-cols-3 gap-2 shrink-0 md:w-80 text-center self-stretch md:self-center border-t md:border-t-0 md:border-l border-[#E7E5E4] pt-3 md:pt-0 md:pl-4",
+      "snippet": "<div className=\"grid grid-cols-3 gap-2 shrink-0 md:w-80 text-center self-stretch md:self-center border-t md:border-t-0 md:border-l border-[#E7E5E4] pt-3 md:pt-0 md:pl-4\">",
+      "recommendation": "Change 'grid-cols-3' to 'grid-cols-1 sm:grid-cols-3' (or md:grid-cols-3)"
+    },
+    {
+      "file": "app/src/apps/community/pages/observe/CommunityObservePage.jsx",
+      "line": 209,
+      "value": "grid-cols-3",
+      "allClasses": "grid grid-cols-3 gap-2",
+      "snippet": "<div className=\"grid grid-cols-3 gap-2\">",
+      "recommendation": "Change 'grid-cols-3' to 'grid-cols-1 sm:grid-cols-3' (or md:grid-cols-3)"
+    },
+    {
+      "file": "app/src/apps/contractor/pages/dashboard/ContractorDashboardPage.jsx",
+      "line": 86,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4",
+      "snippet": "<div className=\"grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/apps/contractor/pages/dashboard/ContractorDashboardPage.jsx",
+      "line": 214,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-2 pt-2 border-t border-[#E7E5E4] text-xs",
+      "snippet": "<div className=\"grid grid-cols-2 gap-2 pt-2 border-t border-[#E7E5E4] text-xs\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/apps/contractor/pages/reports/ContractorReportsPage.jsx",
+      "line": 323,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-4 pt-4 border-t border-[#E7E5E4] text-center text-xs",
+      "snippet": "<div className=\"grid grid-cols-2 gap-4 pt-4 border-t border-[#E7E5E4] text-center text-xs\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/apps/contractor/pages/sites/ContractorSitesPage.jsx",
+      "line": 90,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-2 text-xs",
+      "snippet": "<div className=\"grid grid-cols-2 gap-2 text-xs\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/alerts/StaffAlertsPage.jsx",
+      "line": 289,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 lg:grid-cols-4 gap-3",
+      "snippet": "<div className=\"grid grid-cols-2 lg:grid-cols-4 gap-3\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/cases/CaseDetailPage.jsx",
+      "line": 394,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 text-xs",
+      "snippet": "<div className=\"grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 text-xs\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/cases/CaseDetailPage.jsx",
+      "line": 458,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 pt-4",
+      "snippet": "<div className=\"grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 pt-4\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/cases/CaseDetailPage.jsx",
+      "line": 685,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-3",
+      "snippet": "<div className=\"grid grid-cols-2 gap-3\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/cases/CaseDetailPage.jsx",
+      "line": 690,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-1.5",
+      "snippet": "<div className=\"grid grid-cols-2 gap-1.5\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/cases/CaseDetailPage.jsx",
+      "line": 707,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-1.5",
+      "snippet": "<div className=\"grid grid-cols-2 gap-1.5\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/cases/CaseDetailPage.jsx",
+      "line": 755,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-3",
+      "snippet": "<div className=\"grid grid-cols-2 gap-3\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/cases/CaseDetailPage.jsx",
+      "line": 785,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-3",
+      "snippet": "<div className=\"grid grid-cols-2 gap-3\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/cases/CaseDetailPage.jsx",
+      "line": 1040,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 sm:grid-cols-4 gap-2 mb-2",
+      "snippet": "<div className=\"grid grid-cols-2 sm:grid-cols-4 gap-2 mb-2\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/cases/CaseDetailPage.jsx",
+      "line": 1155,
+      "value": "grid-cols-3",
+      "allClasses": "grid grid-cols-3 gap-2",
+      "snippet": "<div className=\"grid grid-cols-3 gap-2\">",
+      "recommendation": "Change 'grid-cols-3' to 'grid-cols-1 sm:grid-cols-3' (or md:grid-cols-3)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/cases/CaseDetailPage.jsx",
+      "line": 1217,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 sm:grid-cols-3 gap-2",
+      "snippet": "<div className=\"grid grid-cols-2 sm:grid-cols-3 gap-2\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/cases/CaseDetailPage.jsx",
+      "line": 1427,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 text-center pt-6 text-xs",
+      "snippet": "<div className=\"grid grid-cols-2 text-center pt-6 text-xs\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/cases/CasesListPage.jsx",
+      "line": 297,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 lg:grid-cols-4 gap-3",
+      "snippet": "<div className=\"grid grid-cols-2 lg:grid-cols-4 gap-3\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/dashboard/StaffDashboardPage.jsx",
+      "line": 367,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 lg:grid-cols-4 gap-3.5",
+      "snippet": "<div className=\"grid grid-cols-2 lg:grid-cols-4 gap-3.5\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/dashboard/StaffDashboardPage.jsx",
+      "line": 746,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-3",
+      "snippet": "<div className=\"grid grid-cols-2 gap-3\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/monitoring/StaffMonitoringPage.jsx",
+      "line": 559,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 lg:grid-cols-4 gap-3",
+      "snippet": "<div className=\"grid grid-cols-2 lg:grid-cols-4 gap-3\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/notifications/StaffNotificationsPage.jsx",
+      "line": 146,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4",
+      "snippet": "<div className=\"grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/notifications/StaffNotificationsPage.jsx",
+      "line": 314,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-1.5 pt-1 border-t border-[#FECACA]/60",
+      "snippet": "<div className=\"grid grid-cols-2 gap-1.5 pt-1 border-t border-[#FECACA]/60\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/reports/StaffReportsPage.jsx",
+      "line": 246,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4",
+      "snippet": "<div className=\"grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/reports/StaffReportsPage.jsx",
+      "line": 527,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-4 items-start pb-4",
+      "snippet": "<div className=\"grid grid-cols-2 gap-4 items-start pb-4\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/reports/StaffReportsPage.jsx",
+      "line": 613,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-4 pt-6 font-sans",
+      "snippet": "<div className=\"grid grid-cols-2 gap-4 pt-6 font-sans\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/sites/SiteDetailPage.jsx",
+      "line": 281,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 lg:grid-cols-4 gap-3.5",
+      "snippet": "<div className=\"grid grid-cols-2 lg:grid-cols-4 gap-3.5\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/sites/SiteDetailPage.jsx",
+      "line": 649,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-2 text-xs",
+      "snippet": "<div className=\"grid grid-cols-2 gap-2 text-xs\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/sites/SiteDetailPage.jsx",
+      "line": 667,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-2 text-xs",
+      "snippet": "<div className=\"grid grid-cols-2 gap-2 text-xs\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/sites/SitesListPage.jsx",
+      "line": 239,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 lg:grid-cols-4 gap-3",
+      "snippet": "<div className=\"grid grid-cols-2 lg:grid-cols-4 gap-3\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/tasks/FieldChecklistPage.jsx",
+      "line": 154,
+      "value": "grid-cols-3",
+      "allClasses": "grid grid-cols-3 gap-2 pt-1",
+      "snippet": "<div className=\"grid grid-cols-3 gap-2 pt-1\">",
+      "recommendation": "Change 'grid-cols-3' to 'grid-cols-1 sm:grid-cols-3' (or md:grid-cols-3)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/tasks/FieldConclusionPage.jsx",
+      "line": 124,
+      "value": "grid-cols-3",
+      "allClasses": "bg-[#FAFAF9] border border-[#E7E5E4] rounded-2xl p-4 grid grid-cols-3 gap-2 text-center",
+      "snippet": "<div className=\"bg-[#FAFAF9] border border-[#E7E5E4] rounded-2xl p-4 grid grid-cols-3 gap-2 text-center\">",
+      "recommendation": "Change 'grid-cols-3' to 'grid-cols-1 sm:grid-cols-3' (or md:grid-cols-3)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/tasks/TaskDetailPage.jsx",
+      "line": 641,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-2",
+      "snippet": "<div className=\"grid grid-cols-2 gap-2\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/tasks/TaskDetailPage.jsx",
+      "line": 690,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-1.5",
+      "snippet": "<div className=\"grid grid-cols-2 gap-1.5\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/tasks/TasksListPage.jsx",
+      "line": 222,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4",
+      "snippet": "<div className=\"grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/tasks/TasksListPage.jsx",
+      "line": 479,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-2 pt-1",
+      "snippet": "<div className=\"grid grid-cols-2 gap-2 pt-1\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/today/StaffTodayPage.jsx",
+      "line": 69,
+      "value": "grid-cols-3",
+      "allClasses": "grid grid-cols-3 gap-2",
+      "snippet": "<div className=\"grid grid-cols-3 gap-2\">",
+      "recommendation": "Change 'grid-cols-3' to 'grid-cols-1 sm:grid-cols-3' (or md:grid-cols-3)"
+    },
+    {
+      "file": "app/src/components/AIModule.jsx",
+      "line": 76,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 lg:grid-cols-4 border-b border-cream-200 bg-cream-50/30",
+      "snippet": "<div className=\"grid grid-cols-2 lg:grid-cols-4 border-b border-cream-200 bg-cream-50/30\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/components/common/CaseLocationSection.jsx",
+      "line": 104,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-2 pt-1",
+      "snippet": "<div className=\"grid grid-cols-2 gap-2 pt-1\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/components/DocumentEditor/extensions/OfficialHeaderBlock.jsx",
+      "line": 14,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 text-center text-xs font-serif leading-snug pb-3 select-none border-b border-ink-200",
+      "snippet": "<div className=\"grid grid-cols-2 text-center text-xs font-serif leading-snug pb-3 select-none border-b border-ink-200\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/components/DocumentEditor/extensions/SignatureBlock.jsx",
+      "line": 18,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 text-center text-xs font-serif pt-6 mt-6 border-t border-ink-200 select-none",
+      "snippet": "<div className=\"grid grid-cols-2 text-center text-xs font-serif pt-6 mt-6 border-t border-ink-200 select-none\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/components/DocumentEditor/PreflightCheckModal.jsx",
+      "line": 48,
+      "value": "grid-cols-3",
+      "allClasses": "grid grid-cols-3 gap-2",
+      "snippet": "<div className=\"grid grid-cols-3 gap-2\">",
+      "recommendation": "Change 'grid-cols-3' to 'grid-cols-1 sm:grid-cols-3' (or md:grid-cols-3)"
+    },
+    {
+      "file": "app/src/components/landing/ProblemStory.jsx",
+      "line": 293,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5",
+      "snippet": "<div className=\"grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/components/landing/ProblemStory.jsx",
+      "line": 403,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 relative z-10",
+      "snippet": "<div className=\"grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 relative z-10\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/components/map/SpatialEntityDrawer.jsx",
+      "line": 176,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-2.5",
+      "snippet": "<div className=\"grid grid-cols-2 gap-2.5\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/components/map/SpatialEntityDrawer.jsx",
+      "line": 193,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-2.5",
+      "snippet": "<div className=\"grid grid-cols-2 gap-2.5\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/components/map/SpatialEntityDrawer.jsx",
+      "line": 210,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-2.5",
+      "snippet": "<div className=\"grid grid-cols-2 gap-2.5\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/components/map/SpatialEntityDrawer.jsx",
+      "line": 227,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-2.5",
+      "snippet": "<div className=\"grid grid-cols-2 gap-2.5\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/components/map/SpatialEntityDrawer.jsx",
+      "line": 244,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-2.5",
+      "snippet": "<div className=\"grid grid-cols-2 gap-2.5\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/components/StaffAI/DocInsight.jsx",
+      "line": 434,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-2 mb-3",
+      "snippet": "<div className=\"grid grid-cols-2 gap-2 mb-3\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/components/StaffAI/DocInsight.jsx",
+      "line": 717,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-3",
+      "snippet": "<div className=\"grid grid-cols-2 gap-3\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/components/StaffAI/DocInsight.jsx",
+      "line": 756,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-3",
+      "snippet": "<div className=\"grid grid-cols-2 gap-3\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/components/StaffAI/DocInsight.jsx",
+      "line": 840,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-3",
+      "snippet": "<div className=\"grid grid-cols-2 gap-3\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/components/StaffAI/DocInsight.jsx",
+      "line": 867,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-3",
+      "snippet": "<div className=\"grid grid-cols-2 gap-3\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/admin/community/CommunityDashboard.jsx",
+      "line": 104,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4",
+      "snippet": "<div className=\"grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/admin/DataManagement.jsx",
+      "line": 279,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4",
+      "snippet": "<div className=\"grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/admin/DataManagement.jsx",
+      "line": 434,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-3",
+      "snippet": "<div className=\"grid grid-cols-2 gap-3\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/auth/components/AuthBrandPanel.jsx",
+      "line": 85,
+      "value": "grid-cols-3",
+      "allClasses": "relative z-10 grid grid-cols-3 gap-3 pt-2",
+      "snippet": "<div className=\"relative z-10 grid grid-cols-3 gap-3 pt-2\">",
+      "recommendation": "Change 'grid-cols-3' to 'grid-cols-1 sm:grid-cols-3' (or md:grid-cols-3)"
+    },
+    {
+      "file": "app/src/modules/cases/components/SharedCaseDrawer.jsx",
+      "line": 249,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 sm:grid-cols-3 gap-3",
+      "snippet": "<div className=\"grid grid-cols-2 sm:grid-cols-3 gap-3\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/citizen/CitizenMap.jsx",
+      "line": 207,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 sm:grid-cols-4 gap-3",
+      "snippet": "<div className=\"grid grid-cols-2 sm:grid-cols-4 gap-3\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/citizen/CitizenMap.jsx",
+      "line": 484,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-2 bg-cream-50/70 p-2.5 rounded-2xl border border-ink-900/10 text-xs",
+      "snippet": "<div className=\"grid grid-cols-2 gap-2 bg-cream-50/70 p-2.5 rounded-2xl border border-ink-900/10 text-xs\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/citizen/CitizenMap.jsx",
+      "line": 496,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-2 pt-1 border-t border-ink-900/10",
+      "snippet": "<div className=\"grid grid-cols-2 gap-2 pt-1 border-t border-ink-900/10\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/citizen/CitizenReport.jsx",
+      "line": 914,
+      "value": "grid-cols-3",
+      "allClasses": "hidden sm:grid grid-cols-3 gap-3 pt-1",
+      "snippet": "<div className=\"hidden sm:grid grid-cols-3 gap-3 pt-1\">",
+      "recommendation": "Change 'grid-cols-3' to 'grid-cols-1 sm:grid-cols-3' (or md:grid-cols-3)"
+    },
+    {
+      "file": "app/src/modules/citizen/CitizenReport.jsx",
+      "line": 1317,
+      "value": "grid-cols-3",
+      "allClasses": "grid grid-cols-3 gap-2",
+      "snippet": "<div className=\"grid grid-cols-3 gap-2\">",
+      "recommendation": "Change 'grid-cols-3' to 'grid-cols-1 sm:grid-cols-3' (or md:grid-cols-3)"
+    },
+    {
+      "file": "app/src/modules/citizen/CitizenReport.jsx",
+      "line": 1354,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 pt-2",
+      "snippet": "<div className=\"grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 pt-2\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/community/CommunityActions.jsx",
+      "line": 705,
+      "value": "grid-cols-3",
+      "allClasses": "grid grid-cols-3 gap-2",
+      "snippet": "<div className=\"grid grid-cols-3 gap-2\">",
+      "recommendation": "Change 'grid-cols-3' to 'grid-cols-1 sm:grid-cols-3' (or md:grid-cols-3)"
+    },
+    {
+      "file": "app/src/modules/community/CommunityCases.jsx",
+      "line": 327,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2",
+      "snippet": "<div className=\"grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/community/CommunityCases.jsx",
+      "line": 554,
+      "value": "grid-cols-3",
+      "allClasses": "grid grid-cols-3 gap-2 text-center text-xs",
+      "snippet": "<div className=\"grid grid-cols-3 gap-2 text-center text-xs\">",
+      "recommendation": "Change 'grid-cols-3' to 'grid-cols-1 sm:grid-cols-3' (or md:grid-cols-3)"
+    },
+    {
+      "file": "app/src/modules/community/CommunityCaseWorkspace.jsx",
+      "line": 861,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 sm:grid-cols-4 gap-3 border-t border-ink-900/10 pt-4 text-xs",
+      "snippet": "<div className=\"grid grid-cols-2 sm:grid-cols-4 gap-3 border-t border-ink-900/10 pt-4 text-xs\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/community/CommunityCaseWorkspace.jsx",
+      "line": 2037,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-3",
+      "snippet": "<div className=\"grid grid-cols-2 gap-3\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/community/CommunityCaseWorkspace.jsx",
+      "line": 2246,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-2 bg-cream-50 p-3 rounded-xl border border-ink-900/5 text-[11px]",
+      "snippet": "<div className=\"grid grid-cols-2 gap-2 bg-cream-50 p-3 rounded-xl border border-ink-900/5 text-[11px]\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/community/CommunityDiscover.jsx",
+      "line": 196,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 sm:grid-cols-4 gap-3.5 pt-4 border-t border-cream-200 min-w-0",
+      "snippet": "<div className=\"grid grid-cols-2 sm:grid-cols-4 gap-3.5 pt-4 border-t border-cream-200 min-w-0\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/community/CommunityDiscover.jsx",
+      "line": 366,
+      "value": "grid-cols-3",
+      "allClasses": "grid grid-cols-3 gap-2 py-2 border-y border-cream-200 text-center min-w-0",
+      "snippet": "<div className=\"grid grid-cols-3 gap-2 py-2 border-y border-cream-200 text-center min-w-0\">",
+      "recommendation": "Change 'grid-cols-3' to 'grid-cols-1 sm:grid-cols-3' (or md:grid-cols-3)"
+    },
+    {
+      "file": "app/src/modules/community/CommunityHome.jsx",
+      "line": 219,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 sm:grid-cols-5 gap-2.5",
+      "snippet": "<div className=\"grid grid-cols-2 sm:grid-cols-5 gap-2.5\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/community/CommunityHome.jsx",
+      "line": 655,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 sm:grid-cols-4 gap-3 min-w-0",
+      "snippet": "<div className=\"grid grid-cols-2 sm:grid-cols-4 gap-3 min-w-0\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/community/CommunityImpact.jsx",
+      "line": 405,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 lg:grid-cols-4 gap-3.5 pt-2 border-t border-ink-900/10",
+      "snippet": "<div className=\"grid grid-cols-2 lg:grid-cols-4 gap-3.5 pt-2 border-t border-ink-900/10\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/community/CommunityImpact.jsx",
+      "line": 646,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 sm:grid-cols-4 gap-2.5",
+      "snippet": "<div className=\"grid grid-cols-2 sm:grid-cols-4 gap-2.5\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/community/CommunityImpact.jsx",
+      "line": 702,
+      "value": "grid-cols-2",
+      "allClasses": "pt-4 border-t border-gray-200 grid grid-cols-2 items-end gap-6 text-xs",
+      "snippet": "<div className=\"pt-4 border-t border-gray-200 grid grid-cols-2 items-end gap-6 text-xs\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/community/CreateObservation.jsx",
+      "line": 856,
+      "value": "grid-cols-5",
+      "allClasses": "grid grid-cols-5 gap-1.5 sm:gap-2",
+      "snippet": "<div className=\"grid grid-cols-5 gap-1.5 sm:gap-2\">",
+      "recommendation": "Change 'grid-cols-5' to 'grid-cols-1 sm:grid-cols-5' (or md:grid-cols-5)"
+    },
+    {
+      "file": "app/src/modules/community/CreateObservation.jsx",
+      "line": 978,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-2",
+      "snippet": "<div className=\"grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-2\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/contractor/ContractorDashboard.jsx",
+      "line": 187,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4",
+      "snippet": "<div className=\"grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/contractor/ContractorProjectDetail.jsx",
+      "line": 246,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4",
+      "snippet": "<div className=\"grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/contractor/ContractorProjects.jsx",
+      "line": 165,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-2 pt-2 text-xs",
+      "snippet": "<div className=\"grid grid-cols-2 gap-2 pt-2 text-xs\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/executive/components/ExecutiveCaseDrawer.jsx",
+      "line": 163,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-2 pt-2 border-t border-cream-200 text-[11px]",
+      "snippet": "<div className=\"grid grid-cols-2 gap-2 pt-2 border-t border-cream-200 text-[11px]\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/executive/components/ExecutiveCaseDrawer.jsx",
+      "line": 180,
+      "value": "grid-cols-3",
+      "allClasses": "grid grid-cols-3 gap-2",
+      "snippet": "<div className=\"grid grid-cols-3 gap-2\">",
+      "recommendation": "Change 'grid-cols-3' to 'grid-cols-1 sm:grid-cols-3' (or md:grid-cols-3)"
+    },
+    {
+      "file": "app/src/modules/executive/components/ExecutiveCaseDrawer.jsx",
+      "line": 213,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-2",
+      "snippet": "<div className=\"grid grid-cols-2 gap-2\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/executive/components/ExecutiveDirectiveModal.jsx",
+      "line": 219,
+      "value": "grid-cols-3",
+      "allClasses": "grid grid-cols-3 gap-1.5",
+      "snippet": "<div className=\"grid grid-cols-3 gap-1.5\">",
+      "recommendation": "Change 'grid-cols-3' to 'grid-cols-1 sm:grid-cols-3' (or md:grid-cols-3)"
+    },
+    {
+      "file": "app/src/modules/executive/components/ExecutiveImpactPanel.jsx",
+      "line": 67,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-2 mt-3 p-2.5 rounded-xl bg-[#FAF8F5] border border-[#E7DFD3] text-xs font-mono",
+      "snippet": "<div className=\"grid grid-cols-2 gap-2 mt-3 p-2.5 rounded-xl bg-[#FAF8F5] border border-[#E7DFD3] text-xs font-mono\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/executive/components/ExecutiveOperationsPanel.jsx",
+      "line": 79,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-center",
+      "snippet": "<div className=\"grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-center\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/executive/components/ExecutiveOperationsPanel.jsx",
+      "line": 114,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 lg:grid-cols-4 gap-3",
+      "snippet": "<div className=\"grid grid-cols-2 lg:grid-cols-4 gap-3\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/executive/components/ExecutiveOperationsPanel.jsx",
+      "line": 201,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-2.5",
+      "snippet": "<div className=\"grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-2.5\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/executive/components/ExecutiveRiskMap.jsx",
+      "line": 209,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-1.5 text-[11px] font-mono p-2.5 bg-[#FAF8F5] rounded-xl border border-[#E7DFD3]",
+      "snippet": "<div className=\"grid grid-cols-2 gap-1.5 text-[11px] font-mono p-2.5 bg-[#FAF8F5] rounded-xl border border-[#E7DFD3]\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/executive/ExecutiveDashboard.jsx",
+      "line": 332,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 text-center text-xs sm:text-sm",
+      "snippet": "<div className=\"grid grid-cols-2 text-center text-xs sm:text-sm\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/executive/ExecutiveDashboard.jsx",
+      "line": 363,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 pt-6 border-t border-cream-200 items-end",
+      "snippet": "<div className=\"grid grid-cols-2 pt-6 border-t border-cream-200 items-end\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/executive/ExecutiveReports.jsx",
+      "line": 254,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 sm:grid-cols-3 gap-3 p-3.5 rounded-xl bg-cream-50/70 border border-cream-200 text-xs mb-4",
+      "snippet": "<div className=\"grid grid-cols-2 sm:grid-cols-3 gap-3 p-3.5 rounded-xl bg-cream-50/70 border border-cream-200 text-xs mb-4\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/executive/ExecutiveRiskMatrix.jsx",
+      "line": 248,
+      "value": "grid-cols-3",
+      "allClasses": "grid grid-cols-3 gap-3",
+      "snippet": "<div className=\"grid grid-cols-3 gap-3\">",
+      "recommendation": "Change 'grid-cols-3' to 'grid-cols-1 sm:grid-cols-3' (or md:grid-cols-3)"
+    },
+    {
+      "file": "app/src/modules/executive/ExecutiveRiskMatrix.jsx",
+      "line": 317,
+      "value": "grid-cols-3",
+      "allClasses": "grid grid-cols-3 gap-3",
+      "snippet": "<div className=\"grid grid-cols-3 gap-3\">",
+      "recommendation": "Change 'grid-cols-3' to 'grid-cols-1 sm:grid-cols-3' (or md:grid-cols-3)"
+    },
+    {
+      "file": "app/src/modules/executive/ExecutiveRiskMatrix.jsx",
+      "line": 386,
+      "value": "grid-cols-3",
+      "allClasses": "grid grid-cols-3 gap-3",
+      "snippet": "<div className=\"grid grid-cols-3 gap-3\">",
+      "recommendation": "Change 'grid-cols-3' to 'grid-cols-1 sm:grid-cols-3' (or md:grid-cols-3)"
+    },
+    {
+      "file": "app/src/modules/executive/ExecutiveRiskMatrix.jsx",
+      "line": 519,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-2 text-[10px] pt-2 border-t border-cream-100 font-mono text-ink-700",
+      "snippet": "<div className=\"grid grid-cols-2 gap-2 text-[10px] pt-2 border-t border-cream-100 font-mono text-ink-700\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/executive/ExecutiveSignModal.jsx",
+      "line": 205,
+      "value": "grid-cols-12",
+      "allClasses": "grid grid-cols-12 gap-4 pb-4 border-b border-black/10",
+      "snippet": "<div className=\"grid grid-cols-12 gap-4 pb-4 border-b border-black/10\">",
+      "recommendation": "Change 'grid-cols-12' to 'grid-cols-1 sm:grid-cols-12' (or md:grid-cols-12)"
+    },
+    {
+      "file": "app/src/modules/executive/ExecutiveSignModal.jsx",
+      "line": 257,
+      "value": "grid-cols-12",
+      "allClasses": "grid grid-cols-12 gap-4 pt-6 border-t border-black/10 items-start",
+      "snippet": "<div className=\"grid grid-cols-12 gap-4 pt-6 border-t border-black/10 items-start\">",
+      "recommendation": "Change 'grid-cols-12' to 'grid-cols-1 sm:grid-cols-12' (or md:grid-cols-12)"
+    },
+    {
+      "file": "app/src/modules/public/DemoHub.jsx",
+      "line": 280,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-3",
+      "snippet": "<div className=\"grid grid-cols-2 gap-3\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/public/DemoHub.jsx",
+      "line": 315,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 sm:grid-cols-5 gap-2 p-1.5 bg-[#F2EFE9] rounded-2xl border border-[#161313]/5",
+      "snippet": "<div className=\"grid grid-cols-2 sm:grid-cols-5 gap-2 p-1.5 bg-[#F2EFE9] rounded-2xl border border-[#161313]/5\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/public/DemoHub.jsx",
+      "line": 400,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2",
+      "snippet": "<div className=\"grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/public/DemoHub.jsx",
+      "line": 438,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-4",
+      "snippet": "<div className=\"grid grid-cols-2 gap-4\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/public/IoTDemo.jsx",
+      "line": 227,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 lg:grid-cols-4 gap-4",
+      "snippet": "<div className=\"grid grid-cols-2 lg:grid-cols-4 gap-4\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/staff/CaseDossierPackageModal.jsx",
+      "line": 245,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs my-2",
+      "snippet": "<div className=\"grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs my-2\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/staff/components/IoTSetupModal.jsx",
+      "line": 402,
+      "value": "grid-cols-2",
+      "allClasses": "p-4 bg-white border border-teal-200 rounded-xl grid grid-cols-2 gap-3 text-left",
+      "snippet": "<div className=\"p-4 bg-white border border-teal-200 rounded-xl grid grid-cols-2 gap-3 text-left\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/staff/components/MobileInspectionModal.jsx",
+      "line": 236,
+      "value": "grid-cols-3",
+      "allClasses": "grid grid-cols-3 gap-2",
+      "snippet": "<div className=\"grid grid-cols-3 gap-2\">",
+      "recommendation": "Change 'grid-cols-3' to 'grid-cols-1 sm:grid-cols-3' (or md:grid-cols-3)"
+    },
+    {
+      "file": "app/src/modules/staff/components/RegulationAssistantModal.jsx",
+      "line": 386,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-2 pt-2 border-t border-current/10 text-[11px]",
+      "snippet": "<div className=\"grid grid-cols-2 gap-2 pt-2 border-t border-current/10 text-[11px]\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/staff/StaffAlerts.jsx",
+      "line": 929,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 sm:grid-cols-4 gap-3.5",
+      "snippet": "<div className=\"grid grid-cols-2 sm:grid-cols-4 gap-3.5\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/staff/StaffAlerts.jsx",
+      "line": 1228,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-2 border-y border-cream-100 py-2",
+      "snippet": "<div className=\"grid grid-cols-2 gap-2 border-y border-cream-100 py-2\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/staff/StaffAlerts.jsx",
+      "line": 1266,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-2 text-xs border-y border-cream-100 py-2",
+      "snippet": "<div className=\"grid grid-cols-2 gap-2 text-xs border-y border-cream-100 py-2\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/staff/StaffAlerts.jsx",
+      "line": 1287,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-2 pt-1",
+      "snippet": "<div className=\"grid grid-cols-2 gap-2 pt-1\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/staff/StaffAlerts.jsx",
+      "line": 1362,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4",
+      "snippet": "<div className=\"grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/staff/StaffAlerts.jsx",
+      "line": 1584,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-4 pt-2",
+      "snippet": "<div className=\"grid grid-cols-2 gap-4 pt-2\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/staff/StaffAlerts.jsx",
+      "line": 1784,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-4",
+      "snippet": "<div className=\"grid grid-cols-2 gap-4\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/staff/StaffAlerts.jsx",
+      "line": 1916,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-4",
+      "snippet": "<div className=\"grid grid-cols-2 gap-4\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/staff/StaffAlerts.jsx",
+      "line": 1939,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-4",
+      "snippet": "<div className=\"grid grid-cols-2 gap-4\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/staff/StaffAlerts.jsx",
+      "line": 1962,
+      "value": "grid-cols-3",
+      "allClasses": "grid grid-cols-3 gap-4",
+      "snippet": "<div className=\"grid grid-cols-3 gap-4\">",
+      "recommendation": "Change 'grid-cols-3' to 'grid-cols-1 sm:grid-cols-3' (or md:grid-cols-3)"
+    },
+    {
+      "file": "app/src/modules/staff/StaffCaseDetail.jsx",
+      "line": 757,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2",
+      "snippet": "<div className=\"grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/staff/StaffCases.jsx",
+      "line": 552,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 sm:grid-cols-5 gap-3",
+      "snippet": "<div className=\"grid grid-cols-2 sm:grid-cols-5 gap-3\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/staff/StaffComplaints.jsx",
+      "line": 485,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-2",
+      "snippet": "<div className=\"grid grid-cols-2 gap-2\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/staff/StaffDashboard.jsx",
+      "line": 128,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-2 text-center",
+      "snippet": "<div className=\"grid grid-cols-2 gap-2 text-center\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/staff/StaffDashboard.jsx",
+      "line": 909,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 text-xs",
+      "snippet": "<div className=\"grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 text-xs\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/staff/StaffDashboard.jsx",
+      "line": 1018,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 lg:grid-cols-4 gap-3",
+      "snippet": "<div className=\"grid grid-cols-2 lg:grid-cols-4 gap-3\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/staff/StaffInspections.jsx",
+      "line": 323,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 sm:grid-cols-4 gap-3.5",
+      "snippet": "<div className=\"grid grid-cols-2 sm:grid-cols-4 gap-3.5\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/staff/StaffInspections.jsx",
+      "line": 609,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-2 p-3 rounded-xl bg-cream-50 dark:bg-gray-800",
+      "snippet": "<div className=\"grid grid-cols-2 gap-2 p-3 rounded-xl bg-cream-50 dark:bg-gray-800\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/staff/StaffMonitoring.jsx",
+      "line": 233,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 sm:grid-cols-4 gap-4",
+      "snippet": "<div className=\"grid grid-cols-2 sm:grid-cols-4 gap-4\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/staff/StaffMonitoring.jsx",
+      "line": 471,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 gap-2 bg-cream-50/70 dark:bg-gray-800/60 p-2.5 rounded-lg border border-cream-200 dark:border-gray-700 text-xs",
+      "snippet": "<div className=\"grid grid-cols-2 gap-2 bg-cream-50/70 dark:bg-gray-800/60 p-2.5 rounded-lg border border-cream-200 dark:border-gray-700 text-xs\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/staff/StaffMonitoring.jsx",
+      "line": 581,
+      "value": "grid-cols-2",
+      "allClasses": "mt-3 pt-3 border-t border-cream-100 grid grid-cols-2 gap-2 text-xs font-mono",
+      "snippet": "<div className=\"mt-3 pt-3 border-t border-cream-100 grid grid-cols-2 gap-2 text-xs font-mono\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/staff/StaffSites.jsx",
+      "line": 577,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 lg:grid-cols-4 gap-4",
+      "snippet": "<div className=\"grid grid-cols-2 lg:grid-cols-4 gap-4\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/staff/StaffSites.jsx",
+      "line": 989,
+      "value": "grid-cols-2",
+      "allClasses": "pt-2.5 border-t border-dashed border-cream-100 grid grid-cols-2 gap-1 mb-2",
+      "snippet": "<div className=\"pt-2.5 border-t border-dashed border-cream-100 grid grid-cols-2 gap-1 mb-2\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/staff/StaffSLA.jsx",
+      "line": 196,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 sm:grid-cols-4 gap-4",
+      "snippet": "<div className=\"grid grid-cols-2 sm:grid-cols-4 gap-4\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/staff/tasks/StaffTasksList.jsx",
+      "line": 277,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 lg:grid-cols-4 gap-4",
+      "snippet": "<div className=\"grid grid-cols-2 lg:grid-cols-4 gap-4\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/youth/YouthCertificate.jsx",
+      "line": 266,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2",
+      "snippet": "<div className=\"grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/youth/YouthCredits.jsx",
+      "line": 487,
+      "value": "grid-cols-2",
+      "allClasses": "grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2",
+      "snippet": "<div className=\"grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2\">",
+      "recommendation": "Change 'grid-cols-2' to 'grid-cols-1 sm:grid-cols-2' (or md:grid-cols-2)"
+    },
+    {
+      "file": "app/src/modules/youth/YouthCredits.jsx",
+      "line": 754,
+      "value": "grid-cols-3",
+      "allClasses": "grid grid-cols-3 gap-2 mt-4 w-full text-center bg-cream-50 p-3 rounded-2xl border border-slate-200",
+      "snippet": "<div className=\"grid grid-cols-3 gap-2 mt-4 w-full text-center bg-cream-50 p-3 rounded-2xl border border-slate-200\">",
+      "recommendation": "Change 'grid-cols-3' to 'grid-cols-1 sm:grid-cols-3' (or md:grid-cols-3)"
+    },
+    {
+      "file": "app/src/modules/youth/YouthCredits.jsx",
+      "line": 782,
+      "value": "grid-cols-3",
+      "allClasses": "grid grid-cols-3 gap-2 mt-4 w-full text-center bg-amber-100/60 p-3.5 rounded-2xl border border-amber-300",
+      "snippet": "<div className=\"grid grid-cols-3 gap-2 mt-4 w-full text-center bg-amber-100/60 p-3.5 rounded-2xl border border-amber-300\">",
+      "recommendation": "Change 'grid-cols-3' to 'grid-cols-1 sm:grid-cols-3' (or md:grid-cols-3)"
+    },
+    {
+      "file": "app/src/modules/youth/YouthCredits.jsx",
+      "line": 810,
+      "value": "grid-cols-3",
+      "allClasses": "grid grid-cols-3 gap-2 mt-4 w-full text-center bg-cream-50 p-3 rounded-2xl border border-slate-200",
+      "snippet": "<div className=\"grid grid-cols-3 gap-2 mt-4 w-full text-center bg-cream-50 p-3 rounded-2xl border border-slate-200\">",
+      "recommendation": "Change 'grid-cols-3' to 'grid-cols-1 sm:grid-cols-3' (or md:grid-cols-3)"
+    },
+    {
+      "file": "app/src/modules/youth/YouthCredits.jsx",
+      "line": 910,
+      "value": "grid-cols-3",
+      "allClasses": "grid grid-cols-3 gap-2 p-2.5 bg-cream-50/80 rounded-xl border border-cream-200 text-center text-xs",
+      "snippet": "<div className=\"grid grid-cols-3 gap-2 p-2.5 bg-cream-50/80 rounded-xl border border-cream-200 text-center text-xs\">",
+      "recommendation": "Change 'grid-cols-3' to 'grid-cols-1 sm:grid-cols-3' (or md:grid-cols-3)"
+    }
+  ],
+  "overflowRisks": [
+    {
+      "file": "app/src/apps/admin/pages/dashboard/AdminDashboardPage.jsx",
+      "line": 279,
+      "type": "table-overflow",
+      "snippet": "<table className=\"w-full text-left text-xs border-collapse min-w-[560px]\">",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/apps/admin/pages/dashboard/AdminDashboardPage.jsx",
+      "line": 279,
+      "type": "large-min-width",
+      "value": "min-w-[560px]",
+      "px": 560,
+      "snippet": "<table className=\"w-full text-left text-xs border-collapse min-w-[560px]\">",
+      "recommendation": "Replace min-w-[560px] with responsive min-w-0 sm:min-w-[560px] or minmax()"
+    },
+    {
+      "file": "app/src/apps/admin/pages/settings/SettingsPage.jsx",
+      "line": 611,
+      "type": "code-pre-overflow",
+      "snippet": "<li>Khi xóa thông thường, hệ thống áp dụng cơ chế <strong>Soft Delete</strong> (đánh dấu <code>deletedAt</code>) bảo đảm an toàn dữ liệu.</li>",
+      "recommendation": "Add 'overflow-x-auto break-all' or 'whitespace-pre-wrap'"
+    },
+    {
+      "file": "app/src/apps/admin/pages/users/UsersPage.jsx",
+      "line": 224,
+      "type": "table-overflow",
+      "snippet": "<table className=\"w-full text-left text-xs text-[#1C1917] border-collapse min-w-[720px]\">",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/apps/admin/pages/users/UsersPage.jsx",
+      "line": 224,
+      "type": "large-min-width",
+      "value": "min-w-[720px]",
+      "px": 720,
+      "snippet": "<table className=\"w-full text-left text-xs text-[#1C1917] border-collapse min-w-[720px]\">",
+      "recommendation": "Replace min-w-[720px] with responsive min-w-0 sm:min-w-[720px] or minmax()"
+    },
+    {
+      "file": "app/src/apps/contractor/pages/reports/ContractorReportsPage.jsx",
+      "line": 185,
+      "type": "table-overflow",
+      "snippet": "<table className=\"w-full text-left text-xs border-collapse min-w-[640px]\">",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/apps/contractor/pages/reports/ContractorReportsPage.jsx",
+      "line": 185,
+      "type": "large-min-width",
+      "value": "min-w-[640px]",
+      "px": 640,
+      "snippet": "<table className=\"w-full text-left text-xs border-collapse min-w-[640px]\">",
+      "recommendation": "Replace min-w-[640px] with responsive min-w-0 sm:min-w-[640px] or minmax()"
+    },
+    {
+      "file": "app/src/apps/staff/pages/cases/CaseDetailPage.jsx",
+      "line": 642,
+      "type": "table-overflow",
+      "snippet": "<table className=\"w-full text-left text-xs border-collapse\">",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/reports/StaffReportsPage.jsx",
+      "line": 435,
+      "type": "table-overflow",
+      "snippet": "<table className=\"w-full text-left text-xs border-collapse\">",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/reports/StaffReportsPage.jsx",
+      "line": 572,
+      "type": "table-overflow",
+      "snippet": "<table className=\"w-full border-collapse border border-[#A8A29E] text-[11px] my-2\">",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/sites/SiteDetailPage.jsx",
+      "line": 474,
+      "type": "table-overflow",
+      "snippet": "<table className=\"w-full text-left text-xs border-collapse\">",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/sites/SiteDetailPage.jsx",
+      "line": 532,
+      "type": "table-overflow",
+      "snippet": "<table className=\"w-full text-left text-xs border-collapse\">",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/tasks/FieldChecklistPage.jsx",
+      "line": 213,
+      "type": "negative-horizontal-margin",
+      "value": "-mx-4",
+      "snippet": "<div className=\"sticky bottom-0 z-20 bg-white/95 border-t border-[#E7E5E4] py-3 -mx-4 px-4 sm:mx-0 sm:px-0 pb-safe\">",
+      "recommendation": "Ensure parent has overflow-hidden or remove negative margin on mobile (mx-0 sm:-mx-4)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/tasks/FieldConclusionPage.jsx",
+      "line": 254,
+      "type": "negative-horizontal-margin",
+      "value": "-mx-4",
+      "snippet": "<div className=\"sticky bottom-0 z-20 bg-white/95 border-t border-[#E7E5E4] py-3 -mx-4 px-4 sm:mx-0 sm:px-0 pb-safe\">",
+      "recommendation": "Ensure parent has overflow-hidden or remove negative margin on mobile (mx-0 sm:-mx-4)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/tasks/FieldEvidencePage.jsx",
+      "line": 295,
+      "type": "negative-horizontal-margin",
+      "value": "-mx-4",
+      "snippet": "<div className=\"sticky bottom-0 z-20 bg-white/95 border-t border-[#E7E5E4] py-3 -mx-4 px-4 sm:mx-0 sm:px-0 pb-safe\">",
+      "recommendation": "Ensure parent has overflow-hidden or remove negative margin on mobile (mx-0 sm:-mx-4)"
+    },
+    {
+      "file": "app/src/apps/staff/pages/tasks/TasksListPage.jsx",
+      "line": 319,
+      "type": "table-overflow",
+      "snippet": "<table className=\"w-full text-left text-xs border-collapse\">",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/components/checklist/InspectionReviewTable.jsx",
+      "line": 16,
+      "type": "table-overflow",
+      "snippet": "<table className=\"w-full text-xs border-collapse min-w-[640px] table-fixed\">",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/components/checklist/InspectionReviewTable.jsx",
+      "line": 16,
+      "type": "large-min-width",
+      "value": "min-w-[640px]",
+      "px": 640,
+      "snippet": "<table className=\"w-full text-xs border-collapse min-w-[640px] table-fixed\">",
+      "recommendation": "Replace min-w-[640px] with responsive min-w-0 sm:min-w-[640px] or minmax()"
+    },
+    {
+      "file": "app/src/components/common/SectionErrorBoundary.jsx",
+      "line": 84,
+      "type": "code-pre-overflow",
+      "snippet": "<pre className=\"text-[10px] mt-1 opacity-80 whitespace-pre-wrap\">",
+      "recommendation": "Add 'overflow-x-auto break-all' or 'whitespace-pre-wrap'"
+    },
+    {
+      "file": "app/src/components/common/UnifiedDataTable.jsx",
+      "line": 89,
+      "type": "table-overflow",
+      "snippet": "<table className=\"w-full text-left border-collapse min-w-[600px]\">",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/components/common/UnifiedDataTable.jsx",
+      "line": 89,
+      "type": "large-min-width",
+      "value": "min-w-[600px]",
+      "px": 600,
+      "snippet": "<table className=\"w-full text-left border-collapse min-w-[600px]\">",
+      "recommendation": "Replace min-w-[600px] with responsive min-w-0 sm:min-w-[600px] or minmax()"
+    },
+    {
+      "file": "app/src/components/executive/AuditTrailModal.jsx",
+      "line": 147,
+      "type": "table-overflow",
+      "snippet": "<table className=\"w-full text-left border-collapse text-xs min-w-[700px]\">",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/components/executive/AuditTrailModal.jsx",
+      "line": 147,
+      "type": "large-min-width",
+      "value": "min-w-[700px]",
+      "px": 700,
+      "snippet": "<table className=\"w-full text-left border-collapse text-xs min-w-[700px]\">",
+      "recommendation": "Replace min-w-[700px] with responsive min-w-0 sm:min-w-[700px] or minmax()"
+    },
+    {
+      "file": "app/src/components/PolicyIntelligence/Phase2ChecklistMapping.jsx",
+      "line": 68,
+      "type": "table-overflow",
+      "snippet": "<table className=\"data-table w-full min-w-[700px]\">",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/components/PolicyIntelligence/Phase2ChecklistMapping.jsx",
+      "line": 68,
+      "type": "large-min-width",
+      "value": "min-w-[700px]",
+      "px": 700,
+      "snippet": "<table className=\"data-table w-full min-w-[700px]\">",
+      "recommendation": "Replace min-w-[700px] with responsive min-w-0 sm:min-w-[700px] or minmax()"
+    },
+    {
+      "file": "app/src/components/site-detail/RiskBreakdownModal.jsx",
+      "line": 351,
+      "type": "table-overflow",
+      "snippet": "<table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11, background: '#FFFFFF' }}>",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/components/site-detail/SiteCasesTab.jsx",
+      "line": 434,
+      "type": "large-min-width",
+      "value": "min-w-[640px]",
+      "px": 640,
+      "snippet": "<div className=\"flex items-center gap-1.5 text-[9px] font-bold text-ink-400 min-w-[640px] py-1\">",
+      "recommendation": "Replace min-w-[640px] with responsive min-w-0 sm:min-w-[640px] or minmax()"
+    },
+    {
+      "file": "app/src/components/site-detail/SiteLegalDocumentsTab.jsx",
+      "line": 221,
+      "type": "table-overflow",
+      "snippet": "<table className=\"w-full text-xs text-left\">",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/components/site-detail/SiteMonitoringTab.jsx",
+      "line": 83,
+      "type": "large-min-width",
+      "value": "min-w-[450px]",
+      "px": 450,
+      "snippet": "<svg className=\"w-full min-w-[450px]\" height={height} viewBox={`0 0 ${width} ${height}`}>",
+      "recommendation": "Replace min-w-[450px] with responsive min-w-0 sm:min-w-[450px] or minmax()"
+    },
+    {
+      "file": "app/src/components/StaffAI/DocInsight.jsx",
+      "line": 680,
+      "type": "code-pre-overflow",
+      "snippet": "<pre className=\"text-xs text-ink-800 white-space-pre-wrap font-sans leading-relaxed\">",
+      "recommendation": "Add 'overflow-x-auto break-all' or 'whitespace-pre-wrap'"
+    },
+    {
+      "file": "app/src/legal-document-engine/renderers/renderLegalDocumentHtml.js",
+      "line": 63,
+      "type": "table-overflow",
+      "snippet": "html += `<table class=\"dg-legal-header-table\" style=\"width: 100%; border-collapse: collapse; border: none; margin-bottom: 20pt; font-size: 12pt; line-height: 1.35; text-align: center;\">`;",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/legal-document-engine/renderers/renderLegalDocumentHtml.js",
+      "line": 130,
+      "type": "table-overflow",
+      "snippet": "html += `<table class=\"dg-legal-footer-table\" style=\"width: 100%; border: none; border-collapse: collapse; margin-top: 24pt; page-break-inside: avoid;\">`;",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/lib/document-docx-parser.js",
+      "line": 65,
+      "type": "code-pre-overflow",
+      "snippet": "text = text.replace(/`([^`]+)`/g, '<code>$1</code>');",
+      "recommendation": "Add 'overflow-x-auto break-all' or 'whitespace-pre-wrap'"
+    },
+    {
+      "file": "app/src/lib/document-docx-parser.js",
+      "line": 81,
+      "type": "code-pre-overflow",
+      "snippet": ".replace(/<(code|tt)\\b[^>]*>/gi, '<code>')",
+      "recommendation": "Add 'overflow-x-auto break-all' or 'whitespace-pre-wrap'"
+    },
+    {
+      "file": "app/src/lib/document-docx-parser.js",
+      "line": 115,
+      "type": "code-pre-overflow",
+      "snippet": "} else if (lower === '<code>') {",
+      "recommendation": "Add 'overflow-x-auto break-all' or 'whitespace-pre-wrap'"
+    },
+    {
+      "file": "app/src/lib/document-docx-parser.js",
+      "line": 201,
+      "type": "code-pre-overflow",
+      "snippet": "else if (mark.type === 'code') text = `<code>${text}</code>`;",
+      "recommendation": "Add 'overflow-x-auto break-all' or 'whitespace-pre-wrap'"
+    },
+    {
+      "file": "app/src/lib/document-docx-parser.js",
+      "line": 449,
+      "type": "table-overflow",
+      "snippet": "let content = rawContent.replace(/<table\\b[^>]*>([\\s\\S]*?)<\\/table>/gi, (match) => {",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/lib/document-docx-parser.js",
+      "line": 465,
+      "type": "code-pre-overflow",
+      "snippet": ".replace(/<pre\\b[^>]*><code\\b[^>]*>([\\s\\S]*?)<\\/code><\\/pre>/gi, '\\n```\\n$1\\n```\\n')",
+      "recommendation": "Add 'overflow-x-auto break-all' or 'whitespace-pre-wrap'"
+    },
+    {
+      "file": "app/src/lib/document-docx-parser.js",
+      "line": 466,
+      "type": "code-pre-overflow",
+      "snippet": ".replace(/<pre\\b[^>]*>([\\s\\S]*?)<\\/pre>/gi, '\\n```\\n$1\\n```\\n')",
+      "recommendation": "Add 'overflow-x-auto break-all' or 'whitespace-pre-wrap'"
+    },
+    {
+      "file": "app/src/modules/admin/DataManagement.jsx",
+      "line": 329,
+      "type": "code-pre-overflow",
+      "snippet": "<li>Khi xóa thông thường, hệ thống áp dụng cơ chế <strong>Soft Delete</strong> (đánh dấu <code>deletedAt</code>) bảo đảm an toàn dữ liệu.</li>",
+      "recommendation": "Add 'overflow-x-auto break-all' or 'whitespace-pre-wrap'"
+    },
+    {
+      "file": "app/src/modules/cases/components/SharedCaseDrawer.jsx",
+      "line": 309,
+      "type": "code-pre-overflow",
+      "snippet": "Mã xác thực: <code>{item.beforeHash || \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}</code>",
+      "recommendation": "Add 'overflow-x-auto break-all' or 'whitespace-pre-wrap'"
+    },
+    {
+      "file": "app/src/modules/cases/components/SharedCaseDrawer.jsx",
+      "line": 332,
+      "type": "code-pre-overflow",
+      "snippet": "Mã xác thực: <code>{item.afterHash || \"8f434346648f6b96df89dda901c5176b10a6d83961dd3c1ac88b59b2dc327aa4\"}</code>",
+      "recommendation": "Add 'overflow-x-auto break-all' or 'whitespace-pre-wrap'"
+    },
+    {
+      "file": "app/src/modules/citizen/CitizenMap.jsx",
+      "line": 347,
+      "type": "table-overflow",
+      "snippet": "<table className=\"w-full text-left text-xs border-collapse\">",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/modules/community/CommunityCaseWorkspace.jsx",
+      "line": 1880,
+      "type": "code-pre-overflow",
+      "snippet": "<code className=\"text-[10px] font-mono text-ink-600 bg-white px-2 py-0.5 rounded border border-ink-900/5 shrink-0\">",
+      "recommendation": "Add 'overflow-x-auto break-all' or 'whitespace-pre-wrap'"
+    },
+    {
+      "file": "app/src/modules/community/CommunityImpact.jsx",
+      "line": 676,
+      "type": "table-overflow",
+      "snippet": "<table className=\"w-full text-left text-xs border-collapse\">",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/modules/community/CreateObservation.jsx",
+      "line": 1305,
+      "type": "table-overflow",
+      "snippet": "<table className=\"w-full text-left text-[11px]\">",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/modules/contractor/ContractorProjectDetail.jsx",
+      "line": 294,
+      "type": "table-overflow",
+      "snippet": "<table className=\"w-full text-left text-xs\">",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/modules/documents/DocumentsListPage.jsx",
+      "line": 179,
+      "type": "table-overflow",
+      "snippet": "<table className=\"w-full text-left text-xs border-collapse\">",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/modules/executive/components/ExecutiveDecisionsPanel.jsx",
+      "line": 179,
+      "type": "code-pre-overflow",
+      "snippet": "• Mã xác thực: <code className=\"text-[#231B14] bg-white px-1.5 py-0.5 rounded border border-[#E7DFD3] font-mono\">{log.hash.substring(0, 16)}...</code>",
+      "recommendation": "Add 'overflow-x-auto break-all' or 'whitespace-pre-wrap'"
+    },
+    {
+      "file": "app/src/modules/executive/components/ExecutiveOperationsPanel.jsx",
+      "line": 241,
+      "type": "table-overflow",
+      "snippet": "<table className=\"w-full text-left text-xs border border-[#E7DFD3] rounded-xl overflow-hidden\">",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/modules/executive/components/ExecutiveRiskMap.jsx",
+      "line": 240,
+      "type": "table-overflow",
+      "snippet": "<table className=\"w-full text-left text-xs border-collapse\">",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/modules/executive/components/ExecutiveSensorHealth.jsx",
+      "line": 102,
+      "type": "table-overflow",
+      "snippet": "<table className=\"w-full text-left text-xs border border-[#E7DFD3] rounded-xl overflow-hidden\">",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/modules/executive/ExecutiveHeatmap.jsx",
+      "line": 455,
+      "type": "table-overflow",
+      "snippet": "<table>",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/modules/executive/ExecutiveReports.jsx",
+      "line": 67,
+      "type": "table-overflow",
+      "snippet": "<table>",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/modules/executive/ExecutiveSlaCompliance.jsx",
+      "line": 269,
+      "type": "table-overflow",
+      "snippet": "<table className=\"w-full text-left text-xs border-collapse\">",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/modules/public/IoTDemo.jsx",
+      "line": 298,
+      "type": "table-overflow",
+      "snippet": "<table className=\"w-full text-left text-xs\">",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/modules/public/SensorGuide.jsx",
+      "line": 168,
+      "type": "code-pre-overflow",
+      "snippet": "Nồng độ bụi trong tự nhiên dao động liên tục theo từng giây. Nếu cảm biến trả về 5 bản ghi liên tiếp hoàn toàn không đổi (ví dụ: PM10 liên tục là 5.00 µg/m³ hoặc 0.00 µg/m³ kéo dài trong 30 phút), thiết bị lập tức bị gắn nhãn <span className=\"font-bold text-seal-600\">FAULTY</span> (Nghi ngờ can thiệp dữ liệu) và hệ thống ghi nhận sự kiện kiểm toán <code className=\"text-xs bg-cream-100 px-1 rounded text-seal-700\">SENSOR_TAMPER_SUSPECTED</code>.",
+      "recommendation": "Add 'overflow-x-auto break-all' or 'whitespace-pre-wrap'"
+    },
+    {
+      "file": "app/src/modules/public/SensorGuide.jsx",
+      "line": 192,
+      "type": "table-overflow",
+      "snippet": "<table className=\"w-full text-xs md:text-sm text-left border-collapse\">",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/modules/staff/components/RegulationAssistantModal.jsx",
+      "line": 213,
+      "type": "table-overflow",
+      "snippet": "<table className=\"w-full text-left border-collapse min-w-[540px]\">",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/modules/staff/components/RegulationAssistantModal.jsx",
+      "line": 213,
+      "type": "large-min-width",
+      "value": "min-w-[540px]",
+      "px": 540,
+      "snippet": "<table className=\"w-full text-left border-collapse min-w-[540px]\">",
+      "recommendation": "Replace min-w-[540px] with responsive min-w-0 sm:min-w-[540px] or minmax()"
+    },
+    {
+      "file": "app/src/modules/staff/sites/StaffSiteDetail.jsx",
+      "line": 622,
+      "type": "code-pre-overflow",
+      "snippet": "<span>GPXD: <code className=\"font-mono text-ink-700 bg-cream-50 px-1 rounded\">{site.permit || site.license}</code></span>",
+      "recommendation": "Add 'overflow-x-auto break-all' or 'whitespace-pre-wrap'"
+    },
+    {
+      "file": "app/src/modules/staff/sites/StaffSiteDetail.jsx",
+      "line": 959,
+      "type": "code-pre-overflow",
+      "snippet": "Bạn có chắc chắn muốn xóa công trình <strong className=\"text-ink-900\">{site.name}</strong> (Mã: <code className=\"font-mono font-bold text-[#9f241f]\">{site.code || site.id}</code>)?",
+      "recommendation": "Add 'overflow-x-auto break-all' or 'whitespace-pre-wrap'"
+    },
+    {
+      "file": "app/src/modules/staff/StaffAlerts.jsx",
+      "line": 1063,
+      "type": "table-overflow",
+      "snippet": "<table className=\"w-full text-xs table-auto\">",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/modules/staff/StaffAlerts.jsx",
+      "line": 1122,
+      "type": "code-pre-overflow",
+      "snippet": "{alert.sensor?.name || 'N/A'} (<code>{alert.sensor?.code || 'N/A'}</code>)",
+      "recommendation": "Add 'overflow-x-auto break-all' or 'whitespace-pre-wrap'"
+    },
+    {
+      "file": "app/src/modules/staff/StaffAlerts.jsx",
+      "line": 1259,
+      "type": "code-pre-overflow",
+      "snippet": "<span className=\"text-[10px] text-ink-500 font-medium block mt-0.5\"> {alert.sensor?.name} (<code>{alert.sensor?.code}</code>)</span>",
+      "recommendation": "Add 'overflow-x-auto break-all' or 'whitespace-pre-wrap'"
+    },
+    {
+      "file": "app/src/modules/staff/StaffAlerts.jsx",
+      "line": 1485,
+      "type": "table-overflow",
+      "snippet": "<table className=\"w-full text-[10px] font-mono\">",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/modules/staff/StaffDashboard.jsx",
+      "line": 743,
+      "type": "table-overflow",
+      "snippet": "<table className=\"w-full text-left text-xs border-collapse\">",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/modules/staff/StaffInspections.jsx",
+      "line": 441,
+      "type": "table-overflow",
+      "snippet": "<table className=\"w-full text-left text-xs border-collapse\">",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/modules/staff/StaffMonitoring.jsx",
+      "line": 366,
+      "type": "table-overflow",
+      "snippet": "<table className=\"w-full text-left text-xs border-collapse\">",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/modules/staff/StaffSettings.jsx",
+      "line": 152,
+      "type": "negative-horizontal-margin",
+      "value": "-mx-4",
+      "snippet": "<div className=\"flex flex-row md:flex-col gap-1 overflow-x-auto pb-2 md:pb-0 no-scrollbar -mx-4 px-4 md:mx-0 md:px-0 scrollbar-none whitespace-nowrap\">",
+      "recommendation": "Ensure parent has overflow-hidden or remove negative margin on mobile (mx-0 sm:-mx-4)"
+    },
+    {
+      "file": "app/src/modules/staff/StaffSettings.jsx",
+      "line": 513,
+      "type": "table-overflow",
+      "snippet": "<table className=\"w-full text-left text-xs border-collapse\">",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/modules/staff/StaffSites.jsx",
+      "line": 739,
+      "type": "table-overflow",
+      "snippet": "<table className=\"w-full text-xs text-left min-w-[920px]\">",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/modules/staff/StaffSites.jsx",
+      "line": 739,
+      "type": "large-min-width",
+      "value": "min-w-[920px]",
+      "px": 920,
+      "snippet": "<table className=\"w-full text-xs text-left min-w-[920px]\">",
+      "recommendation": "Replace min-w-[920px] with responsive min-w-0 sm:min-w-[920px] or minmax()"
+    },
+    {
+      "file": "app/src/modules/staff/StaffSites.jsx",
+      "line": 1533,
+      "type": "code-pre-overflow",
+      "snippet": "Bạn có chắc chắn muốn xóa công trình <strong className=\"text-ink-900\">{deletingSite.name}</strong> (Mã: <code className=\"font-mono font-bold text-[#9f241f]\">{deletingSite.code || deletingSite.id}</code>)?",
+      "recommendation": "Add 'overflow-x-auto break-all' or 'whitespace-pre-wrap'"
+    },
+    {
+      "file": "app/src/modules/staff/StaffSLA.jsx",
+      "line": 260,
+      "type": "table-overflow",
+      "snippet": "<table className=\"w-full text-left text-xs border-collapse\">",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/modules/staff/tasks/StaffTaskDetail.jsx",
+      "line": 292,
+      "type": "table-overflow",
+      "snippet": "<table className=\"w-full text-left text-xs\">",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/modules/staff/UnifiedOperationsCenter.jsx",
+      "line": 311,
+      "type": "table-overflow",
+      "snippet": "<table className=\"w-full text-left text-xs border-collapse\">",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/modules/youth/YouthCredits.jsx",
+      "line": 652,
+      "type": "table-overflow",
+      "snippet": "<table className=\"w-full text-left text-xs text-ink-900\">",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/modules/youth/YouthCredits.jsx",
+      "line": 849,
+      "type": "table-overflow",
+      "snippet": "<table className=\"w-full text-left text-sm text-ink-900\">",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/shared/components/ui/DataTable.jsx",
+      "line": 176,
+      "type": "table-overflow",
+      "snippet": "<table className=\"w-full text-left text-sm text-ink-900 border-collapse\">",
+      "recommendation": "Wrap table in <div className=\"overflow-x-auto\"> or provide mobile card view (hidden md:table / md:hidden)"
+    },
+    {
+      "file": "app/src/shared/components/ui/Timeline.jsx",
+      "line": 18,
+      "type": "large-min-width",
+      "value": "min-w-[500px]",
+      "px": 500,
+      "snippet": "<div className=\"flex items-center min-w-[500px] justify-between\">",
+      "recommendation": "Replace min-w-[500px] with responsive min-w-0 sm:min-w-[500px] or minmax()"
+    }
+  ],
+  "clippingEllipsis": [
+    {
+      "file": "app/src/apps/staff/pages/alerts/StaffAlertsPage.jsx",
+      "line": 429,
+      "type": "truncate-on-vital-data",
+      "snippet": "<span className=\"truncate\">{alertItem.address}</span>",
+      "recommendation": "Use 'break-all' or 'break-words' or tooltip/copy button instead of silent truncation"
+    },
+    {
+      "file": "app/src/apps/staff/pages/alerts/StaffAlertsPage.jsx",
+      "line": 552,
+      "type": "truncate-on-vital-data",
+      "snippet": "<span className=\"truncate\">{item.address}</span>",
+      "recommendation": "Use 'break-all' or 'break-words' or tooltip/copy button instead of silent truncation"
+    },
+    {
+      "file": "app/src/apps/staff/pages/cases/CaseDetailPage.jsx",
+      "line": 1451,
+      "type": "truncate-on-vital-data",
+      "snippet": "<span className=\"text-[9px] font-mono text-[#78716C] truncate block\" title=\"Mã kiểm tra giúp xác nhận tệp khớp với bản lưu ban đầu\">Mã đối chứng tệp: {photoZoom.hash}</span>",
+      "recommendation": "Use 'break-all' or 'break-words' or tooltip/copy button instead of silent truncation"
+    },
+    {
+      "file": "app/src/apps/staff/pages/cases/CasesListPage.jsx",
+      "line": 467,
+      "type": "truncate-on-vital-data",
+      "snippet": "<span className=\"truncate\">{c.address}</span>",
+      "recommendation": "Use 'break-all' or 'break-words' or tooltip/copy button instead of silent truncation"
+    },
+    {
+      "file": "app/src/apps/staff/pages/tasks/TaskDetailPage.jsx",
+      "line": 549,
+      "type": "truncate-on-vital-data",
+      "snippet": "<div className=\"font-mono text-[9px] text-[#78716C] truncate bg-white px-1.5 py-0.5 rounded border border-[#E7E5E4]\" title={photo.sha256}>",
+      "recommendation": "Use 'break-all' or 'break-words' or tooltip/copy button instead of silent truncation"
+    },
+    {
+      "file": "app/src/apps/staff/pages/tasks/TaskDetailPage.jsx",
+      "line": 576,
+      "type": "truncate-on-vital-data",
+      "snippet": "<div className=\"font-mono text-[9px] text-[#78716C] truncate bg-white px-1.5 py-0.5 rounded border border-[#E7E5E4]\" title={photo.sha256}>",
+      "recommendation": "Use 'break-all' or 'break-words' or tooltip/copy button instead of silent truncation"
+    },
+    {
+      "file": "app/src/components/StaffAI/DocInsight.jsx",
+      "line": 470,
+      "type": "truncate-on-vital-data",
+      "snippet": "<div className=\"font-bold text-ink-900 truncate\">{doc.code || doc.title}</div>",
+      "recommendation": "Use 'break-all' or 'break-words' or tooltip/copy button instead of silent truncation"
+    },
+    {
+      "file": "app/src/modules/admin/community/CampaignDetailView.jsx",
+      "line": 356,
+      "type": "truncate-on-vital-data",
+      "snippet": "<p className=\"text-[11px] text-ink-600 truncate\"> {obs.address || obs.ward}</p>",
+      "recommendation": "Use 'break-all' or 'break-words' or tooltip/copy button instead of silent truncation"
+    },
+    {
+      "file": "app/src/modules/citizen/CitizenNearby.jsx",
+      "line": 169,
+      "type": "truncate-on-vital-data",
+      "snippet": "<span className=\"truncate max-w-[200px]\">{userLocation.address}</span>",
+      "recommendation": "Use 'break-all' or 'break-words' or tooltip/copy button instead of silent truncation"
+    },
+    {
+      "file": "app/src/modules/citizen/CitizenPortal.jsx",
+      "line": 583,
+      "type": "truncate-on-vital-data",
+      "snippet": "<span className=\"truncate\">{item.address}</span>",
+      "recommendation": "Use 'break-all' or 'break-words' or tooltip/copy button instead of silent truncation"
+    },
+    {
+      "file": "app/src/modules/citizen/CitizenReport.jsx",
+      "line": 1378,
+      "type": "truncate-on-vital-data",
+      "snippet": "<span className=\"px-1.5 py-0.5 rounded bg-teal-800/90 text-[8px] font-mono text-white truncate\" title={`Mã xác thực: ${p.sha256}`}>",
+      "recommendation": "Use 'break-all' or 'break-words' or tooltip/copy button instead of silent truncation"
+    },
+    {
+      "file": "app/src/modules/community/ObservationDetail.jsx",
+      "line": 866,
+      "type": "truncate-on-vital-data",
+      "snippet": "<span className=\"font-mono text-xs font-bold text-ink-900 truncate\">{observation.code || 'OBS-CANONICAL'}</span>",
+      "recommendation": "Use 'break-all' or 'break-words' or tooltip/copy button instead of silent truncation"
+    },
+    {
+      "file": "app/src/modules/community/ObservationDetail.jsx",
+      "line": 917,
+      "type": "truncate-on-vital-data",
+      "snippet": "<span className=\"text-emerald-300 truncate select-all\">{ev.sha256}</span>",
+      "recommendation": "Use 'break-all' or 'break-words' or tooltip/copy button instead of silent truncation"
+    },
+    {
+      "file": "app/src/modules/community/ObservationDetail.jsx",
+      "line": 1121,
+      "type": "truncate-on-vital-data",
+      "snippet": "<span className=\"truncate\">Mã xác thực: {lightboxImage.sha256}</span>",
+      "recommendation": "Use 'break-all' or 'break-words' or tooltip/copy button instead of silent truncation"
+    },
+    {
+      "file": "app/src/modules/contractor/ContractorDashboard.jsx",
+      "line": 474,
+      "type": "truncate-on-vital-data",
+      "snippet": "<span className=\"truncate max-w-xs\">{site.address}</span>",
+      "recommendation": "Use 'break-all' or 'break-words' or tooltip/copy button instead of silent truncation"
+    },
+    {
+      "file": "app/src/modules/executive/components/ExecutiveCaseDrawer.jsx",
+      "line": 220,
+      "type": "truncate-on-vital-data",
+      "snippet": "<span className=\"font-mono text-[9px] text-ink-400 truncate block\">hash: 9a2b8...f41c</span>",
+      "recommendation": "Use 'break-all' or 'break-words' or tooltip/copy button instead of silent truncation"
+    },
+    {
+      "file": "app/src/modules/executive/components/ExecutiveCaseDrawer.jsx",
+      "line": 230,
+      "type": "truncate-on-vital-data",
+      "snippet": "<span className=\"font-mono text-[9px] text-ink-400 truncate block\">hash: e3b0c...855a</span>",
+      "recommendation": "Use 'break-all' or 'break-words' or tooltip/copy button instead of silent truncation"
+    },
+    {
+      "file": "app/src/modules/executive/components/ExecutiveDecisionsPanel.jsx",
+      "line": 178,
+      "type": "truncate-on-vital-data",
+      "snippet": "<span className=\"hidden md:inline truncate max-w-[280px]\" title={log.hash}>",
+      "recommendation": "Use 'break-all' or 'break-words' or tooltip/copy button instead of silent truncation"
+    },
+    {
+      "file": "app/src/modules/executive/components/ExecutiveRiskMap.jsx",
+      "line": 255,
+      "type": "truncate-on-vital-data",
+      "snippet": "<span className=\"text-[11px] text-[#6B6055] block truncate max-w-xs\">{spot.address}</span>",
+      "recommendation": "Use 'break-all' or 'break-words' or tooltip/copy button instead of silent truncation"
+    },
+    {
+      "file": "app/src/modules/staff/tasks/StaffTaskDetail.jsx",
+      "line": 225,
+      "type": "truncate-on-vital-data",
+      "snippet": "<strong className=\"text-ink-900 block truncate\">{task.case_title || task.case_code}</strong>",
+      "recommendation": "Use 'break-all' or 'break-words' or tooltip/copy button instead of silent truncation"
+    },
+    {
+      "file": "app/src/modules/staff/tasks/StaffTasksList.jsx",
+      "line": 136,
+      "type": "truncate-on-vital-data",
+      "snippet": "<span className=\"text-xs font-medium text-seal-700 bg-seal-50 px-2 py-0.5 rounded border border-seal-200 truncate block max-w-[180px] min-w-0\" title={row.case_title || row.case_code}>",
+      "recommendation": "Use 'break-all' or 'break-words' or tooltip/copy button instead of silent truncation"
+    }
+  ],
+  "badAbsolutePositioning": [
+    {
+      "file": "app/src/apps/citizen/pages/reports/ReportDetailPage.jsx",
+      "line": 257,
+      "value": "left-[31px]",
+      "snippet": "className={`absolute -left-[31px] top-0.5 w-4 h-4 rounded-full flex items-center justify-center border-2 ${",
+      "recommendation": "Use relative flex alignment or responsive inset classes (e.g. sm:left-[31px])"
+    },
+    {
+      "file": "app/src/apps/contractor/pages/compliance/ContractorCompliancePage.jsx",
+      "line": 186,
+      "value": "left-[31px]",
+      "snippet": "<span className=\"w-3 h-3 rounded-full bg-[#0D6F64] absolute -left-[31px] top-1 border-2 border-white ring-2 ring-[#0D6F64]/30\" />",
+      "recommendation": "Use relative flex alignment or responsive inset classes (e.g. sm:left-[31px])"
+    },
+    {
+      "file": "app/src/apps/staff/pages/activity/StaffActivityPage.jsx",
+      "line": 210,
+      "value": "left-[45px]",
+      "snippet": "<div className=\"absolute -left-[37px] sm:-left-[45px] top-0.5 w-7 h-7 rounded-full bg-white border-2 border-[#B91C1C] text-xs flex items-center justify-center shadow-xs\">",
+      "recommendation": "Use relative flex alignment or responsive inset classes (e.g. sm:left-[45px])"
+    },
+    {
+      "file": "app/src/apps/staff/pages/cases/CaseDetailPage.jsx",
+      "line": 616,
+      "value": "left-[19px]",
+      "snippet": "<span className=\"w-2.5 h-2.5 rounded-full bg-[#B91C1C] absolute -left-[19px] top-1 border-2 border-white\" />",
+      "recommendation": "Use relative flex alignment or responsive inset classes (e.g. sm:left-[19px])"
+    },
+    {
+      "file": "app/src/apps/staff/pages/cases/CaseDetailPage.jsx",
+      "line": 822,
+      "value": "left-[23px]",
+      "snippet": "<span className=\"w-3 h-3 rounded-full bg-[#B91C1C] absolute -left-[23px] top-1.5 border-2 border-white ring-2 ring-[#B91C1C]/30\" />",
+      "recommendation": "Use relative flex alignment or responsive inset classes (e.g. sm:left-[23px])"
+    },
+    {
+      "file": "app/src/components/citizen/UploadZone.jsx",
+      "line": 112,
+      "value": "w-[44px]",
+      "snippet": "className=\"cz-thumb-rm absolute top-1 right-1 w-11 h-11 min-h-[44px] min-w-[44px] bg-seal-600 text-white rounded-full flex items-center justify-center text-base font-bold shadow-md cursor-pointer transition hover:bg-seal-700 active:scale-95 z-10\"",
+      "recommendation": "Use relative flex alignment or responsive inset classes (e.g. sm:w-[44px])"
+    },
+    {
+      "file": "app/src/components/DocumentEditor/PageRuler.jsx",
+      "line": 13,
+      "value": "w-[113px]",
+      "snippet": "<div className=\"absolute left-0 top-0 bottom-0 w-[113px] bg-amber-100/40 border-r border-dashed border-amber-400 flex items-center justify-center text-[8px] text-amber-700 font-sans font-bold\">",
+      "recommendation": "Use relative flex alignment or responsive inset classes (e.g. sm:w-[113px])"
+    },
+    {
+      "file": "app/src/components/DocumentEditor/PageRuler.jsx",
+      "line": 28,
+      "value": "w-[56px]",
+      "snippet": "<div className=\"absolute right-0 top-0 bottom-0 w-[56px] bg-amber-100/40 border-l border-dashed border-amber-400 flex items-center justify-center text-[8px] text-amber-700 font-sans font-bold\">",
+      "recommendation": "Use relative flex alignment or responsive inset classes (e.g. sm:w-[56px])"
+    },
+    {
+      "file": "app/src/components/landing/CaseStory.jsx",
+      "line": 461,
+      "value": "w-[120px]",
+      "snippet": "<div className=\"pointer-events-none absolute -top-3.5 left-3 sm:left-5 z-20 w-[120px] h-[36px] select-none\">",
+      "recommendation": "Use relative flex alignment or responsive inset classes (e.g. sm:w-[120px])"
+    },
+    {
+      "file": "app/src/components/landing/CaseStory.jsx",
+      "line": 659,
+      "value": "w-[2px]",
+      "snippet": "<div className=\"absolute left-[7px] top-2 bottom-2 w-[2px] bg-[#E7DED6]\" />",
+      "recommendation": "Use relative flex alignment or responsive inset classes (e.g. sm:w-[2px])"
+    },
+    {
+      "file": "app/src/components/landing/CaseStory.jsx",
+      "line": 664,
+      "value": "w-[2px]",
+      "snippet": "className=\"absolute left-[7px] top-2 bottom-2 w-[2px] bg-[#B42318] origin-top\"",
+      "recommendation": "Use relative flex alignment or responsive inset classes (e.g. sm:w-[2px])"
+    },
+    {
+      "file": "app/src/components/landing/CaseStory.jsx",
+      "line": 674,
+      "value": "left-[23px]",
+      "snippet": "className={`absolute -left-[23px] w-4 h-4 rounded-full flex items-center justify-center border-2 transition-colors ${",
+      "recommendation": "Use relative flex alignment or responsive inset classes (e.g. sm:left-[23px])"
+    },
+    {
+      "file": "app/src/components/landing/ProcessJourney.jsx",
+      "line": 140,
+      "value": "left-[35px]",
+      "snippet": "className={`absolute -left-[35px] top-0 w-8 h-8 rounded-xl flex items-center justify-center font-mono font-bold text-[12px] shadow-2xs ${",
+      "recommendation": "Use relative flex alignment or responsive inset classes (e.g. sm:left-[35px])"
+    },
+    {
+      "file": "app/src/components/map/SpatialEntityDrawer.jsx",
+      "line": 350,
+      "value": "left-[19px]",
+      "snippet": "<span className=\"w-2.5 h-2.5 rounded-full bg-[#9F241F] absolute -left-[19px] top-1 border-2 border-white\" />",
+      "recommendation": "Use relative flex alignment or responsive inset classes (e.g. sm:left-[19px])"
+    },
+    {
+      "file": "app/src/components/ui/Modal.jsx",
+      "line": 70,
+      "value": "w-[44px]",
+      "snippet": "className=\"absolute right-3 top-3 z-[999] flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-full bg-cream-100 text-ink-500 transition-colors hover:bg-cream-200 hover:text-ink-900 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white sm:right-5 sm:top-5 cursor-pointer focus-visible:outline-2 focus-visible:outline-accent-600\"",
+      "recommendation": "Use relative flex alignment or responsive inset classes (e.g. sm:w-[44px])"
+    },
+    {
+      "file": "app/src/modules/auth/components/PasswordField.jsx",
+      "line": 46,
+      "value": "w-[44px]",
+      "snippet": "className=\"absolute right-1 top-1/2 -translate-y-1/2 w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center text-ink-500 hover:text-ink-900 rounded-lg transition-colors cursor-pointer\"",
+      "recommendation": "Use relative flex alignment or responsive inset classes (e.g. sm:w-[44px])"
+    },
+    {
+      "file": "app/src/modules/cases/components/SharedCaseDrawer.jsx",
+      "line": 349,
+      "value": "left-[21px]",
+      "snippet": "<div className=\"w-2.5 h-2.5 rounded-full bg-teal-600 absolute -left-[21px] top-1 border-2 border-white shadow-xs\"></div>",
+      "recommendation": "Use relative flex alignment or responsive inset classes (e.g. sm:left-[21px])"
+    },
+    {
+      "file": "app/src/modules/citizen/CitizenTrack.jsx",
+      "line": 718,
+      "value": "left-[19px]",
+      "snippet": "<span className=\"w-2.5 h-2.5 rounded-full bg-seal-600 absolute -left-[19px] top-1.5 border-2 border-white\" />",
+      "recommendation": "Use relative flex alignment or responsive inset classes (e.g. sm:left-[19px])"
+    },
+    {
+      "file": "app/src/modules/community/CommunityCaseWorkspace.jsx",
+      "line": 2235,
+      "value": "w-[44px]",
+      "snippet": "className=\"absolute top-3 right-3 bg-[#231B14] text-white w-11 h-11 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center text-xl hover:bg-black cursor-pointer shadow-md\"",
+      "recommendation": "Use relative flex alignment or responsive inset classes (e.g. sm:w-[44px])"
+    },
+    {
+      "file": "app/src/modules/executive/components/ExecutiveCaseDrawer.jsx",
+      "line": 243,
+      "value": "left-[17px]",
+      "snippet": "<span className=\"absolute -left-[17px] top-1 w-2 h-2 rounded-full bg-amber-600\" />",
+      "recommendation": "Use relative flex alignment or responsive inset classes (e.g. sm:left-[17px])"
+    },
+    {
+      "file": "app/src/modules/executive/components/ExecutiveCaseDrawer.jsx",
+      "line": 248,
+      "value": "left-[17px]",
+      "snippet": "<span className=\"absolute -left-[17px] top-1 w-2 h-2 rounded-full bg-teal-600\" />",
+      "recommendation": "Use relative flex alignment or responsive inset classes (e.g. sm:left-[17px])"
+    },
+    {
+      "file": "app/src/modules/executive/components/ExecutiveCaseDrawer.jsx",
+      "line": 254,
+      "value": "left-[17px]",
+      "snippet": "<span className=\"absolute -left-[17px] top-1 w-2 h-2 rounded-full bg-teal-700\" />",
+      "recommendation": "Use relative flex alignment or responsive inset classes (e.g. sm:left-[17px])"
+    },
+    {
+      "file": "app/src/modules/staff/components/MobileInspectionModal.jsx",
+      "line": 208,
+      "value": "w-[44px]",
+      "snippet": "className=\"absolute top-2 right-2 bg-black/80 text-white p-2 rounded-full min-w-[44px] min-h-[44px] flex items-center justify-center font-bold text-xs\"",
+      "recommendation": "Use relative flex alignment or responsive inset classes (e.g. sm:w-[44px])"
+    },
+    {
+      "file": "app/src/shared/components/PageTemplate.jsx",
+      "line": 230,
+      "value": "w-[36px]",
+      "snippet": "className=\"absolute right-2.5 top-1/2 -translate-y-1/2 text-ink-400 hover:text-ink-700 dark:text-gray-500 dark:hover:text-gray-300 p-1 min-h-[36px] min-w-[36px] flex items-center justify-center cursor-pointer\"",
+      "recommendation": "Use relative flex alignment or responsive inset classes (e.g. sm:w-[36px])"
+    },
+    {
+      "file": "app/src/shared/components/ui/Timeline.jsx",
+      "line": 58,
+      "value": "left-[11px]",
+      "snippet": "<div className={`relative pl-6 space-y-6 before:absolute before:top-2 before:bottom-2 before:left-[11px] before:w-0.5 before:bg-slate-200 ${className}`}>",
+      "recommendation": "Use relative flex alignment or responsive inset classes (e.g. sm:left-[11px])"
+    }
+  ],
+  "inappropriateGapsMargins": [
+    {
+      "file": "app/src/apps/admin/pages/dispatch/AdminDispatchPage.jsx",
+      "line": 243,
+      "type": "excessive-mobile-padding",
+      "value": "p-12",
+      "snippet": "<div className=\"bg-white border border-[#E7E5E4] rounded-2xl p-12 text-center text-[#78716C]\">",
+      "recommendation": "Replace p-12 with 'p-4 sm:p-12' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/apps/admin/pages/settings/SettingsPage.jsx",
+      "line": 544,
+      "type": "excessive-mobile-padding",
+      "value": "px-8",
+      "snippet": "className=\"w-full sm:w-auto px-8 py-3.5 bg-[#991B1B] hover:bg-[#7F1D1D] text-white font-bold text-xs rounded-xl shadow-xs transition min-h-[48px] flex items-center justify-center gap-2 cursor-pointer\"",
+      "recommendation": "Replace px-8 with 'p-4 sm:px-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/apps/admin/pages/settings/SettingsPage.jsx",
+      "line": 631,
+      "type": "excessive-mobile-padding",
+      "value": "p-12",
+      "snippet": "<div className=\"p-12 text-center text-xs text-[#57534E] italic\">",
+      "recommendation": "Replace p-12 with 'p-4 sm:p-12' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/apps/admin/pages/users/UsersPage.jsx",
+      "line": 219,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"p-8 text-center text-xs text-[#57534E]\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/apps/contractor/pages/dashboard/ContractorDashboardPage.jsx",
+      "line": 141,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"p-8 text-center text-xs text-[#57534E] bg-[#FAFAF9] rounded-xl border border-[#E7E5E4]\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/apps/staff/pages/alerts/StaffAlertsPage.jsx",
+      "line": 391,
+      "type": "excessive-mobile-padding",
+      "value": "p-12",
+      "snippet": "<div className=\"p-12 text-center space-y-3\">",
+      "recommendation": "Replace p-12 with 'p-4 sm:p-12' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/apps/staff/pages/cases/CaseDetailPage.jsx",
+      "line": 280,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"bg-white border border-[#E7E5E4] rounded-3xl p-8 max-w-lg mx-auto text-center space-y-4 my-8 shadow-2xs\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/apps/staff/pages/cases/CasesListPage.jsx",
+      "line": 426,
+      "type": "excessive-mobile-padding",
+      "value": "p-12",
+      "snippet": "<div className=\"p-12 text-center space-y-3\">",
+      "recommendation": "Replace p-12 with 'p-4 sm:p-12' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/apps/staff/pages/monitoring/StaffMonitoringPage.jsx",
+      "line": 932,
+      "type": "excessive-mobile-padding",
+      "value": "p-12",
+      "snippet": "<div className=\"p-12 text-center space-y-3\">",
+      "recommendation": "Replace p-12 with 'p-4 sm:p-12' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/apps/staff/pages/notifications/StaffNotificationsPage.jsx",
+      "line": 237,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"bg-white border border-[#E7E5E4] rounded-2xl p-8 text-center text-xs text-[#78716C]\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/apps/staff/pages/sites/SitesListPage.jsx",
+      "line": 342,
+      "type": "excessive-mobile-padding",
+      "value": "p-12",
+      "snippet": "<div className=\"p-12 text-center space-y-3\">",
+      "recommendation": "Replace p-12 with 'p-4 sm:p-12' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/apps/staff/pages/tasks/TaskDetailPage.jsx",
+      "line": 208,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"bg-white border border-[#E7E5E4] rounded-3xl p-8 max-w-lg mx-auto text-center space-y-4 my-8 shadow-2xs\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/components/landing/LandingFooter.jsx",
+      "line": 9,
+      "type": "large-unresponsive-gap",
+      "value": "gap-8",
+      "snippet": "<div className=\"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8\">",
+      "recommendation": "Replace gap-8 with responsive gap, e.g. 'gap-3 sm:gap-4 md:gap-8'"
+    },
+    {
+      "file": "app/src/components/landing/PostTraining11JunSection.jsx",
+      "line": 25,
+      "type": "large-unresponsive-gap",
+      "value": "gap-8",
+      "snippet": "<div className=\"grid grid-cols-1 lg:grid-cols-12 gap-8 items-start\">",
+      "recommendation": "Replace gap-8 with responsive gap, e.g. 'gap-3 sm:gap-4 md:gap-8'"
+    },
+    {
+      "file": "app/src/components/PolicyIntelligence/Phase4ActionDrafts.jsx",
+      "line": 167,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"p-8 text-center text-xs text-ink-400\">Đang tải danh sách kiểm tra…</div>",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/components/PolicyIntelligence/Phase4ActionDrafts.jsx",
+      "line": 169,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"p-8 text-center text-xs text-ink-500\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/components/PolicyIntelligence/Phase4ActionDrafts.jsx",
+      "line": 234,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"p-8 text-center text-xs text-ink-500\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/components/site-detail/SiteCasesTab.jsx",
+      "line": 284,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"p-8 text-center text-ink-400\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/components/site-detail/SiteCasesTab.jsx",
+      "line": 296,
+      "type": "excessive-mobile-padding",
+      "value": "p-12",
+      "snippet": "<div className=\"p-12 text-center bg-white border border-cream-200 rounded-xl shadow-sm\">",
+      "recommendation": "Replace p-12 with 'p-4 sm:p-12' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/components/site-detail/SiteCasesTab.jsx",
+      "line": 801,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"p-8 text-center text-ink-400\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/components/site-detail/SiteComplaintsTab.jsx",
+      "line": 12,
+      "type": "excessive-mobile-padding",
+      "value": "p-10",
+      "snippet": "<div className=\"p-10 text-center text-xs text-ink-500 bg-white rounded-xl border border-cream-200 shadow-sm\">",
+      "recommendation": "Replace p-10 with 'p-4 sm:p-10' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/components/site-detail/SiteComplaintsTab.jsx",
+      "line": 127,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"p-8 text-center space-y-3\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/components/site-detail/SiteCSRTab.jsx",
+      "line": 175,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"p-8 text-center bg-white rounded-xl border border-cream-200\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/components/site-detail/SiteInspectionsTab.jsx",
+      "line": 7,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"p-8 text-center bg-white border border-cream-200 rounded-xl text-ink-500 text-xs\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/components/site-detail/SiteLegalDocumentsTab.jsx",
+      "line": 194,
+      "type": "excessive-mobile-padding",
+      "value": "p-12",
+      "snippet": "<div className=\"p-12 text-center text-ink-400 text-xs\">",
+      "recommendation": "Replace p-12 with 'p-4 sm:p-12' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/components/site-detail/SiteLegalDocumentsTab.jsx",
+      "line": 203,
+      "type": "excessive-mobile-padding",
+      "value": "p-12",
+      "snippet": "<div className=\"p-12 text-center flex flex-col items-center justify-center\">",
+      "recommendation": "Replace p-12 with 'p-4 sm:p-12' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/components/StaffAI/AutoReport.jsx",
+      "line": 181,
+      "type": "excessive-mobile-padding",
+      "value": "p-12",
+      "snippet": "<div className=\"p-12 text-center text-xs text-ink-500 font-medium flex flex-col items-center justify-center gap-3\">",
+      "recommendation": "Replace p-12 with 'p-4 sm:p-12' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/components/StaffAI/TenderSupport.jsx",
+      "line": 165,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"bg-red-50 border border-red-200 rounded-xl p-8 text-center text-red-700\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/components/StaffAI/TenderSupport.jsx",
+      "line": 208,
+      "type": "excessive-mobile-padding",
+      "value": "p-12",
+      "snippet": "<div className=\"bg-white border border-cream-200 shadow-soft rounded-xl p-12 text-center text-ink-500 h-full flex flex-col items-center justify-center min-h-[300px]\">",
+      "recommendation": "Replace p-12 with 'p-4 sm:p-12' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/components/StaffAI/ViolationCaseBuilder.jsx",
+      "line": 270,
+      "type": "excessive-mobile-padding",
+      "value": "p-12",
+      "snippet": "<div className=\"p-12 text-center text-xs text-ink-500 font-medium flex flex-col items-center justify-center gap-3\">",
+      "recommendation": "Replace p-12 with 'p-4 sm:p-12' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/components/StaffAI/ViolationExplainer.jsx",
+      "line": 37,
+      "type": "excessive-mobile-padding",
+      "value": "p-10",
+      "snippet": "if (loading) return <div className=\"p-10 text-center text-ink-500 font-medium\">Đang tải dữ liệu công trình...</div>;",
+      "recommendation": "Replace p-10 with 'p-4 sm:p-10' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/components/StaffAI/ViolationExplainer.jsx",
+      "line": 38,
+      "type": "excessive-mobile-padding",
+      "value": "p-10",
+      "snippet": "if (error) return <div className=\"p-10 text-center text-red-600 font-medium\">Không tải được dữ liệu: {error.message}</div>;",
+      "recommendation": "Replace p-10 with 'p-4 sm:p-10' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/lib/auth-client.js",
+      "line": 53,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "card: '!bg-white !rounded-2xl sm:!rounded-3xl !border !border-ink-900/10 !shadow-card !p-6 sm:!p-8',",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/admin/community/CampaignDetailView.jsx",
+      "line": 72,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"p-8 text-center text-ink-600 font-semibold\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/admin/community/CampaignDetailView.jsx",
+      "line": 80,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"p-8 text-center space-y-4 font-sans\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/admin/community/CampaignEditor.jsx",
+      "line": 131,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"p-8 text-center text-ink-600 font-semibold\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/admin/community/ClubDetailView.jsx",
+      "line": 47,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "return <div className=\"p-8 text-center text-ink-600 font-semibold\">Đang tải dữ liệu CLB...</div>;",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/admin/community/ClubDetailView.jsx",
+      "line": 52,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"p-8 text-center space-y-4 font-sans\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/admin/community/ClubEditor.jsx",
+      "line": 110,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"p-8 text-center text-ink-600 font-semibold\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/auth/components/AuthBrandPanel.jsx",
+      "line": 5,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"hidden lg:flex flex-col justify-between w-[52%] xl:w-[54%] bg-[#FDFBF7] border-r border-ink-900/10 p-8 xl:p-12 relative overflow-hidden select-none\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/citizen/CitizenMap.jsx",
+      "line": 318,
+      "type": "excessive-mobile-padding",
+      "value": "p-12",
+      "snippet": "<div className=\"p-12 text-center bg-white rounded-3xl border border-ink-900/10 space-y-2\">",
+      "recommendation": "Replace p-12 with 'p-4 sm:p-12' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/citizen/CitizenMap.jsx",
+      "line": 323,
+      "type": "excessive-mobile-padding",
+      "value": "p-12",
+      "snippet": "<div className=\"p-12 text-center bg-white rounded-3xl border border-ink-900/10 space-y-3\">",
+      "recommendation": "Replace p-12 with 'p-4 sm:p-12' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/citizen/CitizenNearby.jsx",
+      "line": 263,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"p-8 text-center bg-white rounded-3xl border border-ink-900/10\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/citizen/CitizenNearby.jsx",
+      "line": 268,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"p-8 text-center bg-white rounded-3xl border border-ink-900/10 space-y-2\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/citizen/CitizenReport.jsx",
+      "line": 743,
+      "type": "large-unresponsive-gap",
+      "value": "gap-8",
+      "snippet": "<div className=\"grid grid-cols-1 lg:grid-cols-12 gap-8 items-center\">",
+      "recommendation": "Replace gap-8 with responsive gap, e.g. 'gap-3 sm:gap-4 md:gap-8'"
+    },
+    {
+      "file": "app/src/modules/citizen/CitizenReport.jsx",
+      "line": 1593,
+      "type": "excessive-mobile-padding",
+      "value": "px-8",
+      "snippet": "className=\"w-full min-h-[50px] inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl font-extrabold text-sm shadow-xs transition-all active:scale-98 border border-seal-700 disabled:opacity-50 cursor-pointer whitespace-nowrap\"",
+      "recommendation": "Replace px-8 with 'p-4 sm:px-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/citizen/CitizenTrack.jsx",
+      "line": 832,
+      "type": "excessive-mobile-padding",
+      "value": "p-10",
+      "snippet": "<div className=\"p-10 rounded-3xl bg-white border border-ink-900/10 text-center space-y-3 shadow-xs\">",
+      "recommendation": "Replace p-10 with 'p-4 sm:p-10' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/community/CommunityActions.jsx",
+      "line": 378,
+      "type": "excessive-mobile-padding",
+      "value": "p-12",
+      "snippet": "<div className=\"p-12 text-center text-ink-500 font-medium bg-white rounded-3xl border border-ink-900/10\">",
+      "recommendation": "Replace p-12 with 'p-4 sm:p-12' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/community/CommunityActions.jsx",
+      "line": 624,
+      "type": "excessive-mobile-padding",
+      "value": "p-12",
+      "snippet": "<div className=\"bg-white rounded-3xl border border-ink-900/10 p-12 text-center space-y-3 shadow-sm min-w-0\">",
+      "recommendation": "Replace p-12 with 'p-4 sm:p-12' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/community/CommunityCases.jsx",
+      "line": 584,
+      "type": "excessive-mobile-padding",
+      "value": "p-12",
+      "snippet": "<div className=\"col-span-full bg-white rounded-3xl border border-ink-900/10 p-12 text-center space-y-4\">",
+      "recommendation": "Replace p-12 with 'p-4 sm:p-12' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/community/CommunityDiscover.jsx",
+      "line": 303,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"bg-white rounded-3xl border border-cream-300 p-8 text-center text-xs text-ink-500 font-semibold\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/community/CommunityImpact.jsx",
+      "line": 577,
+      "type": "excessive-mobile-padding",
+      "value": "p-12",
+      "snippet": "<div className=\"bg-white p-12 rounded-xl border border-gray-200 text-center space-y-4 my-8\">",
+      "recommendation": "Replace p-12 with 'p-4 sm:p-12' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/community/CreateObservation.jsx",
+      "line": 1054,
+      "type": "excessive-mobile-padding",
+      "value": "px-8",
+      "snippet": "className=\"w-full min-h-[52px] px-8 py-3.5 rounded-2xl bg-[#9f241f] hover:bg-[#7d1c18] active:scale-[0.99] disabled:opacity-50 text-white font-black text-base shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer mt-2\"",
+      "recommendation": "Replace px-8 with 'p-4 sm:px-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/community/ObservationDetail.jsx",
+      "line": 606,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"p-8 text-center bg-cream-50 border border-dashed border-ink-900/15 rounded-2xl space-y-3 min-w-0\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/community/ObservationDetail.jsx",
+      "line": 683,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"p-8 text-center text-xs text-ink-500 border border-dashed border-ink-900/20 rounded-2xl col-span-2\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/community/PublicCampaignDetail.jsx",
+      "line": 76,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"max-w-4xl mx-auto p-8 text-center space-y-4 font-sans\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/community/PublicClubDetail.jsx",
+      "line": 44,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"max-w-4xl mx-auto p-8 text-center space-y-4 font-sans\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/contractor/ContractorActionDetail.jsx",
+      "line": 198,
+      "type": "excessive-mobile-padding",
+      "value": "p-12",
+      "snippet": "<div className=\"p-12 text-center text-ink-500 text-xs font-bold space-y-3\">",
+      "recommendation": "Replace p-12 with 'p-4 sm:p-12' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/contractor/ContractorActionList.jsx",
+      "line": 354,
+      "type": "excessive-mobile-padding",
+      "value": "p-12",
+      "snippet": "<div className=\"p-12 text-center text-ink-500 text-xs font-bold space-y-3\">",
+      "recommendation": "Replace p-12 with 'p-4 sm:p-12' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/contractor/ContractorActionList.jsx",
+      "line": 363,
+      "type": "excessive-mobile-padding",
+      "value": "p-12",
+      "snippet": "<div className=\"p-12 text-center bg-white border border-ink-900/10 rounded-3xl text-ink-600 text-xs font-medium space-y-2 shadow-3xs\">",
+      "recommendation": "Replace p-12 with 'p-4 sm:p-12' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/contractor/ContractorDashboard.jsx",
+      "line": 49,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"p-8 max-w-7xl mx-auto flex items-center justify-center min-h-[400px]\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/contractor/ContractorEvidence.jsx",
+      "line": 179,
+      "type": "excessive-mobile-padding",
+      "value": "p-12",
+      "snippet": "<div className=\"p-12 text-center text-ink-500 text-xs font-bold space-y-3\">",
+      "recommendation": "Replace p-12 with 'p-4 sm:p-12' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/contractor/ContractorEvidence.jsx",
+      "line": 188,
+      "type": "excessive-mobile-padding",
+      "value": "p-12",
+      "snippet": "<div className=\"p-12 text-center bg-white border border-ink-900/10 rounded-3xl text-ink-600 text-xs font-medium space-y-2 shadow-3xs\">",
+      "recommendation": "Replace p-12 with 'p-4 sm:p-12' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/contractor/ContractorNotifications.jsx",
+      "line": 132,
+      "type": "excessive-mobile-padding",
+      "value": "p-12",
+      "snippet": "<div className=\"p-12 text-center text-ink-500 text-xs font-bold space-y-3\">",
+      "recommendation": "Replace p-12 with 'p-4 sm:p-12' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/contractor/ContractorNotifications.jsx",
+      "line": 141,
+      "type": "excessive-mobile-padding",
+      "value": "p-12",
+      "snippet": "<div className=\"p-12 text-center bg-white border border-ink-900/10 rounded-3xl text-ink-600 text-xs font-medium space-y-2 shadow-3xs\">",
+      "recommendation": "Replace p-12 with 'p-4 sm:p-12' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/contractor/ContractorProjectDetail.jsx",
+      "line": 83,
+      "type": "excessive-mobile-padding",
+      "value": "p-12",
+      "snippet": "<div className=\"p-12 text-center text-ink-500 text-xs font-bold space-y-3\">",
+      "recommendation": "Replace p-12 with 'p-4 sm:p-12' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/contractor/ContractorProjectDetail.jsx",
+      "line": 282,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"p-8 text-center bg-white rounded-3xl border border-ink-900/10 text-ink-500 text-xs font-bold space-y-1\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/contractor/ContractorProjectDetail.jsx",
+      "line": 407,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"p-8 text-center bg-white rounded-3xl border border-ink-900/10 text-ink-500 text-xs font-bold space-y-1\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/contractor/ContractorProjectDetail.jsx",
+      "line": 470,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"p-8 text-center text-ink-500 text-xs font-medium\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/contractor/ContractorProjects.jsx",
+      "line": 118,
+      "type": "excessive-mobile-padding",
+      "value": "p-12",
+      "snippet": "<div className=\"p-12 text-center text-ink-500 text-xs font-bold space-y-3\">",
+      "recommendation": "Replace p-12 with 'p-4 sm:p-12' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/contractor/ContractorProjects.jsx",
+      "line": 127,
+      "type": "excessive-mobile-padding",
+      "value": "p-12",
+      "snippet": "<div className=\"p-12 text-center bg-white border border-ink-900/10 rounded-3xl text-ink-600 text-xs font-medium space-y-2 shadow-3xs\">",
+      "recommendation": "Replace p-12 with 'p-4 sm:p-12' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/executive/components/ExecutiveDecisionsPanel.jsx",
+      "line": 140,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"p-8 text-center bg-[#FAF8F5] rounded-xl border border-[#E7DFD3] text-xs text-[#6B6055] font-medium\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/executive/components/PriorityCommandCenter.jsx",
+      "line": 149,
+      "type": "excessive-mobile-padding",
+      "value": "p-10",
+      "snippet": "<div className=\"p-10 text-center text-ink-400 space-y-2\">",
+      "recommendation": "Replace p-10 with 'p-4 sm:p-10' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/executive/ExecutiveApprovals.jsx",
+      "line": 125,
+      "type": "excessive-mobile-padding",
+      "value": "p-12",
+      "snippet": "<div className=\"p-12 text-center text-ink-400\">",
+      "recommendation": "Replace p-12 with 'p-4 sm:p-12' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/executive/ExecutiveApprovals.jsx",
+      "line": 130,
+      "type": "excessive-mobile-padding",
+      "value": "p-12",
+      "snippet": "<div className=\"p-12 text-center text-ink-400 space-y-2\">",
+      "recommendation": "Replace p-12 with 'p-4 sm:p-12' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/executive/ExecutiveCases.jsx",
+      "line": 149,
+      "type": "excessive-mobile-padding",
+      "value": "p-12",
+      "snippet": "<div className=\"p-12 text-center text-ink-400\">",
+      "recommendation": "Replace p-12 with 'p-4 sm:p-12' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/executive/ExecutiveCases.jsx",
+      "line": 154,
+      "type": "excessive-mobile-padding",
+      "value": "p-12",
+      "snippet": "<div className=\"p-12 text-center text-ink-400\">",
+      "recommendation": "Replace p-12 with 'p-4 sm:p-12' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/executive/ExecutiveReports.jsx",
+      "line": 174,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"p-8 text-center text-xs text-ink-500 font-medium\">Đang tải danh mục báo cáo...</div>",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/executive/ExecutiveReports.jsx",
+      "line": 176,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"p-8 text-center bg-cream-50 rounded-xl border border-cream-200 text-xs text-ink-500\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/executive/ExecutiveReports.jsx",
+      "line": 295,
+      "type": "excessive-mobile-padding",
+      "value": "p-12",
+      "snippet": "<div className=\"rounded-2xl border border-cream-200 bg-white p-12 text-center text-xs text-ink-500\">",
+      "recommendation": "Replace p-12 with 'p-4 sm:p-12' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/executive/ExecutiveRiskMatrix.jsx",
+      "line": 481,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"p-8 text-center bg-cream-50 rounded-xl border border-cream-200 text-xs text-ink-500 font-medium\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/executive/ExecutiveSlaCompliance.jsx",
+      "line": 324,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"p-8 text-center bg-teal-50/40 rounded-xl border border-teal-200 text-xs text-teal-900 font-bold\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/staff/components/IoTSetupModal.jsx",
+      "line": 477,
+      "type": "excessive-mobile-padding",
+      "value": "px-8",
+      "snippet": "className={`min-h-[44px] px-8 py-2 rounded-xl text-xs font-black flex items-center gap-2 transition-colors ml-auto shadow-xs ${",
+      "recommendation": "Replace px-8 with 'p-4 sm:px-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/staff/components/RegulationAssistantModal.jsx",
+      "line": 172,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"p-8 text-center text-ink-500\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/staff/RemediationWorkspace.jsx",
+      "line": 352,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"p-8 text-center rounded-xl border border-dashed border-cream-300 bg-white dark:bg-gray-900 text-xs text-ink-500\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/staff/RemediationWorkspace.jsx",
+      "line": 551,
+      "type": "excessive-mobile-padding",
+      "value": "p-12",
+      "snippet": "<div className=\"lg:col-span-8 p-12 text-center rounded-xl border border-cream-200 bg-white dark:bg-gray-900 text-ink-500\">",
+      "recommendation": "Replace p-12 with 'p-4 sm:p-12' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/staff/sites/StaffSiteDetail.jsx",
+      "line": 44,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"p-8 text-center bg-white border border-cream-200 rounded-2xl my-4 shadow-sm\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/staff/sites/StaffSiteDetail.jsx",
+      "line": 543,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"p-8 text-center bg-white border border-cream-200 rounded-2xl max-w-lg mx-auto my-12 shadow-sm\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/staff/StaffCaseDetail.jsx",
+      "line": 544,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"p-8 text-center bg-white rounded-xl border border-[#E7E5E4] shadow-sm\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/staff/StaffCases.jsx",
+      "line": 650,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"p-8 text-center bg-white rounded-2xl border border-[#E7E5E4]\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/staff/StaffCases.jsx",
+      "line": 655,
+      "type": "excessive-mobile-padding",
+      "value": "p-12",
+      "snippet": "<div className=\"p-12 text-center bg-white rounded-2xl border border-[#E7E5E4]\">",
+      "recommendation": "Replace p-12 with 'p-4 sm:p-12' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/staff/StaffSLA.jsx",
+      "line": 272,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<tr><td colSpan={5} className=\"p-8 text-center text-ink-500 font-medium\">Đang nạp dữ liệu tiến độ...</td></tr>",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/staff/StaffSLA.jsx",
+      "line": 274,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<tr><td colSpan={5} className=\"p-8 text-center text-ink-500 font-medium\">Không có yêu cầu khắc phục nào trong danh mục này.</td></tr>",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/staff/tasks/StaffTaskDetail.jsx",
+      "line": 120,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"p-8 text-center text-ink-500 font-medium\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/staff/tasks/StaffTaskDetail.jsx",
+      "line": 128,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"p-8 space-y-4 max-w-xl mx-auto text-center\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/staff/tasks/StaffTaskEditor.jsx",
+      "line": 178,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"p-8 text-center text-ink-500 font-medium\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/staff/UnifiedOperationsCenter.jsx",
+      "line": 421,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"p-8\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/youth/YouthCertificate.jsx",
+      "line": 71,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"min-h-[400px] flex items-center justify-center bg-[#FDFBF7] p-8 text-center\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/youth/YouthCertificate.jsx",
+      "line": 82,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"min-h-[400px] flex items-center justify-center bg-[#FDFBF7] p-8 text-center\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/modules/youth/YouthCredits.jsx",
+      "line": 773,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"bg-gradient-to-b from-amber-50 to-white rounded-3xl p-8 border-2 border-amber-400 shadow-xl text-center order-1 md:order-2 flex flex-col items-center ring-4 ring-amber-100\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/shared/components/BeforeAfterSlider.jsx",
+      "line": 84,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className={`p-8 bg-[#FAFAF9] rounded-2xl border border-[#E7E5E4] text-center ${className}`}>",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/shared/components/StatusBadge.jsx",
+      "line": 71,
+      "type": "excessive-mobile-padding",
+      "value": "p-12",
+      "snippet": "<div className=\"flex flex-col items-center justify-center p-12 gap-3 text-stone-600\">",
+      "recommendation": "Replace p-12 with 'p-4 sm:p-12' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/shared/components/StatusBadge.jsx",
+      "line": 80,
+      "type": "excessive-mobile-padding",
+      "value": "p-12",
+      "snippet": "<div className=\"flex flex-col items-center justify-center p-12 text-center bg-white border border-stone-200 rounded-2xl shadow-xs gap-3\">",
+      "recommendation": "Replace p-12 with 'p-4 sm:p-12' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/shared/components/StatusBadge.jsx",
+      "line": 100,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<div className=\"flex flex-col items-center justify-center p-8 text-center bg-rose-50 border border-rose-200 rounded-2xl gap-3 text-rose-950\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    },
+    {
+      "file": "app/src/shared/components/ui/DataTable.jsx",
+      "line": 123,
+      "type": "excessive-mobile-padding",
+      "value": "p-8",
+      "snippet": "<Card className=\"p-8\">",
+      "recommendation": "Replace p-8 with 'p-4 sm:p-8' to preserve mobile canvas width"
+    }
+  ],
+  "excessiveWrapping": [
+    {
+      "file": "app/src/components/checklist/InspectionReviewTable.jsx",
+      "line": 36,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "className=\"inline-flex items-center min-h-[36px] py-1 px-2.5 rounded-md text-xs font-bold text-accent-700 bg-accent-50 hover:bg-accent-100 border border-accent-200 transition cursor-pointer\"",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/components/checklist/InspectionReviewTable.jsx",
+      "line": 45,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<span className=\"inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-success-50 text-success-700 border border-success-200\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/components/checklist/InspectionReviewTable.jsx",
+      "line": 49,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<span className=\"inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-seal-50 text-seal-700 border border-seal-200\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/components/checklist/InspectionReviewTable.jsx",
+      "line": 53,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<span className=\"inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-gray-100 text-ink-500 border border-gray-200\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/components/checklist/InspectionReviewTable.jsx",
+      "line": 98,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<span className=\"inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold bg-success-50 text-success-700 border border-success-200\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/components/checklist/InspectionReviewTable.jsx",
+      "line": 102,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<span className=\"inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold bg-seal-50 text-seal-700 border border-seal-200\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/components/checklist/InspectionReviewTable.jsx",
+      "line": 106,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<span className=\"inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold bg-gray-100 text-ink-500 border border-gray-200\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/components/common/PageHeader.jsx",
+      "line": 17,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<span className=\"inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-teal-100 text-teal-800 border border-teal-200\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/components/DocumentEditor/RevisionHistoryModal.jsx",
+      "line": 141,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "className=\"inline-flex items-center gap-1.5 rounded-md bg-seal-600 px-3 py-1.5 text-xs font-semibold text-white shadow-xs hover:bg-seal-700\"",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/components/landing/Hero.jsx",
+      "line": 48,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<div className=\"hero-fade-item inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#F4EFEA] border border-[#E7DED6] text-[#78350F] text-[12px] font-bold tracking-wider uppercase font-mono\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/components/landing/PilotCTA.jsx",
+      "line": 34,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<div className=\"inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FAF6F0] border border-[#E7DED6] text-[#78350F] text-[12px] font-bold tracking-wider uppercase font-mono\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/components/landing/PostTraining11JunSection.jsx",
+      "line": 9,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<div className=\"inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FEF2F2] border border-[#FECACA] text-[#B91C1C] text-xs font-black uppercase tracking-wider mb-4\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/components/landing/ProblemStory.jsx",
+      "line": 194,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<div className=\"inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FAF0EB] border border-[#ECD3C6] text-[#9F241F] text-[11px] sm:text-[12px] font-bold tracking-wider uppercase font-mono shadow-2xs\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/components/PolicyIntelligence/Phase4ActionDrafts.jsx",
+      "line": 267,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<button className=\"px-2 py-1 text-xs font-bold text-[#0d6f64] hover:bg-emerald-50 rounded border border-[#0d6f64]/30\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/components/StaffAI/TenderSupport.jsx",
+      "line": 188,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<button className=\"px-3 py-1.5 text-xs font-medium bg-white border border-cream-200 rounded-md hover:bg-cream-50 text-accent-700\" onClick={() => reviewRequirement(req.id || req.requirement_id, 'approved')}>Duyệt</button>",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/components/StaffAI/TenderSupport.jsx",
+      "line": 189,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<button className=\"px-3 py-1.5 text-xs font-medium bg-white border border-cream-200 rounded-md hover:bg-cream-50 text-red-700\" onClick={() => reviewRequirement(req.id || req.requirement_id, 'rejected')}>Từ chối</button>",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/modules/auth/components/AuthBrandPanel.jsx",
+      "line": 18,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<div className=\"inline-flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-white border border-ink-900/10 shadow-3xs mb-6\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/modules/auth/components/LoginForm.jsx",
+      "line": 104,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "className=\"px-3.5 py-1.5 rounded-full bg-cream-100 hover:bg-cream-200/70 border border-ink-900/10 text-ink-700 hover:text-ink-900 text-xs font-bold transition-all inline-flex items-center gap-1.5 shadow-3xs cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-seal-600\"",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/modules/auth/components/LoginForm.jsx",
+      "line": 291,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "className=\"px-3.5 py-1.5 rounded-full bg-cream-100 hover:bg-cream-200/70 border border-ink-900/10 text-ink-700 hover:text-ink-900 text-xs font-bold transition-all inline-flex items-center gap-1.5 shadow-3xs cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-seal-600\"",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/modules/citizen/CitizenPortal.jsx",
+      "line": 238,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<div className=\"inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-xs font-extrabold\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/modules/citizen/CitizenPortal.jsx",
+      "line": 302,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<span className=\"inline-flex items-center gap-1 font-black text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-md text-[11px] border border-emerald-200\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/modules/citizen/CitizenPortal.jsx",
+      "line": 306,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<span className=\"inline-flex items-center gap-1 font-bold text-ink-600 bg-stone-100 px-2.5 py-0.5 rounded-md text-[11px] border border-stone-200\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/modules/community/CommunityCases.jsx",
+      "line": 299,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<span className=\"inline-flex items-center gap-1.5 px-3 py-0.5 bg-accent-50 text-accent-700 font-bold text-xs rounded-full border border-accent-200\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/modules/community/CommunityDiscover.jsx",
+      "line": 164,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<div className=\"inline-flex items-center gap-2 px-3 py-1 bg-teal-50 text-teal-900 font-bold text-xs rounded-full border border-teal-200 flex-wrap\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/modules/community/CommunityHome.jsx",
+      "line": 156,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<span className=\"inline-flex items-center gap-1.5 px-3 py-1 bg-accent-50 text-accent-800 font-bold text-xs rounded-full border border-accent-200\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/modules/community/CommunityImpact.jsx",
+      "line": 449,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<span className=\"text-[11px] font-bold text-accent-800 bg-accent-50 px-3 py-1 rounded-full border border-accent-200 inline-flex items-center gap-1.5\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/modules/community/CreateObservation.jsx",
+      "line": 659,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<span className=\"px-3 py-1 bg-emerald-50 text-emerald-800 text-xs font-bold rounded-full border border-emerald-300 inline-flex items-center gap-1.5\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/modules/contractor/ContractorNotifications.jsx",
+      "line": 169,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<span className=\"inline-flex items-center gap-1 text-[11px] font-black text-red-700 bg-red-50 px-2.5 py-0.5 rounded-full border border-red-200\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/modules/contractor/ContractorNotifications.jsx",
+      "line": 174,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<span className=\"inline-flex items-center gap-1 text-[11px] font-black text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/modules/contractor/ContractorNotifications.jsx",
+      "line": 179,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<span className=\"inline-flex items-center gap-1 text-[11px] font-black text-green-800 bg-green-50 px-2.5 py-0.5 rounded-full border border-green-200\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/modules/contractor/ContractorProjectDetail.jsx",
+      "line": 133,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<span className=\"inline-flex items-center gap-1 text-xs font-bold text-green-700 bg-green-50 px-2.5 py-0.5 rounded-md border border-green-200\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/modules/contractor/ContractorProjects.jsx",
+      "line": 150,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<span className=\"inline-flex items-center gap-1 text-[11px] font-bold text-green-700 bg-green-50 px-2.5 py-0.5 rounded-full border border-green-200\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/modules/documents/DocumentPreviewPage.jsx",
+      "line": 192,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<span className=\"hidden sm:inline-flex items-center gap-1 text-xs font-semibold text-teal-800 bg-teal-100/80 px-2.5 py-1 rounded-md\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/modules/public/IoTDemo.jsx",
+      "line": 190,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<span className=\"inline-flex items-center gap-1 text-xs font-extrabold px-2 py-0.5 rounded bg-teal-50 text-teal-800 border border-teal-200\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/modules/public/NotFound.jsx",
+      "line": 36,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<span className=\"inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-seal-600 bg-seal-50 border border-seal-100 mb-3\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/modules/public/SensorGuide.jsx",
+      "line": 63,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<span className=\"inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-seal-600 bg-seal-50 border border-seal-100 mb-4\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/modules/staff/StaffAI.jsx",
+      "line": 57,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<span className=\"inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-[#F0FDFA] text-[#0D6F64] border border-[#CCFBF1]\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/modules/staff/StaffSLA.jsx",
+      "line": 170,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<span className=\"inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-seal-50 text-seal-700 border border-seal-200\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/modules/staff/StaffSLA.jsx",
+      "line": 191,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<button onClick={loadData} className=\"px-3 py-1 bg-white border border-amber-300 rounded text-xs font-bold\">Thử lại</button>",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/modules/youth/YouthCertificate.jsx",
+      "line": 247,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<span className=\"inline-flex items-center gap-1 px-3 py-1 bg-accent-50 text-accent-800 border border-accent-300 rounded-full text-xs font-black uppercase tracking-wide\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/modules/youth/YouthCredits.jsx",
+      "line": 450,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<span className=\"inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-[#0d6f64] bg-accent-50 border border-accent-100 mb-2\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/modules/youth/YouthCredits.jsx",
+      "line": 517,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<span className=\"inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-[#0d6f64] bg-accent-50 border border-accent-200 mb-2\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/modules/youth/YouthCredits.jsx",
+      "line": 936,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<span className=\"inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-teal-700 bg-teal-50 border border-teal-200 mb-2\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/shared/components/PageTemplate.jsx",
+      "line": 118,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<span className=\"inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-accent-50 text-accent-700 border border-accent-200 dark:bg-accent-950/40 dark:text-accent-300 dark:border-accent-800\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/shared/components/SectionHeader.jsx",
+      "line": 55,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<span className=\"inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-accent-50 text-accent-700 border border-accent-200\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/shared/components/SectionHeader.jsx",
+      "line": 93,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<span className=\"inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-accent-50 text-accent-700 border border-accent-200\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/shared/components/ui/DataTable.jsx",
+      "line": 318,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<span className=\"inline-flex items-center justify-center px-2.5 py-1 text-xs font-bold bg-teal-600 text-white rounded-full\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    },
+    {
+      "file": "app/src/shared/layouts/DashboardLayout.jsx",
+      "line": 271,
+      "type": "badge-chip-missing-nowrap",
+      "snippet": "<span className=\"hidden sm:inline-flex items-center px-2.5 py-1 rounded-full bg-accent-50 text-accent-700 border border-accent-200 text-[11px] font-bold uppercase tracking-wider\">",
+      "recommendation": "Add 'whitespace-nowrap shrink-0' to prevent multi-line badge breakage on 320px"
+    }
+  ]
+}
