@@ -71,20 +71,30 @@ export const DashboardPage: React.FC = () => {
   const getNextActionInfo = (c: any) => {
     switch (c.status) {
       case 'NEW':
-        return { label: 'Thụ lý & Phân loại', path: `/cases/${c.id}` };
+        return { label: 'Xem tín hiệu & Chuẩn hóa', path: `/cases/${c.id}` };
       case 'TRIAGED':
+        return { label: 'Kiểm tra bằng chứng', path: `/cases/${c.id}` };
+      case 'NEEDS_EVIDENCE':
+        return { label: 'Yêu cầu bổ sung minh chứng', path: `/cases/${c.id}` };
+      case 'READY_FOR_ASSIGNMENT':
         return { label: 'Phân công cán bộ', path: `/cases/${c.id}` };
       case 'ASSIGNED':
-      case 'INSPECTION_PLANNED':
-        return { label: 'Kiểm tra hiện trường', path: `/cases/${c.id}/inspection/new` };
+        return { label: 'Bắt đầu xử lý hiện trường', path: `/cases/${c.id}` };
+      case 'IN_PROGRESS':
+      case 'INSPECTION_IN_PROGRESS':
+        return { label: 'Cập nhật tiến độ', path: `/cases/${c.id}` };
       case 'ACTION_REQUIRED':
-        return { label: 'Ban hành khắc phục', path: `/cases/${c.id}` };
+      case 'WAITING_UPDATE':
+        return { label: 'Đôn đốc khắc phục', path: `/cases/${c.id}` };
       case 'REMEDIATION':
         return { label: 'Nghiệm thu báo cáo', path: `/cases/${c.id}` };
+      case 'RESOLVED':
       case 'READY_TO_CLOSE':
-        return { label: 'Đóng vụ việc', path: `/cases/${c.id}` };
+        return { label: 'Xác nhận kết quả & Đóng', path: `/cases/${c.id}` };
+      case 'CLOSED':
+        return { label: 'Xem lại lịch sử', path: `/cases/${c.id}` };
       default:
-        return { label: 'Xem chi tiết', path: `/cases/${c.id}` };
+        return { label: 'Xem hồ sơ', path: `/cases/${c.id}` };
     }
   };
 
@@ -179,77 +189,85 @@ export const DashboardPage: React.FC = () => {
         </div>
       )}
 
-      {/* 3. ROW 1: 4 Dominant Operational KPI Focus Cards */}
+      {/* 3. ROW 1: 4 Dominant Operational KPI Focus Cards (Trả Lời 4 Câu Hỏi Tác Nghiệp Thực Tế) */}
       <section>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-          {/* Card 1: Open Cases */}
+          {/* Câu hỏi 1: Có bao nhiêu tín hiệu mới cần xem? */}
           <Link
-            to="/cases"
-            className="civic-card-interactive p-3.5 sm:p-5 border-l-4 border-slate-700 flex flex-col justify-between bg-surface shadow-xs hover:border-slate-900"
+            to="/cases?tab=new"
+            className="civic-card-interactive p-3.5 sm:p-5 border-l-4 border-blue-600 flex flex-col justify-between bg-surface shadow-xs hover:bg-blue-50/40"
           >
             <div className="flex items-center justify-between">
-              <span className="text-[11px] sm:text-xs font-bold text-ink-600 uppercase tracking-wider line-clamp-1">Vụ việc đang mở</span>
-              <Inbox className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-slate-700 shrink-0" />
+              <span className="text-[11px] sm:text-xs font-bold text-blue-800 uppercase tracking-wider line-clamp-1">
+                1. Tín hiệu mới cần xem
+              </span>
+              <Inbox className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-blue-600 shrink-0" />
             </div>
             <div className="text-2xl sm:text-3xl font-black text-ink-900 mt-2">
-              {metrics.open_cases || 0}
+              {metrics.new_signals ?? metrics.open_cases ?? 0}
             </div>
             <div className="text-[11px] text-ink-500 mt-1 flex items-center justify-between pt-2 border-t border-slate-100">
-              <span className="truncate">Đang trong tiến trình</span>
+              <span className="truncate">Cần đối soát & lập hồ sơ</span>
               <ArrowRight className="w-3 h-3 text-ink-400 shrink-0" />
             </div>
           </Link>
 
-          {/* Card 2: SLA At Risk */}
+          {/* Câu hỏi 2: Hồ sơ nào cần ưu tiên trước? */}
           <Link
-            to="/actions?overdue=true"
+            to="/cases?tab=urgent"
             className="civic-card-interactive p-3.5 sm:p-5 border-l-4 border-dustguard-red flex flex-col justify-between bg-surface shadow-xs hover:bg-dustguard-redSoft/30"
           >
             <div className="flex items-center justify-between">
-              <span className="text-[11px] sm:text-xs font-bold text-dustguard-red uppercase tracking-wider line-clamp-1">Hạn cần xử lý gấp</span>
+              <span className="text-[11px] sm:text-xs font-bold text-dustguard-red uppercase tracking-wider line-clamp-1">
+                2. Cần ưu tiên trước
+              </span>
               <AlertTriangle className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-dustguard-red shrink-0" />
             </div>
             <div className="text-2xl sm:text-3xl font-black text-dustguard-red mt-2">
-              {metrics.sla_at_risk || 0}
+              {metrics.sla_at_risk ?? metrics.urgent_cases ?? 0}
             </div>
             <div className="text-[11px] text-dustguard-red font-semibold mt-1 flex items-center justify-between pt-2 border-t border-red-100">
-              <span className="truncate">Hạn định 48h luật định</span>
+              <span className="truncate">Rủi ro cao / Bụi đậm đặc</span>
               <ArrowRight className="w-3 h-3 text-dustguard-red shrink-0" />
             </div>
           </Link>
 
-          {/* Card 3: Pending Inspection */}
+          {/* Câu hỏi 3: Hồ sơ nào chưa có người phụ trách? */}
           <Link
-            to="/inspections"
-            className="civic-card-interactive p-3.5 sm:p-5 border-l-4 border-dustguard-teal flex flex-col justify-between bg-surface shadow-xs hover:border-teal-700"
+            to="/cases?tab=unassigned"
+            className="civic-card-interactive p-3.5 sm:p-5 border-l-4 border-amber-500 flex flex-col justify-between bg-surface shadow-xs hover:bg-amber-50/40"
           >
             <div className="flex items-center justify-between">
-              <span className="text-[11px] sm:text-xs font-bold text-dustguard-teal uppercase tracking-wider line-clamp-1">Chờ thanh tra</span>
-              <ClipboardCheck className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-dustguard-teal shrink-0" />
+              <span className="text-[11px] sm:text-xs font-bold text-amber-800 uppercase tracking-wider line-clamp-1">
+                3. Chưa có người phụ trách
+              </span>
+              <Users className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-amber-600 shrink-0" />
             </div>
-            <div className="text-2xl sm:text-3xl font-black text-dustguard-teal mt-2">
-              {metrics.pending_inspection || 0}
+            <div className="text-2xl sm:text-3xl font-black text-amber-800 mt-2">
+              {metrics.unassigned_cases ?? Math.max(0, (metrics.open_cases || 0) - (metrics.assigned_cases || 0))}
             </div>
             <div className="text-[11px] text-ink-500 mt-1 flex items-center justify-between pt-2 border-t border-slate-100">
-              <span className="truncate">10 Tiêu chuẩn QCVN 18</span>
+              <span className="truncate">Chờ chỉ định cán bộ</span>
               <ArrowRight className="w-3 h-3 text-ink-400 shrink-0" />
             </div>
           </Link>
 
-          {/* Card 4: Awaiting Remediation */}
+          {/* Câu hỏi 4: Hồ sơ nào đang bị chậm hoặc cần cập nhật? */}
           <Link
-            to="/cases?tab=pending_action"
-            className="civic-card-interactive p-3.5 sm:p-5 border-l-4 border-amber-600 flex flex-col justify-between bg-surface shadow-xs hover:border-amber-700"
+            to="/cases?tab=overdue"
+            className="civic-card-interactive p-3.5 sm:p-5 border-l-4 border-slate-700 flex flex-col justify-between bg-surface shadow-xs hover:bg-slate-100/60"
           >
             <div className="flex items-center justify-between">
-              <span className="text-[11px] sm:text-xs font-bold text-amber-700 uppercase tracking-wider line-clamp-1">Chờ nhà thầu nộp</span>
-              <Wrench className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-amber-600 shrink-0" />
+              <span className="text-[11px] sm:text-xs font-bold text-slate-800 uppercase tracking-wider line-clamp-1">
+                4. Đang chậm / Cần cập nhật
+              </span>
+              <Clock className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-slate-700 shrink-0" />
             </div>
-            <div className="text-2xl sm:text-3xl font-black text-amber-800 mt-2">
-              {metrics.awaiting_remediation || 0}
+            <div className="text-2xl sm:text-3xl font-black text-slate-900 mt-2">
+              {metrics.awaiting_remediation ?? 0}
             </div>
             <div className="text-[11px] text-ink-500 mt-1 flex items-center justify-between pt-2 border-t border-slate-100">
-              <span className="truncate">Khắc phục hiện trường</span>
+              <span className="truncate">Cần đôn đốc hiện trường</span>
               <ArrowRight className="w-3 h-3 text-ink-400 shrink-0" />
             </div>
           </Link>

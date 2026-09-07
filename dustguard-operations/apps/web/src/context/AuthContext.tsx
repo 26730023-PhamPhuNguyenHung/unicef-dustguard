@@ -16,10 +16,10 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const DEV_ACCOUNTS: Record<Role, { username: string; label: string; name: string }> = {
-  staff: { username: 'staff1', label: 'Cán bộ Hiện trường', name: 'Nguyễn Văn Hùng' },
-  supervisor: { username: 'supervisor1', label: 'Lãnh đạo Điều phối', name: 'Võ Minh Trí' },
-  legal_reviewer: { username: 'legal1', label: 'Chuyên viên Pháp chế', name: 'Luật sư Đặng Thu Thảo' },
-  admin: { username: 'admin', label: 'Quản trị Hệ thống', name: 'Quản trị viên' },
+  staff: { username: 'canbo.hientruong', label: 'Cán bộ Hiện trường', name: 'Nguyễn Minh Anh' },
+  supervisor: { username: 'lanhdao.dieuphoi', label: 'Lãnh đạo Điều phối', name: 'Trần Quốc Minh' },
+  legal_reviewer: { username: 'chuyenvien.phapche', label: 'Chuyên viên Pháp chế', name: 'Lê Thanh Hà' },
+  admin: { username: 'quantri.dustguard', label: 'Quản trị Vận hành', name: 'Quản trị DustGuard' },
 };
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -42,20 +42,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     const token = localStorage.getItem('dustguard_token');
-    const loggedOut = localStorage.getItem('dustguard_logged_out');
     if (token) {
       fetchCurrentUser();
-    } else if (!loggedOut) {
-      // Auto-authenticate default staff role for smooth operations and seamless testing
-      login('staff1', 'password123').catch(() => {
-        setLoading(false);
-      });
     } else {
       setLoading(false);
     }
   }, [fetchCurrentUser]);
 
-  const login = async (username: string, password = 'password123'): Promise<User> => {
+  const login = async (username: string, password = 'DustGuard@2026'): Promise<User> => {
     setLoading(true);
     try {
       const res = await api.auth.login({ username, password });
@@ -84,7 +78,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const switchRole = async (role: Role) => {
     const account = DEV_ACCOUNTS[role];
     if (account) {
-      await login(account.username, 'password123');
+      await login(account.username, 'DustGuard@2026');
     }
   };
 

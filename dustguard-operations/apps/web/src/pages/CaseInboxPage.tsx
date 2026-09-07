@@ -22,17 +22,13 @@ import {
 import { Case, Project } from '@dustguard-operations/shared';
 
 const TABS = [
-  { id: 'all', label: 'Tất cả' },
-  { id: 'new', label: 'Mới tiếp nhận' },
-  { id: 'triaged', label: 'Chờ phân loại' },
-  { id: 'my_cases', label: 'Được giao cho tôi' },
+  { id: 'all', label: 'Tất cả vụ việc' },
+  { id: 'new', label: 'Cần xem (Mới)' },
+  { id: 'needs_evidence', label: 'Cần bổ sung bằng chứng' },
+  { id: 'unassigned', label: 'Chưa phân công' },
   { id: 'in_progress', label: 'Đang xử lý' },
-  { id: 'pending_legal', label: 'Chờ pháp lý' },
-  { id: 'pending_inspection', label: 'Chờ kiểm tra' },
-  { id: 'pending_action', label: 'Chờ khắc phục' },
-  { id: 'pending_reinspection', label: 'Chờ tái kiểm' },
-  { id: 'ready_to_close', label: 'Sẵn sàng đóng' },
-  { id: 'closed', label: 'Đã đóng' },
+  { id: 'overdue', label: 'Quá hạn / Chậm' },
+  { id: 'resolved', label: 'Đã hoàn tất' },
 ];
 
 export const CaseInboxPage: React.FC = () => {
@@ -374,17 +370,29 @@ export const CaseInboxPage: React.FC = () => {
                   {c.contractor_name && (
                     <span>Nhà thầu: <strong>{c.contractor_name}</strong></span>
                   )}
+                  <span>Nguồn: <strong className="text-slate-700">{c.source === 'COMMUNITY' ? 'Cộng đồng' : c.source === 'IOT' ? 'Trạm IoT' : 'Trực tiếp'}</strong></span>
                 </div>
               </div>
 
-              {/* Action right */}
-              <div className="flex items-center justify-between md:justify-end gap-3 self-stretch md:self-center flex-shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-slate-100">
-                <span className="text-[11px] text-slate-400">
+              {/* Action right: Next Action Dominant CTA */}
+              <div className="flex items-center justify-between md:justify-end gap-2.5 self-stretch md:self-center flex-shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-slate-100">
+                <span className="text-[11px] text-slate-400 hidden sm:inline-block">
                   {new Date(c.updated_at).toLocaleDateString('vi-VN')}
                 </span>
                 <Link to={`/cases/${c.id}`} className="w-full sm:w-auto">
-                  <Button variant="outline" size="sm" className="font-semibold w-full sm:w-auto">
-                    Xem chi tiết &rarr;
+                  <Button variant="primary" size="sm" className="font-bold w-full sm:w-auto text-xs shadow-xs">
+                    {(() => {
+                      const st = String(c.status);
+                      if (st === 'NEW') return 'Xem tín hiệu';
+                      if (st === 'TRIAGED') return 'Kiểm tra bằng chứng';
+                      if (st === 'READY_FOR_ASSIGNMENT') return 'Phân công';
+                      if (st === 'ASSIGNED') return 'Bắt đầu xử lý';
+                      if (st === 'IN_PROGRESS' || st === 'INSPECTION_IN_PROGRESS') return 'Cập nhật tiến độ';
+                      if (st === 'ACTION_REQUIRED' || st === 'WAITING_UPDATE') return 'Đôn đốc khắc phục';
+                      if (st === 'RESOLVED' || st === 'READY_TO_CLOSE') return 'Xác nhận kết quả';
+                      if (st === 'CLOSED') return 'Xem lịch sử';
+                      return 'Mở hồ sơ';
+                    })()} &rarr;
                   </Button>
                 </Link>
               </div>

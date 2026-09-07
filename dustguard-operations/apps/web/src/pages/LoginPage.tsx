@@ -7,8 +7,8 @@ import { Shield, Lock, User, CheckCircle2 } from 'lucide-react';
 import type { Role } from '@dustguard-operations/shared';
 
 export const LoginPage: React.FC = () => {
-  const [username, setUsername] = useState('staff1');
-  const [password, setPassword] = useState('password123');
+  const [username, setUsername] = useState('canbo.hientruong');
+  const [password, setPassword] = useState('DustGuard@2026');
   const [submitting, setSubmitting] = useState(false);
   const { user, login } = useAuth();
   const { success, error } = useToast();
@@ -40,7 +40,7 @@ export const LoginPage: React.FC = () => {
 
   const handleQuickSelect = (accUsername: string) => {
     setUsername(accUsername);
-    setPassword('password123');
+    setPassword('DustGuard@2026');
   };
 
   return (
@@ -112,7 +112,7 @@ export const LoginPage: React.FC = () => {
           {/* Quick Demo Accounts Helper */}
           <div className="mt-6 pt-6 border-t border-slate-200">
             <p className="text-xs font-semibold text-slate-600 mb-2.5">
-              Chọn nhanh tài khoản mẫu (Mật khẩu: <code className="bg-slate-100 px-1 py-0.5 rounded text-slate-800">password123</code>):
+              Chọn nhanh tài khoản mẫu (Mật khẩu: <code className="bg-slate-100 px-1 py-0.5 rounded text-slate-800 font-mono">DustGuard@2026</code>):
             </p>
             <div className="grid grid-cols-2 gap-2">
               {(Object.keys(DEV_ACCOUNTS) as Role[]).map(role => {
@@ -129,11 +129,12 @@ export const LoginPage: React.FC = () => {
                         : 'border-slate-200 hover:border-slate-300 bg-white text-slate-700'
                     }`}
                   >
-                    <div className="font-bold flex items-center justify-between">
-                      <span>{acc.username}</span>
+                    <div className="font-bold flex items-center justify-between text-slate-900">
+                      <span>{acc.name}</span>
                       {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-dustguard-red" />}
                     </div>
-                    <div className="text-[11px] text-slate-500 truncate">{acc.label}</div>
+                    <div className="text-[11px] text-teal font-medium truncate">{acc.label}</div>
+                    <div className="text-[10px] text-slate-500 font-mono truncate">@{acc.username}</div>
                   </button>
                 );
               })}
