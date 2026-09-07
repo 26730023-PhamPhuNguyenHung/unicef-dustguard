@@ -45,6 +45,7 @@
     "apps/*"
   ],
   "devDependencies": {
+    "playwright": "^1.63.0",
     "wrangler": "^4.125.0"
   },
   "allowScripts": {

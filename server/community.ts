@@ -17,8 +17,24 @@ export function createCommunityRouter() {
     try {
       const payload: any = await verify(token, JWT_SECRET, 'HS256');
       if (!payload?.id) return null;
-      const user = await get(c.env.DB, 'SELECT * FROM users WHERE id = ? AND status != "deleted"', [payload.id]);
-      if (!user) return null;
+      let user = await get(c.env.DB, 'SELECT * FROM users WHERE id = ? AND status != "deleted"', [payload.id]);
+      if (!user) {
+        // Hỗ trợ phiên cán bộ ops_users khi chuyển hướng qua lại, không xóa phiên
+        const opsUser = await get(c.env.DB, 'SELECT * FROM ops_users WHERE id = ? AND active = 1', [payload.id]);
+        if (opsUser) {
+          return {
+            id: opsUser.id,
+            email: opsUser.email,
+            username: opsUser.username,
+            name: opsUser.full_name,
+            full_name: opsUser.full_name,
+            fullName: opsUser.full_name,
+            role: opsUser.role,
+            isOpsUser: true
+          };
+        }
+        return null;
+      }
       return sanitizeUser(user);
     } catch {
       return null;
@@ -31,6 +47,7 @@ export function createCommunityRouter() {
     const fullName = safe.full_name || safe.fullName || (safe.email ? safe.email.split('@')[0] : 'Người dùng');
     return {
       ...safe,
+      name: fullName,
       fullName,
       full_name: fullName,
       avatarUrl: safe.avatar_url || safe.avatarUrl || null,
@@ -88,18 +105,19 @@ export function createCommunityRouter() {
 
   app.post('/auth/login', async (c) => {
     try {
-      const body = await c.req.json();
-      const email = body.email?.toLowerCase().trim();
+      const body = await c.req.json().catch(() => ({}));
+      const rawIdentifier = (body.email || body.username || body.identifier || '').toString();
+      const identifier = rawIdentifier.trim().toLowerCase();
       const password = body.password;
 
-      if (!email || !password) {
-        return c.json({ success: false, error: { code: 'VALIDATION_ERROR', message: 'Vui lòng nhập email và mật khẩu.' } }, 400);
+      if (!identifier || !password) {
+        return c.json({ success: false, error: { code: 'VALIDATION_ERROR', message: 'Vui lòng nhập email hoặc tên đăng nhập và mật khẩu.' } }, 400);
       }
 
-      const user = await get(c.env.DB, 'SELECT * FROM users WHERE email = ?', [email]);
+      const user = await get(c.env.DB, 'SELECT * FROM users WHERE LOWER(email) = LOWER(?) AND status != "deleted"', [identifier]);
       if (!user) {
         // Kiểm tra xem tài khoản có thuộc Đơn vị Xử lý không
-        const opsUser = await get(c.env.DB, 'SELECT id FROM ops_users WHERE (email = ? OR username = ?) AND active = 1', [email, email]);
+        const opsUser = await get(c.env.DB, 'SELECT id FROM ops_users WHERE (LOWER(email) = LOWER(?) OR LOWER(username) = LOWER(?)) AND active = 1', [identifier, identifier]);
         if (opsUser) {
           return c.json({
             success: false,
@@ -109,25 +127,27 @@ export function createCommunityRouter() {
             }
           }, 403);
         }
-        return c.json({ success: false, error: { code: 'INVALID_CREDENTIALS', message: 'Email hoặc mật khẩu chưa đúng.' } }, 401);
+        return c.json({ success: false, error: { code: 'INVALID_CREDENTIALS', message: 'Tên đăng nhập hoặc mật khẩu chưa đúng.' } }, 401);
       }
 
       const isValid = await bcrypt.compare(password, user.password_hash);
       if (!isValid) {
-        return c.json({ success: false, error: { code: 'INVALID_CREDENTIALS', message: 'Email hoặc mật khẩu chưa đúng.' } }, 401);
+        return c.json({ success: false, error: { code: 'INVALID_CREDENTIALS', message: 'Tên đăng nhập hoặc mật khẩu chưa đúng.' } }, 401);
       }
 
       const token = await sign({ id: user.id, email: user.email, role: user.role, exp: Math.floor(Date.now() / 1000) + 86400 * 30 }, JWT_SECRET, 'HS256');
 
       return c.json({
         success: true,
+        token,
+        user: sanitizeUser(user),
         data: {
           user: sanitizeUser(user),
           token
         }
       });
     } catch (err: any) {
-      return c.json({ success: false, error: { code: 'SERVER_ERROR', message: err.message } }, 500);
+      return c.json({ success: false, error: { code: 'SERVER_ERROR', message: 'Không thể kết nối hệ thống lúc này. Vui lòng thử lại sau.' } }, 500);
     }
   });
 
@@ -307,6 +327,58 @@ export function createCommunityRouter() {
         }
       }
 
+      // 4. TỰ ĐỘNG LẬP HỒ SƠ THEO DÕI (STRUCTURED CASE) VÀ LIÊN THÔNG SANG SIDE B
+      const caseId = `cas_${id.substring(4)}`;
+      const caseCode = `DG-C-${reportCode.substring(5)}`;
+      const casePriority = severity === 'high' ? 'urgent' : 'normal';
+
+      await run(c.env.DB, `
+        INSERT OR IGNORE INTO cases (
+          id, case_code, title, summary, category, latitude, longitude,
+          address, ward, district, city, status, priority, signal_count,
+          unique_reporter_count, first_reported_at, last_activity_at,
+          created_by, created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'new', ?, 1, 1, ?, ?, ?, ?, ?)
+      `, [
+        caseId, caseCode, body.title, body.description, category,
+        body.latitude || 10.78, body.longitude || 106.70, body.address || 'Khu vực quan sát',
+        body.ward || null, district, body.city || 'TP. Hồ Chí Minh',
+        casePriority, now, now, reporterId, now, now
+      ]);
+
+      // Cập nhật case_id vào report
+      await run(c.env.DB, 'UPDATE reports SET case_id = ? WHERE id = ?', [caseId, id]);
+
+      // Liên kết bảng case_reports
+      await run(c.env.DB, `
+        INSERT OR IGNORE INTO case_reports (id, case_id, report_id, linked_by, created_at)
+        VALUES (?, ?, ?, ?, ?)
+      `, [`cr_${crypto.randomUUID().replace(/-/g, '').substring(0, 16)}`, caseId, id, reporterId, now]);
+
+      // Đồng bộ sang ops_cases cho Đơn vị Điều hành (Side B)
+      const opsPriority = severity === 'high' ? 'HIGH' : 'NORMAL';
+      await run(c.env.DB, `
+        INSERT OR IGNORE INTO ops_cases (
+          id, case_code, title, description, location_text, district, latitude, longitude,
+          source, source_reference, source_report_count, status, priority, created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'COMMUNITY', ?, 1, 'NEW', ?, ?, ?)
+      `, [
+        caseId, caseCode, body.title, body.description, body.address || 'Khu vực quan sát',
+        district, body.latitude || 10.78, body.longitude || 106.70, id, opsPriority, now, now
+      ]);
+
+      // Ghi nhật ký tiến trình thụ lý đầu tiên
+      await run(c.env.DB, `
+        INSERT INTO ops_case_timeline (id, case_id, event_type, actor_name, actor_role, stage, description, created_at)
+        VALUES (?, ?, 'CASE_CREATED', 'Cộng đồng', 'CITIZEN', 'INTAKE', 'Tiếp nhận tín hiệu phản ánh từ người dân. Đã tạo hồ sơ theo dõi chuyên trách.', ?)
+      `, [`otl_${crypto.randomUUID().replace(/-/g, '').substring(0, 16)}`, caseId, now]);
+
+      // Sổ theo dõi bàn giao 2 chiều
+      await run(c.env.DB, `
+        INSERT OR IGNORE INTO cross_side_handoffs (id, community_case_id, operations_case_id, case_code, status, forwarded_by, forwarded_at, synced_at)
+        VALUES (?, ?, ?, ?, 'FORWARDED', ?, ?, ?)
+      `, [`csh_${crypto.randomUUID().replace(/-/g, '').substring(0, 16)}`, caseId, caseId, caseCode, reporterId, now, now]);
+
       // Ghi nhận contribution
       if (user) {
         await run(c.env.DB, 'INSERT INTO user_contributions (id, user_id, type, entity_id, status, created_at) VALUES (?, ?, "report", ?, "submitted", ?)', [
@@ -315,7 +387,8 @@ export function createCommunityRouter() {
       }
 
       const report = await get(c.env.DB, 'SELECT * FROM reports WHERE id = ?', [id]);
-      return c.json({ success: true, report, data: report }, 201);
+      const linkedCase = await get(c.env.DB, 'SELECT * FROM cases WHERE id = ?', [caseId]);
+      return c.json({ success: true, report, data: { ...report, linkedCase } }, 201);
     } catch (err: any) {
       return c.json({ success: false, error: { code: 'SERVER_ERROR', message: err.message } }, 500);
     }

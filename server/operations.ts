@@ -19,7 +19,11 @@ export function createOperationsRouter() {
       const user = await get(c.env.DB, 'SELECT * FROM ops_users WHERE id = ? AND active = 1', [payload.id]);
       if (!user) return null;
       const { password_hash, ...safe } = user;
-      return safe;
+      return {
+        ...safe,
+        name: user.full_name,
+        fullName: user.full_name
+      };
     } catch {
       return null;
     }
@@ -87,55 +91,120 @@ export function createOperationsRouter() {
   });
 
   app.post('/auth/login', async (c) => {
-    const body = await c.req.json();
-    const username = body.username?.trim();
-    const password = body.password;
+    try {
+      const body = await c.req.json().catch(() => ({}));
+      const rawIdentifier = (body.username || body.email || body.identifier || '').toString();
+      const identifier = rawIdentifier.trim();
+      const password = body.password;
 
-    if (!username || !password) {
-      return c.json({ title: 'Lỗi xác thực', detail: 'Vui lòng nhập tên đăng nhập và mật khẩu.' }, 400);
-    }
-
-    const user = await get(c.env.DB, 'SELECT * FROM ops_users WHERE (username = ? OR email = ?) AND active = 1', [username, username]);
-    if (!user) {
-      const commUser = await get(c.env.DB, 'SELECT id FROM users WHERE email = ? AND status != "deleted"', [username]);
-      if (commUser) {
+      if (!identifier || !password) {
         return c.json({
-          title: 'Quyền truy cập không hợp lệ',
-          detail: 'Tài khoản này thuộc Phía Cộng đồng. Vui lòng chuyển sang tab Phía Cộng đồng.',
-          code: 'WRONG_PORTAL_SIDE'
-        }, 403);
+          type: 'https://tools.ietf.org/html/rfc7807',
+          title: 'Lỗi xác thực',
+          status: 400,
+          detail: 'Vui lòng nhập tên đăng nhập hoặc email và mật khẩu.'
+        }, 400);
       }
-      return c.json({ title: 'Lỗi xác thực', detail: 'Tên đăng nhập hoặc mật khẩu chưa đúng.' }, 401);
+
+      // 1. Tìm tài khoản trong bảng chuyên trách ops_users theo username hoặc email (không phân biệt hoa thường)
+      const user = await get(
+        c.env.DB,
+        'SELECT * FROM ops_users WHERE (LOWER(username) = LOWER(?) OR LOWER(email) = LOWER(?)) AND active = 1',
+        [identifier, identifier]
+      );
+
+      if (!user) {
+        // Kiểm tra xem tài khoản có thuộc Phía Cộng đồng (users) không
+        const commUser = await get(
+          c.env.DB,
+          'SELECT id FROM users WHERE LOWER(email) = LOWER(?) AND status != "deleted"',
+          [identifier]
+        );
+        if (commUser) {
+          return c.json({
+            type: 'https://tools.ietf.org/html/rfc7807',
+            title: 'Quyền truy cập không hợp lệ',
+            status: 403,
+            detail: 'Tài khoản này thuộc Phía Cộng đồng. Vui lòng chuyển sang tab Phía Cộng đồng.',
+            code: 'WRONG_PORTAL_SIDE'
+          }, 403);
+        }
+        return c.json({
+          type: 'https://tools.ietf.org/html/rfc7807',
+          title: 'Lỗi xác thực',
+          status: 401,
+          detail: 'Tên đăng nhập hoặc mật khẩu chưa đúng.'
+        }, 401);
+      }
+
+      const isValid = await bcrypt.compare(password, user.password_hash);
+      if (!isValid) {
+        return c.json({
+          type: 'https://tools.ietf.org/html/rfc7807',
+          title: 'Lỗi xác thực',
+          status: 401,
+          detail: 'Tên đăng nhập hoặc mật khẩu chưa đúng.'
+        }, 401);
+      }
+
+      const permissions = getPermissionsForRole(user.role);
+      const token = await sign(
+        { id: user.id, username: user.username, role: user.role, exp: Math.floor(Date.now() / 1000) + 86400 * 30 },
+        JWT_SECRET,
+        'HS256'
+      );
+
+      return c.json({
+        user: {
+          id: user.id,
+          username: user.username,
+          name: user.full_name,
+          full_name: user.full_name,
+          fullName: user.full_name,
+          email: user.email,
+          role: user.role,
+          department: user.department
+        },
+        token,
+        permissions
+      });
+    } catch (err: any) {
+      return c.json({
+        type: 'https://tools.ietf.org/html/rfc7807',
+        title: 'Lỗi hệ thống',
+        status: 500,
+        detail: 'Không thể kết nối hệ thống lúc này. Vui lòng thử lại sau.'
+      }, 500);
     }
-
-    const isValid = await bcrypt.compare(password, user.password_hash);
-    if (!isValid) {
-      return c.json({ title: 'Lỗi xác thực', detail: 'Tên đăng nhập hoặc mật khẩu chưa đúng.' }, 401);
-    }
-
-    const permissions = getPermissionsForRole(user.role);
-    const token = await sign({ id: user.id, username: user.username, role: user.role, exp: Math.floor(Date.now() / 1000) + 86400 * 30 }, JWT_SECRET, 'HS256');
-
-    return c.json({
-      user: { id: user.id, username: user.username, full_name: user.full_name, email: user.email, role: user.role, department: user.department },
-      token,
-      permissions
-    });
   });
 
   app.get('/auth/me', async (c) => {
     const user = await getStaffUser(c);
     if (!user) {
-      return c.json({ title: 'Chưa xác thực', detail: 'Phiên làm việc đã hết hạn.' }, 401);
+      return c.json({
+        type: 'https://tools.ietf.org/html/rfc7807',
+        title: 'Chưa xác thực',
+        status: 401,
+        detail: 'Phiên làm việc đã hết hạn hoặc không hợp lệ.'
+      }, 401);
     }
     return c.json({
-      user,
+      user: {
+        id: user.id,
+        username: user.username,
+        name: user.full_name,
+        full_name: user.full_name,
+        fullName: user.full_name,
+        email: user.email,
+        role: user.role,
+        department: user.department
+      },
       permissions: getPermissionsForRole(user.role)
     });
   });
 
   app.post('/auth/logout', (c) => {
-    return c.json({ success: true });
+    return c.json({ success: true, message: 'Đăng xuất thành công.' });
   });
 
   // ============================================================================
@@ -499,6 +568,31 @@ export function createOperationsRouter() {
 
     await run(c.env.DB, 'UPDATE ops_cases SET status = ?, updated_at = ? WHERE id = ?', [newStatus, now, caseItem.id]);
 
+    // Đồng bộ trạng thái hai chiều sang Phía Người dân (Side A: cases và reports)
+    let commCaseStatus = 'new';
+    let commReportStatus = 'submitted';
+    const sUpper = (newStatus || '').toUpperCase();
+    if (['TRIAGED'].includes(sUpper)) {
+      commCaseStatus = 'community_verifying';
+      commReportStatus = 'reviewing';
+    } else if (['ASSIGNED', 'LEGAL_REVIEW'].includes(sUpper)) {
+      commCaseStatus = 'forwarded';
+      commReportStatus = 'verified';
+    } else if (['INSPECTION_PLANNED', 'INSPECTION_IN_PROGRESS', 'ACTION_REQUIRED', 'REMEDIATION', 'REINSPECTION', 'IN_PROGRESS'].includes(sUpper)) {
+      commCaseStatus = 'in_progress';
+      commReportStatus = 'verified';
+    } else if (['READY_TO_CLOSE', 'CLOSED', 'RESOLVED'].includes(sUpper)) {
+      commCaseStatus = 'resolved';
+      commReportStatus = 'verified';
+    }
+
+    try {
+      await run(c.env.DB, 'UPDATE cases SET status = ?, updated_at = ? WHERE id = ? OR case_code = ?', [commCaseStatus, now, caseItem.id, caseItem.case_code]);
+      await run(c.env.DB, 'UPDATE reports SET status = ?, updated_at = ? WHERE case_id = ? OR case_id IN (SELECT id FROM cases WHERE case_code = ?)', [commReportStatus, now, caseItem.id, caseItem.case_code]);
+    } catch (syncErr) {
+      console.warn('[Cross-side sync warning]:', syncErr);
+    }
+
     await run(c.env.DB, `
       INSERT INTO ops_case_timeline (id, case_id, event_type, actor_id, actor_name, actor_role, stage, description, created_at)
       VALUES (?, ?, 'STATUS_TRANSITION', ?, ?, ?, ?, ?, ?)
@@ -529,6 +623,14 @@ export function createOperationsRouter() {
     `, [`sa_${crypto.randomUUID().replace(/-/g, '').substring(0, 16)}`, caseItem.id, staffId, user?.id || staffId, now]);
 
     await run(c.env.DB, 'UPDATE ops_cases SET assigned_staff_id = ?, status = "ASSIGNED", updated_at = ? WHERE id = ?', [staffId, now, caseItem.id]);
+
+    // Đồng bộ sang Side A: đã phân công chuyên trách
+    try {
+      await run(c.env.DB, 'UPDATE cases SET status = "forwarded", updated_at = ? WHERE id = ? OR case_code = ?', [now, caseItem.id, caseItem.case_code]);
+      await run(c.env.DB, 'UPDATE reports SET status = "verified", updated_at = ? WHERE case_id = ? OR case_id IN (SELECT id FROM cases WHERE case_code = ?)', [now, caseItem.id, caseItem.case_code]);
+    } catch (syncErr) {
+      console.warn('[Cross-side assign sync warning]:', syncErr);
+    }
 
     await run(c.env.DB, `
       INSERT INTO ops_case_timeline (id, case_id, event_type, actor_id, actor_name, actor_role, stage, description, created_at)

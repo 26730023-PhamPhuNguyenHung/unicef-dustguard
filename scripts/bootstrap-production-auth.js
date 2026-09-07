@@ -8,11 +8,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '..');
 
-const communityPasswordHash = bcrypt.hashSync('DustGuard123!', 10);
-const opsPasswordHash = bcrypt.hashSync('password123', 10);
+const DEMO_PASSWORD = 'DustGuard@2026';
+const communityPasswordHash = bcrypt.hashSync(DEMO_PASSWORD, 10);
+const opsPasswordHash = bcrypt.hashSync(DEMO_PASSWORD, 10);
 const now = new Date().toISOString();
 
-console.log('🚀 [Bootstrap Auth] Chuẩn bị dữ liệu tài khoản chính thức cho Cloudflare D1 Remote...');
+console.log('🚀 [Bootstrap Auth] Chuẩn bị dữ liệu tài khoản chính thức cho Cloudflare D1 Remote (DustGuard@2026)...');
 
 // 1. Dữ liệu Side A (Cộng đồng - users)
 const communityUsers = [
@@ -109,6 +110,38 @@ const communityUsers = [
 
 // 2. Dữ liệu Side B (Chuyên trách - ops_users)
 const opsUsers = [
+  {
+    id: 'usr_ops_canbo_hientruong',
+    username: 'canbo.hientruong',
+    email: 'canbo.hientruong@dustguard.vn',
+    fullName: 'Nguyễn Minh Anh',
+    role: 'staff',
+    department: 'Tổ Thanh tra Thực địa QCVN 18'
+  },
+  {
+    id: 'usr_ops_lanhdao_dieuphoi',
+    username: 'lanhdao.dieuphoi',
+    email: 'lanhdao.dieuphoi@dustguard.vn',
+    fullName: 'Trần Quốc Minh',
+    role: 'supervisor',
+    department: 'Trung tâm Tiếp nhận & Phân công'
+  },
+  {
+    id: 'usr_ops_chuyenvien_phapche',
+    username: 'chuyenvien.phapche',
+    email: 'chuyenvien.phapche@dustguard.vn',
+    fullName: 'Lê Thanh Hà',
+    role: 'legal_reviewer',
+    department: 'Phòng Thẩm định & Pháp chế Môi trường'
+  },
+  {
+    id: 'usr_ops_quantri_dustguard',
+    username: 'quantri.dustguard',
+    email: 'quantri.dustguard@dustguard.vn',
+    fullName: 'Quản trị DustGuard',
+    role: 'admin',
+    department: 'Ban Chỉ huy Đô thị & Môi trường'
+  },
   {
     id: 'usr_ops_admin',
     username: 'supervisor_admin',
