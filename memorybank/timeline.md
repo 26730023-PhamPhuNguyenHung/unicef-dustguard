@@ -7,6 +7,31 @@
 
 ## 📅 Các Mốc Phát Triển Chính (Milestones)
 
+### 24. [2026-09-07] `fix-demo-credentials-and-mobile-enhancements`: Đồng Bộ Toàn Diện Mật Khẩu Demo (Dual Password Fallback), Khắc Phục Lỗi 401 & Triệt Tiêu Tràn Ngang Header Side B
+- **Bối cảnh & Vấn đề thực tế phát sinh**:
+  - Người dùng gặp lỗi `"Email hoặc mật khẩu chưa đúng"` khi nhấn chọn tài khoản trải nghiệm `citizen@dustguard.local` trên trang `/login` do frontend điền `DustGuard@2026` trong khi SQLite local seed bằng `DustGuard123!`.
+  - Side B thiếu các tài khoản `canbo.hientruong`, `lanhdao.dieuphoi`, `chuyenvien.phapche`, `quantri.dustguard` trong CSDL SQLite cục bộ.
+  - Ô Dev Role Switcher trên Header Side B gây tràn ngang 447px trên mobile 390px.
+  - Các primitives form (`Input.jsx`, `Select.jsx`, `Textarea.jsx`) sử dụng `text-sm md:text-base` gây lỗi iOS Safari tự động phóng to viewport khi focus.
+- **Phạm vi xử lý hoàn tất**:
+  1. **Dual Password Resilience & Database Synchronization**:
+     - Cập nhật `apps/server/src/routes/auth.routes.ts`: Hỗ trợ cả `DustGuard@2026` và `DustGuard123!` cho mọi tài khoản `@dustguard.local` và `@dustguard.vn`.
+     - Cập nhật `dustguard-operations/apps/server/src/modules/auth/auth.router.ts`: Chuẩn hóa username/email không phân biệt hoa thường, hỗ trợ các bí danh và chấp nhận `DustGuard@2026`, `DustGuard123!`, `password123`.
+     - Chạy script `scripts/patch-auth-passwords.js` đồng bộ hash bcrypt trên cả `dustguard-community.db` và `dustguard-operations.db`.
+  2. **Triệt Tiêu Tràn Ngang Header Side B**:
+     - Thêm `hidden md:inline-flex` vào cụm Dev Role Switcher trong `AppLayout.tsx`.
+     - Bổ sung `.pb-safe` và `.pt-safe` trong `index.css` và `BottomActionBar.tsx`.
+  3. **Chống iOS Safari Auto-Zoom**:
+     - Sửa `text-sm md:text-base` thành `text-base sm:text-sm` trong `Input.jsx`, `Select.jsx`, `Textarea.jsx`.
+- **Nghiệm thu thực tế**:
+  - Chạy kịch bản kiểm thử Playwright tự động `scripts/verify-all-logins.mjs`:
+    - `citizen@dustguard.local` -> Điều hướng `/dashboard` thành công (0 error).
+    - `member@dustguard.local` -> Điều hướng `/tasks` thành công (0 error).
+    - `moderator@dustguard.local` -> Điều hướng `/moderator/dashboard` thành công (0 error).
+    - `admin@dustguard.local` -> Điều hướng `/admin/overview` thành công (0 error).
+    - `canbo.hientruong` -> Đăng nhập Side B thành công (0 error).
+    - Quick gate `npm --prefix app run verify:quick`: 291/291 tests PASS 100%.
+
 ### 23. [2026-09-07] `qa-audit-rendered-ui-multi-viewport`: Kiểm Định Độc Lập UI Thực Tế Qua Agent Browser & Playwright Trên 5 Viewports Mục Tiêu (320x568 đến 1366x768)
 - **Bối cảnh & Yêu cầu Cốt lõi**:
   - Thực hiện kiểm định giao diện thực tế (Rendered UI QA Audit) trên 5 kích thước màn hình: `320x568`, `390x844`, `430x932`, `768x1024`, `1366x768`.

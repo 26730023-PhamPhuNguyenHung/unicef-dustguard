@@ -3,6 +3,23 @@
 > **Kho lưu trữ kinh nghiệm, bài học kiến trúc và phòng chống lỗi kỹ thuật (Anti-Regression)**  
 > *Cập nhật sau mỗi chu trình phát triển tính năng mới thành công.*
 
+### 20. Khắc Phục Lệch Mật Khẩu Hash Demo CSDL (DustGuard@2026 vs DustGuard123!) & Khả Năng Khôi Phục Xác Thực Đa Cổng (Community & Operations)
+- **Vấn đề thực tế phát sinh**:
+  1. *Lỗi Đăng nhập Demo "Email hoặc mật khẩu chưa đúng"*: Khi người dùng bấm vào thẻ tài khoản trải nghiệm (ví dụ `citizen@dustguard.local`), giao diện tự điền mật khẩu `DustGuard@2026`. Tuy nhiên trong CSDL local `data/dustguard-community.db`, mật khẩu được seed là `DustGuard123!`. Việc so khớp bcrypt trả về `false`, sinh ra lỗi 401 trên giao diện.
+  2. *Lệch tài khoản ở Phía Đơn vị Xử lý (Side B)*: CSDL `dustguard-operations.db` khởi tạo chỉ có `staff1` với mật khẩu `password123`, thiếu các tài khoản theo đặc tả mới (`canbo.hientruong`, `lanhdao.dieuphoi`, `chuyenvien.phapche`, `quantri.dustguard`), dẫn đến lỗi không tìm thấy người dùng.
+  3. *Tràn ngang Header Đơn vị Xử lý*: Ô `<select>` chuyển vai trò DEV trên Header chiếm 170px làm tràn ngang 447px trên mobile 390px.
+- **Giải pháp chuẩn hóa triệt để**:
+  1. **Hỗ trợ Xác thực Kép & Đồng Bộ Hash CSDL**:
+     - Cập nhật backend `apps/server/src/routes/auth.routes.ts`: Cho phép cả `DustGuard@2026` và `DustGuard123!` đối với tài khoản demo `@dustguard.local` và `@dustguard.vn`.
+     - Chạy script cập nhật hash bcrypt `DustGuard@2026` trên cả 2 CSDL (`dustguard-community.db` và `dustguard-operations.db`).
+  2. **Bổ Sung Bộ Tài Khoản Chuẩn Vào Side B**:
+     - Nạp trực tiếp `canbo.hientruong`, `lanhdao.dieuphoi`, `chuyenvien.phapche`, `quantri.dustguard` vào `users` của `dustguard-operations.db`.
+     - Cấu hình bí danh và tìm kiếm theo cả `username` hoặc `email` (không phân biệt hoa thường).
+  3. **Tối Ưu Mobile Viewport**:
+     - Ẩn Dev Role Switcher trên mobile (`hidden md:inline-flex`), triệt tiêu 100% tràn ngang Header.
+     - Bổ sung `pb-safe` và `pt-safe` cho `BottomActionBar` và CSS tokens.
+     - Sửa font size form input từ `text-sm md:text-base` thành `text-base sm:text-sm` để triệt tiêu lỗi iOS Safari auto-zoom.
+
 ### 19. Kiểm Định Rendered UI Đa Viewport Từ Màn Hình Cực Nhỏ (320px) Đến Desktop (1366px): Chống Tràn Ngang Header, Pointer Intercept Do Chữ Tràn Thẻ Card & Chuẩn Hóa Touch Target Cho Nút Toggle/Input
 - **Vấn đề thực tế phát sinh**:
   1. *Tràn ngang Header 11px trên 320x568 (iPhone SE 1st gen)*: Khi màn hình co về 320px, Header của `AppShell.tsx` chứa Logo (~100px), Menu (44px), Bell (40px) và nút "Gửi phản ánh" (~122px), tổng chiều rộng 331px vượt quá 320px, gây tràn ngang 11px.

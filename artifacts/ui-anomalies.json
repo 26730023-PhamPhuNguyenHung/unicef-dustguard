@@ -1,16 +1,1 @@
-[
-  {
-    "route": "/cases/case-001/legal",
-    "viewport": "430x932",
-    "severity": "medium",
-    "category": "touch-target",
-    "selector": "button:text(Tạo Checklist)",
-    "description": "Kích thước touch target ban đầu nhỏ trên mobile (122x28px), đã nâng cấp lên min-h-[44px] py-2.5 px-3 đạt chuẩn touch target di động Civic Tech",
-    "evidence": {
-      "initialHeight": 28,
-      "fixedHeight": 44,
-      "width": 122
-    },
-    "status": "fixed"
-  }
-]
+[]

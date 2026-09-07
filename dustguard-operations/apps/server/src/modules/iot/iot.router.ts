@@ -412,7 +412,8 @@ iotRouter.get('/devices/:id/readings', requireAuth, (req: Request, res: Response
 
 // 4. Ingest & Telemetry Route (Firmware APM2000 / ESP32 Endpoint)
 const handleTelemetryIngest = (req: Request, res: Response): void => {
-  const sensorCode = req.body.deviceId || req.body.device_id || req.body.deviceCode || req.body.sensorCode || req.body.sensor_code || (req.body.device_id ? queryOne<any>('SELECT device_code FROM iot_devices WHERE id = ?', [req.body.device_id])?.device_code : undefined);
+  try {
+    const sensorCode = req.body.deviceId || req.body.device_id || req.body.deviceCode || req.body.sensorCode || req.body.sensor_code || (req.body.device_id ? queryOne<any>('SELECT device_code FROM iot_devices WHERE id = ?', [req.body.device_id])?.device_code : undefined);
   const pm25 = req.body.pm25 !== undefined ? parseFloat(req.body.pm25) : (req.body.pm2_5 !== undefined ? parseFloat(req.body.pm2_5) : undefined);
   const pm10 = req.body.pm10 !== undefined ? parseFloat(req.body.pm10) : (pm25 !== undefined ? parseFloat((pm25 * 1.5).toFixed(1)) : undefined);
   const timestamp = req.body.timestamp || new Date().toISOString();

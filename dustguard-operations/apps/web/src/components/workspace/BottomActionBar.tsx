@@ -43,7 +43,7 @@ export const BottomActionBar: React.FC<BottomActionBarProps> = ({
 
   return (
     <div
-      className={`sticky bottom-0 z-20 w-full bg-surface border-t border-slate-200/90 shadow-md py-3 px-4 sm:px-6 transition-all ${className}`}
+      className={`sticky bottom-0 z-20 w-full bg-surface border-t border-slate-200/90 shadow-md py-3 pb-safe px-4 sm:px-6 transition-all ${className}`}
     >
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3 max-w-full">
         {/* Left: Current conclusion & confidence */}

@@ -203,7 +203,7 @@ export const AppLayout: React.FC = () => {
                 demo password, so it must never render in a production build
                 (it would let any logged-in user one-click-escalate to admin). */}
             {user && import.meta.env.DEV && (
-              <div className="relative inline-flex items-center">
+              <div className="relative hidden md:inline-flex items-center">
                 <select
                   aria-label="Chuyển đổi vai trò nghiệp vụ (chỉ môi trường phát triển)"
                   value={user.role}
