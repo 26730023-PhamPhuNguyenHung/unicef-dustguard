@@ -5,6 +5,8 @@ import { StatusBadge } from '../components/common/StatusBadge.js';
 import { LeafletMap } from '../components/common/LeafletMap.js';
 import { LoadingSkeleton } from '../components/common/LoadingSkeleton.js';
 import { CitizenFeedbackSection } from '../components/common/CitizenFeedbackSection.js';
+import { SafeImage } from '../components/common/SafeImage.js';
+import { ProcessingTimeline } from '../components/common/ProcessingTimeline.js';
 import { CATEGORY_LABELS, SEVERITY_LABELS } from '@dustguard/shared';
 import {
   FileText,
@@ -17,7 +19,9 @@ import {
   Clock,
   CheckCircle2,
   Lock,
-  Navigation
+  Navigation,
+  Info,
+  Radio
 } from 'lucide-react';
 import { getGoogleMapsUrl } from '../utils/geocoding.js';
 
@@ -66,6 +70,8 @@ export const ReportDetailPage: React.FC = () => {
     description: ''
   };
 
+  const hasMedia = Array.isArray(report.media) && report.media.length > 0;
+
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Top Back Link & Status */}
@@ -78,24 +84,37 @@ export const ReportDetailPage: React.FC = () => {
           Quay lại danh sách
         </Link>
         <div className="flex items-center gap-2">
+          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-600 bg-slate-100 px-2.5 py-1 rounded-full border border-slate-200">
+            <Radio className="w-3 h-3 text-primary" />
+            Tín hiệu ban đầu (Observation)
+          </span>
           <StatusBadge status={report.status} type="report" />
         </div>
       </div>
 
-      {/* Main Card Header */}
-      <div className="bg-surface-card rounded-civic-lg border border-border-subtle p-6 sm:p-8 shadow-sm space-y-5">
+      {/* 1. TIMELINE TIẾN TRÌNH XỬ LÝ (6 NẤC MINH BẠCH) */}
+      <ProcessingTimeline 
+        currentStatus={report.status} 
+        isLinkedCase={Boolean(report.case_id)} 
+      />
+
+      {/* 2. MAIN CARD HEADER */}
+      <div className="bg-surface-card rounded-civic-lg border border-border-subtle p-6 sm:p-8 shadow-sm space-y-6">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border-subtle pb-4">
-          <span className="font-mono text-sm font-bold text-primary tracking-wider">
-            {report.report_code || report.reportCode}
-          </span>
+          <div>
+            <span className="font-mono text-sm font-bold text-primary tracking-wider">
+              {report.report_code || report.reportCode}
+            </span>
+            <span className="text-xs text-content-sub ml-2">• Ghi nhận từ cộng đồng</span>
+          </div>
           <div className="flex items-center gap-1.5 text-xs text-content-sub">
             <Calendar className="w-3.5 h-3.5" />
-            <span>Ghi nhận ngày: {new Date(report.observed_at || report.observedAt).toLocaleDateString('vi-VN')}</span>
+            <span>Thời gian: {new Date(report.observed_at || report.observedAt).toLocaleDateString('vi-VN')} {new Date(report.observed_at || report.observedAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}</span>
           </div>
         </div>
 
         <div>
-          <h1 className="text-xl sm:text-2xl font-extrabold text-content-main leading-tight mb-2">
+          <h1 className="text-xl sm:text-2xl font-extrabold text-content-main leading-tight mb-2 text-pretty">
             {report.title}
           </h1>
           <div className="flex flex-wrap items-center gap-2 text-xs">
@@ -118,29 +137,32 @@ export const ReportDetailPage: React.FC = () => {
           </p>
         </div>
 
-        {/* Thư viện ảnh bằng chứng */}
-        {report.media && report.media.length > 0 && (
-          <div className="space-y-3 pt-2">
-            <div className="flex items-center justify-between">
-              <div className="text-xs font-bold uppercase tracking-wider text-content-sub">
-                Hình ảnh bằng chứng ({report.media.length})
-              </div>
+        {/* Thư viện ảnh bằng chứng — CHỐNG ẢNH VỠ BẰNG SafeImage */}
+        <div className="space-y-3 pt-2">
+          <div className="flex items-center justify-between">
+            <div className="text-xs font-bold uppercase tracking-wider text-content-sub">
+              Hình ảnh minh chứng {hasMedia ? `(${report.media.length})` : ''}
+            </div>
+            {hasMedia && (
               <div className="text-[11px] text-state-success flex items-center gap-1 font-medium">
                 <ShieldCheck className="w-3.5 h-3.5" />
-                Ảnh đã được ghi nhận vào hệ thống
+                Đã ghi nhận tệp minh chứng vào hệ thống
               </div>
-            </div>
+            )}
+          </div>
 
+          {hasMedia ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {report.media.map((m: any) => (
                 <div
                   key={m.id}
                   className="rounded-xl border border-border-subtle overflow-hidden bg-white shadow-xs"
                 >
-                  <img
+                  <SafeImage
                     src={m.file_path || m.filePath}
                     alt={m.caption || 'Minh chứng'}
                     className="w-full h-44 object-cover"
+                    fallbackText="Chưa có hình ảnh minh chứng"
                   />
                   {m.caption && (
                     <div className="p-2.5 text-xs text-content-main font-medium border-t border-border-subtle">
@@ -155,8 +177,14 @@ export const ReportDetailPage: React.FC = () => {
                 </div>
               ))}
             </div>
-          </div>
-        )}
+          ) : (
+            <SafeImage
+              src={null}
+              className="w-full h-36"
+              fallbackText="Chưa có hình ảnh minh chứng"
+            />
+          )}
+        </div>
 
         {/* Vị trí địa lý & Bản đồ */}
         <div className="space-y-3 pt-2">
@@ -203,35 +231,46 @@ export const ReportDetailPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Vụ việc liên quan (Nếu đã được liên kết với Case) */}
-      {report.case_id && report.linkedCase && (
-        <div className="bg-white rounded-civic-lg border border-primary/30 p-6 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-xl bg-primary-light text-primary flex items-center justify-center shrink-0">
-              <Layers className="w-5 h-5" />
-            </div>
-            <div>
-              <span className="text-[11px] font-bold uppercase text-primary tracking-wider">
-                Vụ việc tổng hợp đã liên kết
-              </span>
-              <h3 className="text-base font-bold text-content-main line-clamp-1 mt-0.5">
-                {report.linkedCase.title}
-              </h3>
-              <p className="text-xs text-content-sub">
-                Mã vụ việc: <span className="font-mono font-semibold">{report.linkedCase.case_code || report.linkedCase.caseCode}</span>
-              </p>
-            </div>
+      {/* 3. ĐÃ TẠO HỒ SƠ THEO DÕI (PHÂN BIỆT OBSERVATION VS CASE) */}
+      <div className="bg-white rounded-civic-lg border border-primary/30 p-6 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex items-start gap-3.5">
+          <div className="w-11 h-11 rounded-xl bg-primary-light text-primary flex items-center justify-center shrink-0">
+            <Layers className="w-6 h-6" />
           </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] font-bold uppercase text-primary tracking-wider">
+                Hồ sơ theo dõi chuyên trách
+              </span>
+              <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 font-bold border border-emerald-200">
+                Đã tạo hồ sơ theo dõi
+              </span>
+            </div>
+            <h3 className="text-base font-bold text-content-main line-clamp-1 mt-0.5">
+              {report.linkedCase?.title || `Hồ sơ tiếp nhận xử lý ${report.report_code || ''}`}
+            </h3>
+            <p className="text-xs text-content-sub mt-0.5">
+              {report.case_id 
+                ? `Mã hồ sơ: ${report.linkedCase?.case_code || report.case_id} · Được liên kết để chuyển cán bộ phụ trách`
+                : 'Tín hiệu đã được chuẩn hóa vào luồng theo dõi xử lý liên tục.'}
+            </p>
+          </div>
+        </div>
 
+        {report.case_id ? (
           <Link
             to={`/cases/${report.case_id}`}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold hover:bg-primary-dark transition-colors shrink-0 shadow-xs"
+            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-primary text-white text-xs font-bold hover:bg-primary-dark transition-colors shrink-0 shadow-xs"
           >
-            Xem tiến độ vụ việc
+            Mở Workspace Vụ việc
             <ExternalLink className="w-3.5 h-3.5" />
           </Link>
-        </div>
-      )}
+        ) : (
+          <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-lg">
+            Hệ thống đang chuẩn hóa hồ sơ
+          </span>
+        )}
+      </div>
 
       {/* Phản hồi đánh giá nghiệm thu khi có liên kết vụ việc */}
       {report.case_id && (

@@ -6,6 +6,7 @@ import { calculateFileSha256 } from '../utils/crypto.js';
 import { CATEGORY_LABELS, SEVERITY_LABELS } from '@dustguard/shared';
 import { useToast } from '../context/ToastContext.js';
 import { useAuth } from '../context/AuthContext.js';
+import { ProcessingTimeline } from '../components/common/ProcessingTimeline.js';
 import { saveDraft, loadDraft, clearDraft } from '../utils/draftStorage.js';
 import {
   FileText,
@@ -999,47 +1000,75 @@ export const CreateReportPage: React.FC = () => {
         </div>
       )}
 
-      {/* BƯỚC 5: THÀNH CÔNG */}
+      {/* BƯỚC 5: PHẢN ÁNH ĐANG ĐƯỢC XỬ LÝ (CIVIC TRANSPARENCY PIPELINE) */}
       {step === 5 && (
-        <div className="bg-surface-card rounded-civic-lg border border-border-subtle p-6 sm:p-8 lg:p-10 text-center space-y-6 shadow-sm">
-          <div className="w-16 h-16 rounded-full bg-emerald-50 text-state-success flex items-center justify-center mx-auto">
-            <CheckCircle2 className="w-10 h-10" />
-          </div>
+        <div className="space-y-6 animate-in fade-in duration-300">
+          <div className="bg-surface-card rounded-civic-lg border border-border-subtle p-6 sm:p-8 text-center space-y-5 shadow-sm">
+            <div className="w-16 h-16 rounded-full bg-emerald-50 text-state-success flex items-center justify-center mx-auto ring-8 ring-emerald-50/50">
+              <CheckCircle2 className="w-9 h-9" />
+            </div>
 
-          <div className="max-w-md mx-auto space-y-2">
-            <h2 className="text-2xl font-extrabold text-content-main text-pretty">
-              Phản ánh đã được ghi nhận!
-            </h2>
-            <p className="text-sm text-content-sub text-pretty leading-relaxed">
-              Cảm ơn bạn đã đóng góp tín hiệu vì bầu không khí chung. Hệ thống đã tạo mã phản ánh để cộng đồng cùng theo dõi.
-            </p>
-          </div>
+            <div className="max-w-xl mx-auto space-y-2">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-bold border border-emerald-200">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                Hệ thống đã tiếp nhận tín hiệu
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-content-main text-pretty">
+                Phản ánh của bạn đang được xử lý
+              </h2>
+              <p className="text-sm text-content-sub text-pretty leading-relaxed">
+                Tín hiệu môi trường của bạn đã được ghi nhận vào mạng lưới quan sát DustGuard. Hệ thống đang tiến hành đối soát tọa độ, mã băm minh chứng và chuyển tiếp tới cán bộ/đơn vị phụ trách theo chuỗi xử lý liên tục.
+              </p>
+            </div>
 
-          <div className="inline-block p-4 rounded-xl bg-surface-secondary border border-border-subtle">
-            <span className="text-xs text-content-sub font-semibold block mb-1">
-              Mã phản ánh của bạn:
-            </span>
-            <span className="font-mono font-bold text-lg text-primary tracking-wider">
-              {createdReportCode || 'DG-C-2026-XXXX'}
-            </span>
-          </div>
+            <div className="inline-flex flex-col sm:flex-row items-center gap-3 p-4 rounded-xl bg-surface-secondary border border-border-subtle max-w-md w-full justify-between">
+              <div className="text-left">
+                <span className="text-[11px] text-content-sub font-semibold block uppercase tracking-wider">
+                  Mã phản ánh tra cứu:
+                </span>
+                <span className="font-mono font-black text-lg sm:text-xl text-primary tracking-wider">
+                  {createdReportCode || 'DG-R-2026-XXXX'}
+                </span>
+              </div>
+              <span className="text-xs font-medium text-slate-600 bg-white px-2.5 py-1 rounded-lg border border-border-subtle">
+                Trạng thái: Đang chuẩn hóa
+              </span>
+            </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-            {createdReportId && (
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+              {createdReportId && (
+                <Link
+                  to={`/reports/${createdReportId}`}
+                  className="px-6 py-3 rounded-xl bg-primary text-white font-bold text-sm hover:bg-primary-hover transition shadow-sm min-h-[44px] inline-flex items-center justify-center gap-2"
+                >
+                  <span>Theo dõi tiến trình xử lý ngay</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              )}
               <Link
-                to={`/reports/${createdReportId}`}
-                className="px-5 py-2.5 rounded-civic bg-primary text-white font-bold text-xs hover:bg-primary-hover transition shadow-sm min-h-[44px] inline-flex items-center justify-center"
+                to="/reports"
+                className="px-5 py-3 rounded-xl border border-border-subtle bg-white text-content-main font-bold text-sm hover:bg-surface-secondary transition shadow-xs min-h-[44px] inline-flex items-center justify-center"
               >
-                Xem chi tiết phản ánh vừa gửi
+                Về danh sách phản ánh
               </Link>
-            )}
-            <Link
-              to="/reports"
-              className="px-5 py-2.5 rounded-civic border border-border-subtle bg-white text-content-main font-bold text-xs hover:bg-surface-secondary transition shadow-xs min-h-[44px] inline-flex items-center justify-center"
-            >
-              Xem danh sách phản ánh
-            </Link>
+              <button
+                type="button"
+                onClick={() => {
+                  setStep(1);
+                  setTitle('');
+                  setDescription('');
+                  setMediaList([]);
+                  clearDraft('dustguard_draft_citizen_report');
+                }}
+                className="px-4 py-3 rounded-xl text-content-sub hover:text-content-main text-xs font-medium min-h-[44px] inline-flex items-center justify-center cursor-pointer"
+              >
+                Gửi thêm ghi nhận khác
+              </button>
+            </div>
           </div>
+
+          {/* DÒNG TIẾN TRÌNH MINH BẠCH 6 NẤC */}
+          <ProcessingTimeline currentStatus="submitted" isLinkedCase={true} />
         </div>
       )}
 

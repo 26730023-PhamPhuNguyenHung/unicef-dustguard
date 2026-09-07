@@ -83,7 +83,12 @@ export const LoginPage: React.FC = () => {
       let response = await fetch(opsUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: identifier.trim(), password })
+        body: JSON.stringify({
+          username: identifier.trim(),
+          email: identifier.trim(),
+          identifier: identifier.trim(),
+          password
+        })
       });
 
       // Fallback cho local dev nếu proxy khác cổng
@@ -91,7 +96,12 @@ export const LoginPage: React.FC = () => {
         response = await fetch(`${OPERATIONS_APP_URL}/api/auth/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username: identifier.trim(), password })
+          body: JSON.stringify({
+            username: identifier.trim(),
+            email: identifier.trim(),
+            identifier: identifier.trim(),
+            password
+          })
         });
       }
 
@@ -100,7 +110,7 @@ export const LoginPage: React.FC = () => {
         data = await response.json();
       } catch {
         if (response.status >= 500) {
-          throw new Error('Hệ thống đang gặp sự cố. Vui lòng thử lại sau.');
+          throw new Error('Không thể kết nối hệ thống lúc này. Vui lòng thử lại.');
         }
       }
 
@@ -112,7 +122,7 @@ export const LoginPage: React.FC = () => {
         } else if (response.status === 429) {
           throw new Error('Bạn đã thử quá nhiều lần. Vui lòng thử lại sau.');
         } else if (response.status >= 500) {
-          throw new Error('Hệ thống đang gặp sự cố. Vui lòng thử lại sau.');
+          throw new Error('Không thể kết nối hệ thống lúc này. Vui lòng thử lại.');
         }
         throw new Error(data.detail || data.title || 'Tên đăng nhập hoặc mật khẩu chưa đúng.');
       }
@@ -134,71 +144,31 @@ export const LoginPage: React.FC = () => {
         window.location.href = `${OPERATIONS_APP_URL}${targetPath.replace(/^\/operations/, '')}`;
       }
     } catch (err: any) {
-      setErrorMsg(err.message || 'Đăng nhập vào Phía Đơn vị Xử lý thất bại.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Nạp tài khoản trải nghiệm nhanh
-  const handleQuickLoginCommunity = async (demoEmail: string) => {
-    setIdentifier(demoEmail);
-    setPassword('DustGuard123!');
-    setLoading(true);
-    setErrorMsg(null);
-    try {
-      const loggedInUser = await loginCommunity(demoEmail, 'DustGuard123!');
-      const target = resolveCommunityHome(loggedInUser, requestedPath);
-      navigate(target, { replace: true });
-    } catch (err: any) {
-      setErrorMsg(err.message || 'Đăng nhập trải nghiệm thất bại.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleQuickLoginOperations = async (demoUsername: string) => {
-    setIdentifier(demoUsername);
-    setPassword('Password123!');
-    setLoading(true);
-    setErrorMsg(null);
-    try {
-      const opsUrl = import.meta.env.PROD
-        ? '/api/operations/auth/login'
-        : (import.meta.env.VITE_OPERATIONS_API_URL || `${OPERATIONS_APP_URL}/api/auth/login`);
-
-      let response = await fetch(opsUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: demoUsername, password: 'Password123!' })
-      });
-
-      if (response.status === 404 && !import.meta.env.PROD) {
-        response = await fetch(`${OPERATIONS_APP_URL}/api/auth/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username: demoUsername, password: 'Password123!' })
-        });
-      }
-
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.detail || data.title || 'Đăng nhập trải nghiệm thất bại.');
-      }
-
-      localStorage.setItem('dustguard_token', data.token);
-      const targetPath = getDefaultRoute(data.user?.role, 'operations', requestedPath);
-
-      if (import.meta.env.PROD) {
-        window.location.href = targetPath;
+      if (err.message && (err.message.includes('fetch') || err.name === 'TypeError')) {
+        setErrorMsg('Không thể kết nối tới máy chủ. Vui lòng kiểm tra mạng.');
       } else {
-        window.location.href = `${OPERATIONS_APP_URL}${targetPath.replace(/^\/operations/, '')}`;
+        setErrorMsg(err.message || 'Đăng nhập vào Phía Đơn vị Xử lý thất bại.');
       }
-    } catch (err: any) {
-      setErrorMsg(err.message || 'Đăng nhập trải nghiệm thất bại.');
     } finally {
       setLoading(false);
     }
+  };
+
+  // Nạp tài khoản trải nghiệm (chỉ điền form, không tự động submit để người dùng kiểm soát)
+  const handleSelectCommunityCard = (demoEmail: string) => {
+    setIdentifier(demoEmail);
+    setPassword('DustGuard@2026');
+    setErrorMsg(null);
+    const btn = document.getElementById('btn-community-login');
+    if (btn) btn.focus();
+  };
+
+  const handleSelectOperationsCard = (demoUsername: string) => {
+    setIdentifier(demoUsername);
+    setPassword('DustGuard@2026');
+    setErrorMsg(null);
+    const btn = document.getElementById('btn-operations-login');
+    if (btn) btn.focus();
   };
 
   return (
@@ -319,54 +289,77 @@ export const LoginPage: React.FC = () => {
                 disabled={loading || !identifier.trim() || !password.trim()}
                 className="w-full py-3 rounded-xl bg-primary text-white font-bold text-sm shadow-sm hover:bg-primary-dark transition-all disabled:opacity-50 active:scale-95 flex items-center justify-center gap-2 touch-target"
               >
-                {loading ? 'Đang xác thực...' : 'Đăng nhập Cộng đồng'}
+                {loading ? 'Đang đăng nhập...' : 'Đăng nhập Cộng đồng'}
                 <LogIn className="w-4 h-4" />
               </button>
             </form>
 
             {/* Quick Experience Accounts - Hoạt động trực tiếp với CSDL D1 */}
             {demoMode && (
-              <div className="pt-3 border-t border-border-subtle space-y-2 bg-stone-50/70 p-3 rounded-xl border border-stone-200/80">
+              <div className="pt-3 border-t border-border-subtle space-y-2.5 bg-stone-50/70 p-3 rounded-xl border border-stone-200/80">
                 <div className="flex items-center justify-between text-[10px] font-bold text-content-sub uppercase tracking-wider">
                   <span className="flex items-center gap-1.5 text-primary">
                     <Sparkles className="w-3 h-3" />
                     Tài khoản trải nghiệm
                   </span>
-                  <span className="text-[10px] lowercase text-stone-500 font-normal">nhấn để đăng nhập ngay</span>
+                  <span className="text-[10px] lowercase text-stone-500 font-normal">nhấn để điền thông tin</span>
                 </div>
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <button
                     type="button"
-                    onClick={() => handleQuickLoginCommunity('citizen@dustguard.local')}
-                    className="p-2 rounded-lg border border-border-subtle bg-white hover:bg-red-50 font-semibold text-content-main text-left hover:border-primary/40 transition-colors shadow-2xs"
+                    onClick={() => handleSelectCommunityCard('citizen@dustguard.local')}
+                    className={`p-2.5 rounded-lg border text-left transition-all shadow-2xs touch-target ${
+                      identifier === 'citizen@dustguard.local'
+                        ? 'bg-red-50 border-primary text-primary font-bold ring-1 ring-primary'
+                        : 'border-border-subtle bg-white hover:bg-red-50 text-content-main hover:border-primary/40'
+                    }`}
                   >
-                    <div className="font-bold text-slate-900">Người dân</div>
-                    <div className="text-[10px] text-slate-500">Citizen</div>
+                    <div className="font-extrabold text-sm text-slate-900 leading-tight">Nguyễn Văn Dân</div>
+                    <div className="text-[11px] font-semibold text-primary mt-0.5">Người dân</div>
+                    <div className="text-[10px] text-slate-500 font-mono mt-0.5">citizen@dustguard.local</div>
                   </button>
                   <button
                     type="button"
-                    onClick={() => handleQuickLoginCommunity('member@dustguard.local')}
-                    className="p-2 rounded-lg border border-border-subtle bg-white hover:bg-red-50 font-semibold text-content-main text-left hover:border-primary/40 transition-colors shadow-2xs"
+                    onClick={() => handleSelectCommunityCard('member@dustguard.local')}
+                    className={`p-2.5 rounded-lg border text-left transition-all shadow-2xs touch-target ${
+                      identifier === 'member@dustguard.local'
+                        ? 'bg-red-50 border-primary text-primary font-bold ring-1 ring-primary'
+                        : 'border-border-subtle bg-white hover:bg-red-50 text-content-main hover:border-primary/40'
+                    }`}
                   >
-                    <div className="font-bold text-slate-900">Thanh niên CLB</div>
-                    <div className="text-[10px] text-slate-500">Member</div>
+                    <div className="font-extrabold text-sm text-slate-900 leading-tight">Trần Thị Tình Nguyện</div>
+                    <div className="text-[11px] font-semibold text-primary mt-0.5">Thanh niên CLB</div>
+                    <div className="text-[10px] text-slate-500 font-mono mt-0.5">member@dustguard.local</div>
                   </button>
                   <button
                     type="button"
-                    onClick={() => handleQuickLoginCommunity('moderator@dustguard.local')}
-                    className="p-2 rounded-lg border border-border-subtle bg-white hover:bg-red-50 font-semibold text-content-main text-left hover:border-primary/40 transition-colors shadow-2xs"
+                    onClick={() => handleSelectCommunityCard('moderator@dustguard.local')}
+                    className={`p-2.5 rounded-lg border text-left transition-all shadow-2xs touch-target ${
+                      identifier === 'moderator@dustguard.local'
+                        ? 'bg-red-50 border-primary text-primary font-bold ring-1 ring-primary'
+                        : 'border-border-subtle bg-white hover:bg-red-50 text-content-main hover:border-primary/40'
+                    }`}
                   >
-                    <div className="font-bold text-slate-900">Điều phối viên</div>
-                    <div className="text-[10px] text-slate-500">Moderator</div>
+                    <div className="font-extrabold text-sm text-slate-900 leading-tight">Lê Hoàng Điều Phối</div>
+                    <div className="text-[11px] font-semibold text-primary mt-0.5">Điều phối viên</div>
+                    <div className="text-[10px] text-slate-500 font-mono mt-0.5">moderator@dustguard.local</div>
                   </button>
                   <button
                     type="button"
-                    onClick={() => handleQuickLoginCommunity('admin@dustguard.local')}
-                    className="p-2 rounded-lg border border-border-subtle bg-white hover:bg-red-50 font-semibold text-content-main text-left hover:border-primary/40 transition-colors shadow-2xs"
+                    onClick={() => handleSelectCommunityCard('admin@dustguard.local')}
+                    className={`p-2.5 rounded-lg border text-left transition-all shadow-2xs touch-target ${
+                      identifier === 'admin@dustguard.local'
+                        ? 'bg-red-50 border-primary text-primary font-bold ring-1 ring-primary'
+                        : 'border-border-subtle bg-white hover:bg-red-50 text-content-main hover:border-primary/40'
+                    }`}
                   >
-                    <div className="font-bold text-slate-900">Quản trị Cộng đồng</div>
-                    <div className="text-[10px] text-slate-500">Admin</div>
+                    <div className="font-extrabold text-sm text-slate-900 leading-tight">Phạm Quản Trị</div>
+                    <div className="text-[11px] font-semibold text-primary mt-0.5">Quản trị Cộng đồng</div>
+                    <div className="text-[10px] text-slate-500 font-mono mt-0.5">admin@dustguard.local</div>
                   </button>
+                </div>
+                <div className="text-center text-[11px] text-slate-500 pt-0.5">
+                  Mật khẩu trải nghiệm: <code className="font-mono font-bold text-slate-700 bg-stone-200/70 px-1.5 py-0.5 rounded">DustGuard@2026</code>
                 </div>
               </div>
             )}
@@ -406,7 +399,7 @@ export const LoginPage: React.FC = () => {
                     id="input-operations-username"
                     value={identifier}
                     onChange={(e) => setIdentifier(e.target.value)}
-                    placeholder="staff1, supervisor1, legal1..."
+                    placeholder="canbo.hientruong, lanhdao.dieuphoi..."
                     className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border-subtle text-xs sm:text-sm bg-white text-slate-900 focus:border-teal focus:outline-none"
                   />
                 </div>
@@ -438,54 +431,80 @@ export const LoginPage: React.FC = () => {
                 disabled={loading || !identifier.trim() || !password.trim()}
                 className="w-full py-3 rounded-xl bg-teal text-white font-bold text-sm shadow-sm hover:bg-teal-hover transition-all disabled:opacity-50 active:scale-95 flex items-center justify-center gap-2 touch-target"
               >
-                {loading ? 'Đang xác thực nghiệp vụ...' : 'Đăng nhập Đơn vị Xử lý'}
+                {loading ? 'Đang đăng nhập...' : 'Đăng nhập Đơn vị Xử lý'}
                 <LogIn className="w-4 h-4" />
               </button>
             </form>
 
             {/* Quick Demo Accounts for Operations */}
             {demoMode && (
-              <div className="pt-3 border-t border-border-subtle space-y-2 bg-stone-50/70 p-3 rounded-xl border border-stone-200/80">
+              <div className="pt-3 border-t border-border-subtle space-y-2.5 bg-stone-50/70 p-3 rounded-xl border border-stone-200/80">
                 <div className="flex items-center justify-between text-[10px] font-bold text-content-sub uppercase tracking-wider">
                   <span className="flex items-center gap-1.5 text-teal">
                     <Sparkles className="w-3 h-3" />
                     Tài khoản trải nghiệm
                   </span>
-                  <span className="text-[10px] lowercase text-stone-500 font-normal">nhấn để đăng nhập ngay</span>
+                  <span className="text-[10px] lowercase text-stone-500 font-normal">nhấn để điền thông tin</span>
                 </div>
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <button
                     type="button"
-                    onClick={() => handleQuickLoginOperations('staff1')}
-                    className="p-2 rounded-lg border border-border-subtle bg-white hover:bg-teal-soft font-semibold text-content-main text-left hover:border-teal/40 transition-colors shadow-2xs"
+                    onClick={() => handleSelectOperationsCard('canbo.hientruong')}
+                    className={`p-2.5 rounded-lg border text-left transition-all shadow-2xs touch-target ${
+                      identifier === 'canbo.hientruong'
+                        ? 'bg-teal-50 border-teal text-teal-900 font-bold ring-1 ring-teal'
+                        : 'border-border-subtle bg-white hover:bg-teal-soft text-content-main hover:border-teal/40'
+                    }`}
                   >
-                    <div className="font-bold text-slate-900">staff1</div>
-                    <div className="text-[10px] text-slate-500">Cán bộ Hiện trường</div>
+                    <div className="font-extrabold text-sm text-slate-900 leading-tight">Nguyễn Minh Anh</div>
+                    <div className="text-[11px] font-semibold text-teal mt-0.5">Cán bộ hiện trường</div>
+                    <div className="text-[10px] text-slate-500 font-mono mt-0.5">@canbo.hientruong</div>
                   </button>
+
                   <button
                     type="button"
-                    onClick={() => handleQuickLoginOperations('supervisor1')}
-                    className="p-2 rounded-lg border border-border-subtle bg-white hover:bg-teal-soft font-semibold text-content-main text-left hover:border-teal/40 transition-colors shadow-2xs"
+                    onClick={() => handleSelectOperationsCard('lanhdao.dieuphoi')}
+                    className={`p-2.5 rounded-lg border text-left transition-all shadow-2xs touch-target ${
+                      identifier === 'lanhdao.dieuphoi'
+                        ? 'bg-teal-50 border-teal text-teal-900 font-bold ring-1 ring-teal'
+                        : 'border-border-subtle bg-white hover:bg-teal-soft text-content-main hover:border-teal/40'
+                    }`}
                   >
-                    <div className="font-bold text-slate-900">supervisor1</div>
-                    <div className="text-[10px] text-slate-500">Lãnh đạo Điều phối</div>
+                    <div className="font-extrabold text-sm text-slate-900 leading-tight">Trần Quốc Minh</div>
+                    <div className="text-[11px] font-semibold text-teal mt-0.5">Lãnh đạo điều phối</div>
+                    <div className="text-[10px] text-slate-500 font-mono mt-0.5">@lanhdao.dieuphoi</div>
                   </button>
+
                   <button
                     type="button"
-                    onClick={() => handleQuickLoginOperations('legal1')}
-                    className="p-2 rounded-lg border border-border-subtle bg-white hover:bg-teal-soft font-semibold text-content-main text-left hover:border-teal/40 transition-colors shadow-2xs"
+                    onClick={() => handleSelectOperationsCard('chuyenvien.phapche')}
+                    className={`p-2.5 rounded-lg border text-left transition-all shadow-2xs touch-target ${
+                      identifier === 'chuyenvien.phapche'
+                        ? 'bg-teal-50 border-teal text-teal-900 font-bold ring-1 ring-teal'
+                        : 'border-border-subtle bg-white hover:bg-teal-soft text-content-main hover:border-teal/40'
+                    }`}
                   >
-                    <div className="font-bold text-slate-900">legal1</div>
-                    <div className="text-[10px] text-slate-500">Chuyên viên Pháp chế</div>
+                    <div className="font-extrabold text-sm text-slate-900 leading-tight">Lê Thanh Hà</div>
+                    <div className="text-[11px] font-semibold text-teal mt-0.5">Chuyên viên pháp chế</div>
+                    <div className="text-[10px] text-slate-500 font-mono mt-0.5">@chuyenvien.phapche</div>
                   </button>
+
                   <button
                     type="button"
-                    onClick={() => handleQuickLoginOperations('admin')}
-                    className="p-2 rounded-lg border border-border-subtle bg-white hover:bg-teal-soft font-semibold text-content-main text-left hover:border-teal/40 transition-colors shadow-2xs"
+                    onClick={() => handleSelectOperationsCard('quantri.dustguard')}
+                    className={`p-2.5 rounded-lg border text-left transition-all shadow-2xs touch-target ${
+                      identifier === 'quantri.dustguard'
+                        ? 'bg-teal-50 border-teal text-teal-900 font-bold ring-1 ring-teal'
+                        : 'border-border-subtle bg-white hover:bg-teal-soft text-content-main hover:border-teal/40'
+                    }`}
                   >
-                    <div className="font-bold text-slate-900">admin</div>
-                    <div className="text-[10px] text-slate-500">Quản trị Vận hành</div>
+                    <div className="font-extrabold text-sm text-slate-900 leading-tight">Quản trị DustGuard</div>
+                    <div className="text-[11px] font-semibold text-teal mt-0.5">Quản trị vận hành</div>
+                    <div className="text-[10px] text-slate-500 font-mono mt-0.5">@quantri.dustguard</div>
                   </button>
+                </div>
+                <div className="text-center text-[11px] text-slate-500 pt-0.5">
+                  Mật khẩu trải nghiệm: <code className="font-mono font-bold text-slate-700 bg-stone-200/70 px-1.5 py-0.5 rounded">DustGuard@2026</code>
                 </div>
               </div>
             )}
