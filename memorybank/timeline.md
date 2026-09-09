@@ -7,6 +7,23 @@
 
 ## 📅 Các Mốc Phát Triển Chính (Milestones)
 
+### 25. [2026-09-08] `feat-iot-touchscreen-ui-and-simulator`: Nâng Cấp Firmware Màn Hình Cảm Ứng 10 Giao Diện & Trình Mô Phỏng Tương Tác Web
+- **Bối cảnh & Vấn đề thực tế**:
+  - Trạm IoT DustGuard (ESP32 NodeMCU-32S + Cảm biến APM2000) cần giao diện cảm ứng trực quan thay thế OLED nhỏ hẹp, hỗ trợ phân tích hạt bụi đa dải theo thời gian thực và tự động liên thông tạo phản ánh khi nồng độ tăng đột biến (Spike).
+  - Phần cứng phòng Lab là thiết bị của trường nên không thể nạp đè firmware thử nghiệm; cần một trình mô phỏng cảm ứng trực quan chạy trên web với dữ liệu thật từ Cloudflare Edge.
+- **Phạm vi xử lý hoàn tất**:
+  1. **Kiến Trúc Firmware Nhúng**:
+     - `firmware/include/types.h & config.h`: Mô hình dữ liệu đo, dải hạt, bảng màu Civic Tech RGB565 và ngưỡng cảnh báo Spike.
+     - `firmware/src/analytics/`: 4 module giải thuật (AQI Calculator, Particle Analyzer, Rolling Stats, Event Detector).
+     - `firmware/src/ui/`: TouchRouter điều phối 10 màn hình chuẩn Civic High-Contrast, QRCodeGenerator nhúng ma trận 29x29.
+     - `firmware/src/network/CaseApiClient`: Tự động gọi API `POST /api/reports` tạo Case D1 thật.
+  2. **Trình Mô Phỏng Cảm Ứng Web (`scripts/touchscreen-simulator.mjs`)**:
+     - Chạy tại cổng `http://localhost:3456`, kết nối trực tiếp telemetry sensor thật (APM2000) qua proxy Cloudflare Edge.
+     - Tương tác 100% bằng chuột/cảm ứng: chuyển 5 tab màn hình, kích hoạt kịch bản Spike Test, bấm xác nhận và tạo Case thật nhận mã QR quét bằng điện thoại.
+  3. **Nghiệm Thu Toàn Diện**:
+     - 12/12 Acceptance Tests pass 100% (`tests/touchscreen-firmware-acceptance.test.js`).
+     - Web Simulator hiển thị chuẩn xác số đo thật `PM2.5: 22-23 µg/m³`, AQI 44, biểu đồ realtime và mã QR vụ việc thật.
+
 ### 24. [2026-09-07] `fix-demo-credentials-and-mobile-enhancements`: Đồng Bộ Toàn Diện Mật Khẩu Demo (Dual Password Fallback), Khắc Phục Lỗi 401 & Triệt Tiêu Tràn Ngang Header Side B
 - **Bối cảnh & Vấn đề thực tế phát sinh**:
   - Người dùng gặp lỗi `"Email hoặc mật khẩu chưa đúng"` khi nhấn chọn tài khoản trải nghiệm `citizen@dustguard.local` trên trang `/login` do frontend điền `DustGuard@2026` trong khi SQLite local seed bằng `DustGuard123!`.

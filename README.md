@@ -1,4 +1,20 @@
-# DustGuard VN — Nền Tảng Environmental Intelligence & Decision Support Vì Hành Động Cộng Đồng
+<div align="center">
+
+# 🌿 DustGuard VN
+### Environmental Intelligence & Decision Support Platform for Civic Action
+
+[![UNICEF Innovation](https://img.shields.io/badge/UNICEF_Vietnam-Top_6_National_Finalist-00ADEF?style=for-the-badge&logo=unicef&logoColor=white)](https://dustguard.phamphunguyenhung.com)
+[![MARD & MONRE](https://img.shields.io/badge/Partnered_with-MARD_%26_MONRE-16A34A?style=for-the-badge)](https://dustguard.phamphunguyenhung.com)
+[![CivicTech](https://img.shields.io/badge/CivicTech-Open_Source-2563EB?style=for-the-badge)](https://dustguard.phamphunguyenhung.com)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-dustguard.phamphunguyenhung.com-D97706?style=for-the-badge&logo=cloudflare&logoColor=white)](https://dustguard.phamphunguyenhung.com)
+
+**🏆 TOP 6 CUỘC THI SÁNG TẠO TRẺ VÌ KHÍ HẬU & MÔI TRƯỜNG 2026**  
+*Đồng tổ chức bởi UNICEF Việt Nam, Bộ Nông nghiệp & Phát triển Nông thôn và Bộ Tài nguyên & Môi trường*
+
+[🌐 Trải Nghiệm Nền Tảng Trực Tuyến](https://dustguard.phamphunguyenhung.com) • [📋 Báo Cáo Kỹ Thuật](docs/audit/DUSTGUARD_TWO_SIDE_PRODUCTION_AUDIT_FINAL.md) • [📊 Báo Cáo Thuyết Minh GTM](docs/)
+
+---
+</div>
 
 > **DustGuard VN là nền tảng Environmental Intelligence & Decision Support phục vụ Civic Action — Giúp cộng đồng ghi nhận, đối chứng và theo dõi các vấn đề môi trường bằng dữ liệu có cấu trúc, đồng thời hỗ trợ chuyển những trường hợp phù hợp tới các kênh xử lý hiện hữu.**  
 > *(Bụi công trình và chất lượng không khí quanh trường học/khu dân cư là bài toán đầu tiên để kiểm chứng mô hình, trước khi mở rộng thành nền tảng trí tuệ môi trường và hành động xanh cho thanh thiếu niên và cộng đồng).*
